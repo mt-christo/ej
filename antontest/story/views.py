@@ -9,5 +9,5 @@ def home(request):
     return render_to_response("story/home.html", {'hello':"Hello World!"})
 
 def home2(request):
-    return HttpResponse('Hello AAAA!!!!!!!!!!')
+    return HttpResponse('Hello AAAABBBB!!!!!!!!!!')
 
