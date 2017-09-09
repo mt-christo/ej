@@ -1,4 +1,10 @@
 {% extends "story/base.html" %}
 {% block content %}
-{{ hello }}
+<div class="row">
+  {% for product in products %}
+  <div class="item well">
+    <p>{{ product.description }}</p>
+  </div>
+  {% endfor %}
+</div>
 {% endblock %}
