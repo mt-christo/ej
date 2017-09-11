@@ -4,7 +4,7 @@
 <div class="row">
   {% for product in products %}
   <div class="item well">
-    <img class="img-rounded" src="{% static "/" %}{{ product.imgpath }}" width="100%"/><br>
+    <img class="img-rounded" src="{% static "/" %}{{ product.imgpath }}" width="100%"/><br><br>
     <p><b>{{ product.name }}</b></p>
     <p>{{ product.desclong }}</p>
   </div>
