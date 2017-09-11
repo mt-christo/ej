@@ -19,6 +19,5 @@ from story import views as story_vw
 
 urlpatterns = [
     url(r'^$', story_vw.home, name='home'),
-    url(r'a*n', story_vw.home2, name='home2'),
     url(r'^admin/', admin.site.urls),
 ]

@@ -25,7 +25,7 @@ SECRET_KEY = 'l1^b0p!9o!1$=x=@spde3m^nff2adc_&ey7mf*mqsgb@&t7kt0'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['localhost']
+ALLOWED_HOSTS = ['localhost','kart-tree.ru','149.154.70.220']
 
 
 # Application definition
