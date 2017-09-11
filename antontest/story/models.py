@@ -10,6 +10,9 @@ class Product(models.Model):
     coupon = models.CharField(max_length=2000, default='')
     desclong = models.CharField(max_length=2000, default='')
     provider = models.ManyToManyField('Provider')
+    
+    def providerName(self):
+        return(provider.name)
 
 class Provider(models.Model):
     name = models.CharField(max_length=255, default='')
