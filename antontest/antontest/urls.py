@@ -18,6 +18,6 @@ from django.contrib import admin
 from story import views as story_vw
 
 urlpatterns = [
-    url(r'^$', story_vw.home, name='home'),
+    url(r'^$', story_vw.allproducts, name='allproducts'),
     url(r'^admin/', admin.site.urls),
 ]
