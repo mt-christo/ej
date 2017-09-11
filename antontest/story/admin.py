@@ -3,7 +3,7 @@ from .models import Product, Provider
 
 @admin.register(Product)
 class pa(admin.ModelAdmin):  
-  list_display = ('name', 'imgpath', 'descshort', 'part', 'coupon', 'desclong', 'provider.name')
+  list_display = ('name', 'imgpath', 'descshort', 'part', 'coupon', 'desclong', 'providerName')
 
 @admin.register(Provider)
 class pr(admin.ModelAdmin):  
