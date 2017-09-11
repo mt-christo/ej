@@ -6,9 +6,9 @@ from .models import Product, Provider
 # Create your views here.
 
 
-def home(request):
-    return render_to_response("story/home.html", {'products' : Product.objects.all()})
+def allproducts(request):
+    return render_to_response("story/allproducts.html", {'products' : Product.objects.all()})
 
-def home2(request):
-    return HttpResponse('Hello AAAABBBB!!!!!!!!!!')
+def product(request):
+    return render_to_response("story/product.html", {'products' : Product.objects.all()})
 
