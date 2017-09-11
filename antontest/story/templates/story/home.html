@@ -3,6 +3,7 @@
 <div class="row">
   {% for product in products %}
   <div class="item well">
+    <img src="{% static "/" %}{{ product.imgpath }}" alt="My image"/><br>
     <p><b>{{ product.name }}</b></p>
     <p>{{ product.desclong }}</p>
   </div>
