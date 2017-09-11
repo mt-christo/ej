@@ -19,3 +19,6 @@ class Provider(models.Model):
     imgpath = models.CharField(max_length=255, default='')
     desc = models.CharField(max_length=2000, default='')
     
+    def __str__(self):
+        return(name)
+    
