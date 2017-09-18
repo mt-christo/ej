@@ -24,6 +24,7 @@
   user-select: none;
   cursor: pointer;
   margin-bottom: 0;
+  font-weight: normal;
 }
 .label-cbx input:checked + .checkbox {
   border-color: #20C2E0;
