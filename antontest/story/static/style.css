@@ -78,8 +78,7 @@ body {
 }
 .label-cbx > span {
   pointer-events: none;
-  padding-top: 20px;
-  vertical-align: middle;
+  vertical-align: bottom;
 }
 
 .cntr {
