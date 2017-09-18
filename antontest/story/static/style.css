@@ -27,7 +27,7 @@ body {
 .label-cbx {
   user-select: none;
   cursor: pointer;
-  margin-top: 1em;
+  margin-bottom: 0;
 }
 .label-cbx input:checked + .checkbox {
   border-color: #20C2E0;
@@ -79,6 +79,7 @@ body {
 .label-cbx > span {
   pointer-events: none;
   vertical-align: middle;
+	margin-top: 20px;
 }
 
 .cntr {
