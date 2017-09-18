@@ -2,11 +2,6 @@ body {
   font-family: Avenir;
 }
 
-*,
-*:before,
-*:after {
-	box-sizing: border-box;
-}
 
 .row {
 	/* column width */
