@@ -43,7 +43,7 @@ body {
 }
 .label-cbx .checkbox {
   position: relative;
-  top: 2px;
+  top: -12px;
   float: left;
   margin-right: 8px;
   width: 20px;
@@ -53,7 +53,7 @@ body {
 }
 .label-cbx .checkbox svg {
   position: absolute;
-  top: -12px;
+  top: -2px;
   left: -2px;
 }
 .label-cbx .checkbox svg path {
