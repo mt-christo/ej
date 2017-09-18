@@ -1,13 +1,22 @@
 {% extends "story/base.html" %}
 {% load static %}
 {% block content %}
-<div class="row">
-  {% for product in products %}
-  <div class="item well well-sm">
-    <img class="img-rounded" src="{% static "/" %}{{ product.imgpath }}" width="100%"/><br><br>
-    <p><b>{{ product.name }}</b></p>
-    <p>{{ product.desclong }}</p>
-  </div>
-  {% endfor %}
-</div>
+<table>
+  <tr>
+    <td width="20%">
+      <div class="well">fhdfshfdshsgfhjsgfdj</div>
+    </td>
+    <td width="80%">
+      <div class="row">
+        {% for product in products %}
+        <div class="item well well-sm">
+          <img class="img-rounded" src="{% static "/" %}{{ product.imgpath }}" width="100%"/><br><br>
+          <p><b>{{ product.name }}</b></p>
+          <p>{{ product.desclong }}</p>
+        </div>
+        {% endfor %}
+      </div>
+    </td>
+  </tr>
+</table>
 {% endblock %}
