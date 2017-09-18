@@ -27,6 +27,7 @@ input[type=checkbox]
   -webkit-transform: scale(1.3); /* Safari and Chrome */
   -o-transform: scale(1.3); /* Opera */
   padding: 20px;
+  vertical-align: middle
 }
 
 /* Might want to wrap a span around your checkbox text */
@@ -35,4 +36,5 @@ input[type=checkbox]
   /* Checkbox text */
   font-size: 130%;
   display: inline;
+  vertical-align: middle
 }
