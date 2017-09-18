@@ -27,7 +27,7 @@ body {
 .label-cbx {
   user-select: none;
   cursor: pointer;
-  margin-top: 10;
+  margin-top: 1em;
 }
 .label-cbx input:checked + .checkbox {
   border-color: #20C2E0;
