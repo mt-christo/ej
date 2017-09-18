@@ -22,19 +22,19 @@
 input[type=checkbox]
 {
   /* Double-sized Checkboxes */
-  -ms-transform: scale(1.3); /* IE */
-  -moz-transform: scale(1.3); /* FF */
-  -webkit-transform: scale(1.3); /* Safari and Chrome */
-  -o-transform: scale(1.3); /* Opera */
+  -ms-transform: scale(1.4); /* IE */
+  -moz-transform: scale(1.4); /* FF */
+  -webkit-transform: scale(1.4); /* Safari and Chrome */
+  -o-transform: scale(1.4); /* Opera */
   padding: 20px;
-  vertical-align: middle
+  vertical-align: bottom
 }
 
 /* Might want to wrap a span around your checkbox text */
 .checkboxtext
 {
   /* Checkbox text */
-  font-size: 130%;
+  font-size: 110%;
   display: inline;
   vertical-align: middle
 }
