@@ -12,7 +12,7 @@ class Product(models.Model):
     provider = models.ManyToManyField('Provider')
     
     def providerName(self):
-        return(self.provider.name)
+        return(self.provider.all()[0].name)
 
 class Provider(models.Model):
     name = models.CharField(max_length=255, default='')
