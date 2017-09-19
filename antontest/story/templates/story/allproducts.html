@@ -2,54 +2,15 @@
 {% load static %}
 {% block content %}
 
-    <!-- Fixed navbar -->
-    <nav class="navbar navbar-default navbar-fixed-top">
-      <div class="container">
-        <div class="navbar-header">
-          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
-            <span class="sr-only">Toggle navigation</span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-          </button>
-          <a class="navbar-brand" href="#">Верно!полис</a>
-        </div>
-        <div id="navbar" class="navbar-collapse collapse">
-          <ul class="nav navbar-nav">
-            <li class="active"><a href="#">Купонные продукты</a></li>
-            <li class="active"><a href="#about">Продукты с участием</a></li>
-            <li class="active"><a href="#contact">Комбо</a></li>
-            <li class="dropdown">
-              <a class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Дополнительно <span class="caret"></span></a>
-              <ul class="dropdown-menu">
-                <li role="separator" class="divider"></li>
-                <li class="dropdown-header">Контроль волатильности</li>
-                <li><a href="#">3%</a></li>
-                <li><a href="#">5%</a></li>
-                <li><a href="#">Другой</a></li>
-                <li role="separator" class="divider"></li>
-                <li class="dropdown-header">Fixed Income часть</li>
-                <li><a href="#">LIBOR</a></li>
-                <li><a href="#">A spread</a></li>
-                <li><a href="#">B spread</a></li>
-              </ul>
-            </li>
-          </ul>
-          <ul class="nav navbar-nav navbar-right">
-            <li><a href="../navbar/">О нас</a></li>
-            <li><a href="../navbar-static-top/">Партнеры</a></li>
-            <!--class="active"--><!--<span class="sr-only">(current)</span>-->
-            <li><a href="./">Связаться с нами</a></li>
-          </ul>
-        </div><!--/.nav-collapse -->
-      </div>
-    </nav>
 
 <div class="row">
   {% for product in products %}
   <div class="item well well-sm">
     <img class="img-rounded" src="{% static "/" %}{{ product.imgpath }}" width="100%"/><br><br>
-    <p><b>{{ product.name }}</b></p>
+    <p><b>{{ product.descshort }}</b></p>
+    <p><b>Страхователь: </b>{{ product.provider.name }}</p>
+    <p><b>Участие: </b>{{ product.part }}</p>
+    <p><b>Купон: </b>{{ product.coupon }}</p>
     <p>{{ product.desclong }}</p>
   </div>
   {% endfor %}
