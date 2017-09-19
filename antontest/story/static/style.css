@@ -6,12 +6,12 @@
 
 .row {
 	/* column width */
-	-moz-column-width: 20rem;
-	-webkit-column-width: 20rem;
+	-moz-column-width: 20em;
+	-webkit-column-width: 20em;
 	
 	/* space between columns */
-	-moz-column-gap: 1rem;
-	-webkit-column-gap: 1rem;
+	-moz-column-gap: 1em;
+	-webkit-column-gap: 1em;
 }
 
 .item {
