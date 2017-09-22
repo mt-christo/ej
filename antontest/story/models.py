@@ -11,8 +11,11 @@ class Product(models.Model):
     desclong = models.CharField(max_length=2000, default='')
     provider = models.ManyToManyField('Provider')
     
-    def providerName(self):
-        return(self.provider.all()[0].name)
+    def listProviders(self):
+        return(", ".join([str(p.id for p in self.provider.all()]))
+    
+    def allProviders(self):
+        return(self.provider.all())
 
 class Provider(models.Model):
     name = models.CharField(max_length=255, default='')
