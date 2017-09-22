@@ -7,7 +7,7 @@
   {% for product in products %}
   <div class="item well well-sm">
     <a href="product/{{ product.id }}"><img class="img-rounded" src="{% static "/" %}{{ product.imgpath }}" width="100%"/></a><br><br>
-    <h4><b>{{ product.descshort }}</b></h4>
+    <h4><b><a href="product/{{ product.id }}">{{ product.descshort }}</a></b></h4>
     <p><b>Страхователь: </b>{{ product.listProviders }}</p>
     <p><b>Участие: </b>{{ product.part }}</p>
     <p><b>Купон: </b>{{ product.coupon }}</p>
