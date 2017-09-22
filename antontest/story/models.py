@@ -12,7 +12,7 @@ class Product(models.Model):
     provider = models.ManyToManyField('Provider')
     
     def listProviders(self):
-        return(", ".join([str(p.id for p in self.provider.all()]))
+        return(", ".join([str(p.id) for p in self.provider.all()]))
     
     def allProviders(self):
         return(self.provider.all())
