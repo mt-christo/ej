@@ -19,6 +19,6 @@ from story import views as story_vw
 
 urlpatterns = [
     url(r'^$', story_vw.allproducts, name='allproducts'),
-    url(r'^product/[0-9]+$', story_vw.product, name='products'),
+    url(r'^product/[0-9]+$', story_vw.product, name='product'),
     url(r'^admin/', admin.site.urls),
 ]
