@@ -9,6 +9,6 @@ from .models import Product, Provider
 def allproducts(request):
     return render_to_response("story/allproducts.html", {'products' : Product.objects.all()})
 
-def product(request):
-    return render_to_response("story/product.html", {'products' : Product.objects.all()})
+def product(request,id):
+    return render_to_response("story/product.html", {'product' : Product.objects.get(pk=id)})
 
