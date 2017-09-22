@@ -6,7 +6,7 @@
 <div class="row">
   {% for product in products %}
   <div class="item well well-sm">
-    <img class="img-rounded" src="{% static "/" %}{{ product.imgpath }}" width="100%"/><br><br>
+    <a href="product/{{ product.id }}"><img class="img-rounded" src="{% static "/" %}{{ product.imgpath }}" width="100%"/></a><br><br>
     <p><b>{{ product.descshort }}</b></p>
     <p><b>Страхователь: </b>{{ product.listProviders }}</p>
     <p><b>Участие: </b>{{ product.part }}</p>
