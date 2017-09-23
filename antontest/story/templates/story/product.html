@@ -14,7 +14,7 @@
     data.addRows( {{ data|safe }} );
 
     var chart = new google.visualization.LineChart(document.getElementById('chart_div'));
-    chart.draw(data, {width: 400, height: 240, title: "Numbers"});
+    chart.draw(data, {width: 400, height: 400, title: "Временной ряд"});
   }
 </script>
 {% endblock %}
@@ -23,7 +23,7 @@
 
 <br>
 <div class="well">
-  <img class="img-rounded" src="{% static "/" %}{{ product.imgpath }}" width="500px"/><br><br>
+  <img class="img-rounded" src="{% static "/" %}{{ product.imgpath }}" height="400px"/><br><br>
   <div id="chart_div"></div>
   <p><b>{{ product.descshort }}</b></p>
   <p><b>Страхователь: </b>{{ product.listProviders }}</p>
