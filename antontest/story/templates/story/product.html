@@ -1,15 +1,34 @@
 
 {% extends "story/base.html" %}
 {% load static %}
+
+{% block scripts %}
+<script type="text/javascript" src="https://www.google.com/jsapi"></script>
+<script type="text/javascript">
+  google.load('visualization', '1.0', {'packages':['corechart']});
+  google.setOnLoadCallback(drawChart);
+  function drawChart() {
+    var data = new google.visualization.DataTable();
+    data.addColumn('string', 'Number');
+    data.addColumn('number', 'Number/10');
+    data.addRows( {{ data|safe }} );
+
+    var chart = new google.visualization.LineChart(document.getElementById('chart_div'));
+    chart.draw(data, {width: 400, height: 240, title: "Numbers"});
+  }
+</script>
+{% endblock %}
+
 {% block content %}
 
 <br>
 <div class="well">
-<img class="img-rounded" src="{% static "/" %}{{ product.imgpath }}" width="500px"/><br><br>
-<p><b>{{ product.descshort }}</b></p>
-<p><b>Страхователь: </b>{{ product.listProviders }}</p>
-<p><b>Участие: </b>{{ product.part }}</p>
-<p><b>Купон: </b>{{ product.coupon }}</p>
-<p>{{ product.desclong }}</p>
+  <img class="img-rounded" src="{% static "/" %}{{ product.imgpath }}" width="500px"/><br><br>
+  <div id="chart_div"></div>
+  <p><b>{{ product.descshort }}</b></p>
+  <p><b>Страхователь: </b>{{ product.listProviders }}</p>
+  <p><b>Участие: </b>{{ product.part }}</p>
+  <p><b>Купон: </b>{{ product.coupon }}</p>
+  <p>{{ product.desclong }}</p>
 </div>
 {% endblock %}
