@@ -21,8 +21,9 @@
 
 {% block content %}
 <br>
+<div class="well">
 <div class='container'>
-  <div class='row align-items-start'>
+  <div class='row'>
     <div class='col'>
       <img class="img-rounded" src="{% static "/" %}{{ product.imgpath }}" height="300px"/>
     </div>
@@ -30,15 +31,11 @@
       <div id="chart_div"></div>
     </div>
   </div>
-  <div class='row align-items-end'>
-    <div class='col'>
+</div>
       <h4><b>{{ product.descshort }}</b></h4>
       <p><b>Страхователь: </b>{{ product.listProviders }}</p>
       <p><b>Участие: </b>{{ product.part }}</p>
       <p><b>Купон: </b>{{ product.coupon }}</p>
       <p>{{ product.desclong }}</p>
-    </div>
-  </div>
 </div>
-
 {% endblock %}
