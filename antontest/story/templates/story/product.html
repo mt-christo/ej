@@ -23,10 +23,12 @@
 
 <br>
 <div class="well">
+    <div class='row'>
   <span>
-    <img class="img-rounded" src="{% static "/" %}{{ product.imgpath }}" height="200px"/>
-    <div id="chart_div"></div>
+      <img class="img-rounded" src="{% static "/" %}{{ product.imgpath }}" height="200px"/>
+      <div id="chart_div"></div>
   </span>
+    </div>
   <p><b>{{ product.descshort }}</b></p>
   <p><b>Страхователь: </b>{{ product.listProviders }}</p>
   <p><b>Участие: </b>{{ product.part }}</p>
