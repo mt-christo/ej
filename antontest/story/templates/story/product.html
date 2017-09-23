@@ -9,8 +9,8 @@
   google.setOnLoadCallback(drawChart);
   function drawChart() {
     var data = new google.visualization.DataTable();
-    data.addColumn('number', 'a');
-    data.addColumn('number', 'b');
+    data.addColumn('number', 'Время');
+    data.addColumn('number', 'Цена');
     data.addRows( {{ data|safe }} );
 
     var chart = new google.visualization.LineChart(document.getElementById('chart_div'));
@@ -23,7 +23,7 @@
 
 <br>
 <div class="well">
-  <img class="img-rounded" src="{% static "/" %}{{ product.imgpath }}" height="400px"/><br><br>
+  <img class="img-rounded" src="{% static "/" %}{{ product.imgpath }}" height="400px"/>&nbsp&nbsp
   <div id="chart_div"></div>
   <p><b>{{ product.descshort }}</b></p>
   <p><b>Страхователь: </b>{{ product.listProviders }}</p>
