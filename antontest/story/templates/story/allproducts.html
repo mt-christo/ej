@@ -30,7 +30,7 @@
     </tr>
     <tr>
         {% for product in products|slice:":4" %}
-        <td width="25%" style="font-weight:100;opacity:1;font-family:'Gotham SSm A','Gotham SSm B',Helvetica,Arial,sans-serif;color:#666;line-height:200%;padding:2em">
+        <td width="25%" style="vertical-align:top;font-weight:100;opacity:1;font-family:'Gotham SSm A','Gotham SSm B',Helvetica,Arial,sans-serif;color:#666;line-height:200%;padding:2em">
             <center><p>{{ product.desclong }}</p></center>
         </td>
         {% endfor %}
