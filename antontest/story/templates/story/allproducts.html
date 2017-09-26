@@ -3,11 +3,11 @@
 {% block content %}
 
 <br>
-
+<center>
 <table width="60%" style="border: none; border-collapse: collapse;">
     <tr style="">
         {% for product in products|slice:":4" %}
-        <td width="25%" style="border-left: 1px solid #000;font-weight:100;opacity:1;font-family:'Gotham SSm A','Gotham SSm B',Helvetica,Arial,sans-serif;color:#666;line-height:180%;padding:1em">
+        <td width="25%" style="border-left: 1px solid #666;font-weight:100;opacity:1;font-family:'Gotham SSm A','Gotham SSm B',Helvetica,Arial,sans-serif;color:#666;line-height:180%;padding:1em">
     <!--<h3><a href="product/{{ product.id }}">{{ product.descshort }}</a></h3>-->
     <center>
     <p><span style="font-size:2em;font-weight:100">{{ product.descshort }}<span></p>
@@ -26,9 +26,9 @@
   {% endfor %}
       </tr>
 </table>
+</center>
     
-    </div>
-<!--
+    <!--
 <div class="container">
 <div class="row">
   {% for product in products %}
