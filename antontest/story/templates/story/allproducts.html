@@ -5,12 +5,12 @@
 <br>
 
 
-<div class="panel panel-default" style="line-height:130%;font-weight:300;opacity:1;font-family:'Gotham SSm A','Gotham SSm B',Helvetica,Arial,sans-serif;color:#666;text-transform:none">
+<div class="panel panel-default" style="font-weight:300;opacity:1;font-family:'Gotham SSm A','Gotham SSm B',Helvetica,Arial,sans-serif;color:#666;text-transform:none">
   <table class="table table-bordered">
     <tbody>
       <tr>
   {% for product in products|slice:":3" %}
-  <td width="33%" padding="10em"><center>
+  <td width="33%" style="line-height:160%;padding:3em"><center>
     <!--<h3><a href="product/{{ product.id }}">{{ product.descshort }}</a></h3>-->
     <h2>{{ product.descshort }}</h2>
     <p><b>Страхователь: </b>{{ product.listProviders }}</p>
@@ -21,7 +21,7 @@
       </tr>
       <tr>
   {% for product in products|slice:":3" %}
-  <td style="line-height:130%;padding:2em">
+  <td style="line-height:160%;padding:3em">
     <p>{{ product.desclong }}</p>
   </td>
   {% endfor %}
