@@ -6,11 +6,11 @@
 
 
 <div class="panel panel-default" style="font-weight:300;opacity:1;font-family:'Gotham SSm A','Gotham SSm B',Helvetica,Arial,sans-serif;color:#666;text-transform:none">
-  <table class="table table-bordered" width="70%">
+  <table class="table table-bordered">
     <tbody>
       <tr>
   {% for product in products|slice:":3" %}
-  <td width="33%" style="line-height:160%;padding:3em"><center>
+  <td width="20%" style="line-height:160%;padding:3em"><center>
     <!--<h3><a href="product/{{ product.id }}">{{ product.descshort }}</a></h3>-->
     <p><span style="font-size:2em;font-weight:100">{{ product.descshort }}<span></p><br>
     <p><b>Страхователь: </b>{{ product.listProviders }}</p>
