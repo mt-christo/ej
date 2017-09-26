@@ -16,4 +16,8 @@ body {
   min-height: 70px;
 }
 
+table { border: none; border-collapse: collapse; }
+
+table td { border-left: 1px solid #666; }
+
 table td:first-child { border-left: none; }
