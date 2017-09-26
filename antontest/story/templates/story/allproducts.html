@@ -39,9 +39,7 @@
 </div>
 </center>
     
-    
-<div class="container">
-<div class="row">
+<br>    
   {% for product in products %}
   <div class="well well-sm" width="200px">
     <a href="product/{{ product.id }}"><img class="img-rounded" src="{% static "/" %}{{ product.imgpath }}" width="100%"/></a><br><br>
@@ -52,7 +50,5 @@
     <p>{{ product.desclong }}</p>
   </div>
   {% endfor %}
-</div>
-</div>
 
 {% endblock %}
