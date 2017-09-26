@@ -15,3 +15,5 @@ body {
   right: 0;
   min-height: 70px;
 }
+
+table td:first-child { border-left: none; }
