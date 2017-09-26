@@ -4,23 +4,30 @@
 
 <br>
 
-  <div class="row">
+
+<div class="container">
+  <table class="table table-bordered">
+    <tbody>
+      <tr>
   {% for product in products|slice:":3" %}
-  <div class="col-md-4">
+  <td width="33%">
     <h4><b><a href="product/{{ product.id }}">{{ product.descshort }}</a></b></h4>
     <p><b>Страхователь: </b>{{ product.listProviders }}</p>
     <p><b>Участие: </b>{{ product.part }}</p>
     <p><b>Купон: </b>{{ product.coupon }}</p>
-  </div>
+  </td>
   {% endfor %}
-  </div>
-  <div class="row">
+      </tr>
+      <tr>
   {% for product in products|slice:":3" %}
-  <div class="col-md-4">
+  <td>
     <p>{{ product.desclong }}</p>
-  </div>
+  </td>
   {% endfor %}
-  </div>
+      </tr>
+    </tbody>
+  </table>
+</div>
 
 <div class="row">
   {% for product in products %}
