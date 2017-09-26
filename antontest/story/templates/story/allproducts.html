@@ -11,7 +11,7 @@
       <tr>
   {% for product in products|slice:":3" %}
   <td width="33%"><center>
-    <h2><a href="product/{{ product.id }}">{{ product.descshort }}</a></h2>
+    <h3><a href="product/{{ product.id }}">{{ product.descshort }}</a></h3>
     <p><b>Страхователь: </b>{{ product.listProviders }}</p>
     <p><b>Участие: </b>{{ product.part }}</p>
     <p><b>Купон: </b>{{ product.coupon }}</p>
