@@ -12,7 +12,7 @@
   {% for product in products|slice:":3" %}
   <td width="33%" style="line-height:160%;padding:3em"><center>
     <!--<h3><a href="product/{{ product.id }}">{{ product.descshort }}</a></h3>-->
-    <p><span style="font-size:30px;font-weight:100">{{ product.descshort }}<span></p><br>
+    <p><span style="font-size:6em;font-weight:100">{{ product.descshort }}<span></p><br>
     <p><b>Страхователь: </b>{{ product.listProviders }}</p>
     <p><b>Участие: </b>{{ product.part }}</p>
     <p><b>Купон: </b>{{ product.coupon }}</p>
