@@ -5,11 +5,11 @@
 <br>
 
 
-<div class="panel panel-default" width="70%" style="font-weight:300;opacity:1;font-family:'Gotham SSm A','Gotham SSm B',Helvetica,Arial,sans-serif;color:#666;text-transform:none">
+<div class="panel panel-default" style="font-weight:300;opacity:1;font-family:'Gotham SSm A','Gotham SSm B',Helvetica,Arial,sans-serif;color:#666;text-transform:none">
   <table class="table table-bordered">
     <tbody>
       <tr>
-  {% for product in products|slice:":3" %}
+  {% for product in products|slice:":4" %}
   <td width="33%" style="line-height:160%;padding:3em"><center>
     <!--<h3><a href="product/{{ product.id }}">{{ product.descshort }}</a></h3>-->
     <p><span style="font-size:2em;font-weight:100">{{ product.descshort }}<span></p><br>
