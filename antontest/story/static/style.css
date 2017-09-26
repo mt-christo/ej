@@ -18,6 +18,6 @@ body {
 
 table { border: none; border-collapse: collapse; }
 
-table td { border-left: 1px solid #666; }
+table td { border-left: 1px solid #777; }
 
 table td:first-child { border-left: none; }
