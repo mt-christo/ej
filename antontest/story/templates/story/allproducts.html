@@ -7,8 +7,8 @@
 
 <div class="panel panel-default" style="font-weight:300;opacity:1;font-family:'Gotham SSm A','Gotham SSm B',Helvetica,Arial,sans-serif;color:#666;text-transform:none">
   <table class="table table-bordered">
-    <tbody><center>
-      <tr>
+    <tbody>
+      <tr><center>
   {% for product in products|slice:":4" %}
   <td width="25%" style="line-height:160%;padding:3em">
     <!--<h3><a href="product/{{ product.id }}">{{ product.descshort }}</a></h3>-->
@@ -18,10 +18,10 @@
     <p><b>Купон: </b>{{ product.coupon }}</p>
   </td>
   {% endfor %}
-      </tr>
-      <tr>
+      </center></tr>
+      <tr><center>
   {% for product in products|slice:":4" %}
-  <td style="line-height:200%;padding:3em">
+  <td style="line-height:200%;padding:2em">
     <p>{{ product.desclong }}</p>
   </td>
   {% endfor %}
