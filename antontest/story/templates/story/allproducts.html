@@ -9,22 +9,31 @@
     <tr>
         {% for product in products|slice:":4" %}
         <td width="25%" style="font-weight:100;opacity:1;font-family:'Gotham SSm A','Gotham SSm B',Helvetica,Arial,sans-serif;color:#666;line-height:180%;padding:1em">
-    <!--<h3><a href="product/{{ product.id }}">{{ product.descshort }}</a></h3>-->
-    <center>
-    <p><span style="font-size:2em;font-weight:100">{{ product.descshort }}<span></p>
-    <p><b>Страхователь: </b>{{ product.listProviders }}</p>
-    <p><b>Участие: </b>{{ product.part }}</p>
-    <p><b>Купон: </b>{{ product.coupon }}</p>
-    </center>
+            <!--<h3><a href="product/{{ product.id }}">{{ product.descshort }}</a></h3>-->
+            <center>
+                <p><span style="font-size:2em;font-weight:100">{{ product.descshort }}</span></p>
+            </center>
         </td>
         {% endfor %}
     </tr>
     <tr>
-  {% for product in products|slice:":4" %}
+        {% for product in products|slice:":4" %}
+        <td width="25%" style="font-weight:100;opacity:1;font-family:'Gotham SSm A','Gotham SSm B',Helvetica,Arial,sans-serif;color:#666;line-height:180%;padding:1em">
+            <!--<h3><a href="product/{{ product.id }}">{{ product.descshort }}</a></h3>-->
+            <center>
+                <p><b>Страхователь: </b>{{ product.listProviders }}</p>
+                <p><b>Участие: </b>{{ product.part }}</p>
+                <p><b>Купон: </b>{{ product.coupon }}</p>
+            </center>
+        </td>
+        {% endfor %}
+    </tr>
+    <tr>
+        {% for product in products|slice:":4" %}
         <td width="25%" style="font-weight:100;opacity:1;font-family:'Gotham SSm A','Gotham SSm B',Helvetica,Arial,sans-serif;color:#666;line-height:200%;padding:2em">
             <center><p>{{ product.desclong }}</p></center>
         </td>
-  {% endfor %}
+        {% endfor %}
       </tr>
 </table>
 </div>
