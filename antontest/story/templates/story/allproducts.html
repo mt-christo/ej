@@ -6,28 +6,24 @@
 
 
 <div class="panel panel-default" style="font-weight:100;opacity:1;font-family:'Gotham SSm A','Gotham SSm B',Helvetica,Arial,sans-serif;color:#666;text-transform:none">
-  <table class="table table-borderless">
-    <tbody>
-      <tr>
+    <div class="row vdivide">
   {% for product in products|slice:":4" %}
-  <td width="25%" style="line-height:180%;padding:1em"><center>
+  <div class="col-sm-3 text-center" style="line-height:180%;padding:1em"><center>
     <!--<h3><a href="product/{{ product.id }}">{{ product.descshort }}</a></h3>-->
     <p><span style="font-size:2em;font-weight:100">{{ product.descshort }}<span></p>
     <p><b>Страхователь: </b>{{ product.listProviders }}</p>
     <p><b>Участие: </b>{{ product.part }}</p>
     <p><b>Купон: </b>{{ product.coupon }}</p>
-  </center></td>
+  </center></div>
   {% endfor %}
-      </tr>
-      <tr>
+      </div>
+      <div class="row vdivide">
   {% for product in products|slice:":4" %}
-  <td style="line-height:200%;padding:2em"><center>
+  <div class="col-sm-3 text-center" style="line-height:200%;padding:2em"><center>
     <p>{{ product.desclong }}</p>
-  </center></td>
+  </center></div>
   {% endfor %}
-      </tr>
-    </tbody>
-  </table>
+      </div>
 </div>
 
 <div class="row">
