@@ -5,8 +5,7 @@
 <br>
 
 
-<div class="container" style="font-weight:100;opacity:1;font-family:'Gotham SSm A','Gotham SSm B',Helvetica,Arial,sans-serif;color:#666">
-    <div class="row vdivide">
+    <div class="row vdivide" style="font-weight:100;opacity:1;font-family:'Gotham SSm A','Gotham SSm B',Helvetica,Arial,sans-serif;color:#666">
   {% for product in products|slice:":4" %}
   <div class="col-lg-3 text-center" style="line-height:180%;padding:1em"><center>
     <!--<h3><a href="product/{{ product.id }}">{{ product.descshort }}</a></h3>-->
@@ -17,7 +16,7 @@
   </center></div>
   {% endfor %}
       </div>
-      <div class="row vdivide">
+      <div class="row vdivide" style="font-weight:100;opacity:1;font-family:'Gotham SSm A','Gotham SSm B',Helvetica,Arial,sans-serif;color:#666">
   {% for product in products|slice:":4" %}
   <div class="col-lg-3 text-center" style="line-height:200%;padding:2em"><center>
     <p>{{ product.desclong }}</p>
