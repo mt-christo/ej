@@ -41,7 +41,7 @@
     
 <br>    
   {% for product in products %}
-  <div class="well well-sm" width="20%">
+  <div class="well well-sm" style="width:10em">
     <a href="product/{{ product.id }}"><img class="img-rounded" src="{% static "/" %}{{ product.imgpath }}" width="100%"/></a><br><br>
     <h4><b><a href="product/{{ product.id }}">{{ product.descshort }}</a></b></h4>
     <p><b>Страхователь: </b>{{ product.listProviders }}</p>
