@@ -10,7 +10,7 @@
     <tbody>
       <tr>
   {% for product in products|slice:":3" %}
-  <td width="33%"><center>
+  <td width="33%" padding="10em"><center>
     <!--<h3><a href="product/{{ product.id }}">{{ product.descshort }}</a></h3>-->
     <h2>{{ product.descshort }}</h2>
     <p><b>Страхователь: </b>{{ product.listProviders }}</p>
