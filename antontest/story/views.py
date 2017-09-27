@@ -9,7 +9,8 @@ import random
 
 
 def allproducts(request):
-    return render_to_response("story/allproducts.html", {'products' : Product.objects.all()})
+    #return render_to_response("story/allproducts.html", {'products' : Product.objects.all()})
+    return render_to_response("story/tmp.html", {'products' : Product.objects.all()})
 
 def product(request,id):
     n = np.array(range(1000))
