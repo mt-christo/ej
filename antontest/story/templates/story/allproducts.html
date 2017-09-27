@@ -4,14 +4,14 @@
 
 <br>
 <center>
-<div class="container panel panel-default" style="width:30%">
+<div class="container panel panel-default" style="width:50%">
 <table>
     <tr>
         {% for product in products|slice:":4" %}
         <td width="25%" style="font-weight:100;opacity:1;font-family:'Gotham SSm A','Gotham SSm B',Helvetica,Arial,sans-serif;color:#666;line-height:180%;padding:1em">
             <!--<h3><a href="product/{{ product.id }}">{{ product.descshort }}</a></h3>-->
             <center>
-                <p><span style="font-size:2em;font-weight:100">{{ product.descshort }}</span></p>
+                <p><span style="font-size:1.3em;font-weight:100">{{ product.descshort }}</span></p>
             </center>
         </td>
         {% endfor %}
