@@ -40,8 +40,10 @@
   }
   .container-fluid {
       padding: 60px 50px;
-      #width: 80%;
-      #max-width: 1000px;
+  }
+  .container-fluid-limited {
+      width: 80%;
+      max-width: 1000px;
   }
   .bg-grey {
       background-color: #f6f6f6;
@@ -235,8 +237,10 @@
 
 <!-- Container (Services Section) -->
 <div id="advantages" class="container-fluid text-center">
-  <h1>Преимущества</h1>
-  <h3>Лучшие условия при работе с нами</h3>
+  <div class="text-center">
+    <h1>Преимущества</h1>
+    <h3>Лучшие условия при работе с нами</h3>
+  </div>
   <br><br>
   <div class="row">
     <div class="col-sm-4">
@@ -277,10 +281,10 @@
 
 <br>
 <!-- Container (Pricing Section) -->
-<div id="yourproducts" class="container-fluid">
+<div id="yourproducts" class="container-fluid container-fluid-limited">
   <div class="text-center">
-    <h2>Продукты специально для Вас</h2>
-    <h4>Мы подобрали некоторые продукты, которые могут Вас заинтересовать</h4>
+    <h1>Продукты специально для Вас</h2>
+    <h3>Мы подобрали некоторые продукты, которые могут Вас заинтересовать</h4>
   </div>
   <div class="row slideanim">
     <div class="col-sm-4 col-xs-12">
@@ -347,9 +351,11 @@
 
 <br>
 <!-- Container (Portfolio Section) -->
-<div id="products" class="container-fluid text-center">
-  <h2>Продукты</h2>
-  <h4>Наша продуктовая линейка расширяется непрерывно </h4>
+<div id="products" class="container-fluid text-center container-fluid-limited">
+  <div class="text-center">
+    <h1>Продукты</h2>
+    <h3>Наша продуктовая линейка расширяется непрерывно </h4>
+  </div>
   <div class="row text-center slideanim">
     <div class="col-sm-4">
       <div class="well well-sm">
@@ -419,8 +425,8 @@
 <div id="about" class="container-fluid">
   <div class="row">
     <div class="col-sm-8">
-      <h2>О нас</h2>
-      <h4>Наша компания предлагает сервис на новом уровне</h4>
+      <h1>О нас</h2>
+      <h3>Наша компания предлагает сервис на новом уровне</h4>
       <p>
       <ul>
       <li>Мы выбраем для Вас наиболее <b>интересные</b> и <b>инновационные</b> продукты ИСЖ </li>
@@ -454,7 +460,9 @@
 <br>
 <!-- Container (Contact Section) -->
 <div id="contact" class="container-fluid bg-grey">
-  <h2 class="text-center">CONTACT</h2>
+  <div class="text-center">
+    <h2>CONTACT</h2>
+  </div>    
   <div class="row">
     <div class="col-sm-5">
       <p>Contact us and we'll get back to you within 24 hours.</p>
