@@ -38,10 +38,10 @@
 </center>
     
 <br>    
-<div class="container" width="60%">
+<div class="container" width="50%">
 
   {% for product in products %}
-  <div class="well well-sm" style="display:inline-block;width:20em;height:25em;vertical-align:top">
+  <div class="well well-sm" style="display:inline-block;width:17em;height:25em;vertical-align:top">
     <a href="product/{{ product.id }}"><img class="img-rounded" src="{% static "/" %}{{ product.imgpath }}" width="100%"/></a><br><br>
     <h4><b><a href="product/{{ product.id }}">{{ product.descshort }}</a></b></h4>
     <!--<p><b>Страхователь: </b>{{ product.listProviders }}</p>
