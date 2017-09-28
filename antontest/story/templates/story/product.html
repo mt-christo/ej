@@ -3,6 +3,68 @@
 {% load static %}
 
 {% block scripts %}
+<style>
+/*----------------------
+Product Card Styles 
+----------------------*/
+.panel.panel--styled {
+    background: #F4F2F3;
+}
+.panelTop {
+    padding: 30px;
+}
+
+.panelBottom {
+    border-top: 1px solid #e7e7e7;
+    padding-top: 20px;
+}
+.btn-add-to-cart {
+    background: #FD5A5B;
+    color: #fff;
+}
+.btn.btn-add-to-cart.focus, .btn.btn-add-to-cart:focus, .btn.btn-add-to-cart:hover  {
+	color: #fff;   
+    background: #FD7172;
+	outline: none;
+}
+.btn-add-to-cart:active {
+	background: #F9494B;
+	outline: none;
+}
+
+
+span.itemPrice {
+    font-size: 24px;
+    color: #FA5B58;
+}
+
+
+/*----------------------
+##star Rating Styles 
+----------------------*/
+.stars {
+    padding-top: 10px;
+	width: 100%;
+	display: inline-block;
+}
+span.glyphicon {
+    padding: 5px;
+}
+.glyphicon-star-empty {
+    color: #9d9d9d;
+}
+.glyphicon-star-empty, .glyphicon-star { 
+    font-size: 18px;
+}
+.glyphicon-star {
+    color: #FD4;
+    transition: all .25s;
+}   
+.glyphicon-star:hover { 
+    transform: rotate(-15deg) scale(1.3); 
+}
+</style>
+
 <script type="text/javascript" src="https://www.google.com/jsapi"></script>
 <script type="text/javascript">
   google.load('visualization', '1.0', {'packages':['corechart']});
@@ -21,21 +83,47 @@
 
 {% block content %}
 <br>
-<div class="well">
-<div class='container'>
-  <div class='row'>
-    <div class='col-auto'>
-      <img class="img-rounded" src="{% static "/" %}{{ product.imgpath }}" height="300px" width="100%"/>
-    </div>
-    <div class='col'>
-      <div id="chart_div"></div>
-    </div>
-  </div>
-</div>
-      <h4><b>{{ product.descshort }}</b></h4>
-      <p><b>Страхователь: </b>{{ product.listProviders }}</p>
-      <p><b>Участие: </b>{{ product.part }}</p>
-      <p><b>Купон: </b>{{ product.coupon }}</p>
-      <p>{{ product.desclong }}</p>
+
+
+
+<div class="container">    
+		<div class="row">
+			<div class="col-md-8">				
+				<div class="panel panel-default  panel--styled">
+					<div class="panel-body">
+						<div class="col-md-12 panelTop">	
+							<div class="col-md-4">	
+								<img class="img-responsive img-rounded" src="{% static "/" %}{{ product.imgpath }}" height="300px"/>
+                <div id="chart_div"></div>
+							</div>
+							<div class="col-md-8">	
+								<h2>{{ product.descshort }}</h2>
+								<p>{{ product.desclong }}</p>
+                <br>
+                <ul>
+                  <li><b>Страхователь: </b>{{ product.listProviders }}</li>
+                  <li><b>Участие: </b>{{ product.part }}</li>
+                  <li><b>Купон: </b>{{ product.coupon }}</li>
+                </ul>
+							</div>
+						</div>
+						
+						<div class="col-md-12 panelBottom">
+							<div class="col-md-4 text-center">
+								<button class="btn btn-lg btn-add-to-cart"><span class="glyphicon glyphicon-shopping-cart"></span>   Add to Cart</button>						
+							</div>
+							<div class="col-md-4 text-left">
+								<h5>Price <span class="itemPrice">$24.99</span></h5>
+							</div>
+							<div class="col-md-4">
+								<!--<div class="stars">
+								 <div id="stars" class="starrr"></div>
+								</div>-->
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
 </div>
 {% endblock %}
