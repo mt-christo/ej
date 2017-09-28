@@ -514,17 +514,19 @@ Read more at: https://www.w3schools.com/graphics/google_maps_basic.asp
   <a href="#myPage" title="To Top">
     <span class="glyphicon glyphicon-chevron-up"></span>
   </a>
-  <p>Bootstrap Theme Made By <a href="https://www.w3schools.com" title="Visit w3schools">www.w3schools.com</a></p>
+  <p>Bootstrap Theme Adapted By <a href="https://www.w3schools.com" title="Visit w3schools">AA+</a></p>
 </footer>
 
 <script>
 $(document).ready(function(){
+  document.location.reload(true);
+  
   // Add smooth scrolling to all links in navbar + footer link
   $(".navbar a, footer a[href='#myPage']").on('click', function(event) {
     // Make sure this.hash has a value before overriding default behavior
     if (this.hash !== "") {
       // Prevent default anchor click behavior
-      //event.preventDefault();
+      event.preventDefault();
 
       // Store hash
       var hash = this.hash;
