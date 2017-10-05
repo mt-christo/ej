@@ -4,7 +4,7 @@
 
 {% block scripts %}
 <style>
-ul > li{margin-right:25px;font-weight:lighter;cursor:pointer}
+ul > li{margin-right:25px;font-weight:lighter;line-spacing:200%}
 li.active{border-bottom:3px solid silver;}
 
 #.item-photo{display:flex;justify-content:center;align-items:center;border-right:1px solid #f6f6f6;}
@@ -115,7 +115,8 @@ div.section > div > input {margin:0px;padding-left:5px;font-size:10px;padding-ri
 
                     <!-- Detalles especificos del producto -->
                     <div class="section" style="padding-bottom:5px;">
-                        <h6 class="title-attr">СТРАХОВАЯ КОМПАНИЯ</h6>                    
+                        <h6 class="title-attr">СТРАХОВАЯ КОМПАНИЯ</h6>   
+			    <br>
                         <div>
                             <div class="attr2"><img class="img-rounded" src="{% static "/" %}ingos2.jpg" width="40px"/></div>
                             <div class="attr2"><img class="img-rounded" src="{% static "/" %}allianz.jpg" width="40px"/></div>
@@ -123,6 +124,7 @@ div.section > div > input {margin:0px;padding-left:5px;font-size:10px;padding-ri
                             <div class="attr2"><img class="img-rounded" src="{% static "/" %}VTBlogo1.png" width="40px"/></div>
                         </div>
                     </div>   
+			    <br>
 			<ul>
 			    <li>100% гарантия возврата капитала</li>
 			    <li>Контроль волатильности на уровне <big>11%</big></li>
