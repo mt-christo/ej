@@ -4,14 +4,14 @@
 
 {% block scripts %}
 <style>
-ul > li{margin-right:25px;font-weight:lighter;line-spacing:200%}
+ul > li{margin-right:25px;font-weight:lighter;line-height:170%}
 li.active{border-bottom:3px solid silver;}
 
 #.item-photo{display:flex;justify-content:center;align-items:center;border-right:1px solid #f6f6f6;}
 .item-photo{justify-content:center;align-items:center;border-right:1px solid #f6f6f6;}
 .menu-items{list-style-type:none;font-size:11px;display:inline-flex;margin-bottom:0px;margin-top:20px}
 .btn-success{width:100%;border-radius:0px;}
-.section{width:100%;margin-left:-15px;padding:2px;padding-left:15px;padding-right:15px;background:#f8f9f9}
+.section{width:100%;margin-left:-15px;padding:2px;padding-left:15px;padding-right:15px;}
 .title-price{margin-top:30px;margin-bottom:0px;color:black}
 .title-attr{margin-top:0px;margin-bottom:0px;color:black;}
 .btn-minus{cursor:pointer;font-size:7px;display:flex;align-items:center;padding:5px;padding-left:10px;padding-right:10px;border:1px solid gray;border-radius:2px;border-right:0px;}
@@ -112,11 +112,11 @@ div.section > div > input {margin:0px;padding-left:5px;font-size:10px;padding-ri
                     <!-- Precios -->
                     <h6 class="title-price">УЧАСТИЕ: </h6>
                     <h1 style="margin-top:0px;">{{ product.part }}</h1>
+			<br>
 
                     <!-- Detalles especificos del producto -->
                     <div class="section" style="padding-bottom:5px;">
-                        <h6 class="title-attr">СТРАХОВАЯ КОМПАНИЯ</h6>   
-			    <br>
+                        <h6 class="title-attr">СТРАХОВАЯ КОМПАНИЯ: </h6>   
                         <div>
                             <div class="attr2"><img class="img-rounded" src="{% static "/" %}ingos2.jpg" width="40px"/></div>
                             <div class="attr2"><img class="img-rounded" src="{% static "/" %}allianz.jpg" width="40px"/></div>
@@ -144,7 +144,7 @@ div.section > div > input {margin:0px;padding-left:5px;font-size:10px;padding-ri
 
                     <!-- Botones de compra -->
                     <div class="section" style="padding-bottom:20px;">
-                        <button class="btn btn-success"><span style="margin-right:20px" class="glyphicon glyphicon-thumbs-up" aria-hidden="true"></span> ПРИОБРЕСТИ ПОЛИС НАПРЯМУЮ У СТРАХОВОЙ КОМПАНИИ</button>
+                        <button class="btn btn-success"><span style="margin-right:20px" class="glyphicon glyphicon-thumbs-up" aria-hidden="true"></span> ПРИОБРЕСТИ ПОЛИС У СТРАХОВОЙ КОМПАНИИ</button>
                         <h6><a href="#"><span class="glyphicon glyphicon-heart-empty" style="cursor:pointer;"></span> Добавить в сравнение</a></h6>
                     </div>                                        
                 
