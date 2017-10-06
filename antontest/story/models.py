@@ -4,11 +4,12 @@ from django.db import models
 
 class Product(models.Model):
     name = models.CharField(max_length=255, default='[NO NAME]')
-    imgpath = models.CharField(max_length=255, default='')
     descshort = models.CharField(max_length=2000, default='')
-    part = models.CharField(max_length=2000, default='')
-    coupon = models.CharField(max_length=2000, default='')
-    desclong = models.CharField(max_length=2000, default='')
+    imgpath = models.CharField(max_length=255, default='')
+    tspath = models.CharField(max_length=255, default='')
+    templatepath = models.CharField(max_length=255, default='')
+    participation = models.CharField(max_length=20, default='')
+    coupon = models.CharField(max_length=20, default='')
     provider = models.ManyToManyField('Provider')
     
     def listProviders(self):
