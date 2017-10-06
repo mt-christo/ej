@@ -3,10 +3,10 @@ from .models import Product, Provider
 
 @admin.register(Product)
 class pa(admin.ModelAdmin):  
-  list_display = ('name', 'imgpath', 'descshort', 'part', 'coupon', 'desclong', 'listProviders')
+  list_display = ('name', 'descshort', 'imgpath', 'tspath', 'templatepath', 'participation', 'coupon', 'listProviders')
 
 @admin.register(Provider)
 class pr(admin.ModelAdmin):  
-  list_display = ('name', 'imgpath', 'desc')
+  list_display = ('name', 'longname', 'url', 'imgpath', 'desc')
   
 # Register your models here.
