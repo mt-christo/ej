@@ -19,8 +19,10 @@ class Product(models.Model):
 
 class Provider(models.Model):
     name = models.CharField(max_length=255, default='')
+    longname = models.CharField(max_length=500, default='')
+    url = models.CharField(max_length=500, default='')
     imgpath = models.CharField(max_length=255, default='')
-    desc = models.CharField(max_length=2000, default='')
+    desc = models.CharField(max_length=5000, default='')
     
     def __str__(self):
         return(self.name)
