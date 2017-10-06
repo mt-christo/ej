@@ -424,28 +424,13 @@
 <div id="products" class="container-fluid text-center container-fluid-limited">
   <div class="text-center">
     <h2>Продукты</h2>
-    <h4>Наша продуктовая линейка расширяется непрерывно </h4>
+    <h4>Качественные инвестиционные продукты по лучшим ценам на рынке </h4>
   </div>
   <div class="row text-center slideanim">
     {% for product in products|slice:":3" %}    
     <div class="col-sm-4">
       <div class="well well-sm">
-        <a href="product/{{ product.id }}"><img class="img-rounded" src="{% static "/" %}{{ product.imgpath }}" width="100%"/></a>
-        <br>
-        <br>
-        <p>{{ product.descshort }}</p>
-        <form action="/action_page.php">
-          <input type="checkbox" name="vehicle" value="Bike"> Cравнить<br>
-        </form>
-      </div>
-    </div>
-    {% endfor %}
-  </div>
-  <div class="row text-center slideanim">
-    {% for product in products|slice:":3" %}    
-    <div class="col-sm-4">
-      <div class="well well-sm">
-        <a href="product/{{ product.id }}"><img class="img-rounded" src="{% static "/" %}{{ product.imgpath }}" width="100%"/></a>
+        <a href="product/{{ product.id }}"><img class="img-rounded" src="{% static "/" %}{{ product.logopath }}" width="100%"/></a>
         <br>
         <br>
         <p>{{ product.descshort }}</p>
