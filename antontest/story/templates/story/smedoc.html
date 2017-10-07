@@ -68,7 +68,7 @@ $(document).ready(function(){
     data.addColumn('number', 'Цена');
     data.addRows( [
     {% for item in data %}    
-	    [{{ item[0]|safe }}, {{ item[1]|safe }}],
+	    [{{ item.0|safe }}, {{ item.1|safe }}],
     {% endfor %}	   
 	    ]);
 
