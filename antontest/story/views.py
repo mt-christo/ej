@@ -13,9 +13,8 @@ def allproducts(request):
     return render_to_response("story/tmp.html", {'products' : Product.objects.all()})
 
 def product(request,id):
-    n = np.array(range(1000))
-    d = np.cumsum(np.array([random.random() for x in n]) - 0.5)
-    data = [[i,d[i]] for i in n]
     product = Product.objects.get(pk=id)
-    return render_to_response("story/" + product.templatepath, {'product' : product, 'data':data})
+    #x.apply(lambda row: "[new Date('" + str(row.Date) + "'), " + str(row.Close),axis=1) + "]"
+    x = pd.read_csv('story/static/' + product.tspath)
+    return render_to_response("story/" + product.templatepath, {'product' : product, 'data':x.apply(lambda row: [[str(row.Date), row.Close]],axis=1)})
 
