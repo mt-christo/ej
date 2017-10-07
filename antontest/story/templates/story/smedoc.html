@@ -67,9 +67,7 @@ $(document).ready(function(){
     data.addColumn('date', 'Время');
     data.addColumn('number', 'Цена');
     data.addRows( [
-    {% for item in data %}    
-	    ['{{ item.0|safe }}', {{ item.1|safe }}],
-    {% endfor %}	   
+    {% data|safeseq|join:", " }}
 	    ]);
 
     var chart = new google.visualization.LineChart(document.getElementById('chart_div'));
