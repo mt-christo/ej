@@ -17,5 +17,5 @@ def product(request,id):
     d = np.cumsum(np.array([random.random() for x in n]) - 0.5)
     data = [[i,d[i]] for i in n]
     product = Product.objects.get(pk=id)
-    return render_to_response("story/product.html", {'product' : product, 'data':data})
+    return render_to_response("story/" + product.templatepath, {'product' : product, 'data':data})
 
