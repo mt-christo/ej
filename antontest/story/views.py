@@ -17,5 +17,6 @@ def product(request,id):
     product = Product.objects.get(pk=id)
     #x.apply(lambda row: "[new Date('" + str(row.Date) + "'), " + str(row.Close),axis=1) + "]"
     x = pd.read_csv('story/static/' + product.tspath)
-    return render_to_response("story/" + product.templatepath, {'product' : product, 'data':x.apply(lambda row: [[str(row.Date), row.Close]],axis=1)})
+    data = np.array(x.apply(lambda row: [str(row.Date), row.Close],axis=1))
+    return render_to_response("story/" + product.templatepath, {'product': product, 'data': data})
 
