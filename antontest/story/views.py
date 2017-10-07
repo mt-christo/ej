@@ -3,6 +3,7 @@ from django.http import HttpResponse
 from django.shortcuts import render_to_response
 from .models import Product, Provider
 import numpy as np
+import pandas as pd
 import random
 
 # Create your views here.
