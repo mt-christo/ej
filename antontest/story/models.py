@@ -7,6 +7,7 @@ class Product(models.Model):
     descshort = models.CharField(max_length=2000, default='')
     logopath = models.CharField(max_length=255, default='')
     explainpath = models.CharField(max_length=255, default='')
+    explain2path = models.CharField(max_length=255, default='')
     tspath = models.CharField(max_length=255, default='')
     templatepath = models.CharField(max_length=255, default='')
     participation = models.CharField(max_length=20, default='')
