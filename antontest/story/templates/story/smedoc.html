@@ -18,7 +18,7 @@ li.active{border-bottom:3px solid silver;}
 .btn-plus{cursor:pointer;font-size:7px;display:flex;align-items:center;padding:5px;padding-left:10px;padding-right:10px;border:1px solid gray;border-radius:2px;border-left:0px;}
 div.section > div {width:100%;display:inline-flex;}
 div.section > div > input {margin:0px;padding-left:5px;font-size:10px;padding-right:5px;max-width:18%;text-align:center;}
-.attr,.attr2{cursor:pointer;margin-right:5px;height:30px;font-size:10px;padding:2px;border:1px solid gray;border-radius:2px;display:flex;align-items:center;}
+.attr,.attr2{cursor:pointer;margin-right:5px;height:40px;font-size:10px;padding:2px;border:1px solid gray;border-radius:2px;display:flex;align-items:center;}
 .attr.active,.attr2.active{ border:1px solid orange;}
 
 @media (max-width: 1000px) {
@@ -100,7 +100,7 @@ div.section > div > input {margin:0px;padding-left:5px;font-size:10px;padding-ri
 					<img class="img-responsive img-rounded" src="{% static "/" %}{{ product.explainpath }}" width="100%"/>
 				</div>
 				<div class="col-sm-6">
-					<img class="img-responsive img-rounded" src="{% static "/" %}{{ product.explainpath }}" width="100%"/>
+					<img class="img-responsive img-rounded" src="{% static "/" %}{{ product.explain2path }}" width="100%"/>
 				</div>
 			</div>
 			<div class="row">
@@ -111,22 +111,22 @@ div.section > div > input {margin:0px;padding-left:5px;font-size:10px;padding-ri
 		</div>    
 		<div class="col-sm-6" style="border:0px solid gray">
                     <!-- Datos del vendedor y titulo del producto -->
-                    <h3>{{ product.descshort }}</h3>    
+                    <h3>{{ product.titlecard }}</h3>    
                     <h5>Участие в секторальном индексе</h5>    
 
 			<!-- Precios -->
                     <h6 class="title-price">УЧАСТИЕ: </h6>
-                    <h1 style="margin-top:0px;">{{ product.part }}</h1>
+                    <h1 style="margin-top:0px;">{{ product.participation }}</h1>
 			<br>
 
                     <!-- Detalles especificos del producto -->
                     <div class="section" style="padding-bottom:5px;">
                         <h6 class="title-attr">СТРАХОВАЯ КОМПАНИЯ: </h6>   
                         <div>
-                            <div class="attr2"><img class="img-rounded" src="{% static "/" %}ingos2.jpg" width="40px"/></div>
-                            <div class="attr2"><img class="img-rounded" src="{% static "/" %}allianz.jpg" width="40px"/></div>
-                            <div class="attr2"><img class="img-rounded" src="{% static "/" %}logo_vsk.jpg" width="40px"/></div>
-                            <div class="attr2"><img class="img-rounded" src="{% static "/" %}VTBlogo1.png" width="40px"/></div>
+                            <div class="attr2"><img class="img-rounded" src="{% static "/" %}ingos2.jpg" width="50px"/></div>
+                            <div class="attr2"><img class="img-rounded" src="{% static "/" %}allianz.jpg" width="50px"/></div>
+                            <div class="attr2"><img class="img-rounded" src="{% static "/" %}logo_vsk.jpg" width="50px"/></div>
+                            <div class="attr2"><img class="img-rounded" src="{% static "/" %}VTBlogo1.png" width="50px"/></div>
                         </div>
                     </div>   
 			    <br>
