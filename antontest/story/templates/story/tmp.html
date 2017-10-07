@@ -433,7 +433,7 @@
         <a href="product/{{ product.id }}"><img class="img-rounded" src="{% static "/" %}{{ product.logopath }}" width="100%"/></a>
         <br>
         <br>
-        <p>{{ product.descshort|safe }}</p>
+        <p>{{ product.titlethumb|safe }}</p>
         <form action="/action_page.php">
           <input type="checkbox" name="vehicle" value="Bike"> Cравнить<br>
         </form>
