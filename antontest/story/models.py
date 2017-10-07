@@ -4,7 +4,8 @@ from django.db import models
 
 class Product(models.Model):
     name = models.CharField(max_length=255, default='[NO NAME]')
-    descshort = models.CharField(max_length=2000, default='')
+    titlethumb = models.CharField(max_length=2000, default='')
+    titlecard = models.CharField(max_length=2000, default='')
     logopath = models.CharField(max_length=255, default='')
     explainpath = models.CharField(max_length=255, default='')
     explain2path = models.CharField(max_length=255, default='')
