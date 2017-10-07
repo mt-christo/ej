@@ -97,9 +97,11 @@ $(document).ready(function(){
 		</div>    
 		<div class="col-sm-6" style="border:0px solid gray">
 			<p>
+				<br>
 				<span style="font-size:2em">{{ product.titlecard }}</span>
 				<br>
-				<span style="font-size:1em">Участие в секторальном индексе</span>
+				<span style="font-size:1.2em">Участие в секторальном индексе</span>
+				<br>
 				<br>
 				<span style="font-size:1em">УЧАСТИЕ: </span>
 				<span style="font-size:2em;font-weight:bold">{{ product.participation }}</span>
@@ -108,7 +110,9 @@ $(document).ready(function(){
 
                     <!-- Detalles especificos del producto -->
                     <div class="section" style="padding-bottom:5px;">
-                        <h6 class="title-attr">СТРАХОВАЯ КОМПАНИЯ: </h6>   
+                        <span style="font-size:1em">СТРАХОВАЯ КОМПАНИЯ: </span>
+			<br>
+			<br>
                         <div>
                             <div class="attr2"><img src="{% static "/" %}ingos2.jpg" width="70px"/></div>
                             <div class="attr2"><img src="{% static "/" %}allianz.jpg" width="70px"/></div>
