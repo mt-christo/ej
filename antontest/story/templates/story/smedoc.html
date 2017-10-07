@@ -92,33 +92,29 @@ div.section > div > input {margin:0px;padding-left:5px;font-size:10px;padding-ri
 <br>
 
 
-<div class="container">
-
-	
-	
+<div class="container">	
 	<div class="row">
 		<div class="col-sm-6 item-photo">
-      <div class="row">
-    		<div class="col-sm-6">
-          <img class="img-responsive img-rounded" src="{% static "/" %}{{ product.explainpath }}" width="100%"/>
-        </div>
-    		<div class="col-sm-6">
-          <img class="img-responsive img-rounded" src="{% static "/" %}{{ product.explainpath }}" width="100%"/>
-        </div>
-      </div>
-      <div class="row">
-    		<div class="col-sm-12">
-    			<div id="chart_div" style="width:100%"></div>
-        </div>
-      </div>
-    </div>    
-    <div class="col-sm-8" style="border:0px solid gray">
+			<div class="row">
+				<div class="col-sm-6">
+					<img class="img-responsive img-rounded" src="{% static "/" %}{{ product.explainpath }}" width="100%"/>
+				</div>
+				<div class="col-sm-6">
+					<img class="img-responsive img-rounded" src="{% static "/" %}{{ product.explainpath }}" width="100%"/>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-sm-12">
+					<div id="chart_div" style="width:100%"></div>
+				</div>
+			</div>
+		</div>    
+		<div class="col-sm-6" style="border:0px solid gray">
                     <!-- Datos del vendedor y titulo del producto -->
                     <h3>{{ product.descshort }}</h3>    
                     <h5>Участие в секторальном индексе</h5>    
-			
 
-                    <!-- Precios -->
+			<!-- Precios -->
                     <h6 class="title-price">УЧАСТИЕ: </h6>
                     <h1 style="margin-top:0px;">{{ product.part }}</h1>
 			<br>
