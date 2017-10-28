@@ -1,4 +1,0 @@
-{% extends "story/base.html" %}
-{% block content %}
-{{ hello }}
-{% end block %}
