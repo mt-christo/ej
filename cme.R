@@ -90,7 +90,7 @@ save(r, file="CME-20170120.RData")
 }
 
 # name='FC'; months=c('Q','U','V'); weights=c(1,-2,1); oi_min=100
-# name='LH'; months=c(4,5,6); weights=c(1,-2,1); oi_min=100
+# name='LH'; months=c(4,5,6); weights=c(1,-2,1); oi_min=10; dt_start='2008-01-01'; dt_end='2012-01-01'
 mmspread = function(name, months, weights, oi_min, dt_start='2011-01-01', dt_end='2018-01-01'){
     month_letters = if(months[1]%in%MONTH_CODES$code) months else MONTH_CODES$code[months]
     res = foreach(i = 1:length(month_letters),.combine='+')%do%{
@@ -99,13 +99,16 @@ mmspread = function(name, months, weights, oi_min, dt_start='2011-01-01', dt_end
         weights[i] * x[x$OpenInt >= oi_min]$Close
     } * length(month_letters) / foreach(i = 1:length(month_letters),.combine='+')%do%{
         x = r[[name]][[month_letters[i]]]
+        names(x) = c('Open','High','Low','Close','Volume','OpenInt')
         x[x$OpenInt >= oi_min]$Close
     }
     100*res[index(res)>dt_start & index(res)<dt_end & !month(index(res))%in%MONTH_CODES$n[MONTH_CODES$code%in%month_letters]]
 }
 
+# min_oi = 10; qstart='2008-01-01'; qend='2012-01-01'
 qbasic = function(name, months, weights, min_oi, qstart, qend){
-    t = rollapply(mmspread(name, months, weights, min_oi, '1990-01-01', '2018-01-01'), FUN=mean, 2)
+#    t = rollapply(mmspread(name, months, weights, min_oi, '1990-01-01', '2018-01-01'), FUN=mean, 2)
+    t = mmspread(name, months, weights, min_oi, '1990-01-01', '2018-01-01')
     twnd = t[index(t)>qstart & index(t)<qend]
     plot(t[index(t)>qend])
     #abline(h=0)
