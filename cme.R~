@@ -1,0 +1,8 @@
+library(data.table)
+library(RCurl)
+
+max_date = as.Date('1900-01-01')
+for(d in c('~/FUT/RB','~/FUT/CL'))
+    if(length(c(grep('BARCHART',d),grep('files',d)))==0)
+        for(f in list.files(d,recursive=TRUE,full.names=TRUE))
+            max_date = max(max_date,max(as.Date(unlist(fread(f)[,1]),format='%m/%d/%Y')))
