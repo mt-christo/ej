@@ -98,10 +98,16 @@ mmspread = function(name, months, weights, oi_min, dt_start='2011-01-01', dt_end
             x[x$OpenInt >= oi_min]$Close
         }
 
-        x = x[!month(index(x))%in%month_ns]
-        res[[y]] = x[1:(length(x)-3)]
+        if(length(x) > 100){
+            x = x[!month(index(x))%in%month_ns]
+            res[[y]] = x[1:(length(x)-3)]
+        }
     }
-    100*res[index(res)>dt_start & index(res)<dt_end & !month(index(res))%in%months_exclude & !(month(index(res))==month_semi & day(index(res))>20)]
+
+    plot(foreach(x=res,.combine=rbind)%do%x)
+
+    
+#    100*res[index(res)>dt_start & index(res)<dt_end & !month(index(res))%in%months_exclude & !(month(index(res))==month_semi & day(index(res))>20)]
 #    100*res[index(res)>dt_start & index(res)<dt_end]
 }
 
