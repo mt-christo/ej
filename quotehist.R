@@ -1,4 +1,4 @@
-library(xts)
+library(tseries)
 library(RJSONIO)
 library(Rbitcoin)
 library(foreach)
@@ -38,34 +38,34 @@ get_history = function(exchange, ticker, limit, base_curr = 'BTC', loadtype='his
 }
 
 #exchange='BitTrex'; ticker='ETC'; limit=2000; base_curr = 'BTC'
-get_r_history = function(exchange, ticker, limit, base_curr = 'BTC', loaddtype){
-    x = get_history(exchange, ticker, limit, base_curr, loaddtype)
+get_r_history = function(exchange, ticker, limit, base_curr = 'BTC', loadtype='histohour'){
+    x = get_history(exchange, ticker, limit, base_curr, loadtype)
     x = x[!is.na(x$close) & x$close!=0, 'close']
     names(x)[1] = ticker
     diff(log(x))[-1]
 }
 
-x1 = get_history('Bittrex','BCH',20000,'USD'); x1 = diff(log(x1$close))[-1]; x1 = x1[!is.na(x1) & x1 != Inf]
-x2 = get_history('Bittrex','LTC',20000,'USD'); x2 = diff(log(x2$close))[-1]; x2 = x2[!is.na(x2) & x2 != Inf]
-x1 = x1[index(x2)]
-x2 = x2[index(x1)]
-cov(as.numeric(x1),as.numeric(x2))/var(as.numeric(x2))
+#x1 = get_history('Bittrex','BCH',20000,'USD'); x1 = diff(log(x1$close))[-1]; x1 = x1[!is.na(x1) & x1 != Inf]
+#x2 = get_history('Bittrex','LTC',20000,'USD'); x2 = diff(log(x2$close))[-1]; x2 = x2[!is.na(x2) & x2 != Inf]
+#x1 = x1[index(x2)]
+#x2 = x2[index(x1)]
+#cov(as.numeric(x1),as.numeric(x2))/var(as.numeric(x2))
 
-setwd('~/R/ej')
-save_csv = function(e,t,l) { write.zoo(get_history(e,t,l), file = paste0('Data//',e,'-',t,'-',l,'.csv'), row.names=FALSE, sep=';')}
+#setwd('~/R/ej')
+#save_csv = function(e,t,l) { write.zoo(get_history(e,t,l), file = paste0('Data//',e,'-',t,'-',l,'.csv'), row.names=FALSE, sep=';')}
 
-save_csv('Bittrex','ETH',2000)
-save_csv('Bittrex','XRP',2000)
-save_csv('Bittrex','DASH',2000)
-save_csv('Bittrex','ETC',2000)
-save_csv('Bittrex','ZEC',2000)
-save_csv('Bittrex','STORJ',2000)
-save_csv('Bittrex','SNT',2000)
-save_csv('Bittrex','XLM',2000)
+#save_csv('Bittrex','ETH',2000)
+#save_csv('Bittrex','XRP',2000)
+#save_csv('Bittrex','DASH',2000)
+#save_csv('Bittrex','ETC',2000)
+#save_csv('Bittrex','ZEC',2000)
+#save_csv('Bittrex','STORJ',2000)
+#save_csv('Bittrex','SNT',2000)
+#save_csv('Bittrex','XLM',2000)
 
-r0h=r0; r1h=r1
+#r0h=r0; r1h=r1
 
-r0 = foreach(t=c('BTC','ETH','XRP','BCH','LTC','DASH','XMR','ETC','ZEC'),.combine='merge.xts')%do%get_r_history('BitTrex',t,3000,'USD','histohour')
+r0 = foreach(t=c('BTC','ETH','NEO','XRP','BCH','LTC','DASH','XMR','ETC','ZEC'),.combine='merge.xts')%do%get_r_history('BitTrex',t,3000,'USD','histohour')
 r0 = r0[rowSums(is.na(r0))==0 & index(r0)>as.Date(min(index(r0)))+30]
 r1 = foreach(t=c('ETH','XRP','BCH','LTC','DASH','XMR','ETC','ZEC'),.combine='merge.xts')%do%get_r_history('BitTrex',t,8000,'BTC','histoday')
 r1 = r1[rowSums(is.na(r1))==0 & index(r1)>as.Date(min(index(r1)))+30]
@@ -75,16 +75,26 @@ r_tmp = r0
 m = melt(cor(r_tmp))
 m = m[m$Var1!=m$Var2,]
 #cv = cov(r_tmp); b = foreach(i=1:nrow(m),.combine=c)%do%round(cv[m$Var1[i],m$Var2[i]]/cv[m$Var1[i],m$Var1[i]],2)
-ggplot(data=m, aes(x=reorder(Var1,value),y=reorder(Var2,value),fill=value)) + geom_tile() + scale_fill_gradient(low='white',high='red') +
-    geom_text(aes(label=round(m$value,2)), size=5)
-ggplot(data=m, aes(x=Var1,y=Var2,fill=value)) + geom_tile() + scale_fill_gradient(low='white',high='red') +
-    geom_text(aes(label=round(m$value,2)), size=5)
+ggplot(data=m, aes(x=reorder(Var1,value),y=reorder(Var2,value),fill=value)) + geom_tile() + scale_fill_gradient(low='white',high='red') + geom_text(aes(label=round(m$value,2)), size=5)
+
+foreach(x=names(r0)[1:3],.combine=rbind)%do%{
+#    t = rollapply(r0[,x],10,FUN=mean)[-(1:10)]
+    t = r0[,x]
+    y = length(t)
+    t = t[(y-200):(y-100)]
+    c(x,sharpe(as.numeric(t)))
+}
+
+
+
+
+ggplot(data=m, aes(x=Var1,y=Var2,fill=value)) + geom_tile() + scale_fill_gradient(low='white',high='red') + geom_text(aes(label=round(m$value,2)), size=5)
 
 #ggplot(data=m[order(m$value),], aes(x=Var1,y=Var2,fill=value)) + geom_tile() + scale_fill_gradient(low='white',high='red') + geom_text(aes(label=b[order(m$value)]), size=5)
 
 
-x1 = get_r_history('BitTrex','BTC',20000,'USD')
-x2 = get_r_history('BitTrex','BCH',20000,'USD')
+x1 = get_r_history('BitTrex','XMR',3000,'USD')
+x2 = get_r_history('BitTrex','LTC',3000,'USD')
 x1 = x1[index(x2)]
 x2 = x2[index(x1)]
 x1 = x1[index(x1)>'2017-09-01']
