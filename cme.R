@@ -4,9 +4,6 @@ library(data.table)
 library(RCurl)
 library(lubridate)
 
-MONTH_CODES = data.frame(code = c('F','G','H','J','K','M','N','Q','U','V','X','Z'), n = 1:12, stringsAsFactors=FALSE)
-CALENDARS = list()
-for(x in names(r)) CALENDARS[[x]] = which(foreach(y = r[[x]],.combine=c)%do%(length(y)>1 & max(index(y))>'2000-01-01' & length(y[index(y)>'2000-01-01'])>1000))
 
 #max_date = as.Date('1900-01-01')
 #for(d in c('~/FUT/RB','~/FUT/CL'))
@@ -75,15 +72,19 @@ for(n in as.vector(unlist(fread('~/FUT/Lots.txt', fill=TRUE)[,1]))){
 save(r, file="CME-20170120.RData")
 r = get(load(file="CME-20170120.RData"))
 
+MONTH_CODES = data.frame(code = c('F','G','H','J','K','M','N','Q','U','V','X','Z'), n = 1:12, stringsAsFactors=FALSE)
+CALENDARS = list()
+for(x in names(r)) CALENDARS[[x]] = which(foreach(y = r[[x]],.combine=c)%do%(length(y)>1 & max(index(y))>'2000-01-01' & length(y[index(y)>'2000-01-01'])>1000))
 }
 
 # name='FC'; months=c('Q','U','V'); weights=c(1,-2,1); oi_min=100
-# name='LC'; months=c(7,8,9); weights=c(1,-2,1); oi_min=10; dt_start='2008-01-01'; dt_end='2012-01-01'
+# name='FC'; months=c(3,4,5); weights=c(1,-2,1); oi_min=10; dt_start='2008-01-01'; dt_end='2012-01-01'
 mmspread = function(name, months, weights, oi_min, dt_start='2011-01-01', dt_end='2018-01-01'){
     month_letters = if(months[1]%in%MONTH_CODES$code) months else MONTH_CODES$code[months]
     month_ns = MONTH_CODES$n[match(month_letters, MONTH_CODES$code)]
     m1 = head(month_ns,1); mn = tail(month_ns,1)
     months_exclude = if(m1 < mn) m1:mn else c(1:mn,m1:12)
+    month_semi = if(m1 == 1) 12 else (m1 - 1)
     res = foreach(i = 1:length(month_letters),.combine='+')%do%{
         x = r[[name]][[month_letters[i]]]
         names(x) = c('Open','High','Low','Close','Volume','OpenInt')
@@ -93,40 +94,43 @@ mmspread = function(name, months, weights, oi_min, dt_start='2011-01-01', dt_end
         names(x) = c('Open','High','Low','Close','Volume','OpenInt')
         x[x$OpenInt >= oi_min]$Close
     }
-    100*res[index(res)>dt_start & index(res)<dt_end & !month(index(res))%in%months_exclude]
+    100*res[index(res)>dt_start & index(res)<dt_end & !month(index(res))%in%months_exclude & !(month(index(res))==month_semi & day(index(res))>20)]
 #    100*res[index(res)>dt_start & index(res)<dt_end]
 }
 
-# min_oi = 10; qstart='2008-01-01'; qend='2012-01-01'
+# name='C'; months=c(3,5,7); weights=c(1,-2,1); min_oi=5; qts=c(0.3,0.7); dts=c('2009-01-01','2012-01-01')
 qbasic = function(name, months, weights, min_oi, qts, dts){
 #    t = rollapply(mmspread(name, months, weights, min_oi, '1990-01-01', '2018-01-01'), FUN=mean, 2)
     t = mmspread(name, months, weights, min_oi, '1990-01-01', '2018-01-01')
     twnd = t[index(t)>dts[1] & index(t)<dts[2]]
-    plot(t[index(t)>dts[2]])
-    #abline(h=0)
-    abline(h=quantile(twnd,qts[2]))
-    abline(h=quantile(twnd,qts[1]))
+    qmin = as.numeric(quantile(twnd,qts[1]))
+    qmax = as.numeric(quantile(twnd,qts[2]))
+    plot.zoo(t[index(t)>dts[2]])
+    abline(h=qmin)
+    abline(h=qmax)
 }
 
-# name='LC'; weights=c(1,-2,1); min_oi=1; qts=c(0.3,0.7); an_dts=c('2001-01-01','2008-01-01'); max_date='2018-01-01'
+# name='LC'; weights=c(1,-2,1); min_oi=5; qts=c(0.25,0.75); an_dts=c('2000-01-01','2012-01-01'); max_date='2018-01-01'
+# name='S'; weights=c(1,-2,1); min_oi=5; qts=c(0.25,0.75); an_dts=c('2000-01-01','2012-01-01'); max_date='2018-01-01'
+# name='S'; weights=c(1,-2,1); min_oi=5; qts=0; an_dts=c('2000-01-01','2012-01-01'); max_date='2018-01-01'
+# name='FC'; weights=c(1,-2,1); min_oi=5; qts=0; an_dts=c('2000-01-01','2012-01-01'); max_date='2018-01-01'
 qspikes = function(name, weights, min_oi, qts, an_dts, max_date){
     cal = CALENDARS[[name]]
     res = foreach(i = 1:length(cal),.combine=rbind)%do%{
         months = c(cal,cal)[i:(i+length(weights)-1)]
-        t = mmspread(name, months, weights, min_oi, an_dts[1], max_date)
-
+        t = mmspread(name, months, weights, min_oi, an_dts[1], max_date); #plot(t)
         t1 = t[index(t) > an_dts[1] & index(t) < an_dts[2]]
         t2 = t[index(t) > an_dts[2]]
 
         print(i)
         if(length(t1)>100 && length(t2)>100){
-            q1min = as.numeric(quantile(t1, qts[1]))
-            q1max = as.numeric(quantile(t1, qts[2]))
+            q1min = if(length(qts)>1) as.numeric(quantile(t1, qts[1])) else mean(t1)
+            q1max = if(length(qts)>1) as.numeric(quantile(t1, qts[2])) else mean(t1)
             t2_years = unique(year(index(t2)))
             
             above_cnt = foreach(y=t2_years,.combine=c)%do%sum(t2[year(index(t2))==y] < q1min)
             below_cnt = foreach(y=t2_years,.combine=c)%do%sum(t2[year(index(t2))==y] > q1max)
-            c(name,months, min(min(above_cnt),min(below_cnt)))
+            c(name,months, if(above_cnt==0 && below_cnt==0) 100 else min(min(above_cnt),min(below_cnt)))
         }
     }
 
@@ -134,15 +138,25 @@ qspikes = function(name, weights, min_oi, qts, an_dts, max_date){
     as.data.frame(res, stringsAsFactors=FALSE)
 }
 
-s = foreach(name = c('FC','LC','LH'),.combine=rbind)%do%qspikes(name, c(1,-2,1), 5, c(0.3,0.7), c('2008-01-01','2012-01-01'), '2018-01-01')
-names(s)
+s = foreach(name = c('FC','LC','LH','C','S'),.combine=rbind)%do%qspikes(name, c(1,-2,1), 50, c(0.25,0.75), c('2009-01-01','2012-01-01'), '2018-01-01')
 s[s$flag>0,]
+
+s = foreach(name = c('FC','LC','LH','C','S'),.combine=rbind)%do%qspikes(name, c(1,-1), 5, c(0.25,0.75), c('2009-01-01','2012-01-01'), '2018-01-01')
+s[s$flag>0,]
+
+s = foreach(name = c('FC','LC','LH','C','S'),.combine=rbind)%do%qspikes(name, c(1,-1), 5, 0, c('2009-01-01','2012-01-01'), '2018-01-01')
+s[s$flag>0,]
+
+qbasic('C', c(3,5,7), c(1,-2,1), 5, c(0.3,0.7), c('2009-01-01','2012-01-01'))
+
+
+plot(t2); abline(h=q1min); abline(h=q1max)
 
 
 #t = mmspread('FC', c('Q','U','V'), c(1,-2,1), 100, '1990-01-01', '2018-01-01')
 
 plot(mmspread('FC', c('Q','U','V'), c(1,-2,1), 100, '2001-01-01', '2018-01-01'))
-plot(mmspread('LH', c(8,10,12), c(1,-2,1), 5, '2012-01-01', '2018-01-01'))
+plot(mmspread('LH', c(2,4,5), c(1,-2,1), 5, '2012-01-01', '2018-01-01'))
 # c('F','G','H','J','K','M','N','Q','U','V','X','Z')
 qbasic('FC', c(8,9,10), c(1,-2,1), 100, '2012-01-01', '2015-01-01')
 qbasic('FC', c('Q','U','V'), c(1,-2,1), 100, '2001-01-01', '2015-01-01')
