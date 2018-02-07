@@ -38,10 +38,13 @@ write.csv(c(paste0(b,'15'),paste0(b,'16'),paste0(b,'17'),paste0(b,'18'),paste0(b
 
 
 if(FALSE){
+    MONTH_CODES = data.frame(code = c('F','G','H','J','K','M','N','Q','U','V','X','Z'), n = 1:12, stringsAsFactors=FALSE)
+    monthint = function(x) { MONTH_CODES$n[match(x, MONTH_CODES$code)] }
+
 r = list()
 for(n in as.vector(unlist(fread('~/FUT/Lots.txt', fill=TRUE)[,1]))){
     r[[n]] = list()
-    for(m in month_codes$code){
+    for(m in MONTH_CODES$code){
         x_old = 1
         for(f in list.files(paste0('~/FUT/',n),recursive=TRUE,full.names=TRUE,pattern=paste0('*',m,'.txt'))){
             if(nchar(strsplit(f,'/')[[1]][6]) - nchar(n) - 4 == 3)
@@ -53,28 +56,18 @@ for(n in as.vector(unlist(fread('~/FUT/Lots.txt', fill=TRUE)[,1]))){
                 i = which(diff(index(x))>500)
                 if(length(i) > 0)
                     x = x[1:i[1]]
-                
-                if(length(x_old) > 1){
-                    x1 = x_old[index(x_old)%in%index(x)]
-                    x2 = x[index(x)%in%index(x_old)]
-                    x12 = if(nrow(x1)==0) x1 else rbind(x1[x1[,6] >= x2[,6]], x2[x2[,6] > x1[,6]])
-                    x_old = rbind(x_old[!index(x_old)%in%index(x)], x12, x[!index(x)%in%index(x_old)])
-                } else {
-                    x_old = x
-                }
+
+                r[[n]][[m]][[paste0(substr(as.character(year(max(index(x)))),1,2), substr(strsplit(f,'/')[[1]][6],nchar(n)+1,nchar(n)+2))]] = x
             }
         }
-
-        r[[n]][[m]] = x_old
     }
 }
 
 save(r, file="CME-20170120.RData")
 r = get(load(file="CME-20170120.RData"))
 
-MONTH_CODES = data.frame(code = c('F','G','H','J','K','M','N','Q','U','V','X','Z'), n = 1:12, stringsAsFactors=FALSE)
 CALENDARS = list()
-for(x in names(r)) CALENDARS[[x]] = which(foreach(y = r[[x]],.combine=c)%do%(length(y)>1 & max(index(y))>'2000-01-01' & length(y[index(y)>'2000-01-01'])>1000))
+for(x in names(r)) CALENDARS[[x]] = monthint(names(r[[x]])[foreach(z=r[[x]],.combine=c)%do%(length(z) > 10)])
 }
 
 # name='FC'; months=c('Q','U','V'); weights=c(1,-2,1); oi_min=100
