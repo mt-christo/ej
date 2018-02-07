@@ -72,20 +72,34 @@ for(x in names(r)) CALENDARS[[x]] = monthint(names(r[[x]])[foreach(z=r[[x]],.com
 
 # name='FC'; months=c('Q','U','V'); weights=c(1,-2,1); oi_min=100
 # name='FC'; months=c(3,4,5); weights=c(1,-2,1); oi_min=10; dt_start='2008-01-01'; dt_end='2012-01-01'
+# name='FC'; months=c(10,1,4); weights=c(1,-2,1); oi_min=10; dt_start='2008-01-01'; dt_end='2012-01-01'
 mmspread = function(name, months, weights, oi_min, dt_start='2011-01-01', dt_end='2018-01-01'){
     month_letters = if(months[1]%in%MONTH_CODES$code) months else MONTH_CODES$code[months]
-    month_ns = MONTH_CODES$n[match(month_letters, MONTH_CODES$code)]
-    m1 = head(month_ns,1); mn = tail(month_ns,1)
-    months_exclude = if(m1 < mn) m1:mn else c(1:mn,m1:12)
-    month_semi = if(m1 == 1) 12 else (m1 - 1)
-    res = foreach(i = 1:length(month_letters),.combine='+')%do%{
-        x = r[[name]][[month_letters[i]]]
-        names(x) = c('Open','High','Low','Close','Volume','OpenInt')
-        weights[i] * x[x$OpenInt >= oi_min]$Close
-    } * length(month_letters) / foreach(i = 1:length(month_letters),.combine='+')%do%{
-        x = r[[name]][[month_letters[i]]]
-        names(x) = c('Open','High','Low','Close','Volume','OpenInt')
-        x[x$OpenInt >= oi_min]$Close
+    month_ns = monthint(month_letters)
+    year_incs = array(0, length(months))
+    if(sum(diff(month_ns)<0) > 0)
+        year_incs[(which(diff(month_ns)<0)[1]+1):length(months)] = 1
+    
+#    m1 = head(month_ns,1); mn = tail(month_ns,1)
+#    months_exclude = if(m1 < mn) m1:mn else c(1:mn,m1:12)
+#    month_semi = if(m1 == 1) 12 else (m1 - 1)
+
+    ys = sort(foreach(x = r[[name]][month_letters],.combine=intersect)%do%intersect(names(x),as.character(as.numeric(names(x)) - max(year_incs))))
+    res = list()
+    for(y in ys){ # skipping last year, because we will increment by year_incs
+        print(y)
+        x = foreach(i = 1:length(month_letters),.combine='+')%do%{
+            x = r[[name]][[month_letters[i]]][[as.character(as.numeric(y) + year_incs[i])]]
+            names(x) = c('Open','High','Low','Close','Volume','OpenInt')
+            weights[i] * x[x$OpenInt >= oi_min]$Close
+        } * length(month_letters) / foreach(i = 1:length(month_letters),.combine='+')%do%{
+            x = r[[name]][[month_letters[i]]][[as.character(as.numeric(y) + year_incs[i])]]
+            names(x) = c('Open','High','Low','Close','Volume','OpenInt')
+            x[x$OpenInt >= oi_min]$Close
+        }
+
+        x = x[!month(index(x))%in%month_ns]
+        res[[y]] = x[1:(length(x)-3)]
     }
     100*res[index(res)>dt_start & index(res)<dt_end & !month(index(res))%in%months_exclude & !(month(index(res))==month_semi & day(index(res))>20)]
 #    100*res[index(res)>dt_start & index(res)<dt_end]
