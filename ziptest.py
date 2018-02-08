@@ -1,3 +1,5 @@
+import Tkinter
+import matplotlib.pyplot as plt
 import pytz
 import numpy as np
 import pandas as pd
@@ -8,12 +10,13 @@ from zipline.algorithm import TradingAlgorithm
 #from zipline.utils.factory import load_bars_from_yahoo
 
 
-nhist = 1000
+nhist = 15
+prices = [1,1,1,1,1,1,1,1,1,1,1,1,1,2,1]
 data = pd.DataFrame({"date" : np.array([datetime.datetime.today().date() - datetime.timedelta(days=nhist-x) for x in range(nhist)]),
-                     "open" : 1+np.array(range(nhist)),
-                     "high" : 1+np.array(range(nhist)),
-                     "low" : 1+np.array(range(nhist)),
-                     "close" : 1+np.array(range(nhist)),
+                     "open" : prices,
+                     "high" : prices,
+                     "low" : prices,
+                     "close" : prices,
                      "volume" : 1}).set_index('date')
 data.index = pd.to_datetime(data.index)
 data.tz_localize('UTC', level=0)
@@ -24,38 +27,40 @@ data.minor_xs = ['open','high','low','close','volume']
 
 def initialize(context):
     context.security = symbol('A')
+    context.prev_price = -1
     set_benchmark(symbol('A'))
 
 
 def handle_data(context, data):
 
-    MA1 = 1 #data[context.security].mavg(10)
-    MA2 = 2 #data[context.security].mavg(20)
+#    MA1 = 1 #data[context.security].mavg(10)
     
-    current_price = data[context.security].price
-    current_positions = context.portfolio.positions[symbol('A')].amount
+    pp = context.prev_price
+    p = data[context.security].price
+    positions = context.portfolio.positions[symbol('A')].amount
     cash = context.portfolio.cash
     value = context.portfolio.portfolio_value
-    current_pnl = context.portfolio.pnl
+    pnl = context.portfolio.pnl
     
     date = str(data[context.security].datetime)[:10]
-    print(date)
-    print(current_pnl)
+    print(p)
 
-    if (MA1 > MA2) and current_positions == 0:
-        number_of_shares = int(cash/current_price)
-        order(context.security, number_of_shares)
-        record(date=date, MA1=MA1, MA2=MA2, Price=current_price, status="buy", shares=number_of_shares, PnL=current_pnl, cash=cash, value=value)
-    elif (MA1 < MA2) and current_positions != 0:
+    if (pp > 0) & (p > pp) & (positions == 0):        
+        number_of_shares = int(cash/p)
+        order_target(context.security, number_of_shares)
+        record(date=date, Price=p, status="buy", shares=number_of_shares, PnL=pnl, cash=cash, value=value)
+    elif (pp > 0) & (p < pp) & (positions != 0):
         order_target(context.security, 0)
-        record(date=date, MA1=MA1, MA2=MA2, Price=current_price, status="sell", shares="--", PnL=current_pnl, cash=cash, value=value)
+        record(date=date, Price=p, status="sell", shares="--", PnL=pnl, cash=cash, value=value)
     else:
-        record(date=date, MA1=MA1, MA2=MA2, Price=current_price, status="--", shares="--", PnL=current_pnl, cash=cash, value=value)
+        record(date=date, Price=p, status="--", shares="--", PnL=pnl, cash=cash, value=value)
+
+    context.prev_price = p
 
 
 algo_obj = TradingAlgorithm(initialize=initialize, handle_data=handle_data)
 p = algo_obj.run(data)
 
-p[["MA1","MA2","Price"]]
+p[["Price","PnL",'shares']].plot()
+plt.show()
 
-.plot()
