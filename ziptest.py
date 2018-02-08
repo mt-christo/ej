@@ -5,8 +5,9 @@ import numpy as np
 import pandas as pd
 import datetime
 from collections import OrderedDict
-from zipline.api import order, symbol, record, order_target, set_benchmark
+from zipline.api import order, symbol, record, order_target, set_benchmark, set_commission, set_slippage
 from zipline.algorithm import TradingAlgorithm
+from zipline.finance import slippage, commission
 #from zipline.utils.factory import load_bars_from_yahoo
 
 def data_piece(x):
@@ -16,24 +17,44 @@ def data_piece(x):
     
 
 nhist = 15
-prices = [1,1,1,1,1,1,1,1,2,1,1,1,1,1,1]
-data = pd.DataFrame({"date" : pd.to_datetime(np.array([datetime.datetime.today().date() - datetime.timedelta(days=nhist-x) for x in range(nhist)])).tz_localize('UTC'),
-                     "open" : prices,
-                     "high" : prices,
-                     "low" : prices,
-                     "close" : prices,
-                     "volume" : 10000000}).set_index('date')
+prices = [1,1,1,1,1,1,1,2,2,2,1,1,1,1,1]
+prices2 = [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1]
+#data = 
 #data.index = pd.to_datetime(data.index)
 #data.tz_localize('UTC', level=0)
 #data = pd.Panel(OrderedDict({'A': data_piece(data)}))
-data = pd.Panel(OrderedDict({'A': data}))
+data = pd.Panel(OrderedDict({'A': pd.DataFrame({"date" : pd.to_datetime(np.array([datetime.datetime.today().date() - datetime.timedelta(days=nhist-x) for x in range(nhist)])).tz_localize('UTC'),
+                                                "open" : prices,
+                                                "high" : prices,
+                                                "low" : prices,
+                                                "close" : prices,
+                                                "volume" : 10000000}).set_index('date'),
+                             'B': pd.DataFrame({"date" : pd.to_datetime(np.array([datetime.datetime.today().date() - datetime.timedelta(days=nhist-x) for x in range(nhist)])).tz_localize('UTC'),
+                                                "open" : prices2,
+                                                "high" : prices2,
+                                                "low" : prices2,
+                                                "close" : prices2,
+                                                "volume" : 10000000}).set_index('date')}))
 
 data.minor_xs = ['open','high','low','close','volume']
 
 def initialize(context):
     context.security = symbol('A')
     context.prev_price = -1
-    set_benchmark(symbol('A'))
+    set_benchmark(symbol('B'))    
+    #    context.set_commission(commission.PerShare(cost=.0075, min_trade_cost=1.0))
+    
+    # Use the fixed slippage model, which will just add/subtract a specified spread  
+    # spread/2 will be added on buys and subtracted on sells per share  
+    # commission will be charged per share  
+    ##context.slippage = FixedSlippage(spread=0.05, commission=0.01)  
+    # allow algo to buy up to half a single bar, scaling price impact with 10%  
+    ##context.slippage = VolumeShareSlippage(volume_limit=.5, price_impact=0.1)
+    
+#    set_commission(commission.PerShare(cost=0, min_trade_cost=0))
+    set_commission(PerShare(cost=0, min_trade_cost=0))
+    set_slippage(FixedSlippage(spread=0))
+    
 
 
 def handle_data(context, data):
