@@ -56,4 +56,6 @@ def handle_data(context, data):
 algo_obj = TradingAlgorithm(initialize=initialize, handle_data=handle_data)
 p = algo_obj.run(data)
 
-p[["MA1","MA2","Price"]].plot()
+p[["MA1","MA2","Price"]]
+
+.plot()
