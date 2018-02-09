@@ -3,7 +3,7 @@ library(foreach)
 library(data.table)
 library(RCurl)
 library(lubridate)
-
+library(R.utils)
 
 #max_date = as.Date('1900-01-01')
 #for(d in c('~/FUT/RB','~/FUT/CL'))
@@ -62,7 +62,20 @@ if(FALSE){
             }
         }
     }
+
     
+    months_grid = as.matrix(expand.grid(months3 = c('jan','feb','mar','apr','may','jun','jul','aug','sep','oct','nov','dec') ,gsub('20','',as.character(2005:2018))),stringsAsFactors=FALSE)
+    for(i in 1:nrow(months_grid)){
+        filename = paste0("mry",paste(as.character(months_grid[i,]),collapse=''),".zip")
+        print(filename)
+        writeBin(getBinaryURL(paste0("http://acs.barchart.com/mri/data/mry/",filename),userpwd="Alex702:140405"), 'temp.load')
+        unzip('temp.load', exdir='~/FUT2')
+    }
+
+    x = getURL(paste0("http://acs.barchart.com/mri/data/mry",d0[2],d0[1],substr(d0[3],4,4),".asc"),userpwd="Alex702:140405")
+    if(length(grep('404 Not Found',x)) == 0){
+        hist = if(length(x_old) > 1) rbind(hist,fread(x)) else fread(x)
+    }
 
     for(f in list.files('~/FUT/additional',recursive=FALSE,full.names=TRUE,pattern=paste0('*.txt'))){
         f1 = strsplit(f,'/')[[1]][6]
@@ -164,8 +177,8 @@ qmeans = function(name, weights, min_oi, an_years, max_year = 2018){
     res[order(res$flag)[1:2],]
 }
 
-plot(mmspread_concat('FC',c(8,9,10),c(1,-2,1),5,c(2000,2017)))
-plot(mmspread_concat('LC',c(10,12,2),c(1,-2,1),5,c(2005,2015)))
+plot(mmspread_concat('FC',c(8,9,10),c(1,-2,1),5,c(2005,2017)))
+plot(mmspread_concat('LH',c(7,8,10),c(1,-2,1),5,c(2005,2015)))
 plot(mmspread_concat('S',c(1,3,5),c(1,-2,1),5,c(2006,2017)))
 
 
