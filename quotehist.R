@@ -139,21 +139,62 @@ r0 = foreach(t=as.character(res$name[idx[20:300]]),.combine='merge.xts')%do%{
 }
 
 jump = 0.05
-jumps = list()
-for(i in 1:ncol(r0))%{
+jumps1 = list()
+jumps2 = list()
+jumps3 = list()
+for(i in 1:ncol(r0)[1:100]){
+    print(i)
     x = r0[,i]
-    y = which(exp(diff(log(x))) > 1+jump)
-    if(length(y) > 0)
-        jumps[[names(r0)[i]]] = list()
-    for(j in y)
-        jumps[[names(r0)[i]]][[j]] = as.numeric(x)[(j-20):j]/as.numeric(x)[j]
+    x = x[!is.na(x)]
+    y = exp(diff(log(x))) > 1+jump
+    
+    y1 = which(y)
+    y2 = which(y & lag(y,1))
+    y3 = which(y & lag(y,1) & lag(y,2))
+
+    y = y1
+    if(length(y) > 0){
+        jumps1[[names(r0)[i]]] = list()    
+        for(j in 1:min(100,length(y)))
+            if(!is.na(as.numeric(x)[(y[j])]))
+                jumps1[[names(r0)[i]]][[j]] = as.numeric(x)[y[j]:(y[j]+200)]/as.numeric(x)[(y[j])]
+    }
+
+    y = y2
+    if(length(y) > 0){
+        jumps2[[names(r0)[i]]] = list()    
+        for(j in 1:min(100,length(y)))
+            if(!is.na(as.numeric(x)[(y[j])]))
+                jumps2[[names(r0)[i]]][[j]] = as.numeric(x)[y[j]:(y[j]+200)]/as.numeric(x)[(y[j])]
+    }
+
+    y = y3
+    if(length(y) > 0){
+        jumps3[[names(r0)[i]]] = list()    
+        for(j in 1:min(100,length(y)))
+            if(!is.na(as.numeric(x)[(y[j])]))
+                jumps3[[names(r0)[i]]][[j]] = as.numeric(x)[y[j]:(y[j]+200)]/as.numeric(x)[(y[j])]
+    }
+    
 }
 
-plot(jumps[[1]][[1]])
-for(i in 1:length(jumps))
-    lines(jumps[[i]][[1]])
+#plot(jumps[[1]][[1]],t='l',ylim=c(0,3))
+#for(i in 1:length(jumps))
+#    lines(jumps[[i]][[1]])
 
+y = foreach(x=jumps1,.combine=c)%do%{ foreach(y=x,.combine=c)%do%y[200] }
+y = y[!is.na(y)]
+m1 = mean(y)
 
+y = foreach(x=jumps2,.combine=c)%do%{ foreach(y=x,.combine=c)%do%y[200] }
+y = y[!is.na(y)]
+m2 = mean(y)
+
+y = foreach(x=jumps3,.combine=c)%do%{ foreach(y=x,.combine=c)%do%y[200] }
+y = y[!is.na(y)]
+m3 = mean(y)
+
+#hist(log(y)[log(y)>-10],br=150)
 r1 = data.frame(foreach(r$Data,.combine=rbind)%do%r)
 
 
