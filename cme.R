@@ -65,12 +65,32 @@ if(FALSE){
 
     
     months_grid = as.matrix(expand.grid(months3 = c('jan','feb','mar','apr','may','jun','jul','aug','sep','oct','nov','dec') ,gsub('20','',as.character(2005:2018))),stringsAsFactors=FALSE)
-    for(i in 1:nrow(months_grid)){
-        filename = paste0("mry",paste(as.character(months_grid[i,]),collapse=''),".zip")
+    for(i in 2:nrow(months_grid)){
+#        filename = paste0("mry",paste(as.character(months_grid[i,]),collapse=''),".zip")
         print(filename)
-        writeBin(getBinaryURL(paste0("http://acs.barchart.com/mri/data/mry/",filename),userpwd="Alex702:140405"), 'temp.load')
-        unzip('temp.load', exdir='~/FUT2')
+#        writeBin(getBinaryURL(paste0("http://acs.barchart.com/mri/data/mry/",filename),userpwd="Alex702:140405"), 'temp.load')
+#        unzip('temp.load', exdir='~/FUT2')
+        filename = paste0("~/FUT2/mry",paste(as.character(months_grid[i,]),collapse=''),".asc")
+        x = readLines(filename)
+        writeLines(x[-length(x)], filename)
     }
+
+    r = list()
+    for(i in 1:nrow(months_grid)){
+        x = fread(paste0('~/FUT2/',paste0("mry",paste(as.character(months_grid[i,]),collapse=''),".asc")))
+        colnames(x)[1] = 'ticker'
+        ticker = 
+
+        colnames(x)[2] = 'dt'
+
+        dt = x[,as.character(dt)]
+        dt = paste0('20',as.character(months_grid[i,])[2],substr(dt,nchar(dt)-3,nchar(dt)))
+        dt = as.Date(dt, '%Y%m%d')
+
+        for(
+    }
+
+    
 
     x = getURL(paste0("http://acs.barchart.com/mri/data/mry",d0[2],d0[1],substr(d0[3],4,4),".asc"),userpwd="Alex702:140405")
     if(length(grep('404 Not Found',x)) == 0){

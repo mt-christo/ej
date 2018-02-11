@@ -115,4 +115,19 @@ plot(exp(cumsum(x1))); lines(exp(cumsum(x2)))
 
 
 
+ns = names(fromJSON(paste0("https://min-api.cryptocompare.com/data/all/coinlist"))$Data)
+res = foreach(n = ns,.combine=rbind)%do%{
+    tryCatch({
+        url = paste0("https://min-api.cryptocompare.com/data/histoday?aggregate=1&e=CCCAGG&fsym=",n,"&limit=5&tryConversion=false&tsym=BTC")
+        r = data.frame(foreach(r1=fromJSON(url)$Data,.combine=rbind)%do%r1)
+        print(paste0(which(ns==n),': ',n))
+        Sys.sleep(2);
+        data.frame(name=n, time=max(r$time), volumefrom=mean(r$volumefrom), volumeto=mean(r$volumeto))
+    }, error = function(e) {})
+}
 
+r1 = data.frame(foreach(r$Data,.combine=rbind)%do%r)
+
+
+url <- paste0("https://min-api.cryptocompare.com/data/top/pairs?limit=2000")
+url <- paste0("https://min-api.cryptocompare.com/data/top/pairs?limit=2000")
