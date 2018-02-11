@@ -5,6 +5,7 @@ library(foreach)
 library(data.table)
 library(ggplot2)
 library(reshape2)
+library(xts)
 
 # exchange='BitTrex'; ticker='ETH'; limit=20000; base_curr = 'USD'; 
 get_history = function(exchange, ticker, limit, base_curr = 'BTC', loadtype='histohour'){
@@ -125,6 +126,33 @@ res = foreach(n = ns,.combine=rbind)%do%{
         data.frame(name=n, time=max(r$time), volumefrom=mean(r$volumefrom), volumeto=mean(r$volumeto))
     }, error = function(e) {})
 }
+
+res = res[!is.na(res$volumeto),]
+res = res[res$volumeto > 10,]
+idx = order(res$volumeto, decreasing=TRUE)
+res[idx,]
+
+r0 = foreach(t=as.character(res$name[idx[20:300]]),.combine='merge.xts')%do%{
+    x = get_history('CCCAGG',t,3000,'BTC','histohour')$close
+    colnames(x) = t
+    x
+}
+
+jump = 0.05
+jumps = list()
+for(i in 1:ncol(r0))%{
+    x = r0[,i]
+    y = which(exp(diff(log(x))) > 1+jump)
+    if(length(y) > 0)
+        jumps[[names(r0)[i]]] = list()
+    for(j in y)
+        jumps[[names(r0)[i]]][[j]] = as.numeric(x)[(j-20):j]/as.numeric(x)[j]
+}
+
+plot(jumps[[1]][[1]])
+for(i in 1:length(jumps))
+    lines(jumps[[i]][[1]])
+
 
 r1 = data.frame(foreach(r$Data,.combine=rbind)%do%r)
 
