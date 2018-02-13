@@ -139,52 +139,54 @@ r0 = foreach(t=as.character(res$name[idx[20:300]]),.combine='merge.xts')%do%{
 }
 
 jump = 0.05
-jumps1 = list()
-jumps2 = list()
-jumps3 = list()
-for(i in 1:ncol(r0)[1:100]){
+jumps = list()
+for(i in 1:ncol(r0)){
     print(i)
     x = r0[,i]
     x = x[!is.na(x)]
     y = exp(diff(log(x))) > 1+jump
     
-    y1 = which(y)
-    y2 = which(y & lag(y,1))
-    y3 = which(y & lag(y,1) & lag(y,2))
+    yw = list(which(y),
+              which(y & lag(y,1)),
+              which(y & lag(y,1) & lag(y,2)))
 
-    y = y1
-    if(length(y) > 0){
-        jumps1[[names(r0)[i]]] = list()    
-        for(j in 1:min(100,length(y)))
-            if(!is.na(as.numeric(x)[(y[j])]))
-                jumps1[[names(r0)[i]]][[j]] = as.numeric(x)[y[j]:(y[j]+200)]/as.numeric(x)[(y[j])]
+    jumps[[names(r0)[i]]] = list()
+    for(j in 1:3){
+        jumps[[names(r0)[i]]][[j]] = list()    
+        if(length(yw[[j]]) > 0){
+            for(k in 1:min(100,length(yw[[j]])))
+            {
+                y = yw[[j]][k]
+                if(!is.na(as.numeric(x)[y]))
+                    jumps[[names(r0)[i]]][[j]][[k]] = as.numeric(x)[y:(y+24*7)]/as.numeric(x)[y]
+            }
+        }
     }
-
-    y = y2
-    if(length(y) > 0){
-        jumps2[[names(r0)[i]]] = list()    
-        for(j in 1:min(100,length(y)))
-            if(!is.na(as.numeric(x)[(y[j])]))
-                jumps2[[names(r0)[i]]][[j]] = as.numeric(x)[y[j]:(y[j]+200)]/as.numeric(x)[(y[j])]
-    }
-
-    y = y3
-    if(length(y) > 0){
-        jumps3[[names(r0)[i]]] = list()    
-        for(j in 1:min(100,length(y)))
-            if(!is.na(as.numeric(x)[(y[j])]))
-                jumps3[[names(r0)[i]]][[j]] = as.numeric(x)[y[j]:(y[j]+200)]/as.numeric(x)[(y[j])]
-    }
-    
 }
 
 #plot(jumps[[1]][[1]],t='l',ylim=c(0,3))
 #for(i in 1:length(jumps))
 #    lines(jumps[[i]][[1]])
 
-y = foreach(x=jumps1,.combine=c)%do%{ foreach(y=x,.combine=c)%do%y[200] }
-y = y[!is.na(y)]
-m1 = mean(y)
+x = jumps[[1]]
+
+
+y = foreach(i=1:3)%do%{
+    z = foreach(j=1:length(jumps),.combine=c)%do%{
+        print(j)
+        if(length(jumps[[j]])>=i && length(jumps[[j]][[i]])>0)
+            foreach(y=jumps[[j]][[i]],.combine=c)%do%y[24*7]
+    }
+    z = log(z[!is.na(z)])
+    z[abs(z)<5]
+}
+
+hist(y[[1]],br=100)
+mean(exp(mean(y[[3]])))
+
+mean(mean(exp(y[[1]])))
+mean(mean(exp(y[[2]])))
+mean(mean(exp(y[[3]])))
 
 y = foreach(x=jumps2,.combine=c)%do%{ foreach(y=x,.combine=c)%do%y[200] }
 y = y[!is.na(y)]

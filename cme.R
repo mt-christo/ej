@@ -76,19 +76,49 @@ if(FALSE){
     }
 
     r = list()
-    for(i in 1:nrow(months_grid)){
+    months_grid = as.matrix(expand.grid(months3 = c('jan','feb','mar','apr','may','jun','jul','aug','sep','oct','nov','dec') ,gsub('20','',as.character(2005:2018))),stringsAsFactors=FALSE)
+    rmon = foreach(i = 1:nrow(months_grid),.combine=rbind)%do%{tryCatch({
+        print(i)
         x = fread(paste0('~/FUT2/',paste0("mry",paste(as.character(months_grid[i,]),collapse=''),".asc")))
-        colnames(x)[1] = 'ticker'
-        ticker = 
 
-        colnames(x)[2] = 'dt'
+        colnames(x)[2] = 'dt0'
+        dt0 = x[,as.character(dt0)]
+        colnames(x)[1] = 'ticker0'
+        ticker0 = x[,as.character(ticker0)]
+        
+        x$dt = as.Date(paste0('20',as.character(months_grid[i,])[2],substr(dt0,nchar(dt0)-3,nchar(dt0))), '%Y%m%d')
+        x$ticker = substr(ticker0,1,nchar(ticker0)-2)
+        
+        y_quote = as.numeric(substr(as.character(months_grid[i,])[2],2,2))
+        y_exp = as.numeric(substr(ticker0,nchar(ticker0),nchar(ticker0)))
 
-        dt = x[,as.character(dt)]
-        dt = paste0('20',as.character(months_grid[i,])[2],substr(dt,nchar(dt)-3,nchar(dt)))
-        dt = as.Date(dt, '%Y%m%d')
+        d_quote = as.numeric(substr(as.character(months_grid[i,])[2],1,1))
+        x$year = paste0("20", ifelse(y_quote <= y_exp, d_quote, d_quote+1), y_exp)
 
-        for(
-    }
+        idx = x$ticker%in%pablo_map$my & !is.na(y_exp)
+        x[idx,]
+    }, error = function(e) {})}
+
+    rmon$mnth = rmon[,substr(ticker0,nchar(ticker0)-1,nchar(ticker0)-1)]
+    rmon$ticker = pablo_map$old[match(rmon$ticker,pablo_map$my)]
+    colnames(rmon)[3:8] = c("Open", "High", "Low", "Close", "Volume", "OpenInt")
+
+    rmon = rmon[year >= 2015,]    
+    
+    save(rmon, file='CME_MONTHLY.RData')
+    rmon = get(load('CME_MONTHLY.RData'))
+
+    for(t in unique(rmon$ticker))
+        for(m in unique(rmon[ticker==t, month]))
+            for(y in unique(rmon[ticker==t & mnth==m, year])){
+                print(paste(t,m,y))
+                rtmp = rmon[ticker==t & mnth==m & year==y,.(dt,as.numeric(Open),as.numeric(High),as.numeric(Low),as.numeric(Close),as.numeric(Volume),as.numeric(OpenInt))]
+                rtmp = as.xts(rtmp)
+                if(y%in%names(r[[t]][[m]])){
+                    r[[t]][[m]][[y]] = rbind(r[[t]][[m]][[y]], rtmp[!index(rtmp)%in%index(r[[t]][[m]][[y]])])
+                } else
+                    r[[t]][[m]][[y]] = rtmp
+            }
 
     
 
