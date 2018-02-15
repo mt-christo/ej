@@ -150,9 +150,9 @@ r = na.locf(r)
 P1 = 24*5
 P2 = 24*24
 J = 0.1
-res = foreach(j=seq(0,0.15,by=0.005),.combine=c)%do%{
+res = foreach(p_2=5:25)%do%{ foreach(j=seq(0,0.15,by=0.002),.combine=c)%do%{
 
-rbr = foreach(i = (P1+1):(length(index(r)) - P2),.combine=c)%dopar%{
+rbr = foreach(i = (P1+1):(length(index(r)) - p_2),.combine=c)%dopar%{
     print(i)
     vs = v[(i-P1):i,]
     vs = as.numeric(t(rowSums(t(v[(i-P1):i,]))))
@@ -160,7 +160,7 @@ rbr = foreach(i = (P1+1):(length(index(r)) - P2),.combine=c)%dopar%{
 
     # r[c((i-1):i, i+P2), intersect(idxv,idxr)]
     # rs[, intersect(idxv,idxr)]
-    rs = diff(log(r[c((i-4):i, i+P2),]))
+    rs = diff(log(r[c((i-4):i, i+p_2),]))
     idxr = which(as.numeric(rs[2,]) > j & as.numeric(rs[3,]) > 0 & as.numeric(rs[4,]) > 0 & as.numeric(rs[5,]) > 0)
     
     x = as.numeric(rs[6,intersect(idxv,idxr)])
@@ -170,16 +170,16 @@ rbr = foreach(i = (P1+1):(length(index(r)) - P2),.combine=c)%dopar%{
     
 }
     mean(rbr)
-}
+}}
 
 length(rbr)
 
 
 
 
-res2 = foreach(j=seq(0,0.15,by=0.005),.combine=c)%do%{
+res2 = foreach(p_2=5:25)%do%{ foreach(j=seq(0,0.15,by=0.005),.combine=c)%do%{
 
-rbr = foreach(i = (P1+1):(length(index(r)) - P2),.combine=c)%dopar%{
+rbr = foreach(i = (P1+1):(length(index(r)) - p_2),.combine=c)%dopar%{
     print(i)
     vs = v[(i-P1):i,]
     vs = as.numeric(t(rowSums(t(v[(i-P1):i,]))))
@@ -187,7 +187,7 @@ rbr = foreach(i = (P1+1):(length(index(r)) - P2),.combine=c)%dopar%{
 
     # r[c((i-1):i, i+P2), intersect(idxv,idxr)]
     # rs[, intersect(idxv,idxr)]
-    rs = diff(log(r[c((i-3):i, i+P2),]))
+    rs = diff(log(r[c((i-3):i, i+p_2),]))
     idxr = which(as.numeric(rs[2,]) > j & as.numeric(rs[3,]) > 0 & as.numeric(rs[4,]) > 0)
     
     x = as.numeric(rs[5,intersect(idxv,idxr)])
@@ -197,7 +197,7 @@ rbr = foreach(i = (P1+1):(length(index(r)) - P2),.combine=c)%dopar%{
     
 }
     mean(rbr)
-}
+}}
 
 readRenviron('~/git/ej/.Renviron')
 bot <- TGBot$new(token = bot_token('CoinSight'))
