@@ -1,10 +1,14 @@
 library(tseries)
 library(RJSONIO)
-library(Rbitcoin)
 library(foreach)
 library(data.table)
 library(ggplot2)
 library(reshape2)
+library(CryptoTools)
+library(xts)
+library(doMC)
+library(telegram)
+registerDoMC(4)
 
 # exchange='BitTrex'; ticker='ETH'; limit=20000; base_curr = 'USD'; 
 get_history = function(exchange, ticker, limit, base_curr = 'BTC', loadtype='histohour'){
@@ -106,13 +110,106 @@ hist(r0[,2])
 plot(exp(cumsum(x1))); lines(exp(cumsum(x2)))
 
 
+symbols = sort(names( fromJSON( paste0( "https://min-api.cryptocompare.com/data/all/coinlist" ) )$Data ))
+x = get_cryptocompare_data( 'ETH', '2018-02-14', '2018-02-15', 'hour', 'CCCAGG', 'BTC', local=T )
+get_cryptocompare_data( 'ETC', '2018-02-14', '2018-02-16', 'hour', 'CCCAGG', 'BTC', local=T )$time
+
+
+save(r, file='storage_r.RData')
+save(v, file='storage_v.RData')
+
+r = foreach(s=symbols,.combine='merge.xts')%do%{
+    print(s)
+    x = get_cryptocompare_data( s, '2017-08-01', '2018-02-15', 'hour', 'CCCAGG', 'BTC', local=T )
+    if(!is.null(x)){
+        x = as.xts(x$close, order.by=x$time)
+        names(x)[1] = s
+        x
+    }
+}
+
+v = foreach(s=symbols,.combine='merge.xts')%do%{
+    print(s)
+    x = get_cryptocompare_data( s, '2017-08-01', '2018-02-15', 'hour', 'CCCAGG', 'BTC', local=T )
+    if(!is.null(x)){
+        x = as.xts(x$volume_to, order.by=x$time)
+        names(x)[1] = s
+        x
+    }
+}
+
+setwd('~/git/ej')
+r = get(load('storage_r.RData'))
+v = get(load('storage_v.RData'))
+
+r = r[index(r)>'2017-08-01',]
+v = v[index(v)>'2017-08-01',]
+v = na.fill(v, 0)
+r = na.locf(r)
+
+P1 = 24*5
+P2 = 24*24
+J = 0.1
+res = foreach(j=seq(0,0.15,by=0.005),.combine=c)%do%{
+
+rbr = foreach(i = (P1+1):(length(index(r)) - P2),.combine=c)%dopar%{
+    print(i)
+    vs = v[(i-P1):i,]
+    vs = as.numeric(t(rowSums(t(v[(i-P1):i,]))))
+    idxv = order(vs, decreasing=TRUE)[20:50]
+
+    # r[c((i-1):i, i+P2), intersect(idxv,idxr)]
+    # rs[, intersect(idxv,idxr)]
+    rs = diff(log(r[c((i-4):i, i+P2),]))
+    idxr = which(as.numeric(rs[2,]) > j & as.numeric(rs[3,]) > 0 & as.numeric(rs[4,]) > 0 & as.numeric(rs[5,]) > 0)
+    
+    x = as.numeric(rs[6,intersect(idxv,idxr)])
+    if(length(x) > 0){
+        x
+    }
+    
+}
+    mean(rbr)
+}
+
+length(rbr)
 
 
 
 
+res2 = foreach(j=seq(0,0.15,by=0.005),.combine=c)%do%{
 
+rbr = foreach(i = (P1+1):(length(index(r)) - P2),.combine=c)%dopar%{
+    print(i)
+    vs = v[(i-P1):i,]
+    vs = as.numeric(t(rowSums(t(v[(i-P1):i,]))))
+    idxv = order(vs, decreasing=TRUE)[20:50]
 
+    # r[c((i-1):i, i+P2), intersect(idxv,idxr)]
+    # rs[, intersect(idxv,idxr)]
+    rs = diff(log(r[c((i-3):i, i+P2),]))
+    idxr = which(as.numeric(rs[2,]) > j & as.numeric(rs[3,]) > 0 & as.numeric(rs[4,]) > 0)
+    
+    x = as.numeric(rs[5,intersect(idxv,idxr)])
+    if(length(x) > 0){
+        x
+    }
+    
+}
+    mean(rbr)
+}
 
+readRenviron('~/git/ej/.Renviron')
+bot <- TGBot$new(token = bot_token('CoinSight'))
+bot$set_default_chat_id(282218584)
+bot$sendMessage('aaa')
 
-
-
+tmp = paste0(tempfile(),'.png')
+png(tmp)
+plot(res)
+dev.off()
+bot$sendDocument(tmp)
+png(tmp)
+plot(res2)
+dev.off()
+bot$sendDocument(tmp)
