@@ -3,7 +3,7 @@ library(foreach)
 library(data.table)
 library(RCurl)
 library(lubridate)
-
+library(R.utils)
 
 #max_date = as.Date('1900-01-01')
 #for(d in c('~/FUT/RB','~/FUT/CL'))
@@ -62,7 +62,70 @@ if(FALSE){
             }
         }
     }
+
     
+    months_grid = as.matrix(expand.grid(months3 = c('jan','feb','mar','apr','may','jun','jul','aug','sep','oct','nov','dec') ,gsub('20','',as.character(2005:2018))),stringsAsFactors=FALSE)
+    for(i in 2:nrow(months_grid)){
+#        filename = paste0("mry",paste(as.character(months_grid[i,]),collapse=''),".zip")
+        print(filename)
+#        writeBin(getBinaryURL(paste0("http://acs.barchart.com/mri/data/mry/",filename),userpwd="Alex702:140405"), 'temp.load')
+#        unzip('temp.load', exdir='~/FUT2')
+        filename = paste0("~/FUT2/mry",paste(as.character(months_grid[i,]),collapse=''),".asc")
+        x = readLines(filename)
+        writeLines(x[-length(x)], filename)
+    }
+
+    r = list()
+    months_grid = as.matrix(expand.grid(months3 = c('jan','feb','mar','apr','may','jun','jul','aug','sep','oct','nov','dec') ,gsub('20','',as.character(2005:2018))),stringsAsFactors=FALSE)
+    rmon = foreach(i = 1:nrow(months_grid),.combine=rbind)%do%{tryCatch({
+        print(i)
+        x = fread(paste0('~/FUT2/',paste0("mry",paste(as.character(months_grid[i,]),collapse=''),".asc")))
+
+        colnames(x)[2] = 'dt0'
+        dt0 = x[,as.character(dt0)]
+        colnames(x)[1] = 'ticker0'
+        ticker0 = x[,as.character(ticker0)]
+        
+        x$dt = as.Date(paste0('20',as.character(months_grid[i,])[2],substr(dt0,nchar(dt0)-3,nchar(dt0))), '%Y%m%d')
+        x$ticker = substr(ticker0,1,nchar(ticker0)-2)
+        
+        y_quote = as.numeric(substr(as.character(months_grid[i,])[2],2,2))
+        y_exp = as.numeric(substr(ticker0,nchar(ticker0),nchar(ticker0)))
+
+        d_quote = as.numeric(substr(as.character(months_grid[i,])[2],1,1))
+        x$year = paste0("20", ifelse(y_quote <= y_exp, d_quote, d_quote+1), y_exp)
+
+        idx = x$ticker%in%pablo_map$my & !is.na(y_exp)
+        x[idx,]
+    }, error = function(e) {})}
+
+    rmon$mnth = rmon[,substr(ticker0,nchar(ticker0)-1,nchar(ticker0)-1)]
+    rmon$ticker = pablo_map$old[match(rmon$ticker,pablo_map$my)]
+    colnames(rmon)[3:8] = c("Open", "High", "Low", "Close", "Volume", "OpenInt")
+
+    rmon = rmon[year >= 2015,]    
+    
+    save(rmon, file='CME_MONTHLY.RData')
+    rmon = get(load('CME_MONTHLY.RData'))
+
+    for(t in unique(rmon$ticker))
+        for(m in unique(rmon[ticker==t, month]))
+            for(y in unique(rmon[ticker==t & mnth==m, year])){
+                print(paste(t,m,y))
+                rtmp = rmon[ticker==t & mnth==m & year==y,.(dt,as.numeric(Open),as.numeric(High),as.numeric(Low),as.numeric(Close),as.numeric(Volume),as.numeric(OpenInt))]
+                rtmp = as.xts(rtmp)
+                if(y%in%names(r[[t]][[m]])){
+                    r[[t]][[m]][[y]] = rbind(r[[t]][[m]][[y]], rtmp[!index(rtmp)%in%index(r[[t]][[m]][[y]])])
+                } else
+                    r[[t]][[m]][[y]] = rtmp
+            }
+
+    
+
+    x = getURL(paste0("http://acs.barchart.com/mri/data/mry",d0[2],d0[1],substr(d0[3],4,4),".asc"),userpwd="Alex702:140405")
+    if(length(grep('404 Not Found',x)) == 0){
+        hist = if(length(x_old) > 1) rbind(hist,fread(x)) else fread(x)
+    }
 
     for(f in list.files('~/FUT/additional',recursive=FALSE,full.names=TRUE,pattern=paste0('*.txt'))){
         f1 = strsplit(f,'/')[[1]][6]
@@ -164,8 +227,8 @@ qmeans = function(name, weights, min_oi, an_years, max_year = 2018){
     res[order(res$flag)[1:2],]
 }
 
-plot(mmspread_concat('FC',c(8,9,10),c(1,-2,1),5,c(2000,2017)))
-plot(mmspread_concat('LC',c(10,12,2),c(1,-2,1),5,c(2005,2015)))
+plot(mmspread_concat('FC',c(8,9,10),c(1,-2,1),5,c(2005,2017)))
+plot(mmspread_concat('LH',c(7,8,10),c(1,-2,1),5,c(2005,2015)))
 plot(mmspread_concat('S',c(1,3,5),c(1,-2,1),5,c(2006,2017)))
 
 
