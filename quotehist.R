@@ -151,7 +151,7 @@ r = na.locf(r)
 P1 = 24*5
 P2 = 24*24
 J = 0.1
-res = foreach(p_2=seq(5,25,by=5))%do%{ foreach(j=seq(0,0.15,by=0.002),.combine=c)%do%{
+res1 = foreach(p_2=seq(5,25,by=5))%do%{ foreach(j=seq(0,0.15,by=0.002),.combine=c)%do%{
 
 rbr = foreach(i = (P1+1):(length(index(r)) - p_2),.combine=c)%dopar%{
     print(i)
@@ -173,12 +173,12 @@ rbr = foreach(i = (P1+1):(length(index(r)) - p_2),.combine=c)%dopar%{
     mean(rbr)
 }}
 
-length(rbr)
+
+save(res1, file='ee_res1.RData')
 
 
 
-
-res2 = foreach(p_2=5:25)%do%{ foreach(j=seq(0,0.15,by=0.005),.combine=c)%do%{
+res2 = foreach(p_2=seq(5,25,by=5))%do%{ foreach(j=seq(0,0.15,by=0.005),.combine=c)%do%{
 
 rbr = foreach(i = (P1+1):(length(index(r)) - p_2),.combine=c)%dopar%{
     print(i)
@@ -200,10 +200,18 @@ rbr = foreach(i = (P1+1):(length(index(r)) - p_2),.combine=c)%dopar%{
     mean(rbr)
 }}
 
+
+save(res2, file='ee_res2.RData')
+
+
+
 readRenviron('~/git/ej/.Renviron')
 bot <- TGBot$new(token = bot_token('CoinSight'))
 bot$set_default_chat_id(282218584)
-bot$sendMessage('aaa')
+bot$sendMessage('calc finished')
+
+
+
 
 tmp = paste0(tempfile(),'.png')
 png(tmp)
