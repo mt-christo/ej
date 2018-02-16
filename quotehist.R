@@ -11,7 +11,8 @@ library(telegram)
 registerDoMC(4)
 
 # exchange='BitTrex'; ticker='ETH'; limit=20000; base_curr = 'USD'; 
-get_history = function(exchange, ticker, limit, base_curr = 'BTC', loadtype='histohour'){
+
++get_history = function(exchange, ticker, limit, base_curr = 'BTC', loadtype='histohour'){
     t = limit
     to_ts = 0
     res = list()
@@ -139,6 +140,11 @@ v = foreach(s=symbols,.combine='merge.xts')%do%{
     }
 }
 
+
+
+
+
+
 setwd('~/git/ej')
 r = get(load('storage_r.RData'))
 v = get(load('storage_v.RData'))
@@ -151,8 +157,10 @@ r = na.locf(r)
 P1 = 24*5
 P2 = 24*24
 J = 0.1
-res1 = foreach(p_2=seq(5,25,by=5))%do%{ foreach(j=seq(0,0.15,by=0.002),.combine=c)%do%{
+res1 = foreach(p_2=24*seq(5,25,by=5))%do%{ foreach(j=seq(0,0.15,by=0.002),.combine=c)%do%{
 
+p_2=24*7*3
+j=0.08
 rbr = foreach(i = (P1+1):(length(index(r)) - p_2),.combine=c)%dopar%{
     print(i)
     vs = v[(i-P1):i,]
@@ -170,11 +178,37 @@ rbr = foreach(i = (P1+1):(length(index(r)) - p_2),.combine=c)%dopar%{
     }
     
 }
-    mean(rbr)
+
+mean(rbr)
+    
 }}
 
 
 save(res1, file='ee_res1.RData')
+
+
+rbr = foreach(i = (P1+1):(length(index(r)) - p_2),.combine=c)%dopar%sslice(r,v,P1,p_2,0.08,4,i)
+mean(rbr)
+
+
+# r0=r; v0=v; p_1=24*5; p_2=24*7*3; j0=0.08; nwait=4; i0=121
+sslice = function(r0, v0, p_1, p_2, j0, nwait, i0){
+    print(i0)
+    vs = v0[(i0-p_1):i0,]
+    vs = as.numeric(t(rowSums(t(vs))))
+    idxv = order(vs, decreasing=TRUE)[10:40]
+
+    rs = diff(log(r0[c((i0-nwait):i0, i0+p_2),]))
+    idxr = as.numeric(rs[2,]) > j0
+    if(nwait > 1)
+        idxr = which(idxr & foreach(k=2:nwait,.combine='&')%do%{ as.numeric(rs[1+k,]) > 0 })
+    
+    x = as.numeric(rs[nwait+2,intersect(idxv,idxr)])
+    if(length(x) > 0){
+        return(x)
+    } else return(NULL)
+}
+
 
 
 
@@ -208,7 +242,14 @@ save(res2, file='ee_res2.RData')
 readRenviron('~/git/ej/.Renviron')
 bot <- TGBot$new(token = bot_token('CoinSight'))
 bot$set_default_chat_id(282218584)
-bot$sendMessage('calc finished')
+#bot$sendMessage('calc finished')
+
+
+tmp = paste0(tempfile(),'.png')
+png(tmp)
+hist(exp(rbr)-1,br=30)
+dev.off()
+bot$sendDocument(tmp)
 
 
 
