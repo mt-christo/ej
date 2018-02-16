@@ -112,7 +112,8 @@ plot(exp(cumsum(x1))); lines(exp(cumsum(x2)))
 
 symbols = sort(names( fromJSON( paste0( "https://min-api.cryptocompare.com/data/all/coinlist" ) )$Data ))
 x = get_cryptocompare_data( 'ETH', '2018-02-14', '2018-02-15', 'hour', 'CCCAGG', 'BTC', local=T )
-get_cryptocompare_data( 'ETC', '2018-02-14', '2018-02-16', 'hour', 'CCCAGG', 'BTC', local=T )$time
+get_cryptocompare_data( 'ETC', '2018-02-15', '2018-02-16', 'hour', 'CCCAGG', 'BTC', local=T )$time
+get_cryptocompare_data( 'ZEC', '2018-02-15', '2018-02-16', 'hour', 'CCCAGG', 'BTC', local=T )$time
 
 
 save(r, file='storage_r.RData')
@@ -144,13 +145,13 @@ v = get(load('storage_v.RData'))
 
 r = r[index(r)>'2017-08-01',]
 v = v[index(v)>'2017-08-01',]
-v = na.fill(v, 0)
+#v = na.fill(v, 0)
 r = na.locf(r)
 
 P1 = 24*5
 P2 = 24*24
 J = 0.1
-res = foreach(p_2=5:25)%do%{ foreach(j=seq(0,0.15,by=0.002),.combine=c)%do%{
+res = foreach(p_2=seq(5,25,by=5))%do%{ foreach(j=seq(0,0.15,by=0.002),.combine=c)%do%{
 
 rbr = foreach(i = (P1+1):(length(index(r)) - p_2),.combine=c)%dopar%{
     print(i)
