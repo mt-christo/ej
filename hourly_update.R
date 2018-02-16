@@ -11,5 +11,16 @@ bot$sendMessage('Running spike tests...')
 source('/home/aslepnev/git/ej/tele.R')
 source('/home/aslepnev/git/ej/spikestrat.R')
 n = names_signal()
-for(i in n)
-    bot$sendMessage(paste0('Signal fired: ',i))
+data = fromJSON( paste0( "https://min-api.cryptocompare.com/data/all/coinlist" ) )$Data
+ids = as.data.frame(foreach(x=data,.combine=rbind)%do%c(symbol=x$Name,id=x$Id), stringAsFactors=FALSE)
+for(x in n){
+    sstats = fromJSON( paste0('https://www.cryptocompare.com/api/data/socialstats/?id=',ids$id[ids$symbol==x]) )$Data
+    plot_symbol(x)
+    bot$sendMessage(sstats$Reddit$link) 
+    bot$sendMessage(sstats$Facebook$link) 
+}
+
+
+
+
+
