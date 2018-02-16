@@ -41,3 +41,17 @@ names_signal = function(){
     sslice_idx(r1, v1, 24*5, 0.08, 4, length(index(r1)))
     
 }
+
+plot_symbol = function(s){
+    x = get_cryptocompare_data( s, as.character(Sys.Date()-6), as.character(Sys.Date()), 'hour', 'CCCAGG', 'BTC', local=T )
+    png('tmp_pic.png')
+    if(!is.null(x) && dim(x)[1]>0){
+        x = as.xts(x$close, order.by=x$time)
+        names(x)[1] = s
+        
+        plot(x, main=s, major.ticks='days', grid.ticks.on='days')
+        bot$sendDocument(tmp)
+    }
+
+    dev.off()
+}
