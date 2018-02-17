@@ -11,7 +11,6 @@ CryptoTools_settings(cryptocompare = list(limit = 2000, storage_from = '2018-02-
 for( symbol in symbols )
     try( CryptoTools:::store_cryptocompare_data( gsub( '\\*', '_', paste0(symbol,'/BTC'),  ) ))
 
-bot$sendMessage('Running spike tests...')
 n = names_signal()
 data = fromJSON( paste0( "https://min-api.cryptocompare.com/data/all/coinlist" ) )$Data
 ids = as.data.frame(foreach(x=data,.combine=rbind)%do%c(symbol=x$Name,id=x$Id), stringAsFactors=FALSE)
@@ -21,6 +20,7 @@ for(x in n){
     bot$sendMessage(sstats$Reddit$link) 
     bot$sendMessage(sstats$Facebook$link) 
 }
+bot$sendMessage('Finished spike tests.')
 
 
 
