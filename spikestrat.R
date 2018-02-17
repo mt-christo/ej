@@ -1,3 +1,6 @@
+library(foreach)
+library(xts)
+
 sslice_idx = function(r0, v0, p_1, j0, nwait, i0){
     print(i0)
     vs = v0[(i0-p_1):i0,]
