@@ -113,8 +113,8 @@ plot(exp(cumsum(x1))); lines(exp(cumsum(x2)))
 
 symbols = sort(names( fromJSON( paste0( "https://min-api.cryptocompare.com/data/all/coinlist" ) )$Data ))
 x = get_cryptocompare_data( 'ETH', '2018-02-14', '2018-02-15', 'hour', 'CCCAGG', 'BTC', local=T )
-get_cryptocompare_data( 'ETC', '2018-02-15', '2018-02-16', 'hour', 'CCCAGG', 'BTC', local=T )$time
-get_cryptocompare_data( 'ZEC', '2018-02-15', '2018-02-16', 'hour', 'CCCAGG', 'BTC', local=T )$time
+get_cryptocompare_data( 'ETC', '2018-02-16', '2018-02-17', 'hour', 'CCCAGG', 'BTC', local=T )$time
+get_cryptocompare_data( 'ZEC', '2018-02-17', '2018-02-17', 'hour', 'CCCAGG', 'BTC', local=T )$time
 
 
 save(r, file='storage_r.RData')

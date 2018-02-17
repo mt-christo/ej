@@ -1,5 +1,9 @@
 library(telegram)
 library( CryptoTools )
+
+source('/home/aslepnev/git/ej/tele.R')
+source('/home/aslepnev/git/ej/spikestrat.R')
+
 symbols = names( fromJSON( paste0( "https://min-api.cryptocompare.com/data/all/coinlist" ) )$Data )
 currency = 'BTC'
 CryptoTools_settings(cryptocompare = list(limit = 2000, storage_from = '2018-02-10'))
@@ -7,9 +11,7 @@ CryptoTools_settings(cryptocompare = list(limit = 2000, storage_from = '2018-02-
 for( symbol in symbols )
     try( CryptoTools:::store_cryptocompare_data( gsub( '\\*', '_', paste0(symbol,'/BTC'),  ) ))
 
-bot$sendMessage('Running spike tests...') 
-source('/home/aslepnev/git/ej/tele.R')
-source('/home/aslepnev/git/ej/spikestrat.R')
+bot$sendMessage('Running spike tests...')
 n = names_signal()
 data = fromJSON( paste0( "https://min-api.cryptocompare.com/data/all/coinlist" ) )$Data
 ids = as.data.frame(foreach(x=data,.combine=rbind)%do%c(symbol=x$Name,id=x$Id), stringAsFactors=FALSE)
