@@ -9,10 +9,12 @@ library(xts)
 library(doMC)
 library(telegram)
 registerDoMC(4)
+source('tele.R')
+source('spikestrat.R')
 
 # exchange='BitTrex'; ticker='ETH'; limit=20000; base_curr = 'USD'; 
 
-+get_history = function(exchange, ticker, limit, base_curr = 'BTC', loadtype='histohour'){
+get_history = function(exchange, ticker, limit, base_curr = 'BTC', loadtype='histohour'){
     t = limit
     to_ts = 0
     res = list()
@@ -159,9 +161,10 @@ P2 = 24*24
 J = 0.1
 res1 = foreach(p_2=24*seq(5,25,by=5))%do%{ foreach(j=seq(0,0.15,by=0.002),.combine=c)%do%{
 
-p_2=24*7*3
-j=0.08
-rbr = foreach(i = (P1+1):(length(index(r)) - p_2),.combine=c)%dopar%{
+P1 = 24*5
+p_2=24*7*2
+j=0.05
+rbr <<- foreach(i = (P1+1):(length(index(r)) - p_2),.combine=rbind)%dopar%{
     print(i)
     vs = v[(i-P1):i,]
     vs = as.numeric(t(rowSums(t(v[(i-P1):i,]))))
@@ -174,43 +177,63 @@ rbr = foreach(i = (P1+1):(length(index(r)) - p_2),.combine=c)%dopar%{
     
     x = as.numeric(rs[6,intersect(idxv,idxr)])
     if(length(x) > 0){
-        x
+        xts(x, order.by = as.POSIXct(array(index(r)[i], length(x)), origin='1970-01-01'))
     }
     
 }
 
 mean(rbr)
     
-}}
+#}}
+
+exec_tele(function() { plot.zoo(cumsum(rbr)) })
+
+
+
 
 
 save(res1, file='ee_res1.RData')
 
 
-rbr = foreach(i = (P1+1):(length(index(r)) - p_2),.combine=c)%dopar%sslice(r,v,P1,p_2,0.08,4,i)
-mean(rbr)
 
+rbr <<- foreach(i = (P1+1):(length(index(r)) - p_2),.combine=rbind)%dopar%sslice(r,v,P1,24*14,0.1,10,100,6,i)
+exec_tele(function() { plot.zoo(cumsum(rbr)) })
 
-# r0=r; v0=v; p_1=24*5; p_2=24*7*3; j0=0.08; nwait=4; i0=121
-sslice = function(r0, v0, p_1, p_2, j0, nwait, i0){
+    
+
+# r0=r; v0=v; p_1=24*5; p_2=24*7*3; j0=0.08; u1=20; u2=50; nwait=4; take_j=0.05; stop_j=-0.2; i0=226
+sslice = function(r0, v0, p_1, p_2, j0, u1, u2, nwait, take_j, stop_j, i0){
     print(i0)
     vs = v0[(i0-p_1):i0,]
     vs = as.numeric(t(rowSums(t(vs))))
-    idxv = order(vs, decreasing=TRUE)[10:40]
+    idxv = order(vs, decreasing=TRUE)[u1:u2]
 
     rs = diff(log(r0[c((i0-nwait):i0, i0+p_2),]))
     idxr = as.numeric(rs[2,]) > j0
     if(nwait > 1)
         idxr = which(idxr & foreach(k=2:nwait,.combine='&')%do%{ as.numeric(rs[1+k,]) > 0 })
-    
-    x = as.numeric(rs[nwait+2,intersect(idxv,idxr)])
+
+    pick_idx = intersect(idxv,idxr)
+    x = foreach(j=pick_idx,.combine=c)%do%{
+        y = log(as.numeric(r0[i0:(i0+p_2),j]))
+        y = y - y[1]
+        imin = which.min(y)
+        imax = which.max(y)
+        if(imin < imax && y[imin] < stop_j) stop_j else if(y[imax] > take_j) take_j else tail(y,1)
+    }
+
+    #x = as.numeric(rs[nwait+2, pick_idx])
     if(length(x) > 0){
-        return(x)
+        return(xts(x, order.by = as.POSIXct(array(index(r0)[i0], length(x)), origin='1970-01-01')))
     } else return(NULL)
 }
 
 
+p_2 = 24*7*5
+rbr <<- foreach(i = (P1+1):(length(index(r)) - p_2),.combine=rbind)%dopar%sslice(r,v,P1,p_2,0.1,10,50,2,4,-0.5,i)
+exec_tele(function() { plot.zoo(cumsum(exp(rbr)-1)) })
 
+exec_tele(function() { plot.zoo(y) })
 
 res2 = foreach(p_2=seq(5,25,by=5))%do%{ foreach(j=seq(0,0.15,by=0.005),.combine=c)%do%{
 
@@ -256,7 +279,7 @@ bot$sendDocument(tmp)
 
 tmp = paste0(tempfile(),'.png')
 png(tmp)
-plot(res)
+plot(rbr)
 dev.off()
 bot$sendDocument(tmp)
 png(tmp)

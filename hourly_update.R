@@ -9,7 +9,8 @@ currency = 'BTC'
 CryptoTools_settings(cryptocompare = list(limit = 2000, storage_from = '2018-02-10'))
 #for( symbol in paste( symbols, currency, sep = '/' ) )
 for( symbol in symbols )
-    try( CryptoTools:::store_cryptocompare_data( gsub( '\\*', '_', paste0(symbol,'/BTC'),  ) ))
+    if(length(list.files(paste0('~/CryptoCompare/CCCAGG/',symbol,'/BTC/'))) > 0)
+        try( CryptoTools:::store_cryptocompare_data( gsub( '\\*', '_', paste0(symbol,'/BTC'),  ) ))
 
 n = names_signal()
 data = fromJSON( paste0( "https://min-api.cryptocompare.com/data/all/coinlist" ) )$Data
