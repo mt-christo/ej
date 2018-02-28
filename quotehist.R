@@ -44,6 +44,31 @@ get_history = function(exchange, ticker, limit, base_curr = 'BTC', loadtype='his
     res[res$close!=0,]
 }
 
+# ticker_trex='BCC'; ticker_fi='BCH'
+get_ineff = function(ticker_trex, ticker_fi){
+    url = "https://bittrex.com/api/v1.1/public/getmarketsummary?market="
+#    rcb = fromJSON(paste0(url,'BTC-',ticker_trex))$result[,c('Bid', 'Ask')]
+    rcb =fromJSON(paste0("https://api.bitfinex.com/v2/ticker/t",ticker_fi,"BTC"))
+    rcb = data.frame(Bid=rcb[1], Ask=rcb[3])
+    rce = fromJSON(paste0(url,'ETH-',ticker_trex))$result[,c('Bid', 'Ask')]
+    re = fromJSON(paste0(url,'BTC-ETH'))$result[,c('Bid', 'Ask')]
+
+
+    return(list(buy = re$Bid - rcb$Ask/rce$Bid, sell = re$Ask - rcb$Bid/rce$Ask))
+}
+
+get_ineff('BCC','BCH')
+
+tickers = c('ETC','XRP','LTC','DASH','NEO','ADA','XLM','BCC')
+t=tickers[1]
+x=get_ineff(t)
+data.table(ticker=t,t(x))
+foreach(t=tickers,.combine=rbind)%dopar%data.table(ticker=t,t(get_ineff(t)))
+
+
+data.table(ticker=t,t(get_ineff('OMG')))
+
+
 #exchange='BitTrex'; ticker='ETC'; limit=2000; base_curr = 'BTC'
 get_r_history = function(exchange, ticker, limit, base_curr = 'BTC', loadtype='histohour'){
     x = get_history(exchange, ticker, limit, base_curr, loadtype)
@@ -201,8 +226,8 @@ exec_tele(function() { plot.zoo(cumsum(rbr)) })
 
     
 
-# r0=r; v0=v; p_1=24*5; p_2=24*7*3; j0=0.08; u1=20; u2=50; nwait=4; take_j=0.05; stop_j=-0.2; i0=226
-sslice = function(r0, v0, p_1, p_2, j0, u1, u2, nwait, take_j, stop_j, i0){
+# r0=r; v0=v; p_1=24*5; p_2=24*7*3; j0=0.08; u1=20; u2=50; nwait=4; take_j=1.0; stop_j=-0.5; dd_j=-0.05; tol_j=-0.03; i0=499
+sslice = function(r0, v0, p_1, p_2, j0, u1, u2, nwait, take_j, stop_j, dd_j, tol_j, i0){
     print(i0)
     vs = v0[(i0-p_1):i0,]
     vs = as.numeric(t(rowSums(t(vs))))
@@ -210,11 +235,16 @@ sslice = function(r0, v0, p_1, p_2, j0, u1, u2, nwait, take_j, stop_j, i0){
 
     rs = diff(log(r0[c((i0-nwait):i0, i0+p_2),]))
     idxr = as.numeric(rs[2,]) > j0
+    
     if(nwait > 1)
-        idxr = which(idxr & foreach(k=2:nwait,.combine='&')%do%{ as.numeric(rs[1+k,]) > 0 })
+        idxr = which(idxr & as.numeric(t(exp(rowSums(t(rs[3:(1+nwait),])))-1)) > tol_j)
+    
+    idx = intersect(idxv,idxr)
 
-    pick_idx = intersect(idxv,idxr)
-    x = foreach(j=pick_idx,.combine=c)%do%{
+    for(x in idx)
+        if(min(as.numeric(exp(cumsum(rs[3:(1+nwait),x]))) - 1) < dd_j) idx = idx[idx != x]
+
+    x = foreach(j=idx,.combine=c)%do%{
         y = log(as.numeric(r0[i0:(i0+p_2),j]))
         y = y - y[1]
         imin = which.min(y)
@@ -222,16 +252,21 @@ sslice = function(r0, v0, p_1, p_2, j0, u1, u2, nwait, take_j, stop_j, i0){
         if(imin < imax && y[imin] < stop_j) stop_j else if(y[imax] > take_j) take_j else tail(y,1)
     }
 
-    #x = as.numeric(rs[nwait+2, pick_idx])
     if(length(x) > 0){
         return(xts(x, order.by = as.POSIXct(array(index(r0)[i0], length(x)), origin='1970-01-01')))
     } else return(NULL)
 }
 
 
-p_2 = 24*7*5
-rbr <<- foreach(i = (P1+1):(length(index(r)) - p_2),.combine=rbind)%dopar%sslice(r,v,P1,p_2,0.1,10,50,2,4,-0.5,i)
+P1 = 24*30; p_2 = 24*7*6
+rbr <<- foreach(i = (P1+1):(length(index(r)) - p_2),.combine=rbind)%dopar%sslice(r, v, P1 ,p_2, j0=0.08, u1=20, u2=50, nwait=4, take_j=4.0, stop_j=-0.5, dd_j=-0.05, tol_j=-0.03, i0=i)
+
+for(i in (P1+1):(length(index(r)) - p_2))
+    sslice(r, v, P1 ,p_2, j0=0.08, u1=20, u2=50, nwait=4, take_j=1.0, stop_j=-0.5, dd_j=-0.05, tol_j=-0.03, i0=i)
+
+    
 exec_tele(function() { plot.zoo(cumsum(exp(rbr)-1)) })
+exec_tele(function() { hist(rbr[abs(rbr)<3],br=50) })
 
 exec_tele(function() { plot.zoo(y) })
 
@@ -270,19 +305,61 @@ bot$set_default_chat_id(282218584)
 
 tmp = paste0(tempfile(),'.png')
 png(tmp)
-hist(exp(rbr)-1,br=30)
+plo
 dev.off()
 bot$sendDocument(tmp)
 
 
 
 
-tmp = paste0(tempfile(),'.png')
-png(tmp)
-plot(rbr)
-dev.off()
-bot$sendDocument(tmp)
-png(tmp)
-plot(res2)
-dev.off()
-bot$sendDocument(tmp)
+#get_cryptocompare_data = function( symbol, from, to = from, period, exchange = 'CCCAGG', currency, local = F ) {
+#store_cryptocompare_data = function( symbol, exchange = 'CCCAGG' ) {
+CryptoTools_settings(cryptocompare = list(limit = 2000, storage_from = '2018-01-01'))
+CryptoTools:::store_cryptocompare_data('XRP/BTC', exchange='BitTrex')
+CryptoTools:::store_cryptocompare_data('XMR/BTC', exchange='BitTrex')
+CryptoTools:::store_cryptocompare_data('LTC/BTC', exchange='BitTrex')
+CryptoTools:::store_cryptocompare_data('BCH/BTC', exchange='BitTrex')
+CryptoTools:::store_cryptocompare_data('ZEC/BTC', exchange='BitTrex')
+
+    tickers = c('XRP','XMR','LTC','BCH','ZEC')
+    for(t in tickers) CryptoTools:::store_cryptocompare_data(paste0(t,'/BTC'), exchange='BitTrex')
+    x = list()
+    for(t in tickers) x[[t]] = get_cryptocompare_data( paste0(t,'/BTC'), '2018-01-01', as.character(Sys.Date()), 'hour', 'BitTrex', 'BTC', local=T )
+    r0 = foreach(t = tickers,.combine='merge.xts')%do%{ y=as.xts(x[[t]]$close, order.by=as.POSIXlt(x[[t]]$time,origin='1970-01-01')); names(y)[1]=t; y }
+    r0 = r0[rowSums(is.na(r0))==0,]
+
+    r = r0
+    r = r0[index(r0)>'2018-01-01' & index(r0)<'2018-02-01',]
+    r = r0[index(r0)>'2018-02-01' & index(r0)<'2018-03-01',]
+
+    
+    p=array(1,ncol(r))
+    p2 = optim(array(1,ncol(r)), function(p){ x=p[1]*r[,1]; for(i in 2:ncol(r)) x=x+p[i]*r[,i]; return(sd(x)+mean(x)^2) })$par
+#    p = optim(array(1,ncol(r)), function(p){ x=p[1]*r[,1]; for(i in 2:ncol(r)) x=x+p[i]*r[,i]; return(abs(mean(x))) })$par
+#    p = optim(array(1,ncol(r)), function(p){ tmp=p[1]*r[,1]; for(i in 2:ncol(r)) tmp=tmp+p[i]*r[,i]; return(1-cor(1:length(tmp),tmp)) })$par
+
+p=p2
+x=p[1]*r[,1]; for(i in 2:ncol(r)) x=x+p[i]*r[,i];
+exec_tele(function() { plot.zoo(x) })
+
+    cor(1:length(x),x)
+    10000*p*as.numeric(r[nrow(r),])
+    
+exec_tele(function() { plot.zoo(r[,5]) })
+
+    names(v)[bigj]
+
+    bigj = which(foreach(i=1:ncol(v),.combine=c)%do%( max(v[,i]) > 10000 ))
+    t = foreach(j=bigj,.combine=rbind)%do%data.table(name=names(r)[j], i=j, count=sum(v[,j]>1000))
+    for(j in t[order(t[,2]),][count<15, i]){
+        idx = v[,j] > 10000
+        v[idx, j] = 0
+        r[idx, j] = NA
+    }
+    v = na.fill(v, 0)
+    r = na.locf(r)
+    
+        
+
+
+    bot
