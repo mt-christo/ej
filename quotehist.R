@@ -169,12 +169,16 @@ v = foreach(s=symbols,.combine='merge.xts')%do%{
 
 
 
+r = get(load('storage_r.RData'))
+r = na.locf(r)
+save(r, file='storage_rlocf.RData')
+
 
 
 
 setwd('~/git/ej')
-r = get(load('storage_r.RData'))
-v = get(load('storage_v.RData'))
+r1 = get(load('storage_r.RData'))
+v1 = get(load('storage_v.RData'))
 
 r = r[index(r)>'2017-08-01',]
 v = v[index(v)>'2017-08-01',]
@@ -184,7 +188,7 @@ r = na.locf(r)
 P1 = 24*5
 P2 = 24*24
 J = 0.1
-res1 = foreach(p_2=24*seq(5,25,by=5))%do%{ foreach(j=seq(0,0.15,by=0.002),.combine=c)%do%{
+#res1 = foreach(p_2=24*seq(5,25,by=5))%do%{ foreach(j=seq(0,0.15,by=0.002),.combine=c)%do%{
 
 P1 = 24*5
 p_2=24*7*2
@@ -226,15 +230,15 @@ exec_tele(function() { plot.zoo(cumsum(rbr)) })
 
     
 
-# r0=r; v0=v; p_1=24*5; p_2=24*7*3; j0=0.08; u1=20; u2=50; nwait=4; take_j=1.0; stop_j=-0.5; dd_j=-0.05; tol_j=-0.03; i0=499
-sslice = function(r0, v0, p_1, p_2, j0, u1, u2, nwait, take_j, stop_j, dd_j, tol_j, i0){
+# r0=r; v0=v; p_1=24*5; p_2=24*7*3; j0=0.08; j1=0.15; u1=20; u2=50; nwait=4; take_j=1.0; stop_j=-0.5; dd_j=-0.05; tol_j=-0.03; i0=499
+sslice = function(r0, v0, p_1, p_2, j0, j1, u1, u2, nwait, take_j, stop_j, dd_j, tol_j, i0){
     print(i0)
     vs = v0[(i0-p_1):i0,]
     vs = as.numeric(t(rowSums(t(vs))))
     idxv = order(vs, decreasing=TRUE)[u1:u2]
 
     rs = diff(log(r0[c((i0-nwait):i0, i0+p_2),]))
-    idxr = as.numeric(rs[2,]) > j0
+    idxr = (as.numeric(rs[2,]) > j0) & (as.numeric(rs[2,]) < j1)
     
     if(nwait > 1)
         idxr = which(idxr & as.numeric(t(exp(rowSums(t(rs[3:(1+nwait),])))-1)) > tol_j)
@@ -253,13 +257,30 @@ sslice = function(r0, v0, p_1, p_2, j0, u1, u2, nwait, take_j, stop_j, dd_j, tol
     }
 
     if(length(x) > 0){
-        return(xts(x, order.by = as.POSIXct(array(index(r0)[i0], length(x)), origin='1970-01-01')))
+        res = xts(pnl=x, order.by = as.POSIXct(array(index(r0)[i0], length(x)), origin='1970-01-01'))
+        res$x = x
+        res$j = as.numeric(rs[2,idx])
+        return(res) 
     } else return(NULL)
 }
 
 
+setwd('~/git/ej')
+r1 = get(load('storage_r.RData'))
+v1 = get(load('storage_v.RData'))
 P1 = 24*30; p_2 = 24*7*6
-rbr <<- foreach(i = (P1+1):(length(index(r)) - p_2),.combine=rbind)%dopar%sslice(r, v, P1 ,p_2, j0=0.08, u1=20, u2=50, nwait=4, take_j=4.0, stop_j=-0.5, dd_j=-0.05, tol_j=-0.03, i0=i)
+rbr <<- foreach(i = (P1+1):(length(index(r)) - p_2),.combine=rbind)%dopar%sslice(r, v, P1 ,p_2, j0=0.04, j1=0.15, u1=20, u2=50, nwait=4, take_j=4.0, stop_j=-0.5, dd_j=-0.05, tol_j=-0.03, i0=i)
+
+rbr0 = rbr[rbr$j<0.5,]
+rbr0 = rbr0[index(rbr0)%in%index(alt15r)]
+alt0 = alt15r[index(alt15r)%in%index(rbr0)]
+names(alt0) = 'idx'
+rbr1 = merge.xts(rbr0,alt0)
+
+exec_tele(function() { plot.zoo(cumsum(exp(rbr$x)-1)) }, 'signal backtest')
+exec_tele(function() { plot(as.numeric(rbr1$idx),as.numeric(rbr1$j)) }, 'index return vs. signal candle')
+
+
 
 for(i in (P1+1):(length(index(r)) - p_2))
     sslice(r, v, P1 ,p_2, j0=0.08, u1=20, u2=50, nwait=4, take_j=1.0, stop_j=-0.5, dd_j=-0.05, tol_j=-0.03, i0=i)
@@ -308,6 +329,20 @@ png(tmp)
 plo
 dev.off()
 bot$sendDocument(tmp)
+
+
+
+
+
+currency = 'USD'
+CryptoTools_settings(cryptocompare = list(limit = 2000, storage_from = '2015-01-01'))
+symbol='BTC'
+try( CryptoTools:::store_cryptocompare_data( gsub( '\\*', '_', paste0(symbol,'/',currency),  ) ))
+btc = get_cryptocompare_data( paste0('BTC/USD'), '2017-01-01', as.character(Sys.Date()), 'hour', 'CCCAGG', local=T )
+btc = as.xts(btc$close, order.by=btc$time)
+exec_tele(function() { plot_dts( btc[, .( time, close ) ] )$plot() })
+exec_tele(function() { plot(btc$close) })
+
 
 
 
@@ -363,3 +398,59 @@ exec_tele(function() { plot.zoo(r[,5]) })
 
 
     bot
+
+
+IDX_N = 20
+
+btc = get_cryptocompare_data( paste0('BTC/USD'), '2017-01-01', as.character(Sys.Date()), 'hour', 'CCCAGG', local=T )
+btc = as.xts(btc$close, order.by=btc$time)
+btc = diff(log(btc))[-1]
+setwd('~/git/ej')
+r = get(load('storage_rlocf.RData'))
+v = get(load('storage_v.RData'))
+rmon = apply.monthly(r, last)
+vm = apply.monthly(v, apply, 2, sum)
+data = fromJSON( paste0( "https://min-api.cryptocompare.com/data/all/coinlist" ) )$Data
+vns = names(vm)[order(as.numeric(vm[15,]), decreasing=T)[1:200]]
+rmon = rmon[,vns]
+v = v[,vns]
+r = r[,vns]
+tskip = c()
+for(n in vns){
+    print(n)
+    Sys.sleep(0.1)
+    x = fromJSON( paste0( "https://www.cryptocompare.com/api/data/coinsnapshot/?fsym=",n,"&tsym=BTC" ) )$Data
+    if('TotalCoinsMined'%in%names(x))
+        rmon[,n] = rmon[,n]*x$TotalCoinsMined
+    else
+        tskip = c(tskip, n)
+
+}
+v = v[,!names(v)%in%tskip]
+r = r[,!names(r)%in%tskip]
+rmon = rmon[,!names(rmon)%in%tskip]
+x = foreach(i = index(rmon))%do%{ rmon[i,is.na(rmon[i,])] = 0 }
+rmon1 = rmon[,!names(rmon)%in%tskip]
+#x = foreach(i = index(rmon1))%do%{ rmon1[i,order(as.numeric(rmon1[i,]), decreasing=T)[(IDX_N+1):ncol(rmon1)]] = 0 }
+x = foreach(i = index(rmon1))%do%{ rmon1[i,order(as.numeric(rmon1[i,]), decreasing=T)[c(1:9,16:ncol(rmon1))]] = 0 }
+rws = merge.xts(rmon1,r[,c()])
+rws = na.fill(na.locf(rws), 0)[-1]
+rws = rws/rowSums(rws)
+rr = diff(log(r))[-1]
+btc = btc[index(btc)%in%index(rr)]
+rr = rr[index(rr)%in%index(btc)]
+rr = na.fill(rr, 0)
+alt15r = as.xts(log(1 + rowSums((exp(rr)-1)*rws)), order.by=index(rr))
+alt15r = alt15r + btc
+alt15 = cumsum(exp(alt15r)-1)
+exec_tele(function() { plot.zoo(alt15) }, 'altcoin index pnl')
+
+
+
+x = foreach(i = index(rmon),.combine=rbind)%do%{
+    x = as.numeric(rmon[i,order(as.numeric(rmon[i,]), decreasing=T)])
+    xts(sum(x[1:15])/sum(x), order.by=i)
+}; exec_tele(function() { plot.zoo(x) }, 'top 15 weight')
+
+
+exec_tele(function() { plot.zoo(r[,'HSR']) }, '')
