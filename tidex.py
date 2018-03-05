@@ -1,4 +1,6 @@
+from collections import namedtuple
 import sys, tidexapi
+import numpy as np
 import pandas as pd
 import datetime
 
@@ -46,8 +48,28 @@ def setHistoryParams(params, from_number, count_number, from_id, end_id,
     if end is not None:
         params["end"] = "%d" % end
 
-        
-t = tidexapi.TradeAPI(key, handler, connection)
+
+TradeResult = namedtuple("TradeResult",
+    ["received", "remains", "order_id", "funds", "init_order_id", "trades"])
+
+OrderItem = namedtuple("OrderItem",
+    ["order_id", "pair", "type", "start_amount", "amount", "rate", "timestamp_created", "status"])
+
+def trade(tapi, pair, trade_type, rate, amount):
+    params = {"method": "Trade",
+              "pair": pair,
+              "type": trade_type,
+              "rate": rate,
+              "amount": amount}
+    return TradeResult(**tapi._post(params))
+
+def orderInfo(tapi, order_id: int) -> OrderItem:
+    response = tapi._post({"method": "OrderInfo", "order_id": order_id})
+    return OrderItem(order_id, **response[str(order_id)])
+
+handler = tidexapi.KeyHandler('tidi.txt')
+key = next(iter(handler.keys))
+t = tidexapi.TradeAPI(key, handler, tidexapi.Connection())
 params = {"method": "TradeHistory"}
 setHistoryParams(params, None, None, None, None, None, None, None)
 orders = list(t._post(params).items())
@@ -55,3 +77,7 @@ o = pd.DataFrame([x[1] for x in orders])
 o.timestamp = [datetime.datetime.fromtimestamp(int(x)).strftime('%Y-%m-%d %H:%M:%S') for x in o.timestamp]
 o = o.sort_values('timestamp')
 o.to_excel('ttrades.xlsx')
+
+t = tidexapi.TradeAPI(key, handler, tidexapi.Connection())
+#a = trade(t, 'ntk_eth', 'sell', 0.001, 1)
+b = orderInfo(t, a.init_order_id)
