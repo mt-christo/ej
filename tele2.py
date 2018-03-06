@@ -1,6 +1,12 @@
+import numpy as np
+import pandas as pd
+import sys
 import os
 import pickle
+import json
 import gspread
+from oauth2client.service_account import ServiceAccountCredentials
+
 
 chat_id = YOUR_CHAT_ID
 
@@ -25,14 +31,35 @@ e = client.get_entity(522573392)
 
 h = client.get_message_history("tiesdb", limit=15000)
 
+with open('/home/aslepnev/git/ej/teleties.pickle', 'wb') as tmp:
+    pickle.dump(x, tmp, protocol=pickle.HIGHEST_PROTOCOL)
 
-with open('/home/aslepnev/git/ej/tele_ties.pickle', 'wb') as tmp:
-    pickle.dump(h, tmp, protocol=pickle.HIGHEST_PROTOCOL)
+
+teleties = pickle.load(open('/home/aslepnev/git/ej/teleties.pickle', 'rb'))
 
 
 x = pd.DataFrame([i.to_dict() for i in h.data])
 
 x.to_csv('tele_ties.csv')
+
+
+credentials = ServiceAccountCredentials.from_json_keyfile_name('/home/aslepnev/a/gigi.json', ['https://spreadsheets.google.com/feeds'])
+gc = gspread.authorize(credentials)
+wks = gc.open("cryptoboard").sheet1
+
+acts = pd.Series([i.get('_') if isinstance(i, dict) and '_' in i else 0 for i in teleties.action])
+adds = acts.isin(['MessageActionChatAddUser', 'MessageActionChatJoinedByLink'])
+sumadds = adds.cumsum()
+
+
+
+
+
+
+
+
+
+
 
 p = client(GetParticipantsRequest(client.get_entity('https://t.me/tiesdb'), ChannelParticipantsSearch(''), 1, 10, hash=0))
 
