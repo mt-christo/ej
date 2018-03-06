@@ -1,3 +1,7 @@
+import os
+import pickle
+import gspread
+
 chat_id = YOUR_CHAT_ID
 
 api_id = 107358
@@ -18,8 +22,17 @@ d = client.get_dialogs(limit=200)
 e = client.get_entity('https://t.me/tiesdb')
 e = client.get_entity(432315842)
 e = client.get_entity(522573392)
-h = client.get_message_history("tiesdb", limit=10)
 
+h = client.get_message_history("tiesdb", limit=15000)
+
+
+with open('/home/aslepnev/git/ej/tele_ties.pickle', 'wb') as tmp:
+    pickle.dump(h, tmp, protocol=pickle.HIGHEST_PROTOCOL)
+
+
+x = pd.DataFrame([i.to_dict() for i in h.data])
+
+x.to_csv('tele_ties.csv')
 
 p = client(GetParticipantsRequest(client.get_entity('https://t.me/tiesdb'), ChannelParticipantsSearch(''), 1, 10, hash=0))
 
