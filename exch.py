@@ -2,29 +2,28 @@ import requests, json
 
 APIURLS = {'BITFINEX': ['https://api.bitfinex.com/v1/book/%SYMBOL%', 'BTCUSD'],
            'KRAKEN': ['https://api.kraken.com/0/public/Depth?pair=%SYMBOL%', 'XBTUSD'],
-           'HITBTC': ['https://api.hitbtc.com/api/2/public/orderbook/%SYMBOL%', 'BTCUSD'],
            'GDAX': ['https://api.gdax.com/products/%SYMBOL%/book?level=2', 'BTC-USD'],
+           'HITBTC': ['https://api.hitbtc.com/api/2/public/orderbook/%SYMBOL%', 'BTCUSD'],
            'POLONIEX': ['https://poloniex.com/public?command=returnOrderBook&currencyPair=%SYMBOL%&depth=50', 'USDT_BTC'],
            'BITTREX': ['https://bittrex.com/api/v1.1/public/getorderbook?market=%SYMBOL%&type=both', 'USDT-BTC'],
            'ITBIT': ['https://api.itbit.com/v1/markets/%SYMBOL%/order_book', 'XBTUSD'],
            'UPHOLD': ['https://api.uphold.com/v0/ticker', 'BTCUSD'],
-           'BINANCE': ['https://api.binance.com/api/v1/depth?symbol=%SYMBOL%', 'BTCUSDT']
+           'BINANCE': ['https://api.binance.com/api/v1/depth?symbol=%SYMBOL%', 'BTCUSDT'],
+           'BITY': ['https://bity.com/api/v1/rate2/%SYMBOL%', 'BTCUSD']
 }
 
 
-def get_uphold():
-    info = APIURLS['UPHOLD']
+def get_bity():
+    info = APIURLS['BITY']
     r = json.loads(requests.get(info[0].replace('%SYMBOL%',info[1])).text)
-    t = pd.DataFrame.from_dict(r)
-    t = t[t.pair==info[1]]
-    return({'bid':t.bid, 'ask':t.ask})
+    return({'bid':float(r['rate_we_buy']), 'ask':float(r['rate_we_sell'])})
 
 def get_uphold():
     info = APIURLS['UPHOLD']
     r = json.loads(requests.get(info[0].replace('%SYMBOL%',info[1])).text)
     t = pd.DataFrame.from_dict(r)
     t = t[t.pair==info[1]]
-    return({'bid':t.bid, 'ask':t.ask})
+    return({'bid':float(t.bid), 'ask':float(t.ask)})
 
 def get_bittrex():
     info = APIURLS['BITTREX']
@@ -46,8 +45,8 @@ def get_hitbtc():
         res[key] = t[t.cs > 100000].reset_index().price.astype(float)[0]
     return({'bid':res['bid'], 'ask':res['ask']})
 
-def get_gdax_type(exch):
-    info = APIURLS[exch] # 'GDAX', 'POLONIEX', 'ITBIT'
+def gdax_type(exch):
+    info = APIURLS[exch] # 'GDAX', 'POLONIEX', 'ITBIT', 'BINANCE'
     r = json.loads(requests.get(info[0].replace('%SYMBOL%',info[1])).text)
     res = {}
     for key in ['bids','asks']:
@@ -76,19 +75,25 @@ def get_bitfinex():
         res[key] = t[t.cs > 100000].reset_index().price.astype(float)[0]
     return({'bid':res['bids'], 'ask':res['asks']})
 
+res = {'BITFINEX': get_bitfinex(),
+       'KRAKEN': get_kraken('XXBTZUSD'),
+       'GDAX': gdax_type('GDAX'),
+       'HITBTC': get_hitbtc(),
+       'POLONIEX': gdax_type('POLONIEX'),
+       'BITTREX': get_bittrex(),
+       'ITBIT': gdax_type('ITBIT'),
+       'UPHOLD': get_uphold(),
+       'BINANCE': gdax_type('BINANCE'),
+       'BITY': get_bity()}
+
 credentials = ServiceAccountCredentials.from_json_keyfile_name('/home/aslepnev/a/gigi.json', ['https://spreadsheets.google.com/feeds'])
 gc = gspread.authorize(credentials)
 wks = gc.open("brokerboard")
 wks = wks.worksheet('board')
 
-res = {'BITFINEX': get_bitfinex(),
-       'KRAKEN': get_kraken('XXBTZUSD'),
-       'GDAX': get_gdax(),
-       'HITBTC': get_hitbtc()}
-
-ecells = wks.range('A3:A'+str(len(res)+2))
-bcells = wks.range('B3:B'+str(len(res)+2))
-ocells = wks.range('C3:C'+str(len(res)+2))
+ecells = wks.range('B6:B'+str(len(res)+5))
+bcells = wks.range('C6:C'+str(len(res)+5))
+ocells = wks.range('D6:D'+str(len(res)+5))
 
 i = 0
 for key in res.keys():
