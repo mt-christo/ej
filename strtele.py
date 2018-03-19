@@ -78,7 +78,19 @@ def my_response(bot, update):
     """Echo the user message."""
     text = update.message.text.lower()
     res = ''
-    if text =='products':
+    if text == 'help':
+        res = 'Commands:'
+        res = res + '\nproducts:  list our product types'
+        res = res + '\nwho <text>:  list securities starting with <text>'
+        res = res + '\nbaskets:  list your baskets'
+        res = res + '\nbasket <name sec1 sec2 ..>:  save basket with members'
+        res = res + '\ndelete <name>:  delete basket <name>'
+        res = res + '\nplot <name>:  price chart for equal-weighted basket <name>'
+        res = res + '\n\nIndicative pricing:'
+        res = res + '\nworstof <name> <n1-n2-...>:  worst-of product, basket <name> with strikes n[i]'
+        res = res + '\nbasketcall <name> <n1-n2-...>:  ATM Call option, basket <name>'
+        update.message.reply_text(res)
+    elif text == 'products':
         res = "worstof:  pays off coupon if all stocks are above that year's strike\n\nbasketcall:  pays Call option payoff on equal-weighted basket"
         update.message.reply_text(res)
     elif text == 'baskets':
