@@ -26,12 +26,13 @@ import pickle
 import json
 import gspread
 from oauth2client.service_account import ServiceAccountCredentials
+import matplotlib.pyplot as plt
 
 # Enable logging
-logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
-                    level=logging.INFO)
+#logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+#                    level=logging.INFO)
 
-logger = logging.getLogger(__name__)
+#logger = logging.getLogger(__name__)
 
 
 # Define a few command handlers. These usually take the two arguments bot and
@@ -80,15 +81,15 @@ def my_response(bot, update):
     res = ''
     if text == 'help':
         res = 'Commands:'
-        res = res + '\nproducts:  list our product types'
-        res = res + '\nwho <text>:  list securities starting with <text>'
-        res = res + '\nbaskets:  list your baskets'
-        res = res + '\nbasket <name sec1 sec2 ..>:  save basket with members'
-        res = res + '\ndelete <name>:  delete basket <name>'
-        res = res + '\nplot <name>:  price chart for equal-weighted basket <name>'
+        res = res + '\n*products: list our product types'
+        res = res + '\n*who <text>: list securities starting with <text>'
+        res = res + '\n*baskets: list your baskets'
+        res = res + '\n*basket <name sec1 sec2 ..>: save basket with members'
+        res = res + '\n*delete <name>: delete basket <name>'
+        res = res + '\n*plot <name>: price chart for equal-weighted basket <name>'
         res = res + '\n\nIndicative pricing:'
-        res = res + '\nworstof <name> <n1-n2-...>:  worst-of product, basket <name> with strikes n[i]'
-        res = res + '\nbasketcall <name> <n1-n2-...>:  ATM Call option, basket <name>'
+        res = res + '\n*worstof <name> <n1-n2-...>: worst-of product, basket <name> with strikes n[i]'
+        res = res + '\n*basketcall <name> <n1-n2-...>: ATM Call option, basket <name>'
         update.message.reply_text(res)
     elif text == 'products':
         res = "worstof:  pays off coupon if all stocks are above that year's strike\n\nbasketcall:  pays Call option payoff on equal-weighted basket"
