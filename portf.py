@@ -1,3 +1,13 @@
+CCURL = 'https://min-api.cryptocompare.com/data/histoday?fsym=TIE&tsym=USD&limit=600&aggregate=1&e=CCCAGG'
+t = pd.DataFrame(json.loads(requests.get(CCURL).text)['Data'])
+t = t[t.volumefrom > 0]
+t.time = t.time.apply(datetime.datetime.fromtimestamp)
+t.to_csv('~/git/ej/tieusd.csv',float_format='%.8f')
+
+
+
+
+
 import gspread
 from oauth2client.service_account import ServiceAccountCredentials
 import datetime
