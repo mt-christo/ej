@@ -26,6 +26,8 @@ import pickle
 import json
 import gspread
 from oauth2client.service_account import ServiceAccountCredentials
+import matplotlib
+matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 
 # Enable logging
@@ -77,8 +79,11 @@ def my_who(text):
 
 def my_fig(bsk):
     t = pickle.load(open('/home/aslepnev/git/ej/strbaskets.pickle', 'rb'))[bsk]
-    h = hist[hist.ticker.isin(t)].groupby('dt').agg({'val': 'mean'})
-    h.val = h.val.cumsum()*100
+    h = hist[hist.ticker.isin(t)].groupby('dt').agg({'val': 'mean'}).reset_index()
+    f = plt.figure()
+    ax = plt.subplot(111)
+    ax.plot(pd.to_datetime(h.dt), h.val.cumsum())
+    f.savefig('plot.png')    
     
 def my_response(bot, update):
     """Echo the user message."""
