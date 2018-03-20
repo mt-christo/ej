@@ -75,6 +75,11 @@ def my_who(text):
     else:
         return 'No matching securities'
 
+def my_fig(bsk):
+    t = pickle.load(open('/home/aslepnev/git/ej/strbaskets.pickle', 'rb'))[bsk]
+    h = hist[hist.ticker.isin(t)].groupby('dt').agg({'val': 'mean'})
+    h.val = h.val.cumsum()*100
+    
 def my_response(bot, update):
     """Echo the user message."""
     text = update.message.text.lower()
@@ -120,6 +125,9 @@ def main():
     ses.MCAP = ses.MCAP.apply(lambda x: '{:,.0f} MM'.format(x/1000000))
     ses.loc[ses.MCAP == 'nan MM', 'MCAP'] = 'No Data'
 
+    hist = pd.read_csv('~/git/ej/hist_sm.csv')[['dt','ticker','val']]
+    hist.ticker = hist.ticker.str.replace('.Equity','').str.replace('.',' ')
+ 
     """Start the bot."""
     # Create the EventHandler and pass it your bot's token.
     updater = Updater("593240041:AAGP_UuWIb53NyNWm4ezUsTlxVEkPeSdT3k")
@@ -151,3 +159,13 @@ if __name__ == '__main__':
 
 
 
+#library(data.table)
+#library(foreach)
+#library(xts)
+#s = data.frame(fread('~/git/ej/hist_small.csv'))
+#p = foreach(i=seq(1,ncol(s)/2,by=2),.combine='merge.xts')%do%{ print(i); x=s[s[,i]!='',c(i,i+1)]; xts(x[,2],order.by=as.Date(x[,1],format='%d.%m.%Y')) }
+#p = na.locf(p)
+#p = exp(diff(log(p)))-1
+#names(p) = names(s)[seq(1,ncol(s)/2,by=2)]
+#t = foreach(i=1:ncol(p),.combine=rbind)%do%data.table(dt=index(p),ticker=names(p)[i],val=as.numeric(p[,i]))
+#write.csv(t,file='~/git/ej/hist_sm.csv')
