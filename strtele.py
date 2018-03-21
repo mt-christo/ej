@@ -77,13 +77,28 @@ def my_who(text):
     else:
         return 'No matching securities'
 
-def my_fig(bsk):
-    t = pickle.load(open('/home/aslepnev/git/ej/strbaskets.pickle', 'rb'))[bsk]
+def plot_basket(bname):
+    t = pickle.load(open('/home/aslepnev/git/ej/strbaskets.pickle', 'rb'))[bname]
     h = hist[hist.ticker.isin(t)].groupby('dt').agg({'val': 'mean'}).reset_index()
     f = plt.figure()
     ax = plt.subplot(111)
     ax.plot(pd.to_datetime(h.dt), h.val.cumsum())
-    f.savefig('plot.png')    
+    filename = 'plot.png'
+    f.savefig(filename)
+    return filename
+
+def calc_wo(text):
+    bname = text.split(' ')[0]
+    params = text.split(' ')[1:]
+    t = pickle.load(open('/home/aslepnev/git/ej/strbaskets.pickle', 'rb'))[bname]
+    h = hist[hist.ticker.isin(t)].groupby('dt').agg({'val': 'mean'}).reset_index()
+
+    coupon = float(text.split(' ')[1])
+    strikes = [float(x) for x in text.split(' ')[2].split('-')]
+
+    pd.DataFrame({'param':['coupon','strikes'], 'value':params}).to_csv('~/git/ej/wo_params.csv')
+    
+    
     
 def my_response(bot, update):
     """Echo the user message."""
@@ -118,6 +133,16 @@ def my_response(bot, update):
         res = delete_basket(text[7:1000])
         update.message.reply_text(res)
         update.message.reply_text(get_baskets())
+    elif text.startswith('plot '):
+        print(text)
+        res = plot_basket(text[5:1000])
+        update.message.reply_text(text[5:1000] + ' price chart:')
+        update.message.reply_photo(open(res, 'rb'))
+    elif text.startswith('worstof '):
+        print(text)
+        update.message.reply_text('Calculating..')
+        res = calc_wo(text[8:1000])
+        update.message.reply_photo(res)
 
 def error(bot, update, error):
     """Log Errors caused by Updates."""
