@@ -90,9 +90,7 @@ def plot_basket(bname):
     f.savefig(filename)
     return filename
 
-def calc_wo(text):
-    bname = text.split(' ')[0]
-    params = text.split(' ')[1:]
+def calc_wo(bname,params):
     t = pickle.load(open('/home/aslepnev/git/ej/strbaskets.pickle', 'rb'))[bname]
     params_fn = '~/git/ej/wo_params.csv'
     quotes_fn = '~/git/ej/wo_quotes.csv'
@@ -104,7 +102,7 @@ def report_wo(val):
     credentials = ServiceAccountCredentials.from_json_keyfile_name('/home/aslepnev/a/gigi.json', ['https://spreadsheets.google.com/feeds', 'https://www.googleapis.com/auth/drive'])
     gc = gspread.authorize(credentials)
     wks = gc.create("product_" + str(random.randint(1,999999999999)))
-    wks.share('antonslepnev@gmail.com', perm_type='user', role='writer')
+    wks.share('antonslepnev@gmail.com', perm_type='user', role='writer', notify=False)
     wks = wks.get_worksheet(0)
     
     cells = wks.range('A1:A5')
@@ -113,6 +111,16 @@ def report_wo(val):
     wks.update_cells(cells)
     return 'https://docs.google.com/spreadsheets/d/' + wks.spreadsheet.id
 
+def reply_wo(text):
+    items = text.split(' ')
+    bname = items[0]
+    params = items[1:3]
+    val = calc_wo(bname,params)
+    res = [str(val)+' %']
+    if len(items) > 3:
+        res = res + ['Please see product card on Google Drive: ' + report_wo(val)]
+    return res
+    
     
 def my_response(bot, update):
     """Echo the user message."""
@@ -153,11 +161,10 @@ def my_response(bot, update):
         update.message.reply_text(text[5:1000] + ' price chart:')
         update.message.reply_photo(open(res, 'rb'))
     elif text.startswith('worstof '):
-        print(text)
         update.message.reply_text('Calculating..')
-        res = calc_wo(text[8:1000])
-        update.message.reply_text(str(res)+' %')
-        update.message.reply_text('Please see product card on Google Drive: ' + report_wo(res))
+        res = reply_wo(text[8:1000])
+        for x in res:
+            update.message.reply_text(x)
 
 def error(bot, update, error):
     """Log Errors caused by Updates."""
