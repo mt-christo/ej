@@ -17,6 +17,8 @@ Press Ctrl-C on the command line or send a signal to the process to stop the
 bot.
 """
 
+from rpy2.robjects.packages import importr
+import rpy2.robjects as ro
 from telegram.ext import Updater, CommandHandler, MessageHandler, Filters
 import numpy as np
 import pandas as pd
@@ -25,6 +27,7 @@ import os
 import pickle
 import json
 import gspread
+import random
 from oauth2client.service_account import ServiceAccountCredentials
 import matplotlib
 matplotlib.use('Agg')
@@ -73,7 +76,7 @@ def delete_basket(text):
 def my_who(text):
     res = ses[ses.CODE.str.startswith(text.upper())]
     if len(res) > 0:
-        return '\n'.join(res.apply(lambda x: x.CODE+'\n('+x.NAME+')\nmcap: '+x.MCAP+'\n', axis=1))
+        return '\n'.join(res.apply(lambda x: str(x.CODE)+'\n('+str(x.NAME)+')\nmcap: '+str(x.MCAP)+'\n', axis=1))
     else:
         return 'No matching securities'
 
@@ -91,14 +94,25 @@ def calc_wo(text):
     bname = text.split(' ')[0]
     params = text.split(' ')[1:]
     t = pickle.load(open('/home/aslepnev/git/ej/strbaskets.pickle', 'rb'))[bname]
-    h = hist[hist.ticker.isin(t)].groupby('dt').agg({'val': 'mean'}).reset_index()
+    params_fn = '~/git/ej/wo_params.csv'
+    quotes_fn = '~/git/ej/wo_quotes.csv'
+    pd.DataFrame({'param':['coupon','strikes'], 'value':params}).to_csv(params_fn)
+    hist[hist.ticker.isin(t)].to_csv(quotes_fn)
+    return np.asarray(ro.r('wo_calculator_web("'+params_fn+'","'+quotes_fn+'")'))[0]
 
-    coupon = float(text.split(' ')[1])
-    strikes = [float(x) for x in text.split(' ')[2].split('-')]
+def report_wo(val):
+    credentials = ServiceAccountCredentials.from_json_keyfile_name('/home/aslepnev/a/gigi.json', ['https://spreadsheets.google.com/feeds', 'https://www.googleapis.com/auth/drive'])
+    gc = gspread.authorize(credentials)
+    wks = gc.create("product_" + str(random.randint(1,999999999999)))
+    wks.share('antonslepnev@gmail.com', perm_type='user', role='writer')
+    wks = wks.get_worksheet(0)
+    
+    cells = wks.range('A1:A5')
+    cells[0].value = 'Product price, %'
+    cells[1].value = val
+    wks.update_cells(cells)
+    return 'https://docs.google.com/spreadsheets/d/' + wks.spreadsheet.id
 
-    pd.DataFrame({'param':['coupon','strikes'], 'value':params}).to_csv('~/git/ej/wo_params.csv')
-    
-    
     
 def my_response(bot, update):
     """Echo the user message."""
@@ -142,7 +156,8 @@ def my_response(bot, update):
         print(text)
         update.message.reply_text('Calculating..')
         res = calc_wo(text[8:1000])
-        update.message.reply_photo(res)
+        update.message.reply_text(str(res)+' %')
+        update.message.reply_text('Please see product card on Google Drive: ' + report_wo(res))
 
 def error(bot, update, error):
     """Log Errors caused by Updates."""
@@ -157,6 +172,8 @@ def main():
 
     hist = pd.read_csv('~/git/ej/hist_sm.csv')[['dt','ticker','val']]
     hist.ticker = hist.ticker.str.replace('.Equity','').str.replace('.',' ')
+
+    ro.r('source("~/git/ej/stropt.R")')
  
     """Start the bot."""
     # Create the EventHandler and pass it your bot's token.
