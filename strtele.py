@@ -83,11 +83,23 @@ def my_who(text):
 def plot_basket(bname):
     t = pickle.load(open('/home/aslepnev/git/ej/strbaskets.pickle', 'rb'))[bname]
     h = hist[hist.ticker.isin(t)].groupby('dt').agg({'val': 'mean'}).reset_index()
-    f = plt.figure()
-    ax = plt.subplot(111)
-    ax.plot(pd.to_datetime(h.dt), h.val.cumsum())
+    
+    h['date'] = pd.to_datetime(h.dt)
+    h.val = (h.val.cumsum()+1)*100
+    
+#    f = plt.figure()
+#    ax = plt.subplot(111)
+
+#    pd.options.display.mpl_style = 'default'
+    matplotlib.style.use('ggplot')
+    p = h.plot(kind='line', x='date', y='val', title=bname+' basket performance, %', legend=False, color='blue', antialiased=True)
+#    ax.plot(pd.to_datetime(h.dt), )
+
+    f = p.get_figure()
     filename = 'plot.png'
     f.savefig(filename)
+    plt.close()   
+    
     return filename
 
 def calc_wo(bname,params):
@@ -98,14 +110,21 @@ def calc_wo(bname,params):
     hist[hist.ticker.isin(t)].to_csv(quotes_fn)
     return np.asarray(ro.r('wo_calculator_web("'+params_fn+'","'+quotes_fn+'")'))[0]
 
-def report_wo(val):
+def report_wo(val, params):
     credentials = ServiceAccountCredentials.from_json_keyfile_name('/home/aslepnev/a/gigi.json', ['https://spreadsheets.google.com/feeds', 'https://www.googleapis.com/auth/drive'])
     gc = gspread.authorize(credentials)
     wks = gc.create("product_" + str(random.randint(1,999999999999)))
     wks.share('antonslepnev@gmail.com', perm_type='user', role='writer', notify=False)
     wks = wks.get_worksheet(0)
     
-    cells = wks.range('A1:A5')
+    cells = wks.range('A1:A20')
+    j = 0
+    cells[0].value = 'Worst-Of product indicative pricing report'
+    cells[1].value = ''
+    cells[2].value = 'Basket:'
+    for s in params[1].split('-'):
+        cells[j] = s
+        j = j+1
     cells[0].value = 'Product price, %'
     cells[1].value = val
     wks.update_cells(cells)
@@ -118,7 +137,7 @@ def reply_wo(text):
     val = calc_wo(bname,params)
     res = [str(val)+' %']
     if len(items) > 3:
-        res = res + ['Please see product card on Google Drive: ' + report_wo(val)]
+        res = res + ['Please see product card on Google Drive: ' + report_wo(val, params)]
     return res
     
     
@@ -212,6 +231,7 @@ if __name__ == '__main__':
     main()
 
 
+    
 
 #library(data.table)
 #library(foreach)
