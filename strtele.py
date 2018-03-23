@@ -22,12 +22,14 @@ import rpy2.robjects as ro
 from telegram.ext import Updater, CommandHandler, MessageHandler, Filters
 import numpy as np
 import pandas as pd
+import random
 import sys
 import os
 import pickle
 import json
-import gspread
-import random
+#import gspread
+import httplib2
+import apiclient.discovery
 from oauth2client.service_account import ServiceAccountCredentials
 import matplotlib
 matplotlib.use('Agg')
@@ -85,21 +87,16 @@ def plot_basket(bname):
     h = hist[hist.ticker.isin(t)].groupby('dt').agg({'val': 'mean'}).reset_index()
     
     h['date'] = pd.to_datetime(h.dt)
-    h.val = (h.val.cumsum()+1)*100
+    h.val = (h.val.cumsum().rolling(20).mean()+1)*100
     
-#    f = plt.figure()
-#    ax = plt.subplot(111)
-
-#    pd.options.display.mpl_style = 'default'
     matplotlib.style.use('ggplot')
-    p = h.plot(kind='line', x='date', y='val', title=bname+' basket performance, %', legend=False, color='blue', antialiased=True)
-#    ax.plot(pd.to_datetime(h.dt), )
-
+    
+    p = h.plot(kind='line', x='date', y='val', linewidth=4, title=bname+' basket performance, %', legend=False, color='green', antialiased=True)
     f = p.get_figure()
     filename = 'plot.png'
     f.savefig(filename)
     plt.close()   
-    
+#    client.send_file('coinsight_bot','plot.png')
     return filename
 
 def calc_wo(bname,params):
@@ -110,19 +107,38 @@ def calc_wo(bname,params):
     hist[hist.ticker.isin(t)].to_csv(quotes_fn)
     return np.asarray(ro.r('wo_calculator_web("'+params_fn+'","'+quotes_fn+'")'))[0]
 
-def report_wo(val, params):
-    credentials = ServiceAccountCredentials.from_json_keyfile_name('/home/aslepnev/a/gigi.json', ['https://spreadsheets.google.com/feeds', 'https://www.googleapis.com/auth/drive'])
+def report_wo(val, bname, params):
+    t = pickle.load(open('/home/aslepnev/git/ej/strbaskets.pickle', 'rb'))[bname]
+    t = ses[ses.CODE.isin(t)]
+
+#    credentials = ServiceAccountCredentials.from_json_keyfile_name('/home/aslepnev/a/gigi.json', ['https://spreadsheets.google.com/feeds', 'https://www.googleapis.com/auth/drive'])
+
+    credentials = ServiceAccountCredentials.from_json_keyfile_name('/home/aslepnev/a/gigi.json', ['https://www.googleapis.com/auth/spreadsheets', 'https://www.googleapis.com/auth/drive'])
+    httpAuth = credentials.authorize(httplib2.Http())
+    service = apiclient.discovery.build('sheets', 'v4', http = httpAuth)
     gc = gspread.authorize(credentials)
     wks = gc.create("product_" + str(random.randint(1,999999999999)))
     wks.share('antonslepnev@gmail.com', perm_type='user', role='writer', notify=False)
     wks = wks.get_worksheet(0)
+
+    acells = wks.range('A1:A20')
+    bcells = wks.range('B1:B20')
+    ccells = wks.range('C1:C20')
+    acells[0].value = 'Worst-Of product indicative pricing report'
+    acells[1].value = ''
+    acells[2].value = 'Basket:'
+    j = 3
+    for i in range(len(t)):
+        acells[j] = t.CODE[i]
+        acells[j] = t.NAME[i]
+        acells[j] = t.MCAP[i]
+        j = j+1
+
     
-    cells = wks.range('A1:A20')
-    j = 0
-    cells[0].value = 'Worst-Of product indicative pricing report'
-    cells[1].value = ''
-    cells[2].value = 'Basket:'
+
+    
     for s in params[1].split('-'):
+        res = ses[ses.CODE.str.startswith(text.upper())]
         cells[j] = s
         j = j+1
     cells[0].value = 'Product price, %'
@@ -137,7 +153,7 @@ def reply_wo(text):
     val = calc_wo(bname,params)
     res = [str(val)+' %']
     if len(items) > 3:
-        res = res + ['Please see product card on Google Drive: ' + report_wo(val, params)]
+        res = res + ['Please see product card on Google Drive: ' + report_wo(val, bname, params)]
     return res
     
     
