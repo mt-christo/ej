@@ -116,10 +116,36 @@ def report_wo(val, bname, params):
     credentials = ServiceAccountCredentials.from_json_keyfile_name('/home/aslepnev/a/gigi.json', ['https://www.googleapis.com/auth/spreadsheets', 'https://www.googleapis.com/auth/drive'])
     httpAuth = credentials.authorize(httplib2.Http())
     service = apiclient.discovery.build('sheets', 'v4', http = httpAuth)
-    gc = gspread.authorize(credentials)
-    wks = gc.create("product_" + str(random.randint(1,999999999999)))
-    wks.share('antonslepnev@gmail.com', perm_type='user', role='writer', notify=False)
-    wks = wks.get_worksheet(0)
+
+    spreadsheet = service.spreadsheets().create(body = {
+        'properties': {'title': "product_" + str(random.randint(1,999999999999)), 'locale': 'ru_RU'},
+        'sheets': [{'properties': {'sheetType': 'GRID',
+                                   'sheetId': 0,
+                                   'title': 'Product',
+                                   'gridProperties': {'rowCount': 30, 'columnCount': 6}}}]}).execute()
+    
+    driveService = apiclient.discovery.build('drive', 'v3', http = httpAuth)
+    shareRes = driveService.permissions().create(
+        fileId = spreadsheet['spreadsheetId'],
+        sendNotificationEmail = False, 
+        body = {'type': 'user', 'role': 'writer', 'emailAddress': 'antonslepnev@gmail.com'},
+        fields = 'id'
+    ).execute()
+    
+
+
+    results = service.spreadsheets().values().batchUpdate(spreadsheetId = spreadsheet['spreadsheetId'], body = {
+        "valueInputOption": "USER_ENTERED",
+        "data": [
+            {"range": "Product!A1:A3",
+             "majorDimension": "COLUMNS",     # сначала заполнять ряды, затем столбцы (т.е. самые внутренние списки в values - это ряды)
+             "values": [['Worst-Of product indicative pricing report', '', 'Basket:']]},            
+            {"range": "Product!A4:C" + str(3+len(t) + 1),
+             "majorDimension": "COLUMNS",  # сначала заполнять столбцы, затем ряды (т.е. самые внутренние списки в values - это столбцы)
+             "values": [['CODE']+t.CODE.tolist(), ['NAME']+t.NAME.tolist(), ['MARKET CAP']+t.MCAP.tolist()]}
+        ]
+    }).execute()
+
 
     acells = wks.range('A1:A20')
     bcells = wks.range('B1:B20')
