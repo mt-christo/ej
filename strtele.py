@@ -22,6 +22,7 @@ import rpy2.robjects as ro
 from telegram.ext import Updater, CommandHandler, MessageHandler, Filters
 import numpy as np
 import pandas as pd
+import collections
 import random
 import sys
 import os
@@ -44,10 +45,31 @@ import matplotlib.pyplot as plt
 
 # Define a few command handlers. These usually take the two arguments bot and
 # update. Error handlers also receive the raised TelegramError object in error.
+
+def toGridRange(sheet, cellsRange):
+    sheetId = sheet['sheets'][0]['properties']['sheetId']
+#    if sheetId is None:
+#        raise SheetNotSetError()
+    if isinstance(cellsRange, str):
+        startCell, endCell = cellsRange.split(":")[0:2]
+        cellsRange = {}
+        rangeAZ = range(ord('A'), ord('Z') + 1)
+    if ord(startCell[0]) in rangeAZ:
+        cellsRange["startColumnIndex"] = ord(startCell[0]) - ord('A')
+        startCell = startCell[1:]
+    if ord(endCell[0]) in rangeAZ:
+        cellsRange["endColumnIndex"] = ord(endCell[0]) - ord('A') + 1
+        endCell = endCell[1:]
+    if len(startCell) > 0:
+        cellsRange["startRowIndex"] = int(startCell) - 1
+    if len(endCell) > 0:
+        cellsRange["endRowIndex"] = int(endCell)
+        cellsRange["sheetId"] = sheetId
+    return cellsRange
+    
 def start(bot, update):
     """Send a message when the command /start is issued."""
     update.message.reply_text('Hi!')
-
 
 def help(bot, update):
     """Send a message when the command /help is issued."""
@@ -56,7 +78,7 @@ def help(bot, update):
 def save_basket(text):
     bname = text.split(' ')[0]
     bsecs = text.split(' ')[1:]
-    b = [ses[ses.CODE.str.startswith(x.upper())].CODE.iloc[0] for x in bsecs]
+    b = {'is_locked': False, 'desc': '', 'tickers': [ses[ses.CODE.str.startswith(x.upper())].CODE.iloc[0] for x in bsecs]}
     baskets = pickle.load(open('/home/aslepnev/git/ej/strbaskets.pickle', 'rb'))
     baskets[bname] = b 
     with open('/home/aslepnev/git/ej/strbaskets.pickle', 'wb') as tmp:
@@ -64,16 +86,23 @@ def save_basket(text):
     return 'Basket '+bname+' saved'
 
 def get_baskets():
-        b = pickle.load(open('/home/aslepnev/git/ej/strbaskets.pickle', 'rb'))
-        return '\n'.join([x+':\n* '+'\n* '.join(b[x])+'\n' for x in b])
+    b = pickle.load(open('/home/aslepnev/git/ej/strbaskets.pickle', 'rb'))
+    keys = [x if b[x]['is_locked'] else '' for x in b.keys()] + [x if not b[x]['is_locked'] else '' for x in b.keys()]
+    keys = list(filter(None,keys))
+    return '\n'.join([x+':\n'+(b[x]['desc']+'\n' if b[x]['desc']!='' else '')+'* '+'\n* '.join(b[x]['tickers'])+'\n' for x in keys])
 
 def delete_basket(text):
     bname = text.split(' ')[0]
     baskets = pickle.load(open('/home/aslepnev/git/ej/strbaskets.pickle', 'rb'))
-    del baskets[bname]
+    res = ''
+    if not baskets[bname]['is_locked']:
+        del baskets[bname]
+        res = 'Basket '+bname+' deleted'
+    else:
+        res = 'Cannot delete basket ' + bname
     with open('/home/aslepnev/git/ej/strbaskets.pickle', 'wb') as tmp:
         pickle.dump(baskets, tmp, protocol=pickle.HIGHEST_PROTOCOL)
-    return 'Basket '+bname+' deleted'
+    return res
         
 def my_who(text):
     res = ses[ses.CODE.str.startswith(text.upper())]
@@ -99,17 +128,15 @@ def plot_basket(bname):
 #    client.send_file('coinsight_bot','plot.png')
     return filename
 
-def calc_wo(bname,params):
-    t = pickle.load(open('/home/aslepnev/git/ej/strbaskets.pickle', 'rb'))[bname]
+def calc_wo(basket,params):
     params_fn = '~/git/ej/wo_params.csv'
     quotes_fn = '~/git/ej/wo_quotes.csv'
     pd.DataFrame({'param':['coupon','strikes'], 'value':params}).to_csv(params_fn)
-    hist[hist.ticker.isin(t)].to_csv(quotes_fn)
+    hist[hist.ticker.isin(basket['tickers')].to_csv(quotes_fn)
     return np.asarray(ro.r('wo_calculator_web("'+params_fn+'","'+quotes_fn+'")'))[0]
 
-def report_wo(val, bname, params):
-    t = pickle.load(open('/home/aslepnev/git/ej/strbaskets.pickle', 'rb'))[bname]
-    t = ses[ses.CODE.isin(t)]
+def report_wo(val, bname, basket, params):
+    t = ses[ses.CODE.isin(basket['tickers'])]
 
 #    credentials = ServiceAccountCredentials.from_json_keyfile_name('/home/aslepnev/a/gigi.json', ['https://spreadsheets.google.com/feeds', 'https://www.googleapis.com/auth/drive'])
 
@@ -122,7 +149,7 @@ def report_wo(val, bname, params):
         'sheets': [{'properties': {'sheetType': 'GRID',
                                    'sheetId': 0,
                                    'title': 'Product',
-                                   'gridProperties': {'rowCount': 30, 'columnCount': 6}}}]}).execute()
+                                   'gridProperties': {'rowCount': 30, 'columnCount': 25}}}]}).execute()
     
     driveService = apiclient.discovery.build('drive', 'v3', http = httpAuth)
     shareRes = driveService.permissions().create(
@@ -133,40 +160,55 @@ def report_wo(val, bname, params):
     ).execute()
     
 
+    results = service.spreadsheets().batchUpdate(spreadsheetId = spreadsheet['spreadsheetId'], body = {
+        'requests':[
+            {'repeatCell': {
+                'range': toGridRange(spreadsheet, "A"+str(6+len(t) + 3)+":A"+str(6+len(t) + 3)),
+                'cell': {
+                    'userEnteredFormat': {
+                        'backgroundColor': {
+                            'red': 1.0,
+                            'green': 1.0,
+                            'blue': 0.5,
+                        },
+                    },
+                },
+                'fields': 'userEnteredFormat(backgroundColor)'}},
+            ]
+    }).execute()
 
     results = service.spreadsheets().values().batchUpdate(spreadsheetId = spreadsheet['spreadsheetId'], body = {
         "valueInputOption": "USER_ENTERED",
         "data": [
-            {"range": "Product!A1:A3",
+            {"range": "Product!A1:A5",
              "majorDimension": "COLUMNS",     # сначала заполнять ряды, затем столбцы (т.е. самые внутренние списки в values - это ряды)
-             "values": [['Worst-Of product indicative pricing report', '', 'Basket:']]},            
-            {"range": "Product!A4:C" + str(3+len(t) + 1),
+             "values": [['Worst-Of product indicative pricing report', '', 'Basket:', bname, basket['desc']]]},            
+            {"range": "Product!A6:C" + str(6+len(t) + 1),
              "majorDimension": "COLUMNS",  # сначала заполнять столбцы, затем ряды (т.е. самые внутренние списки в values - это столбцы)
-             "values": [['CODE']+t.CODE.tolist(), ['NAME']+t.NAME.tolist(), ['MARKET CAP']+t.MCAP.tolist()]}
+             "values": [['CODE']+t.CODE.replace(np.nan,'').tolist(), ['NAME']+t.NAME.replace(np.nan,'No Data').tolist(), ['MARKET CAP']+t.MCAP.replace(np.nan,'').tolist()]},
+            {"range": "Product!A"+str(6+len(t) + 2)+":A"+str(6+len(t) + 3),
+             "majorDimension": "COLUMNS",     # сначала заполнять ряды, затем столбцы (т.е. самые внутренние списки в values - это ряды)
+             "values": [['Product price:', str(val).replace('.',',')]]}, 
         ]
     }).execute()
 
 
-    acells = wks.range('A1:A20')
-    bcells = wks.range('B1:B20')
-    ccells = wks.range('C1:C20')
-    acells[0].value = 'Worst-Of product indicative pricing report'
-    acells[1].value = ''
-    acells[2].value = 'Basket:'
-    j = 3
-    for i in range(len(t)):
-        acells[j] = t.CODE[i]
-        acells[j] = t.NAME[i]
-        acells[j] = t.MCAP[i]
-        j = j+1
+    results = service.spreadsheets().batchUpdate(spreadsheetId = spreadsheet['spreadsheetId'], body = {
+        'requests':[
+            {'repeatCell': {
+                'range': toGridRange(spreadsheet, "A"+str(6+len(t) + 3)+":A"+str(6+len(t) + 3)),
+                'cell': {
+                    'userEnteredFormat': {
+                        'numberFormat': {
+                            'type': 'NUMBER',
+                            'pattern': '##.#%',
+                        },
+                    },
+                },
+                'fields': 'userEnteredFormat(numberFormat)'}},
+            ]
+    }).execute()
 
-    
-
-    
-    for s in params[1].split('-'):
-        res = ses[ses.CODE.str.startswith(text.upper())]
-        cells[j] = s
-        j = j+1
     cells[0].value = 'Product price, %'
     cells[1].value = val
     wks.update_cells(cells)
@@ -176,10 +218,11 @@ def reply_wo(text):
     items = text.split(' ')
     bname = items[0]
     params = items[1:3]
-    val = calc_wo(bname,params)
+    basket = pickle.load(open('/home/aslepnev/git/ej/strbaskets.pickle', 'rb'))[bname] 
+    val = calc_wo(basket,params)
     res = [str(val)+' %']
     if len(items) > 3:
-        res = res + ['Please see product card on Google Drive: ' + report_wo(val, bname, params)]
+        res = res + ['Please see product card on Google Drive: ' + report_wo(val, bname, basket, params)]
     return res
     
     
