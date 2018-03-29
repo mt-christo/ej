@@ -166,7 +166,7 @@ def report_wo(val, bname, basket, params):
                 'range': toGridRange(spreadsheet, "A"+str(6+len(t) + 3)+":A"+str(6+len(t) + 3)),
                 'cell': {
                     'userEnteredFormat': {
-                        'backgroundColor': {
+                        'textFormat': {
                             'red': 1.0,
                             'green': 1.0,
                             'blue': 0.5,

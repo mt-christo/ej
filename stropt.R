@@ -7,6 +7,31 @@ FIX_SP_MULT <<- 1.0
 FIX_SP_ADD_BC <<- 4.0
 FIX_SP_ADD_WO <<- 3.5
 
+cor2cov = function(corMat, varVec) {
+  # test the input
+  if (!is.matrix(corMat)) stop("'corMat must be a matrix")
+  n = nrow(corMat)
+  if (ncol(corMat) != n) stop("'corMat' must be square")
+  if (mode(corMat) != "numeric") stop("'corMat must be numeric")
+  if (mode(varVec) != "numeric") stop("'varVec must be numeric")
+  if (!is.null(dim(varVec))) {
+    if (length(dim(varVec)) != 2) stop("'varVec' should be a vector")
+    if (any(dim(varVec)==1)) stop("'varVec' cannot be a matrix")
+    varVec = as.numeric(varVec) # convert row or col matrix to a vector
+  }
+  if (!all(diag(corMat) == 1)) stop("correlation matrices have 1 on the diagonal")
+  if (any(corMat < -1 | corMat > +1)) 
+    stop("correlations must be between -1 and 1")
+  if (any(varVec <= 0)) stop("variances must be non-negative")
+  if (length(varVec) != n) stop("length of 'varMat' does not match 'corMat' size")
+
+  # Compute the covariance
+  sdMat = diag(sqrt(varVec))
+  rtn = sdMat %*% corMat %*% t(sdMat)
+  if (det(rtn)<=0) warning("covariance matrix is not positive definite")
+  return(rtn)
+}
+
 corMine = function(ts) {
     foreach(i=1:ncol(ts),.combine=cbind)%do%{ 
         foreach(j=1:ncol(ts),.combine=c)%do%{
@@ -78,3 +103,21 @@ wo_calculator_web = function(params_file, quotes_file){
     return(round(wo_calculate(TTM, BARRIERS, SIGMAS, COR_MAT, RFR, DIVS, COUPON),1)*FIX_SP_MULT + FIX_SP_ADD_WO)
 }
 
+
+library(corpcor)
+SIGMAS = 0.05*1:5
+COR_MAT = cor(foreach(i=1:5,.combine=cbind)%do%runif(5))
+DIVS = array(0, 5)
+COUPON
+x = foreach(i=1:20)%do%{
+    print(i)
+    SIGMAS = 0.2*abs(runif(5))
+    COR_MAT = abs(cor(foreach(i=1:5,.combine=cbind)%do%runif(5)))^3
+    list(cor2cov(COR_MAT,SIGMAS), wo_calculate(TTM, BARRIERS, SIGMAS, make.positive.definite(COR_MAT), RFR, DIVS, COUPON))
+}
+
+y = foreach(i=x,.combine=rbind)%do%data.frame(m=mean(abs(i[[1]])),r=i[[2]])
+
+
+
+    
