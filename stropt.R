@@ -48,13 +48,13 @@ get_rfr = function(ttm){
 wo_calculate = function(ttm, barriers, sigmas, cor_mat, rfr, dys, coupon){
         mc_paths = 300000
     
-        d = foreach(i=1:ttm)%dopar%{ rmnorm(mc_paths,array(0,length(sigmas)),cor_mat) }
+        d = foreach(i=1:ttm)%do%{ rmnorm(mc_paths,array(0,length(sigmas)),cor_mat) }
         drfs = rfr - dys - 0.5*sigmas^2
         if(ttm > 1) for(i in 2:ttm) d[[i]] = d[[i]] + d[[i-1]]
         if(length(sigmas) > 1)
-            wo = foreach(y=d)%dopar%{ x = drfs[1]+sigmas[1]*y[,1]; for(i in 2:ncol(y)) x = ifelse(x >  drfs[i]+sigmas[i]*y[,i],  drfs[i]+sigmas[i]*y[,i], x); x }
+            wo = foreach(y=d)%do%{ x = drfs[1]+sigmas[1]*y[,1]; for(i in 2:ncol(y)) x = ifelse(x >  drfs[i]+sigmas[i]*y[,i],  drfs[i]+sigmas[i]*y[,i], x); x }
         else
-            wo = foreach(y=d)%dopar%{ x = drfs[1]+sigmas[1]*y; x }
+            wo = foreach(y=d)%do%{ x = drfs[1]+sigmas[1]*y; x }
         #wo = foreach(y=d)%dopar%{ x = sigmas[1]*y[,1]; for(i in 2:ncol(y)) x = ifelse(x >  sigmas[i]*y[,i],  sigmas[i]*y[,i], x); x }
     	
 	#r = array(0,mc_paths)
@@ -104,20 +104,3 @@ wo_calculator_web = function(params_file, quotes_file){
 }
 
 
-library(corpcor)
-SIGMAS = 0.05*1:5
-COR_MAT = cor(foreach(i=1:5,.combine=cbind)%do%runif(5))
-DIVS = array(0, 5)
-COUPON
-x = foreach(i=1:20)%do%{
-    print(i)
-    SIGMAS = 0.2*abs(runif(5))
-    COR_MAT = abs(cor(foreach(i=1:5,.combine=cbind)%do%runif(5)))^3
-    list(cor2cov(COR_MAT,SIGMAS), wo_calculate(TTM, BARRIERS, SIGMAS, make.positive.definite(COR_MAT), RFR, DIVS, COUPON))
-}
-
-y = foreach(i=x,.combine=rbind)%do%data.frame(m=mean(abs(i[[1]])),r=i[[2]])
-
-
-
-    
