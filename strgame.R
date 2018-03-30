@@ -32,5 +32,23 @@ plot(y$m*35-y$s*13,y$r)
 cor(y$s,y$r)
 cor(y$m,y$r)
 
+sector_map = as.data.frame(t(matrix(c('Technology','tech',
+'Communications','comm',
+'Financial','fin',
+'Consumer, Non-cyclical','cons',
+'Energy','ener',
+'Consumer, Cyclical','cons',
+'Industrial','ind',
+'Basic Materials','mat',
+'Utilities','util',
+'Diversified','div'), nrow=2)))
+colnames(sector_map) = c('name', 'code')
 
-    
+
+
+
+q1 = get(load('uniprc1.RData'))    
+q2 = get(load('uniprc2.RData'))
+q = merge.xts(q1,q2)
+save(q, file='uniprc.RData')
+u = data.table(get(load('uni.RData')))

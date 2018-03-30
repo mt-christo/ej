@@ -113,7 +113,7 @@ def my_who(text):
 
 def plot_basket(bname):
     t = pickle.load(open('/home/aslepnev/git/ej/strbaskets.pickle', 'rb'))[bname]
-    h = hist[hist.ticker.isin(t)].groupby('dt').agg({'val': 'mean'}).reset_index()
+    h = hist[hist.ticker.isin(t['tickers'])].groupby('dt').agg({'val': 'mean'}).reset_index()
     
     h['date'] = pd.to_datetime(h.dt)
     h.val = (h.val.cumsum().rolling(20).mean()+1)*100
@@ -132,7 +132,7 @@ def calc_wo(basket,params):
     params_fn = '~/git/ej/wo_params.csv'
     quotes_fn = '~/git/ej/wo_quotes.csv'
     pd.DataFrame({'param':['coupon','strikes'], 'value':params}).to_csv(params_fn)
-    hist[hist.ticker.isin(basket['tickers')].to_csv(quotes_fn)
+    hist[hist.ticker.isin(basket['tickers'])].to_csv(quotes_fn)
     return np.asarray(ro.r('wo_calculator_web("'+params_fn+'","'+quotes_fn+'")'))[0]
 
 def report_wo(val, bname, basket, params):
@@ -209,10 +209,7 @@ def report_wo(val, bname, basket, params):
             ]
     }).execute()
 
-    cells[0].value = 'Product price, %'
-    cells[1].value = val
-    wks.update_cells(cells)
-    return 'https://docs.google.com/spreadsheets/d/' + wks.spreadsheet.id
+    return 'https://docs.google.com/spreadsheets/d/' + spreadsheet['spreadsheetId']
 
 def reply_wo(text):
     items = text.split(' ')
