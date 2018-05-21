@@ -1,3 +1,5 @@
+library(data.table)
+library(xts)
 library(corpcor)
 library(doMC)
 library(plot3D)
@@ -49,6 +51,23 @@ colnames(sector_map) = c('name', 'code')
 
 q1 = get(load('uniprc1.RData'))    
 q2 = get(load('uniprc2.RData'))
-q = merge.xts(q1,q2)
+q = diff(log(merge.xts(q1,q2)))
 save(q, file='uniprc.RData')
 u = data.table(get(load('uni.RData')))
+
+N = 20; K = 5
+IDX = 2001:(2000+N)
+cls = colnames(q)[IDX]
+stocks = u[IDX,2]
+cmb = t(combn(cls,K))
+
+res = array(0,nrow(cmb))
+for(i in 1:nrow(cmb)){
+    print(i)
+    r = q[,cmb[i,]]
+    r = r[rowSums(is.na(r))==0,]
+    r = cumsum(rowSums(exp(r)-1)/K)
+    res[i] = cor(r,1:length(r))
+}
+
+plot(r)
