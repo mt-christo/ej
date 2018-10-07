@@ -96,7 +96,7 @@ plot_basket_web = function(){
     prices = log(get_eod_quotes(STOCKS, create_conn()))
     w = array(1/length(STOCKS),length(STOCKS))
     
-    x = apply.monthly(exp(cumsum(basket_returns(tail(prices,250*50),w))),mean)
+    x = apply.monthly(exp(cumsum(basket_returns(tail(prices,250*5),w))),mean)
     x = data.frame(date=index(x),value=as.numeric(x[,1]),stringsAsFactors=FALSE)
     cat(paste(x$date,collapse=';'))
     cat('@@')
@@ -119,16 +119,16 @@ plot_basket_web_daily_POST = function(){
 }
 
 
-plot_basket_web_daily = function(params, conv_type = 'Original'){
+plot_basket_web_daily = function(params, conv_type = 'CONVERT'){
     writeLines(gsub('NEWLINE','\n',params), file('/home/slepnev/R/tmp_params_plot_web_daily.txt'))
     p = read.csv(file='/home/slepnev/R/tmp_params_plot_web_daily.txt',header=FALSE,sep=',',stringsAsFactors=FALSE)
 
     STOCKS = strsplit(p$V2[p$V1=='Tickers'],'@@')[[1]]
 #    prices = log(get_eod_quotes(STOCKS, create_conn()))
-    prices = get_eod_quotes(STOCKS, create_conn(), quote_type = 3, conv_type = conv_type)
+    prices = get_eod_quotes(STOCKS, create_conn(), 3, conv_type)
     w = array(1/length(STOCKS),length(STOCKS))
     
-    x = tail(prices,250*50)
+    x = tail(prices,250*5)
 #    x = data.frame(date=index(x),value=as.numeric(x[,1]),stringsAsFactors=FALSE)
     if(dim(x)[2]==1){
         cat(paste(index(x),collapse=';'))
@@ -151,10 +151,9 @@ plot_wo_web = function(){
 
     STOCKS = strsplit(p$V2[p$V1=='Tickers'],'@@')[[1]]
     prices = diff(na.locf(log(get_eod_quotes(STOCKS, create_conn()))))[-1,]
-    prices = if(dim(prices)[2] > 1) prices[rowSums(is.na(prices))==0,] else prices[!is.na(prices)]
     
     #x = apply.monthly(exp(cumsum(basket_returns(tail(prices,250*5),w))),mean)
-    x = apply.monthly(exp(cumsum(tail(prices,250*50))),mean)
+    x = apply.monthly(exp(cumsum(tail(prices,250*1))),mean)
     x[1,] = 1
     cat(paste(index(x),collapse=';'))
     for(i in 1:dim(x)[2]){
