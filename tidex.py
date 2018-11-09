@@ -4,7 +4,7 @@ import numpy as np
 import pandas as pd
 import datetime
 
-with tidexapi.KeyHandler('tidi.txt') as handler:
+with tidexapi.KeyHandler('/home/aslepnev/a/tidi.txt') as handler:
     if not handler.keys:
         print("No keys in key file.")
     else:
@@ -15,7 +15,7 @@ with tidexapi.KeyHandler('tidi.txt') as handler:
                 t = tidexapi.TradeAPI(key, handler, connection)
 
                 try:
-                    th = t.transHistory()
+                    th = t.tradeHistory()
                     for h in th:
                         print("\t\t        id: %r" % h.transaction_id)
                         print("\t\t      type: %r" % h.type)
@@ -67,7 +67,7 @@ def orderInfo(tapi, order_id: int) -> OrderItem:
     response = tapi._post({"method": "OrderInfo", "order_id": order_id})
     return OrderItem(order_id, **response[str(order_id)])
 
-handler = tidexapi.KeyHandler('tidi.txt')
+handler = tidexapi.KeyHandler('/home/aslepnev/a/tidi.txt')
 key = next(iter(handler.keys))
 t = tidexapi.TradeAPI(key, handler, tidexapi.Connection())
 params = {"method": "TradeHistory"}

@@ -10,10 +10,10 @@ from oauth2client.service_account import ServiceAccountCredentials
 
 #chat_id = YOUR_CHAT_ID
 
-#api_id = 107358
-#api_hash = '810df710b738b62f1ba9f37c74a33289'
-api_id = 170468
-api_hash = 'b8f64bd33439d2ea1d036e0149c75da0'
+api_id = 107358
+api_hash = '810df710b738b62f1ba9f37c74a33289'
+#api_id = 170468
+#api_hash = 'b8f64bd33439d2ea1d036e0149c75da0'
 
 
 from telethon import TelegramClient
@@ -29,6 +29,7 @@ client.connect()
 client.start()
 
 client.send_message('coinsight_bot','hi')
+client.send_file('coinsight_bot','plot.png')
 
 d = client.get_dialogs(limit=200)
 telegroups = ['https://t.me/tiesdb', 'https://t.me/ETHLend', 'https://t.me/ETHLend_RU', 'https://t.me/bankera', 'https://t.me/tiesdb', 'https://t.me/bluzelle', 'https://t.me/OceanProtocol']

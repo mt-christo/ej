@@ -140,7 +140,7 @@ def my_response(bot, update):
         update.message.reply_text('3J98t1WpEZ73CNmQviecrnyiWrnqRhWNLy')
         time.sleep(1)
         update.message.reply_text('Deposit received')
-        update.message.reply_text('Tell me your password:')
+        update.message.reply_text('Tell me your password (any number/letter combination):')
     elif text.startswith('delete '):
         res = delete_basket(text[7:1000])
         update.message.reply_text(res)
