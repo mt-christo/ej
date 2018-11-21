@@ -4,29 +4,6 @@ library(xts)
 registerDoMC(cores=7)
 source('/home/aslepnev/git/ej/stropt.R')
 
-comb_ATM = function(h, idxs, n, wnd){
-    idcomb = combn(1:length(idxs), n)
-    h1 = h[, idxs, with=FALSE]
-    h1 = tail(h1[rowSums(is.na(h1)) == 0, ], wnd)
-    cm = 0
-    for(i in 1:ncol(idcomb)){
-        if(i%%10000==0) print(i)
-        cm[i] = mean(cor(h1[, idcomb[,i]]))
-    }
-    return(foreach(i=which(cm<quantile(cm, 0.01)))%do%idcomb[, i])
-}
-
-comb_OOM = function(h, idxs, sigmas, n, wnd){
-    idcomb = combn(1:length(idxs), n)
-    h1 = h[, idxs, with=FALSE]
-    h1 = tail(h1[rowSums(is.na(h1)) == 0, ], wnd)
-    cm = 0
-    for(i in 1:ncol(idcomb)){
-        if(i%%10000==0) print(i)
-        cm[i] = as.numeric(sum(diag(cor2cov(cor(h1[, idcomb[,i]]), sigmas))))
-    }
-    return(foreach(i=which(cm>quantile(cm, 0.99)))%do%idcomb[, i])
-}
 
 u = as.data.table(get(load('/home/aslepnev/git/ej/uni.RData')))
 p = get(load('/home/aslepnev/git/ej/uniprc.RData'))
