@@ -19,3 +19,9 @@ highest_sds = function(h1, sigmas, n, q){
     return(foreach(i=which(cm>quantile(cm, q)))%do%idcomb[, i])
 }
 
+# t = h
+pairwise_func = function(t, func){
+    res = data.table(melt(func(t)))
+    colnames(res)[1:2] = c('name1', 'name2')
+    return(res)
+}
