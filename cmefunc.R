@@ -22,6 +22,6 @@ spread_ival_tpdd = function(data, dt_start, dt_end){
 # comdty='Feeder Cattle'; spread_months='F-H'; dt_start='2018-11-09'; dt_end='2019-01-04'
 get_spread_wnd <- function(data, comdty, spread_months, dt_start, dt_end){
     res = s[commodity==comdty & months==spread_months, ]
-    res = spread_ival(res, dt_start, dt_end)[, .(zerodate, year, spread)]
+    res = spread_ival(res, dt_start, dt_end)[, .(zerodate, date, year, spread)]
     return(res)
 }
