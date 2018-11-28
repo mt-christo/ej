@@ -17,9 +17,11 @@ screen_momentum = function(h_in, u_in, params){
     return(res)
 }
 
-# r=xts(rowSums(h[, screen_momentum(h[, 1:20], NA, list(N=5))])/5, order.by=index(h)); vc_params=list(window=20, level=0.05)
-volcontrol = function(r, vc_params){
-    
+# r=xts(rowSums(h[, screen_momentum(h[, 1:20], NA, list(N=5))])/5, order.by=index(h)); params=list(window=20, level=0.05, max_weight=2)
+volcontrol = function(r, params){
+    rsd = sqrt(250)*rollapply(r, params$window, FUN=sd)
+    res = r * ifelse(rsd>params$level/params$max_weight, params$level/rsd, params$max_weight)    
+    return(res)
 }
 
 # freq_afunc = apply.quarterly; 
@@ -28,15 +30,16 @@ build_index = function(u, h, freq_afunc, screen_func, screen_params, vc_params, 
     
     calc_pieces = foreach(i=2:(length(rebal_dates)-1))%do%
         list(h = h[rebal_dates[i-1]:(rebal_dates[i]-1), ],
+             h_next = h[rebal_dates[i-1]:(rebal_dates[i]-1), ],
              u = u[dt==rebal_dates[i],])
     
     res = foreach(x=calc_pieces, .combine=rbind){
         eidx = screen_func(x$h, x$u, screen_params)
-        he = x$h[, eidx]
+        he = x$h_next[, eidx]
         r = log(rowSums(t(t(exp(he) - 1)*weights)) + 1)
-        r * volcontrol(r, vc_params)
     }
-    
+
+    res = volcontrol(res, vc_params)    
     return(res)
 }
 
