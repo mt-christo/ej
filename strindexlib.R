@@ -3,12 +3,35 @@ library(data.table)
 library(xts)
 registerDoMC(cores=7)
 
-u = as.data.table(get(load('/home/aslepnev/git/ej/uni.RData')))
-p = get(load('/home/aslepnev/git/ej/uniprc.RData'))
-#h = diff(log(na.locf(p)))  # save(h, file='/home/aslepnev/git/ej/unih.RData')
-h=get(load('/home/aslepnev/git/ej/unih.RData'))
-h90 = tail(h, 90)
-sigmas = foreach(i=1:ncol(h),.combine='c')%do%{ sd(h90[,i])*250/90 }
+prep_data = function(filter2){
+    #p = get(load('/home/aslepnev/git/ej/uniprc.RData'))
+    #h = diff(log(na.locf(p)))  # save(h, file='/home/aslepnev/git/ej/unih.RData')
+    u = as.data.table(get(load('/home/aslepnev/git/ej/uni.RData')))  # u$dt = as.Date("2018-03-01"); colnames(u)=gsub(' ','_', colnames(u)); save(u, file='/home/aslepnev/git/ej/uni.RData')
+    h = get(load('/home/aslepnev/git/ej/unih.RData'))
+    u = u[1:ncol(h), ]
+    if(filter2){
+        mx = foreach(i=1:ncol(h),.combine=c)%do%{x=h[,i]; max(x[!is.na(x)])}
+        mn = foreach(i=1:ncol(h),.combine=c)%do%{x=h[,i]; min(x[!is.na(x)])}
+        u = u[mn>-0.69 & mx<0.69, ]
+        h = h[, mn>-0.69 & mx<0.69]
+    }
+    h90 = tail(h, 90)
+    u$HSIGMA = foreach(i=1:ncol(h),.combine='c')%do%{ sd(h90[,i])*250/90 }
+    return(list(u=u, h=h))
+}
+
+# d0 = as.Date("2018-03-01"); d1=as.Date("2017-07-01")
+prorate_u = function(u, h, d0, d1){
+    u1 = u[dt==d0, ]
+    u1$dt = d1
+    ret = as.numeric(exp(colSums(h[as.Date(d0:d1), ]))) * if(d0<d1)1 else -1
+    u1$MARKET_CAP = u[dt==d0, ][['MARKET_CAP']] * ret
+    return(u1)
+}
+
+prorate_us = function(u, h, d0, d1s){
+    return(rbindlist(foreach(d1=d1s)%do%prorate_u(u, h, d0, d1)))
+}
 
 # h_in=h[,1:50]; u_in=u[1:50,]; params=list(N=5)
 screen_momentum = function(h_in, u_in, params){
@@ -24,16 +47,14 @@ volcontrol = function(r, params){
     return(res)
 }
 
-# freq_afunc = apply.quarterly; 
-build_index = function(u, h, freq_afunc, screen_func, screen_params, vc_params, weights){
-    rebal_dates = as.Date(index(freq_afunc(h[,1],FUN=length)))
-    
+# u=U; h=D$h; screen_func=screen_momentum; screen_params=list(N=5); vc_params=list(window=20, level=0.05, max_weight=2); weights=array(1/screen_params$N, screen_params$N)
+build_index = function(u, h, rebal_dates, screen_func, screen_params, vc_params, weights){
     calc_pieces = foreach(i=2:(length(rebal_dates)-1))%do%
-        list(h = h[rebal_dates[i-1]:(rebal_dates[i]-1), ],
-             h_next = h[rebal_dates[i-1]:(rebal_dates[i]-1), ],
+        list(h = h[as.Date(rebal_dates[i-1]:(rebal_dates[i]-1)), ],
+             h_next = h[as.Date(rebal_dates[i-1]:(rebal_dates[i]-1)), ],
              u = u[dt==rebal_dates[i],])
     
-    res = foreach(x=calc_pieces, .combine=rbind){
+    res = foreach(x=calc_pieces, .combine=rbind)%dopar%{
         eidx = screen_func(x$h, x$u, screen_params)
         he = x$h_next[, eidx]
         r = log(rowSums(t(t(exp(he) - 1)*weights)) + 1)
@@ -42,89 +63,4 @@ build_index = function(u, h, freq_afunc, screen_func, screen_params, vc_params, 
     res = volcontrol(res, vc_params)    
     return(res)
 }
-
-rank_idx=500:1500; n_sectors=5; n_stocks=2;
-reval_idx = index(apply.quarterly(h[,1],FUN=length))
-u1 = u[rank_idx,]
-h1 = h[,rank_idx]
-hidx = index(h1)
-sectors = unique(u1$SECTOR)
-sector_idx = foreach(s=sectors)%do%which(u1$SECTOR==s)
-sectors_range = 1:length(sectors)
-
-baskets = list()
-for(i in tail(1:length(reval_idx),30)){
-    x = list()
-    for(j in 1:50000){
-        if(j%%1000==0) print(j)
-        sectors1 = sample(sectors_range, n_sectors)
-        idx = c()
-        for(k in sectors1) idx=c(idx, sample(sector_idx[[k]], n_stocks))
-        h2 = h1[hidx[hidx>reval_idx[i-1] & hidx<reval_idx[i]], idx]
-        h2 = exp(h2[rowSums(!is.na(h2)) == ncol(h2),])-1
-        if(nrow(h2) > 30){
-            h2 = exp(cumsum(log(1 + rowSums(h2)/ncol(h2))))
-            x[[length(x)+1]] = list(sectors=sectors1, tickers=idx, sigma=sd(diff(log(h2)))*sqrt(250), cr=cor(1:length(h2),h2))
-        }
-    }
-
-    sigmas=c(); crs=c()
-    for(j in 1:length(x)) {
-        sigmas[j]=x[[j]]$sigma
-        crs[j]=x[[j]]$cr
-    }
-    y = data.table(sigma=sigmas, cr=crs)
-
-    crq = as.numeric(quantile(y$cr,0.995))
-    baskets[[length(baskets)+1]] = x[[which(y$sigma==y[cr>crq, min(sigma)])]]
-}
-
-reval_i = tail(1:length(reval_idx),30)
-h3 = foreach(i=1:29,.combine=rbind)%do%{
-    idx = baskets[[i]]$tickers
-    h2 = h1[hidx[hidx>reval_idx[reval_i[i]] & hidx<reval_idx[reval_i[i+1]]], idx]
-    h2 = exp(h2[rowSums(!is.na(h2)) == ncol(h2),])-1
-}
-
-h3r = xts(log(1 + rowSums(h3)/ncol(h3)), order.by=index(h3))
-sd(h3r)*sqrt(250)
-
-h31r = apply.monthly(xts(log(1 + rowSums(h3)/ncol(h3)), order.by=index(h3)),FUN=sum)
-sd(h31r)*sqrt(250/20)
-
-
-h4 = xts(exp(cumsum(log(1 + rowSums(h3)/ncol(h3)))), order.by=index(h3))
-as.numeric(tail(h4,1))^(360/as.numeric(max(index(h4))-min(index(h4))))
-
-plot(h4)
-save(baskets, file='/home/aslepnev/git/ej/bask1.RData')
-
-
-
-for(i in 1:100000){
-    print(i)
-    sectors1 = sample(sectors, n_sectors)
-    idx = c()
-    for(j in sectors1) idx=c(idx, sample(which(u1$SECTOR==j), n_stocks))
-    h1 = h[, idx]
-    h1 = exp(tail(h1[rowSums(!is.na(h1)) == ncol(h1),], 500))-1
-    if(nrow(h1) == 500){
-        h1 = exp(cumsum(log(1 + rowSums(h1)/ncol(h1))))
-        x[[length(x)+1]] = list(sectors=sectors1, tickers=idx, sigma=sd(diff(log(h1)))*sqrt(250), cr=cor(1:length(h1),h1))
-    }
-}
-
-sigmas=c(); crs=c()
-for(i in 1:length(x)) {
-    sigmas[i]=x[[i]]$sigma
-    crs[i]=x[[i]]$cr
-}
-y = data.table(sigma=sigmas, cr=crs)
-#plot(y[cr>0.98,])
-idx = x[[which(y$sigma==y[cr>0.98, min(sigma)])]]$tickers
-h1 = h[, idx]
-h1 = exp(tail(h1[rowSums(!is.na(h1)) == ncol(h1),], 500))-1
-h1 = exp(cumsum(log(1 + rowSums(h1)/ncol(h1))))
-plot(h1)
-
 
