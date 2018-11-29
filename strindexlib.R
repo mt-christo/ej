@@ -35,32 +35,32 @@ prorate_us = function(u, h, d0, d1s){
 
 # h_in=h[,1:50]; u_in=u[1:50,]; params=list(N=5)
 screen_momentum = function(h_in, u_in, params){
-    he = tail(h_in, 60)
-    res = order(colSums(he), decreasing=TRUE)[1:params$N]
+    res = order(colSums(h_in), decreasing=TRUE)[1:params$N]
     return(res)
 }
 
-# r=xts(rowSums(h[, screen_momentum(h[, 1:20], NA, list(N=5))])/5, order.by=index(h)); params=list(window=20, level=0.05, max_weight=2)
+# r=res; params=vc_params
 volcontrol = function(r, params){
     rsd = sqrt(250)*rollapply(r, params$window, FUN=sd)
-    res = r * ifelse(rsd>params$level/params$max_weight, params$level/rsd, params$max_weight)    
+    res = r * ifelse(is.na(rsd), 1, ifelse(rsd>params$level/params$max_weight, params$level/rsd, params$max_weight))
     return(res)
 }
 
 # u=U; h=D$h; screen_func=screen_momentum; screen_params=list(N=5); vc_params=list(window=20, level=0.05, max_weight=2); weights=array(1/screen_params$N, screen_params$N)
 build_index = function(u, h, rebal_dates, screen_func, screen_params, vc_params, weights){
     calc_pieces = foreach(i=2:(length(rebal_dates)-1))%do%
-        list(h = h[as.Date(rebal_dates[i-1]:(rebal_dates[i]-1)), ],
-             h_next = h[as.Date(rebal_dates[i-1]:(rebal_dates[i]-1)), ],
+        list(h = h[as.Date((rebal_dates[i-1]+1):rebal_dates[i]), ],
+             h_next = h[as.Date((rebal_dates[i]+1):rebal_dates[i+1]), ],
              u = u[dt==rebal_dates[i],])
     
     res = foreach(x=calc_pieces, .combine=rbind)%dopar%{
         eidx = screen_func(x$h, x$u, screen_params)
         he = x$h_next[, eidx]
-        r = log(rowSums(t(t(exp(he) - 1)*weights)) + 1)
+        r = xts(log(rowSums(as.matrix(exp(he) - 1)*as.numeric(weights)) + 1), order.by=index(he))
     }
 
-    res = volcontrol(res, vc_params)    
+    res = volcontrol(res, vc_params)
+    res = exp(cumsum(res))  # plot(res)
     return(res)
 }
 
