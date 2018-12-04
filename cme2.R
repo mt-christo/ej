@@ -1,9 +1,10 @@
 library(xts)
 library(foreach)
 library(data.table)
-library(RCurl)
-library(lubridate)
+#library(RCurl)
+#library(lubridate)
 
+#setwd('/home/anton/git/ej/ContractsCSV')
 setwd('/home/aslepnev/git/ej/ContractsCSV')
 comms = fread('../Commodities.csv')
 mon = data.table('num'=1:12, 'month'=c('F','G','H','J','K','M','N','Q','U','V','X','Z'))
@@ -18,6 +19,22 @@ data = rbindlist(foreach(f = list.files('.')[fsizes > 14])%do%{
     d$year = as.numeric(ftoks[3])
     d
 })
+
+contracts = mon[unique(data[, .(commodity, month, year)]), on='month'][order(year, num), ][, id:=1:.N][, idloc:=1:nrow(.SD), by='commodity']
+data = contracts[, .(commodity, month, year, id, idloc)][data, on=.(commodity, month, year)]
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 mp1 = mon[unique(data[, .(commodity, month, year)]), on='month'][order(year, num), ][, N:=nrow(.SD), by=.(commodity, year)]
 mp1 = mp1[N>1, ':='(idx=1:nrow(.SD), idx2=c(2:nrow(.SD),1), year2=year, year1=year, month2=month), by=.(commodity, year)][, ':='(num=NULL, N=NULL)]
