@@ -66,7 +66,7 @@ colnames(sector_map) = c('name', 'code')
 
 q1 = get(load('uniprc1.RData'))    
 q2 = get(load('uniprc2.RData'))
-q = diff(log(merge.xts(q1,q2)))
+q = merge.xts(q1,q2)
 save(q, file='uniprc.RData')
 u = data.table(get(load('uni.RData')))
 

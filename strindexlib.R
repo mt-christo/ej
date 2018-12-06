@@ -4,10 +4,11 @@ library(xts)
 registerDoMC(cores=7)
 
 prep_data = function(filter2){
-    #p = get(load('/home/aslepnev/git/ej/uniprc.RData'))
-    #h = diff(log(na.locf(p)))  # save(h, file='/home/aslepnev/git/ej/unih.RData')
-    u = as.data.table(get(load('/home/aslepnev/git/ej/uni.RData')))  # u$dt = as.Date("2018-03-01"); colnames(u)=gsub(' ','_', colnames(u)); save(u, file='/home/aslepnev/git/ej/uni.RData')
-    h = get(load('/home/aslepnev/git/ej/unih.RData'))
+    #u = get(load('uni.RData')); u$dt = as.Date("2018-03-01"); colnames(u)=gsub(' ','_', colnames(u)); save(u, file='uni.RData')
+    #p = get(load('uniprc.RData'))
+    #h = diff(log(na.locf(p)))  # save(h, file='unih.RData')
+    u = as.data.table(get(load('uni.RData'))) 
+    h = get(load('unih.RData'))
     u = u[1:ncol(h), ]
     if(filter2){
         mx = foreach(i=1:ncol(h),.combine=c)%do%{x=h[,i]; max(x[!is.na(x)])}
@@ -20,8 +21,9 @@ prep_data = function(filter2){
     return(list(u=u, h=h))
 }
 
+# u=D$u; h=D$h; d0=as.Date("2018-03-01"); d1=rebal_dates[1]
 # d0 = as.Date("2018-03-01"); d1=as.Date("2017-07-01")
-prorate_u = function(u, h, d0, d1){
+prorate_universe = function(u, h, d0, d1){
     u1 = u[dt==d0, ]
     u1$dt = d1
     ret = as.numeric(exp(colSums(h[as.Date(d0:d1), ]))) * if(d0<d1)1 else -1
@@ -29,8 +31,9 @@ prorate_u = function(u, h, d0, d1){
     return(u1)
 }
 
-prorate_us = function(u, h, d0, d1s){
-    return(rbindlist(foreach(d1=d1s)%do%prorate_u(u, h, d0, d1)))
+# u=D$u; h=D$h; d0=as.Date("2018-03-01"); d1s=rebal_dates
+prorate_universe_multiple = function(u, h, d0, d1s){
+    return(rbindlist(foreach(d1=d1s)%do%prorate_universe(u, h, d0, d1)))
 }
 
 # h_in=h[,1:50]; u_in=u[1:50,]; params=list(N=5)

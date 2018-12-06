@@ -1,11 +1,12 @@
-source('/home/aslepnev/git/ej/strindexlib.R')
+source('strindexlib.R')
 
 D = prep_data(TRUE)
-rebal_dates = as.Date(index(apply.yearly(D$h[,1],FUN=length)))
-U = prorate_us(D$u, D$h, as.Date("2018-03-01"), rebal_dates)
+H = D$h; U = D$u
+rebal_dates = as.Date(index(apply.yearly(H[,1],FUN=length)))
+U = prorate_universe_multiple(U, H, as.Date("2018-03-01"), rebal_dates)
 # u=U; h=D$h; screen_func=screen_momentum; screen_params=list(N=5); vc_params=list(window=20, level=0.05, max_weight=2); weights=array(1/screen_params$N, screen_params$N)
-IDX = build_index(U, D$h, rebal_dates, screen_func=screen_momentum, screen_params=list(N=5), vc_params=list(window=20, level=0.05, max_weight=2), weights=array(0.2,5))
-
+IDX = build_index(U, H, rebal_dates, screen_func=screen_momentum, screen_params=list(N=5), vc_params=list(window=20, level=0.05, max_weight=2), weights=array(0.2,5))
+plot(IDX)
 
 
 
