@@ -83,6 +83,8 @@ def get_optimal_weights(h1, h5, wlim, relax_type):
     x = minimize(c1neg, x0, method='SLSQP', bounds=bnds, constraints=[{'type': 'eq', 'fun': c3}])
 
     x1 = minimize(var_pos, x0, method='COBYLA', constraints=[{'type': 'ineq', 'fun': c3}, {'type': 'ineq', 'fun': c4}, {'type': 'ineq', 'fun': c5}])
+
+
     x2 = minimize(var_neg, x0, method='COBYLA', constraints=[{'type': 'ineq', 'fun': c3}, {'type': 'ineq', 'fun': c4}, {'type': 'ineq', 'fun': c5}])
 
 
