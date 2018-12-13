@@ -18,12 +18,12 @@ COV_WND = 5
 WND_SHORT, WND_LONG = 63, 126
 MIN_STD, MAX_STD, STD_STEP_UP, STD_STEP_DOWN, OPT_ATTEMPTS = 0.05, 0.075, 0.025, 0.01, 10
 
-#f0 = pd.read_excel('/home/anton/git/ej/smidai_hist.xlsx', 'Sheet4')
-#s0 = pd.read_excel('/home/anton/git/ej/smidai_hist.xlsx', 'Sheet5')
-#h0 = pd.read_excel('/home/anton/git/ej/smidai_hist.xlsx', 'Sheet1')
-f0 = pd.read_excel('/home/aslepnev/git/ej/smidai_hist.xlsx', 'Sheet4').set_index('SubID')
-s0 = pd.read_excel('/home/aslepnev/git/ej/smidai_hist.xlsx', 'Sheet5').set_index('SubID')
-h0 = pd.read_excel('/home/aslepnev/git/ej/smidai_hist.xlsx', 'Sheet1')
+f0 = pd.read_excel('/home/anton/git/ej/smidai_hist.xlsx', 'Sheet4')
+s0 = pd.read_excel('/home/anton/git/ej/smidai_hist.xlsx', 'Sheet5')
+h0 = pd.read_excel('/home/anton/git/ej/smidai_hist.xlsx', 'Sheet1')
+#f0 = pd.read_excel('/home/aslepnev/git/ej/smidai_hist.xlsx', 'Sheet4').set_index('SubID')
+#s0 = pd.read_excel('/home/aslepnev/git/ej/smidai_hist.xlsx', 'Sheet5').set_index('SubID')
+#h0 = pd.read_excel('/home/aslepnev/git/ej/smidai_hist.xlsx', 'Sheet1')
 
 h0['Dates'] = pd.to_datetime(h0['Dates'])
 h0.columns = [x.replace(' Index', '').replace(' US Equity', '').replace(' INDEX', '') for x in h0.columns]
@@ -245,7 +245,8 @@ if False:
 
 sub_ids = list(subbaskets.reset_index().SubID.unique())
 def pnl_fromfile(dt_start, dt_end):
-    res = pickle.load(open('/home/aslepnev/git/ej/pystr_weights/' + str(dt_start).split(" ")[0], 'rb'))
+    res = pickle.load(open('/home/anton/git/ej/pystr_weights/' + str(dt_start).split(" ")[0], 'rb'))
+#    res = pickle.load(open('/home/aslepnev/git/ej/pystr_weights/' + str(dt_start).split(" ")[0], 'rb'))
     sweights = res['sub_weights']
     pweights = res['basket_weights']
     w = pd.concat([x.assign(weight=x.weight*pweights[sub_ids.index(i)])
@@ -265,5 +266,6 @@ def pnl_fromfile(dt_start, dt_end):
 
 H = pd.concat([pnl_fromfile(dates[i], dates[i+1]) for i in range(len(dates)-1)])
 
-print((H.pnl[H.dt>='2008-09-29']+1).prod())
+print((H.pnl[H.dt>='2008-09-30']+1).prod())
 print((H.pnl[H.dt>'2009-01-01']+1).prod())
+H.to_csv('/home/anton/Documents/H.csv')
