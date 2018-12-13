@@ -264,3 +264,6 @@ def pnl_fromfile(dt_start, dt_end):
 
 
 H = pd.concat([pnl_fromfile(dates[i], dates[i+1]) for i in range(len(dates)-1)])
+
+print((H.pnl[H.dt>='2008-09-29']+1).prod())
+print((H.pnl[H.dt>'2009-01-01']+1).prod())
