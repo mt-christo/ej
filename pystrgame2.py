@@ -1,3 +1,4 @@
+import pickle
 from multiprocessing import Pool
 import numpy as np
 import random
@@ -29,8 +30,8 @@ h0.columns = [x.replace(' Index', '').replace(' US Equity', '').replace(' INDEX'
 h0 = h0.sort_values('Dates').set_index('Dates').assign(idx=range(len(h0)))
 cols = [x for x in h0.columns if x!='US0003M' and x!='idx']
 h0r1, h0r5 = h0, h0
-h0r1 = h0[cols].pct_change(1).assign(US0003M=h0['US0003M']*0.01/252).fillna(0)
-h0r5 = h0[cols].pct_change(COV_WND).assign(US0003M=h0['US0003M']*0.07/252).fillna(0)
+h0r1 = h0[cols].pct_change(1).assign(US0003M=h0['US0003M']*0.01/252, idx=range(len(h0))).fillna(0)
+h0r5 = h0[cols].pct_change(COV_WND).assign(US0003M=h0['US0003M']*0.07/252, idx=range(len(h0))).fillna(0)
 
 #plt.plot((res+1).cumprod())
 #plt.show()
@@ -73,7 +74,7 @@ def get_optimal_weights(h1_in, h5_in, wlim, relax_type):
         return min([wlime[i]-x[i] for i in range(len(x))])
     def attempt_minimize(params, attempts, do_tweak=True):
         for i in range(attempts):
-            print(i)
+#            print(i)
             res = minimize(params[0], initial_guess() if params[1]=='guess' else tweak_weights(params[1]) if do_tweak else params[1], method=params[2], constraints=params[3])
             if res['success']:
                 return res
@@ -98,6 +99,10 @@ def get_optimal_weights(h1_in, h5_in, wlim, relax_type):
 
     # Find weight-constrained initial guess (c_weight2 and c_weight3 met by design)
     std_low = attempt_minimize([std_pos, 'guess', 'COBYLA', weight_constraints], OPT_ATTEMPTS)
+    if std_low!=-1:
+        x0 = std_low['x']
+    else:
+        x0 = initial_guess()
     
     if relax_type=='vol':  # Find variance limits which surround volatility optimum
         if std_low!=-1 and std_low['fun'] >= min_std:  # => volatility low is above low cap
@@ -129,13 +134,13 @@ def get_optimal_weights(h1_in, h5_in, wlim, relax_type):
             if std_low!=-1 and std_low['fun']<max_std:
                 x0 = std_low['x']
             else:
-                return -1  # This means something is definitely wrong
+                return align_result(initial_guess())  # This means something is definitely wrong
 
     res = attempt_minimize([negtotret, flatten_weights(x0), 'COBYLA', weight_constraints+std_constraints], OPT_ATTEMPTS)
     if res!=-1:
         return align_result(flatten_weights(res['x']))
     else:
-        return -1  # This means something is definitely wrong
+        return align_result(initial_guess())  # This means something is definitely wrong
              
 def get_optimal_subbasket(data):
     print('dt: ' + str(data['dt']) + ', sub_id: ' + str(data['sub_id']))
@@ -154,25 +159,31 @@ if False:
 #    sub_id = 1    
 #    h1, h5 = h1_short, h5_short
 #    negtotret(weights)
-def get_optimal_subbaskets(subbaskets, returns_1d, returns_5d, dt):  # returns {weights by sub-basket, total return time series by sub-basket}
+def get_optimal_subbaskets(subbaskets, h1, h5, dt):  # returns {weights by sub-basket, total return time series by sub-basket}
     # Transform to incremental indexing & find index of this rebal date
-    h1_par = returns_1d.assign(idx=range(len(returns_1d)))
-    idx = h1_par.loc[dt, 'idx'] - 4  # per index rules
+    h1p = h1.assign(idx=range(len(h1)))
+    h5p = h5.assign(idx=range(len(h1)))
+    idx = h1p.loc[dt, 'idx'] - 4  # per index rules
     idx_short, idx_long = max(0, idx-WND_SHORT), max(0, idx-WND_LONG)
-    h1_par = h1_par.set_index('idx')
-    h5_par = returns_5d.assign(idx=range(len(returns_1d))).set_index('idx')
+    h1p = h1p.set_index('idx')
+    h5p = h5p.set_index('idx')
+    
+    h1_short = h1p.loc[idx_short:idx, :]
+    h5_short = h5p.loc[idx_short:idx, :]
+    h1_long = h1p.loc[idx_long:idx, :]
+    h5_long = h5p.loc[idx_long:idx, :]
 
     # Parallelize slow optimization
     res = Pool(6).map(get_optimal_subbasket,
                       [{'sub_id': sub_id,
                         'dt': dt,
                         'relax_type': 'vol',  # we are optimizing subbasket here, as per index rules
-                        'h1_short': h1_par.loc[idx_short:idx, subbaskets.loc[sub_id, 'FundCode']],
-                        'h5_short': h5_par.loc[idx_short:idx, subbaskets.loc[sub_id, 'FundCode']],
-                        'h1_long': h1_par.loc[idx_long:idx, subbaskets.loc[sub_id, 'FundCode']],
-                        'h5_long': h5_par.loc[idx_long:idx, subbaskets.loc[sub_id, 'FundCode']],
+                        'h1_short': h1_short.loc[:, subbaskets.loc[sub_id, 'FundCode']],
+                        'h5_short': h5_short.loc[:, subbaskets.loc[sub_id, 'FundCode']],
+                        'h1_long': h1_long.loc[:, subbaskets.loc[sub_id, 'FundCode']],
+                        'h5_long': h5_long.loc[:, subbaskets.loc[sub_id, 'FundCode']],
                         'wlim': np.array(subbaskets.loc[sub_id, 'FundMax']),
-                        'hist': returns_1d[subbaskets.loc[sub_id, 'FundCode']],
+                        'hist': h1p.loc[(idx_long-2*COV_WND):idx, subbaskets.loc[sub_id, 'FundCode']],
                         'codes': subbaskets.loc[sub_id, 'FundCode']}
                        for sub_id in subbaskets.reset_index().SubID.unique()])
     return {'weights': dict(zip([x['sub_id'] for x in res], [x['weights'] for x in res])),
@@ -187,16 +198,16 @@ def get_optimal_hist(baskets, subbaskets, returns_1d, returns_5d, dates):  # ass
         s = get_optimal_subbaskets(subbaskets, returns_1d, returns_5d, dt)  # calculate optimal subbaskets
 
         # Histories in usual naming + extract weekly returns
-        h1p = s['hist'].assign(idx=range(len(s['hist'])))
+        h1p = s['hist']#.assign(idx=range(len(s['hist'])))
         h5p = (h1p+1).cumprod()\
-                     .pct_change(COV_WND)\
-                     .assign(idx=range(len(h1p)))
+                     .pct_change(COV_WND)#\
+                     #.assign(idx=range(len(h1p)))
 
         # Transform to incremental indexing & find index of this rebal date
-        idx = h1p.loc[dt, 'idx'] - 4  # per index rules
+        idx = returns_1d.loc[dt, 'idx'] - 4  # per index rules
         idx_short, idx_long = max(0, idx-WND_SHORT), max(0, idx-WND_LONG)
-        h1p = h1p.set_index('idx')
-        h5p = h5p.set_index('idx')
+#        h1p = h1p.set_index('idx')
+#        h5p = h5p.set_index('idx')
         
         # Extract short and long history for optimization
         sub_ids = baskets.reset_index().SubID
@@ -206,8 +217,12 @@ def get_optimal_hist(baskets, subbaskets, returns_1d, returns_5d, dates):  # ass
         wshort = get_optimal_weights(h1_long, h5_long, np.array(baskets.SubMax), 'cash')  # optimal weights over long window
         weights = 0.5 * (np.array(wlong) + np.array(wshort))
 
-        sub_weights[dt] = s['weights']
-        basket_weights[dt] = weights
+        res = {'dt_end': returns_1d[returns_1d.idx==idx].index.to_series()[0],
+               'sub_weights': s['weights'],
+               'basket_weights': weights}
+        pickle.dump(res, open('/home/aslepnev/git/ej/pystr_weights/' + str(dt).split(" ")[0], 'wb'))
+#        res1 = pickle.load(open('/home/aslepnev/git/ej/pystr_weights/' + str(dt).split(" ")[0], 'rb'))
+        
 
     r = returns_1d.assign(idx=range(len(returns_1d)))
     res = pd.concat([basket_hist[dates[i]][r.loc[dates[i], 'idx']:(r.loc[dates[i+1], 'idx'] if i<len(dates)-1 else len(r))]
@@ -221,4 +236,31 @@ if False:
     # Extract calendar from given returns
     dates = pd.DataFrame({'date': returns_1d.reset_index()['Dates']})
     dates = dates.assign(month=dates.date.dt.month, year=dates.date.dt.year).groupby(['year', 'month']).agg({'date': 'min'}).reset_index()['date']
-    dates = list(dates[1:(len(dates)-2)])
+    dates = list(dates[3:(len(dates)-2)])
+#    dt = dates[0]
+#    dt_start = dates[0]
+#    dt_end = dates[1]
+#    dates = [x for x in dates if x>=pd.to_datetime('2012-09-01')]
+
+
+sub_ids = list(subbaskets.reset_index().SubID.unique())
+def pnl_fromfile(dt_start, dt_end):
+    res = pickle.load(open('/home/aslepnev/git/ej/pystr_weights/' + str(dt_start).split(" ")[0], 'rb'))
+    sweights = res['sub_weights']
+    pweights = res['basket_weights']
+    w = pd.concat([x.assign(weight=x.weight*pweights[sub_ids.index(i)])
+                   for i, x in zip(sweights.keys(), sweights.values())])\
+          .groupby('code')\
+          .agg({'weight': 'sum'})
+
+    phist = returns_1d.reset_index()
+    phist = phist[(phist.Dates>=dt_start) & (phist.Dates<dt_end)]
+    pnl = phist[w.index].multiply(w['weight']).sum(axis=1)
+    pnl = pd.DataFrame({'pnl': pnl, 'dt': phist['Dates']})
+    for code in w.index:
+        pnl[code] = w.loc[code, 'weight']
+        
+    return pnl
+
+
+H = pd.concat([pnl_fromfile(dates[i], dates[i+1]) for i in range(len(dates)-1)])
