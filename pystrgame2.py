@@ -152,10 +152,12 @@ def get_optimal_subbasket(data):
     w1 = (type(weights.tolist())==list)  # for future 1-row dataframe processing
     return {'sub_id': data['sub_id'],
             'weights': pd.DataFrame({'code': data['codes'] if w1 else [data['codes']], 'weight': weights if w1 else [1.0]}),
+            'vol_short': np.sqrt(data['h5_short'].multiply(weights).cov().sum().sum()*250/COV_WND) if w1 else [np.sqrt(data['h5_short'].var()*250/COV_WND)],
+            'vol_long': np.sqrt(data['h5_long'].multiply(weights).cov().sum().sum()*250/COV_WND) if w1 else [np.sqrt(data['h5_long'].var()*250/COV_WND)],
             'hist': data['hist'].multiply(weights).sum(axis=1) if w1 else data['hist']}
     
 if False:
-    subbaskets, returns_1d, returns_5d, dt = f0, h0r1, h0r5, '2006-04-24'  # assuming that Date is index in returns dataframes
+    subbaskets, h1, h5, dt = f0, h0r1, h0r5, '2012-06-01'  # assuming that Date is index in returns dataframes
 #    sub_id = 1    
 #    h1, h5 = h1_short, h5_short
 #    negtotret(weights)
@@ -187,6 +189,8 @@ def get_optimal_subbaskets(subbaskets, h1, h5, dt):  # returns {weights by sub-b
                         'codes': subbaskets.loc[sub_id, 'FundCode']}
                        for sub_id in subbaskets.reset_index().SubID.unique()])
     return {'weights': dict(zip([x['sub_id'] for x in res], [x['weights'] for x in res])),
+            'vols_short': dict(zip([x['sub_id'] for x in res], [x['vol_short'] for x in res])),
+            'vols_long': dict(zip([x['sub_id'] for x in res], [x['vol_long'] for x in res])),
             'hist': pd.DataFrame.from_dict(dict(zip([x['sub_id'] for x in res], [x['hist'] for x in res])))}
 
 def get_optimal_hist(baskets, subbaskets, returns_1d, returns_5d, dates):  # assuming that (rebal)dates exist in history time series
@@ -219,6 +223,8 @@ def get_optimal_hist(baskets, subbaskets, returns_1d, returns_5d, dates):  # ass
 
         res = {'dt_end': returns_1d[returns_1d.idx==idx].index.to_series()[0],
                'sub_weights': s['weights'],
+               'sub_vols_short': s['vols_short'],
+               'sub_vols_long': s['vols_long'],
                'basket_weights': weights}
         pickle.dump(res, open('/home/aslepnev/git/ej/pystr_weights/' + str(dt).split(" ")[0], 'wb'))
 #        res1 = pickle.load(open('/home/aslepnev/git/ej/pystr_weights/' + str(dt).split(" ")[0], 'rb'))
@@ -238,9 +244,10 @@ if False:
     dates = dates.assign(month=dates.date.dt.month, year=dates.date.dt.year).groupby(['year', 'month']).agg({'date': 'min'}).reset_index()['date']
     dates = list(dates[3:(len(dates)-2)])
 #    dt = dates[0]
+dt = pd.to_datetime('2012-08-01')
 #    dt_start = dates[0]
 #    dt_end = dates[1]
-#    dates = [x for x in dates if x>=pd.to_datetime('2012-09-01')]
+#    dates = [x for x in dates if x>=pd.to_datetime('2012-05-01')]
 
 
 sub_ids = list(subbaskets.reset_index().SubID.unique())
@@ -261,7 +268,7 @@ def pnl_fromfile(dt_start, dt_end):
         pnl[code] = w.loc[code, 'weight']
         
     return pnl
-
+ 
 
 H = pd.concat([pnl_fromfile(dates[i], dates[i+1]) for i in range(len(dates)-1)])
 
