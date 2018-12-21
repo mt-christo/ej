@@ -19,17 +19,20 @@ spread_ival_tpdd = function(data, dt_start, dt_end){
     return(s2)
 }
 
-# comdty='Feeder Cattle'; spread_months='U-V-X'; dt_start='2014-03-09'; wnd=15
-get_spread_wnd_fwd <- function(comdty, spread_months, dt_start, wnd){
+# comdty='Feeder Cattle'; spread_months='U-V-X'; dt_start='2014-03-09'; dt_center=dt_start; wnd=as.Date(dt_end)-as.Date(dt_start)
+# wnd=as.Date(dt_end)-as.Date(dt_start)
+get_spread_wnd_fwd <- function(comdty, spread_months, dt_start, wnd, dt_center){
     chgfun = function(x) { tail(x,1) - x[1] }
     s = Spreads[commodity==comdty & months==spread_months, ]
 
     zero_year = 1901 + year(dt_start) - year(s[expiry > dt_start, min(expiry)])
     zero_start = as.Date(ISOdate(zero_year, month(dt_start), day(dt_start)))
+    zero_center = as.Date(ISOdate(zero_year, month(dt_center), day(dt_center)))
+    
     s = s[, zero_date:=as.Date(ISOdate(1901+year(date)-year(expiry), month(date), day(date)))][!is.na(zero_date), ]
     s = s[CJ(zero_date = unique(s$zero_date), year=unique(s$year)), on=.(zero_date, year)][order(zero_date), ]
-    s = s[, ':='(spread = na.locf(spread, na.rm=FALSE)
-                ,ma5=rollapply(spread, 5, FUN=mean, fill=NA, align='right')
+    s = s[, spread := na.locf(spread, na.rm=FALSE), by=year]
+    s = s[, ':='(ma5=rollapply(spread, 5, FUN=mean, fill=NA, align='right')
                 ,ma10=rollapply(spread, 10, FUN=mean, fill=NA, align='right')
                 ), by=year]
     s = s[, ':='(ma5chg3 = rollapply(ma5, 3, FUN=chgfun, fill=NA, align='right')
@@ -39,10 +42,12 @@ get_spread_wnd_fwd <- function(comdty, spread_months, dt_start, wnd){
                 ,ma10chg5 = rollapply(ma10, 5, FUN=chgfun, fill=NA, align='right')
                 ,ma10chg7 = rollapply(ma10, 7, FUN=chgfun, fill=NA, align='right')
                 ), by=year]
+    s = s[, spread_ctd := spread - .SD[zero_date==zero_center, spread], by=year]
     res = s[zero_date>=zero_start & zero_date<=zero_start+wnd, ][, !colnames(s)%in%c('commodity','date','months','expiry'), with=FALSE]
     return(res)
 }
 
-get_spread_wnd <- function(comdty, spread_months, dt_start, dt_end){
-    return(get_spread_wnd_fwd(comdty, spread_months, dt_start, dt_end-dt_start))
+#comdty='Feeder Cattle'; spread_months='U-V-X'; dt_start='2015-12-09'; dt_end='2016-01-04'; dt_center='2015-12-09'
+get_spread_wnd <- function(comdty, spread_months, dt_start, dt_end, dt_center){
+    return(get_spread_wnd_fwd(comdty, spread_months, dt_start, as.Date(dt_end)-as.Date(dt_start), dt_center))
 }
