@@ -12,6 +12,76 @@ plot(IDX)
 
 
 
+
+library(RCurl)
+library(XML)
+library(rlist)
+library(rjson)
+
+library(data.table)
+library(quantmod)
+library(foreach)
+library(stringr)
+
+u = fread('/home/anton/Downloads/zacks.csv')
+i = 1
+p = foreach(x=u$Ticker,.errorhandling='pass')%do%{ Sys.sleep(1.1); print(i); i=i+1; get(getSymbols(x))[,paste0(x,'.Adjusted')] }
+save(p, file='/home/anton/git/ej/zacks_yhoo.RData')
+
+
+e = fread('/home/anton/Downloads/finviz.csv')[order(Volume, decreasing=TRUE),][1:200,]
+pe = foreach(x=e$Ticker,.errorhandling='pass')%do%{ Sys.sleep(1.1); print(i); i=i+1; get(getSymbols(x))[,paste0(x,'.Adjusted')] }
+save(pe, file='/home/anton/git/ej/etf_yhoo.RData')
+
+
+p = get(load('/home/anton/git/ej/zacks_yhoo.RData'))
+
+e = fread('/home/anton/Downloads/finviz.csv')[order(Volume, decreasing=TRUE),][1:200, dt:=as.Date('2018-12-17')][,-1]
+colnames(e) = c('ticker','name','sector','industry','country','mcap','volume','dt')
+pe = get(load('/home/anton/git/ej/etf_yhoo.RData'))
+pe = foreach(x=pe,.combine=cbind)%do%x
+colnames(pe) = gsub('[.]Adjusted', '', colnames(pe))
+#ped = rbindlist(foreach(x=colanmes(pe))%do%as.data.table('dt'=index(
+D = list(u=e[ticker%in%colnames(pe),], h=pe[,e[ticker%in%colnames(pe), ticker]])  # 'u' and 'h' match
+save(D, file='/home/anton/git/ej/finviz_etf_uni.RData')
+
+
+
+
+rebal_dates = as.Date(index(apply.quarterly(D$h[,1],FUN=length)))
+rebal_dates = as.Date(index(apply.monthly(D$h[,1],FUN=length)))
+# u=U; h=D$h; screen_func=screen_momentum; screen_params=list(N=5); vc_params=list(window=20, level=0.05, max_weight=2); weights=array(1/screen_params$N, screen_params$N)
+IDX = build_index(U, H, rebal_dates, screen_func=screen_momentum, screen_params=list(N=5), vc_params=list(window=20, level=0.05, max_weight=2), weights=array(0.2,5))
+plot(IDX)
+
+
+
+
+
+
+
+
+t1=foreach(x=paste0('test_funds',0:9,'1.csv'))%do%fread(paste0('/home/anton/',x),header=FALSE)
+t2=foreach(x=paste0('test_funds',0:9,'2.csv'))%do%fread(paste0('/home/anton/',x),header=FALSE)
+t3=foreach(x=paste0('test_funds',0:9,'3.csv'))%do%fread(paste0('/home/anton/',x),header=FALSE)
+t = rbindlist(foreach(i=1:length(t1))%do%cbind(t1[[i]], t3[[i]]))
+colnames(t) = c('ticker','name','asset_class','strategy','region','geography','category','focus','niche','inverse','leveraged',
+                'etn','underlying_index','provider','selection_criteria','weighting_scheme','actove_per_sec')
+match(u$ticker, t$ticker)
+match(t$ticker, u$ticker)
+
+pet = foreach(x=t$ticker,.errorhandling='pass')%do%{ Sys.sleep(1.1); print(i); i=i+1; get(getSymbols(x))[,paste0(x,'.Adjusted')] }
+save(pet, file='/home/anton/git/ej/pet_yhoo.RData')
+
+
+
+a = paste(readLines('https://finance.yahoo.com/screener/unsaved/8942a94a-1fe1-422d-9199-6549e327eb0c?offset=0&count=250'),collapse='')
+delim = '"></path></svg></label><a href="/quote/'
+tidx = gregexpr(str_replace_all(delim,"(\\W)", "\\\\\\1"), a, perl=T)[[1]]
+i = tidx[1]
+
+tickers = foreach(i=tidx,.combine=c)%do%{ s=substr(a,i+nchar(delim),i+nchar(delim)+50)[[1]]; substr(s,1, gregexpr('\\?',s)[[1]][1]-1) }
+
 rank_idx=500:1500; n_sectors=5; n_stocks=2;
 reval_idx = index(apply.quarterly(h[,1],FUN=length))
 u1 = u[rank_idx,]
