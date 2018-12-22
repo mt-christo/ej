@@ -1,0 +1,2078 @@
+"No.","Ticker","Company","Sector","Industry","Country","Market Cap","Volume"
+1,"SPY","SPDR S&P 500 ETF","Financial","Exchange Traded Fund","USA",,73926852
+2,"EEM","iShares MSCI Emerging Markets ETF","Financial","Exchange Traded Fund","USA",,67764116
+3,"XLF","Financial Select Sector SPDR ETF","Financial","Exchange Traded Fund","USA",,55366253
+4,"GDX","VanEck Vectors Gold Miners ETF","Financial","Exchange Traded Fund","USA",,39446178
+5,"QQQ","Invesco QQQ Trust","Financial","Exchange Traded Fund","USA",,39023383
+6,"USO","United States Oil","Financial","Exchange Traded Fund","USA",,36424641
+7,"VXX","iPath S&P 500 VIX ST Futures ETN","Financial","Exchange Traded Fund","USA",,31292276
+8,"IWM","iShares Russell 2000 ETF","Financial","Exchange Traded Fund","USA",,28158766
+9,"SQQQ","ProShares UltraPro Short QQQ","Financial","Exchange Traded Fund","USA",,27134206
+10,"EFA","iShares MSCI EAFE ETF","Financial","Exchange Traded Fund","USA",,26060773
+11,"IEMG","iShares Core MSCI Emerging Markets ETF","Financial","Exchange Traded Fund","USA",,24592911
+12,"IEFA","iShares Core MSCI EAFE ETF","Financial","Exchange Traded Fund","USA",,21552286
+13,"VEA","Vanguard FTSE Developed Markets ETF","Financial","Exchange Traded Fund","USA",,21294413
+14,"XOP","SPDR S&P Oil & Gas Explor & Prodtn ETF","Financial","Exchange Traded Fund","USA",,21255791
+15,"VWO","Vanguard FTSE Emerging Markets ETF","Financial","Exchange Traded Fund","USA",,21131908
+16,"AMLP","Alerian MLP ETF","Financial","Exchange Traded Fund","USA",,18449824
+17,"XLP","Consumer Staples Select Sector SPDR ETF","Financial","Exchange Traded Fund","USA",,17929415
+18,"FXI","iShares China Large-Cap ETF","Financial","Exchange Traded Fund","USA",,17712274
+19,"UWT","VelocityShares 3x Lng Crude Oil ETN New","Financial","Exchange Traded Fund","USA",,14813780
+20,"JNK","SPDR Blmbg Barclays High Yield Bd ETF","Financial","Exchange Traded Fund","USA",,14485038
+21,"XLE","Energy Select Sector SPDR ETF","Financial","Exchange Traded Fund","USA",,14365620
+22,"XLU","Utilities Select Sector SPDR ETF","Financial","Exchange Traded Fund","USA",,13968126
+23,"TQQQ","ProShares UltraPro QQQ","Financial","Exchange Traded Fund","USA",,13937332
+24,"HYG","iShares iBoxx $ High Yield Corp Bd ETF","Financial","Exchange Traded Fund","USA",,12992761
+25,"SCHF","Schwab International Equity ETF","Financial","Exchange Traded Fund","USA",,12948770
+26,"EWZ","iShares MSCI Brazil Capped ETF","Financial","Exchange Traded Fund","USA",,12795468
+27,"TZA","Direxion Daily Small Cap Bear 3X ETF","Financial","Exchange Traded Fund","USA",,11744438
+28,"TVIX","VelocityShares Daily 2x VIX ST ETN","Financial","Exchange Traded Fund","USA",,11675696
+29,"BSV","Vanguard Short-Term Bond ETF","Financial","Exchange Traded Fund","USA",,11168653
+30,"KRE","SPDR S&P Regional Banking ETF","Financial","Exchange Traded Fund","USA",,11067689
+31,"XLV","Health Care Select Sector SPDR ETF","Financial","Exchange Traded Fund","USA",,10904450
+32,"XLK","Technology Select Sector SPDR ETF","Financial","Exchange Traded Fund","USA",,10746361
+33,"IAU","iShares Gold Trust","Financial","Exchange Traded Fund","USA",,9918967
+34,"JNUG","Direxion Daily Jr Gld Mnrs Bull 3X ETF","Financial","Exchange Traded Fund","USA",,9129354
+35,"IJR","iShares Core S&P Small-Cap ETF","Financial","Exchange Traded Fund","USA",,8630027
+36,"DWT","VelocityShares 3x Invrs Crude Oil ETNNew","Financial","Exchange Traded Fund","USA",,8483861
+37,"XLI","Industrial Select Sector SPDR ETF","Financial","Exchange Traded Fund","USA",,8324302
+38,"NUGT","Direxion Daily Gold Miners Bull 3X ETF","Financial","Exchange Traded Fund","USA",,8117133
+39,"EWJ","iShares MSCI Japan ETF","Financial","Exchange Traded Fund","USA",,8030507
+40,"XLB","Materials Select Sector SPDR ETF","Financial","Exchange Traded Fund","USA",,7939719
+41,"BIV","Vanguard Interm-Term Bond ETF","Financial","Exchange Traded Fund","USA",,6990109
+42,"VNQ","Vanguard Real Estate ETF","Financial","Exchange Traded Fund","USA",,6909497
+43,"IVV","iShares Core S&P 500 ETF","Financial","Exchange Traded Fund","USA",150790.04,6683597
+44,"OIH","VanEck Vectors Oil Services ETF","Financial","Exchange Traded Fund","USA",,6662659
+45,"BKLN","Invesco Senior Loan ETF","Financial","Exchange Traded Fund","USA",,6527051
+46,"EZU","iShares MSCI Eurozone ETF","Financial","Exchange Traded Fund","USA",,6503227
+47,"UCO","ProShares Ultra Bloomberg Crude Oil","Financial","Exchange Traded Fund","USA",,6206938
+48,"MCHI","iShares MSCI China ETF","Financial","Exchange Traded Fund","USA",,6130210
+49,"TLT","iShares 20+ Year Treasury Bond ETF","Financial","Exchange Traded Fund","USA",,6120265
+50,"FEZ","SPDR EURO STOXX 50 ETF","Financial","Exchange Traded Fund","USA",,6017310
+51,"XLRE","Real Estate Select Sector SPDR","Financial","Exchange Traded Fund","USA",,5933202
+52,"VGK","Vanguard FTSE Europe ETF","Financial","Exchange Traded Fund","USA",,5929206
+53,"SLV","iShares Silver Trust","Financial","Exchange Traded Fund","USA",,5826632
+54,"BLV","Vanguard Long-Term Bond ETF","Financial","Exchange Traded Fund","USA",,5750842
+55,"SPXU","ProShares UltraPro Short S&P500","Financial","Exchange Traded Fund","USA",,5733762
+56,"GLD","SPDR Gold Shares","Financial","Exchange Traded Fund","USA",,5681429
+57,"ACWI","iShares MSCI ACWI ETF","Financial","Exchange Traded Fund","USA",,5650417
+58,"SMH","VanEck Vectors Semiconductor ETF","Financial","Exchange Traded Fund","USA",,5598345
+59,"GDXJ","VanEck Vectors Junior Gold Miners ETF","Financial","Exchange Traded Fund","USA",,5532885
+60,"IYR","iShares US Real Estate ETF","Financial","Exchange Traded Fund","USA",,5496230
+61,"SH","ProShares Short S&P500","Financial","Exchange Traded Fund","USA",,5467780
+62,"VTI","Vanguard Total Stock Market ETF","Financial","Exchange Traded Fund","USA",,5422380
+63,"SDS","ProShares UltraShort S&P500","Financial","Exchange Traded Fund","USA",,5318240
+64,"RSX","VanEck Vectors Russia ETF","Financial","Exchange Traded Fund","USA",,5181878
+65,"XBI","SPDR S&P Biotech ETF","Financial","Exchange Traded Fund","USA",,5155521
+66,"SPXS","Direxion Daily S&P 500 Bear 3X ETF","Financial","Exchange Traded Fund","USA",,5073383
+67,"EWT","iShares MSCI Taiwan Capped ETF","Financial","Exchange Traded Fund","USA",,4953920
+68,"VT","Vanguard Total World Stock ETF","Financial","Exchange Traded Fund","USA",,4950874
+69,"EMB","iShares JP Morgan USD Em Mkts Bd ETF","Financial","Exchange Traded Fund","USA",,4878679
+70,"SPXL","Direxion Daily S&P500 Bull 3X ETF","Financial","Exchange Traded Fund","USA",,4761555
+71,"PFF","iShares US Preferred Stock ETF","Financial","Exchange Traded Fund","USA",,4752108
+72,"LABU","Direxion Daily S&P Biotech Bull 3X ETF","Financial","Exchange Traded Fund","USA",,4731318
+73,"USMV","iShares Edge MSCI Min Vol USA ETF","Financial","Exchange Traded Fund","USA",,4707216
+74,"FNDF","Schwab Fundamental Intl Lg Co ETF","Financial","Exchange Traded Fund","USA",,4549629
+75,"SDOW","ProShares UltraPro Short Dow30","Financial","Exchange Traded Fund","USA",,4534552
+76,"VEU","Vanguard FTSE All-Wld ex-US ETF","Financial","Exchange Traded Fund","USA",,4467310
+77,"AGG","iShares Core US Aggregate Bond ETF","Financial","Exchange Traded Fund","USA",,4462981
+78,"SCO","ProShares UltraShort Bloomberg Crude Oil","Financial","Exchange Traded Fund","USA",,4456360
+79,"XLY","Consumer Discret Sel Sect SPDR ETF","Financial","Exchange Traded Fund","USA",,4450745
+80,"UVXY","ProShares Ultra VIX Short-Term Futures","Financial","Exchange Traded Fund","USA",,4372467
+81,"DRIP","Direxion Dly S&P Oil&Gs Ex&Prd Br 3X ETF","Financial","Exchange Traded Fund","USA",,4315458
+82,"IUSG","iShares Core S&P US Growth ETF","Financial","Exchange Traded Fund","USA",,4087758
+83,"IWD","iShares Russell 1000 Value ETF","Financial","Exchange Traded Fund","USA",,4075276
+84,"EWH","iShares MSCI Hong Kong ETF","Financial","Exchange Traded Fund","USA",,4038672
+85,"XRT","SPDR S&P Retail ETF","Financial","Exchange Traded Fund","USA",,3938974
+86,"SCHE","Schwab Emerging Markets Equity ETF","Financial","Exchange Traded Fund","USA",,3914393
+87,"INDA","iShares MSCI India ETF","Financial","Exchange Traded Fund","USA",,3880082
+88,"SOXS","Direxion Daily Semicondct Bear 3X ETF","Financial","Exchange Traded Fund","USA",,3871142
+89,"XHB","SPDR S&P Homebuilders ETF","Financial","Exchange Traded Fund","USA",,3832114
+90,"UPRO","ProShares UltraPro S&P500","Financial","Exchange Traded Fund","USA",,3750474
+91,"AMJ","JPMorgan Alerian MLP ETN","Financial","Exchange Traded Fund","USA",,3672492
+92,"ITOT","iShares Core S&P Total US Stock Mkt ETF","Financial","Exchange Traded Fund","USA",,3663684
+93,"IWF","iShares Russell 1000 Growth ETF","Financial","Exchange Traded Fund","USA",,3623800
+94,"SPYV","SPDR Portfolio S&P 500 Value ETF","Financial","Exchange Traded Fund","USA",,3623771
+95,"DGAZ","VelocityShares 3x Inv Natural Gas ETN","Financial","Exchange Traded Fund","USA",,3551836
+96,"TNA","Direxion Daily Small Cap Bull 3X ETF","Financial","Exchange Traded Fund","USA",,3545542
+97,"ERX","Direxion Daily Energy Bull 3X ETF","Financial","Exchange Traded Fund","USA",,3462872
+98,"LQD","iShares iBoxx $ Invmt Grade Corp Bd ETF","Financial","Exchange Traded Fund","USA",,3438774
+99,"ITB","iShares US Home Construction ETF","Financial","Exchange Traded Fund","USA",,3237766
+100,"SHY","iShares 1-3 Year Treasury Bond ETF","Financial","Exchange Traded Fund","USA",,3217431
+101,"FAZ","Direxion Daily Financial Bear 3X ETF","Financial","Exchange Traded Fund","USA",,3149362
+102,"SCHB","Schwab US Broad Market ETF","Financial","Exchange Traded Fund","USA",,3149146
+103,"ACWX","iShares MSCI ACWI ex US ETF","Financial","Exchange Traded Fund","USA",,3098756
+104,"EWG","iShares MSCI Germany ETF","Financial","Exchange Traded Fund","USA",,3098563
+105,"UGAZ","VelocityShares 3x Long Natural Gas ETN","Financial","Exchange Traded Fund","USA",,3090814
+106,"DIA","SPDR Dow Jones Industrial Average ETF","Financial","Exchange Traded Fund","USA",,3080821
+107,"EWW","iShares MSCI Mexico Capped ETF","Financial","Exchange Traded Fund","USA",,3002331
+108,"IWR","iShares Russell Mid-Cap ETF","Financial","Exchange Traded Fund","USA",,2976052
+109,"VOO","Vanguard S&P 500 ETF","Financial","Exchange Traded Fund","USA",,2850431
+110,"FLRN","SPDR Blmbg Barclays Inv Grd Flt Rt ETF","Financial","Exchange Traded Fund","USA",,2808043
+111,"EWY","iShares MSCI South Korea Capped ETF","Financial","Exchange Traded Fund","USA",,2782775
+112,"BOTZ","Global X Robotics & Artfcl Intllgnc ETF","Financial","Exchange Traded Fund","USA",,2767372
+113,"PGX","Invesco Preferred ETF","Financial","Exchange Traded Fund","USA",,2707349
+114,"FNDA","Schwab Fundamental US Small Company ETF","Financial","Exchange Traded Fund","USA",,2678628
+115,"GUSH","Direxion Dly S&P Oil&Gs Ex&Prd Bl 3X ETF","Financial","Exchange Traded Fund","USA",,2658068
+116,"EMLC","VanEck Vectors JP Morgan EM LC Bd ETF","Financial","Exchange Traded Fund","USA",,2628543
+117,"TBT","ProShares UltraShort 20+ Year Treasury","Financial","Exchange Traded Fund","USA",,2577900
+118,"QID","ProShares UltraShort QQQ","Financial","Exchange Traded Fund","USA",,2555036
+119,"VTV","Vanguard Value ETF","Financial","Exchange Traded Fund","USA",,2505910
+120,"EWA","iShares MSCI Australia ETF","Financial","Exchange Traded Fund","USA",,2471826
+121,"DUST","Direxion Daily Gold Miners Bear 3X ETF","Financial","Exchange Traded Fund","USA",,2441242
+122,"UNG","United States Natural Gas","Financial","Exchange Traded Fund","USA",,2404125
+123,"EWU","iShares MSCI United Kingdom ETF","Financial","Exchange Traded Fund","USA",,2348564
+124,"IUSV","iShares Core S&P US Value ETF","Financial","Exchange Traded Fund","USA",,2322192
+125,"MLPI","UBS ETRACS Alerian MLP Infras ETN","Financial","Exchange Traded Fund","USA",,2266042
+126,"SJNK","SPDR Blmbg BarclaysST HY Bd ETF","Financial","Exchange Traded Fund","USA",,2235588
+127,"AAXJ","iShares MSCI All Country Asia ex Jpn ETF","Financial","Exchange Traded Fund","USA",,2222987
+128,"FSTA","Fidelity MSCI Consumer Staples ETF","Financial","Exchange Traded Fund","USA",,2131395
+129,"XES","SPDR S&P Oil & Gas Equipment&Svcs ETF","Financial","Exchange Traded Fund","USA",,2110607
+130,"SPLV","Invesco S&P 500 Low Volatility ETF","Financial","Exchange Traded Fund","USA",,2099018
+131,"IBB","iShares Nasdaq Biotechnology ETF","Financial","Exchange Traded Fund","USA",,2096349
+132,"VYM","Vanguard High Dividend Yield ETF","Financial","Exchange Traded Fund","USA",,2084076
+133,"KBE","SPDR S&P Bank ETF","Financial","Exchange Traded Fund","USA",,2057468
+134,"PSQ","ProShares Short QQQ","Financial","Exchange Traded Fund","USA",,1988519
+135,"FNDC","Schwab Fundamental Intl Sm Co ETF","Financial","Exchange Traded Fund","USA",,1958894
+136,"RSP","Invesco S&P 500 Equal Weight ETF","Financial","Exchange Traded Fund","USA",,1943257
+137,"OILU","ProShares UltraPro 3x Crude Oil ETF","Financial","Exchange Traded Fund","USA",,1937871
+138,"GOVT","iShares US Treasury Bond ETF","Financial","Exchange Traded Fund","USA",,1937067
+139,"KWEB","KraneShares CSI China Internet ETF","Financial","Exchange Traded Fund","USA",,1931664
+140,"BND","Vanguard Total Bond Market ETF","Financial","Exchange Traded Fund","USA",,1925206
+141,"NEAR","iShares Short Maturity Bond ETF","Financial","Exchange Traded Fund","USA",,1901606
+142,"IWN","iShares Russell 2000 Value ETF","Financial","Exchange Traded Fund","USA",,1892922
+143,"XLC","Communication Services Sel Sect SPDRETF","Financial","Exchange Traded Fund","USA",,1872906
+144,"IEF","iShares 7-10 Year Treasury Bond ETF","Financial","Exchange Traded Fund","USA",,1779575
+145,"EWC","iShares MSCI Canada ETF","Financial","Exchange Traded Fund","USA",,1779560
+146,"SCHD","Schwab US Dividend Equity ETF","Financial","Exchange Traded Fund","USA",,1774152
+147,"SVXY","ProShares Short VIX Short-Term Futures","Financial","Exchange Traded Fund","USA",,1704140
+148,"SCHX","Schwab US Large-Cap ETF","Financial","Exchange Traded Fund","USA",,1703982
+149,"DBC","Invesco DB Commodity Tracking","Financial","Exchange Traded Fund","USA",,1689104
+150,"BIL","SPDR Blmbg Barclays 1-3 Mth T-Bill ETF","Financial","Exchange Traded Fund","USA",,1643797
+151,"FNDX","Schwab Fundamental US Large Company ETF","Financial","Exchange Traded Fund","USA",,1628928
+152,"SSO","ProShares Ultra S&P500","Financial","Exchange Traded Fund","USA",,1627623
+153,"IWS","iShares Russell Mid-Cap Value ETF","Financial","Exchange Traded Fund","USA",,1620936
+154,"AOR","iShares Core Growth Allocation ETF","Financial","Exchange Traded Fund","USA",,1612776
+155,"FLOT","iShares Floating Rate Bond ETF","Financial","Exchange Traded Fund","USA",,1603426
+156,"SCZ","iShares MSCI EAFE Small-Cap ETF","Financial","Exchange Traded Fund","USA",,1593097
+157,"PDBC","Invesco Optm Yd Dvrs Cdty Stra No K1 ETF","Financial","Exchange Traded Fund","USA",,1576819
+158,"IWB","iShares Russell 1000 ETF","Financial","Exchange Traded Fund","USA",,1551162
+159,"CWB","SPDR Blmbg Barclays Convert Secs ETF","Financial","Exchange Traded Fund","USA",,1529651
+160,"EFAV","iShares Edge MSCI Min Vol EAFE ETF","Financial","Exchange Traded Fund","USA",,1499339
+161,"LABD","Direxion Daily S&P Biotech Bear 3X ETF","Financial","Exchange Traded Fund","USA",,1487298
+162,"VIG","Vanguard Dividend Appreciation ETF","Financial","Exchange Traded Fund","USA",,1471646
+163,"EFV","iShares MSCI EAFE Value ETF","Financial","Exchange Traded Fund","USA",,1446349
+164,"IJH","iShares Core S&P Mid-Cap ETF","Financial","Exchange Traded Fund","USA",,1416432
+165,"SCHV","Schwab US Large-Cap Value ETF","Financial","Exchange Traded Fund","USA",,1412882
+166,"VXUS","Vanguard Total International Stock ETF","Financial","Exchange Traded Fund","USA",,1401966
+167,"IDV","iShares International Select Div ETF","Financial","Exchange Traded Fund","USA",,1394523
+168,"FAS","Direxion Daily Financial Bull 3X ETF","Financial","Exchange Traded Fund","USA",,1388610
+169,"SHV","iShares Short Treasury Bond ETF","Financial","Exchange Traded Fund","USA",,1377510
+170,"USFR","WisdomTree Floating Rate Treasury ETF","Financial","Exchange Traded Fund","USA",,1376868
+171,"GSIE","Goldman Sachs ActiveBeta Intl Eq ETF","Financial","Exchange Traded Fund","USA",,1343299
+172,"DVY","iShares Select Dividend ETF","Financial","Exchange Traded Fund","USA",,1335995
+173,"VFH","Vanguard Financials ETF","Financial","Exchange Traded Fund","USA",,1320747
+174,"MTUM","iShares Edge MSCI USA Momentum Fctr ETF","Financial","Exchange Traded Fund","USA",,1261585
+175,"QLD","ProShares Ultra QQQ","Financial","Exchange Traded Fund","USA",,1252336
+176,"EWQ","iShares MSCI France ETF","Financial","Exchange Traded Fund","USA",,1243595
+177,"BNDX","Vanguard Total International Bond ETF","Financial","Exchange Traded Fund","USA",,1241479
+178,"MLPA","Global X MLP ETF","Financial","Exchange Traded Fund","USA",,1218409
+179,"GUNR","FlexShares Mstar Glbl Upstrm Nat Res ETF","Financial","Exchange Traded Fund","USA",,1215114
+180,"FPE","First Trust Preferred Sec & Inc ETF","Financial","Exchange Traded Fund","USA",,1213055
+181,"IVW","iShares S&P 500 Growth ETF","Financial","Exchange Traded Fund","USA",,1204952
+182,"XNTK","SPDR NYSE Technology ETF","Financial","Exchange Traded Fund","USA",,1200537
+183,"DGRO","iShares Core Dividend Growth ETF","Financial","Exchange Traded Fund","USA",,1187890
+184,"VCSH","Vanguard Short-Term Corporate Bond ETF","Financial","Exchange Traded Fund","USA",,1187287
+185,"EWI","iShares MSCI Italy Capped ETF","Financial","Exchange Traded Fund","USA",,1171225
+186,"ROBO","Robo Global Robotics&Automation ETF","Financial","Exchange Traded Fund","USA",,1169182
+187,"DBEF","Xtrackers MSCI EAFE Hedged Equity ETF","Financial","Exchange Traded Fund","USA",,1166320
+188,"AOM","iShares Core Moderate Allocation ETF","Financial","Exchange Traded Fund","USA",,1160315
+189,"PCY","Invesco Emerging Markets Sov Debt ETF","Financial","Exchange Traded Fund","USA",,1155590
+190,"IXUS","iShares Core MSCI Total Intl Stk ETF","Financial","Exchange Traded Fund","USA",,1126864
+191,"SPMD","SPDR Portfolio Mid Cap ETF","Financial","Exchange Traded Fund","USA",,1115482
+192,"MUB","iShares National Muni Bond ETF","Financial","Exchange Traded Fund","USA",,1109819
+193,"SCHA","Schwab US Small-Cap ETF","Financial","Exchange Traded Fund","USA",,1094290
+194,"GSY","Invesco Ultra Short Duration ETF","Financial","Exchange Traded Fund","USA",,1058306
+195,"VUG","Vanguard Growth ETF","Financial","Exchange Traded Fund","USA",,1050794
+196,"SPDW","SPDR Portfolio Developed Wld ex-US ETF","Financial","Exchange Traded Fund","USA",,1050499
+197,"UDOW","ProShares UltraPro Dow30","Financial","Exchange Traded Fund","USA",,1044490
+198,"VO","Vanguard Mid-Cap ETF","Financial","Exchange Traded Fund","USA",,1029860
+199,"SCHH","Schwab US REIT ETF","Financial","Exchange Traded Fund","USA",,1015264
+200,"EPI","WisdomTree India Earnings ETF","Financial","Exchange Traded Fund","USA",,1014340
+201,"EMLP","First Trust North Amer Engy InfrasETF","Financial","Exchange Traded Fund","USA",,976840
+202,"QUAL","iShares Edge MSCI USA Quality Factor ETF","Financial","Exchange Traded Fund","USA",,975183
+203,"VOE","Vanguard Mid-Cap Value ETF","Financial","Exchange Traded Fund","USA",,973394
+204,"JPST","JPMorgan Ultra-Short Income ETF","Financial","Exchange Traded Fund","USA",,957695
+205,"RODM","Hartford Multifactor Dev Mkts (exUS) ETF","Financial","Exchange Traded Fund","USA",,942942
+206,"YINN","Direxion Daily FTSE China Bull 3X ETF","Financial","Exchange Traded Fund","USA",,935215
+207,"EWP","iShares MSCI Spain Capped ETF","Financial","Exchange Traded Fund","USA",,926986
+208,"AMZA","InfraCap MLP ETF","Financial","Exchange Traded Fund","USA",,926167
+209,"CWI","SPDR MSCI ACWI ex-US ETF","Financial","Exchange Traded Fund","USA",,920785
+210,"EUM","ProShares Short MSCI Emerging Markets","Financial","Exchange Traded Fund","USA",,913353
+211,"VB","Vanguard Small-Cap ETF","Financial","Exchange Traded Fund","USA",,894051
+212,"EIDO","iShares MSCI Indonesia ETF","Financial","Exchange Traded Fund","USA",,890215
+213,"MDY","SPDR S&P MidCap 400 ETF","Financial","Exchange Traded Fund","USA",,887069
+214,"EUFN","iShares MSCI Europe Financials ETF","Financial","Exchange Traded Fund","USA",,882730
+215,"XME","SPDR S&P Metals and Mining ETF","Financial","Exchange Traded Fund","USA",,867896
+216,"GREK","Global X MSCI Greece ETF","Financial","Exchange Traded Fund","USA",,851240
+217,"MLPX","Global X MLP & Energy Infrastructure ETF","Financial","Exchange Traded Fund","USA",,850839
+218,"TWM","ProShares UltraShort Russell2000","Financial","Exchange Traded Fund","USA",,842212
+219,"EWM","iShares MSCI Malaysia ETF","Financial","Exchange Traded Fund","USA",,842138
+220,"SHYG","iShares 0-5 Year High Yield Corp Bd ETF","Financial","Exchange Traded Fund","USA",,841828
+221,"IWV","iShares Russell 3000 ETF","Financial","Exchange Traded Fund","USA",,836045
+222,"DXJ","WisdomTree Japan Hedged Equity ETF","Financial","Exchange Traded Fund","USA",,825645
+223,"SDY","SPDR S&P Dividend ETF","Financial","Exchange Traded Fund","USA",,825490
+224,"BSCK","Invesco BulletShares 2020 Corp Bd ETF","Financial","Exchange Traded Fund","USA",,814313
+225,"SCHC","Schwab International Small-Cap Eq ETF","Financial","Exchange Traded Fund","USA",,812147
+226,"EEMV","iShares Edge MSCI Min Vol Emerg Mkts ETF","Financial","Exchange Traded Fund","USA",,810536
+227,"RAVI","FlexShares Ready Access Variable Inc ETF","Financial","Exchange Traded Fund","USA",,806425
+228,"ASHR","Xtrackers Harvest CSI 300 China A ETF","Financial","Exchange Traded Fund","USA",,803448
+229,"SCHO","Schwab Short-Term US Treasury ETF","Financial","Exchange Traded Fund","USA",,794313
+230,"TIP","iShares TIPS Bond ETF","Financial","Exchange Traded Fund","USA",,793177
+231,"FENY","Fidelity MSCI Energy ETF","Financial","Exchange Traded Fund","USA",,789299
+232,"EFG","iShares MSCI EAFE Growth ETF","Financial","Exchange Traded Fund","USA",,780451
+233,"UUP","Invesco DB US Dollar Bullish","Financial","Exchange Traded Fund","USA",,777559
+234,"DBEU","Xtrackers MSCI Europe Hedged Equity ETF","Financial","Exchange Traded Fund","USA",,776929
+235,"SPYG","SPDR Portfolio S&P 500 Growth ETF","Financial","Exchange Traded Fund","USA",,768042
+236,"NTG","Tortoise MLP Fund, Inc","Financial","Exchange Traded Fund","USA",,765800
+237,"FTSM","First Trust Enhanced Short Maturity ETF","Financial","Exchange Traded Fund","USA",,761130
+238,"MINT","PIMCO Enhanced Short Maturity Active ETF","Financial","Exchange Traded Fund","USA",,755347
+239,"BRZU","Direxion Daily MSCI Brazil Bull 3X ETF","Financial","Exchange Traded Fund","USA",,750803
+240,"VNQI","Vanguard Global ex-US Real Est ETF","Financial","Exchange Traded Fund","USA",,746619
+241,"VIXY","ProShares VIX Short-Term Futures","Financial","Exchange Traded Fund","USA",,741549
+242,"EWL","iShares MSCI Switzerland Capped ETF","Financial","Exchange Traded Fund","USA",,735159
+243,"IVE","iShares S&P 500 Value ETF","Financial","Exchange Traded Fund","USA",,732932
+244,"VBR","Vanguard Small-Cap Value ETF","Financial","Exchange Traded Fund","USA",,731519
+245,"BSCJ","Invesco BulletShares 2019 Corp Bd ETF","Financial","Exchange Traded Fund","USA",,730749
+246,"VDE","Vanguard Energy ETF","Financial","Exchange Traded Fund","USA",,722175
+247,"HDV","iShares Core High Dividend ETF","Financial","Exchange Traded Fund","USA",,718507
+248,"VV","Vanguard Large-Cap ETF","Financial","Exchange Traded Fund","USA",,700934
+249,"VTIP","Vanguard Short-Term Infl-Prot Secs ETF","Financial","Exchange Traded Fund","USA",,695588
+250,"DSUM","Invesco Chinese Yuan Dim Sum Bond ETF","Financial","Exchange Traded Fund","USA",,694356
+251,"DXD","ProShares UltraShort Dow30","Financial","Exchange Traded Fund","USA",,691086
+252,"DOG","ProShares Short Dow30","Financial","Exchange Traded Fund","USA",,687565
+253,"HEDJ","WisdomTree Europe Hedged Equity ETF","Financial","Exchange Traded Fund","USA",,679328
+254,"SPAB","SPDR Portfolio Aggregate Bond ETF","Financial","Exchange Traded Fund","USA",,670366
+255,"GSG","iShares S&P GSCI Commodity-Indexed Trust","Financial","Exchange Traded Fund","USA",,670290
+256,"SHM","SPDR Nuveen Blmbg Barclays ST MunBd ETF","Financial","Exchange Traded Fund","USA",,666785
+257,"HEWJ","iShares Currency Hedged MSCI Japan ETF","Financial","Exchange Traded Fund","USA",,658329
+258,"VCIT","Vanguard Interm-Term Corp Bd ETF","Financial","Exchange Traded Fund","USA",,639632
+259,"SPTM","SPDR Portfolio Total Stock Market ETF","Financial","Exchange Traded Fund","USA",,638769
+260,"VTEB","Vanguard Tax-Exempt Bond ETF","Financial","Exchange Traded Fund","USA",,637003
+261,"IWO","iShares Russell 2000 Growth ETF","Financial","Exchange Traded Fund","USA",,632316
+262,"SPSB","SPDR Portfolio Short Term Corp Bd ETF","Financial","Exchange Traded Fund","USA",,629419
+263,"SPLG","SPDR Portfolio Large Cap ETF","Financial","Exchange Traded Fund","USA",,629116
+264,"VRP","Invesco Variable Rate Preferred ETF","Financial","Exchange Traded Fund","USA",,626990
+265,"SOXL","Direxion Daily Semicondct Bull 3X ETF","Financial","Exchange Traded Fund","USA",,625675
+266,"SRLN","SPDR Blackstone / GSO Senior Loan ETF","Financial","Exchange Traded Fund","USA",,623671
+267,"IGSB","iShares Short-Term Corporate Bond ETF","Financial","Exchange Traded Fund","USA",,617568
+268,"IYE","iShares US Energy ETF","Financial","Exchange Traded Fund","USA",,607976
+269,"IEI","iShares 3-7 Year Treasury Bond ETF","Financial","Exchange Traded Fund","USA",,607355
+270,"IWP","iShares Russell Mid-Cap Growth ETF","Financial","Exchange Traded Fund","USA",,605996
+271,"VGT","Vanguard Information Technology ETF","Financial","Exchange Traded Fund","USA",,602683
+272,"HEFA","iShares Currency Hedged MSCI EAFE ETF","Financial","Exchange Traded Fund","USA",,601776
+273,"PHYS","Sprott Physical Gold Trust","Financial","Exchange Traded Fund","USA",,601350
+274,"PGF","Invesco Financial Preferred ETF","Financial","Exchange Traded Fund","USA",,596246
+275,"RWM","ProShares Short Russell2000","Financial","Exchange Traded Fund","USA",,593281
+276,"DDM","ProShares Ultra Dow30","Financial","Exchange Traded Fund","USA",,585215
+277,"SPEM","SPDR Portfolio Emerging Markets ETF","Financial","Exchange Traded Fund","USA",,584779
+278,"VLUE","iShares Edge MSCI USA Value Factor ETF","Financial","Exchange Traded Fund","USA",,577748
+279,"SRTY","ProShares UltraPro Short Russell2000","Financial","Exchange Traded Fund","USA",,565000
+280,"MBB","iShares MBS ETF","Financial","Exchange Traded Fund","USA",,562262
+281,"NOBL","ProShares S&P 500 Dividend Aristocrats","Financial","Exchange Traded Fund","USA",,559040
+282,"SCHP","Schwab US TIPS ETF","Financial","Exchange Traded Fund","USA",,557813
+283,"SCHM","Schwab US Mid-Cap ETF","Financial","Exchange Traded Fund","USA",,556811
+284,"VGSH","Vanguard Short-Term Treasury ETF","Financial","Exchange Traded Fund","USA",,555839
+285,"SCHG","Schwab US Large-Cap Growth ETF","Financial","Exchange Traded Fund","USA",,551817
+286,"TOTL","SPDR DoubleLine Total Return Tact ETF","Financial","Exchange Traded Fund","USA",,551814
+287,"EZA","iShares MSCI South Africa ETF","Financial","Exchange Traded Fund","USA",,542163
+288,"FTEC","Fidelity MSCI Information Tech ETF","Financial","Exchange Traded Fund","USA",,532583
+289,"TFI","SPDR Nuveen Blmbg Barclays Muni Bd ETF","Financial","Exchange Traded Fund","USA",,524902
+290,"DBO","Invesco DB Oil","Financial","Exchange Traded Fund","USA",,521815
+291,"TBF","ProShares Short 20+ Year Treasury","Financial","Exchange Traded Fund","USA",,519725
+292,"AOA","iShares Core Aggressive Allocation ETF","Financial","Exchange Traded Fund","USA",,512626
+293,"IYF","iShares US Financials ETF","Financial","Exchange Traded Fund","USA",,507743
+294,"FXN","First Trust Energy AlphaDEX ETF","Financial","Exchange Traded Fund","USA",,495653
+295,"FUTY","Fidelity MSCI Utilities ETF","Financial","Exchange Traded Fund","USA",,492102
+296,"OEF","iShares S&P 100 ETF","Financial","Exchange Traded Fund","USA",,491580
+297,"TPYP","Tortoise North American Pipeline","Financial","Exchange Traded Fund","USA",,486654
+298,"DJP","iPath Bloomberg Cmdty TR ETN","Financial","Exchange Traded Fund","USA",,482217
+299,"IEV","iShares Europe ETF","Financial","Exchange Traded Fund","USA",,480527
+300,"SPIB","SPDR Portfolio Interm Term Corp Bd ETF","Financial","Exchange Traded Fund","USA",,478847
+301,"EPP","iShares MSCI Pacific ex Japan ETF","Financial","Exchange Traded Fund","USA",,478149
+302,"ILF","iShares Latin America 40 ETF","Financial","Exchange Traded Fund","USA",,474533
+303,"FDN","First Trust Dow Jones Internet ETF","Financial","Exchange Traded Fund","USA",,472419
+304,"EWD","iShares MSCI Sweden Capped ETF","Financial","Exchange Traded Fund","USA",,472369
+305,"IFV","First Trust Dorsey Wright Intl Foc 5","Financial","Exchange Traded Fund","USA",,471209
+306,"TUR","iShares MSCI Turkey ETF","Financial","Exchange Traded Fund","USA",,469639
+307,"IYW","iShares US Technology ETF","Financial","Exchange Traded Fund","USA",,456159
+308,"BWX","SPDR Blmbg Barclays Intl Trs Bd ETF","Financial","Exchange Traded Fund","USA",,455564
+309,"IEUR","iShares Core MSCI Europe ETF","Financial","Exchange Traded Fund","USA",,449380
+310,"PXF","Invesco FTSE RAFI Dev Mkts ex-US ETF","Financial","Exchange Traded Fund","USA",,447408
+311,"HDGE","AdvisorShares Ranger Equity Bear ETF","Financial","Exchange Traded Fund","USA",,445412
+312,"IGF","iShares Global Infrastructure ETF","Financial","Exchange Traded Fund","USA",,444917
+313,"OILD","ProShares UltraPro 3x Shrt Crude Oil ETF","Financial","Exchange Traded Fund","USA",,430231
+314,"IJK","iShares S&P Mid-Cap 400 Growth ETF","Financial","Exchange Traded Fund","USA",,427152
+315,"TDTT","FlexShares iBoxx 3Yr Target Dur TIPS ETF","Financial","Exchange Traded Fund","USA",,419171
+316,"SCHZ","Schwab US Aggregate Bond ETF","Financial","Exchange Traded Fund","USA",,418068
+317,"TFLO","iShares Treasury Floating Rate Bond ETF","Financial","Exchange Traded Fund","USA",,417752
+318,"JDST","Direxion Daily Jr Gld Mnrs Bear 3X ETF","Financial","Exchange Traded Fund","USA",,417524
+319,"ICF","iShares Cohen & Steers REIT ETF","Financial","Exchange Traded Fund","USA",,417037
+320,"BBEU","JPMorgan BetaBuilders Europe ETF","Financial","Exchange Traded Fund","USA",,415821
+321,"SKYY","First Trust Cloud Computing ETF","Financial","Exchange Traded Fund","USA",,415739
+322,"VHT","Vanguard Health Care ETF","Financial","Exchange Traded Fund","USA",,401820
+323,"EWS","iShares MSCI Singapore Capped ETF","Financial","Exchange Traded Fund","USA",,399184
+324,"PSLV","Sprott Physical Silver Trust","Financial","Exchange Traded Fund","USA",,393678
+325,"IJT","iShares S&P Small-Cap 600 Growth ETF","Financial","Exchange Traded Fund","USA",,390011
+326,"FVD","First Trust Value Line Dividend ETF","Financial","Exchange Traded Fund","USA",,388841
+327,"SCHK","Schwab 1000 Index ETF","Financial","Exchange Traded Fund","USA",,385465
+328,"SOXX","iShares PHLX Semiconductor ETF","Financial","Exchange Traded Fund","USA",,379344
+329,"KBWB","Invesco KBW Bank ETF","Financial","Exchange Traded Fund","USA",,376803
+330,"IGE","iShares North American Natural Res ETF","Financial","Exchange Traded Fund","USA",,376673
+331,"LMBS","First Trust Low Duration Oppos ETF","Financial","Exchange Traded Fund","USA",,374828
+332,"PID","Invesco International Div Achiev ETF","Financial","Exchange Traded Fund","USA",,370414
+333,"VSS","Vanguard FTSE All-Wld ex-US SmCp ETF","Financial","Exchange Traded Fund","USA",,368185
+334,"RWX","SPDR Dow Jones International RelEst ETF","Financial","Exchange Traded Fund","USA",,367462
+335,"GASL","Direxion Daily Nat Gas Rltd Bull 3X ETF","Financial","Exchange Traded Fund","USA",,367350
+336,"FBT","First Trust NYSE Arca Biotech ETF","Financial","Exchange Traded Fund","USA",,366665
+337,"PXH","Invesco FTSE RAFI Emerging Markets ETF","Financial","Exchange Traded Fund","USA",,366615
+338,"MORL","UBS ETRACS Mthly Py 2xLvg Mortg REIT ETN","Financial","Exchange Traded Fund","USA",,365015
+339,"FTCS","First Trust Capital Strength ETF","Financial","Exchange Traded Fund","USA",,363979
+340,"MJ","ETFMG Alternative Harvest ETF","Financial","Exchange Traded Fund","USA",,361978
+341,"AOK","iShares Core Conservative Allocation ETF","Financial","Exchange Traded Fund","USA",,360011
+342,"GSLC","Goldman Sachs ActiveBeta US LgCp Eq ETF","Financial","Exchange Traded Fund","USA",,359038
+343,"ATMP","Barclays ETN+ Select MLP","Financial","Exchange Traded Fund","USA",,357807
+344,"VBK","Vanguard Small-Cap Growth ETF","Financial","Exchange Traded Fund","USA",,354869
+345,"IAT","iShares US Regional Banks ETF","Financial","Exchange Traded Fund","USA",,354047
+346,"FNDE","Schwab Fundamental Emerg Mkts Lg Co ETF","Financial","Exchange Traded Fund","USA",,351131
+347,"ETJ","Eaton Vance Risk-Managed Diversified Equity Income Fund","Financial","Exchange Traded Fund","USA",,343687
+348,"REET","iShares Global REIT ETF","Financial","Exchange Traded Fund","USA",,343203
+349,"ACWV","iShares Edge MSCI Min Vol Global ETF","Financial","Exchange Traded Fund","USA",,339599
+350,"FTSL","First Trust Senior Loan ETF","Financial","Exchange Traded Fund","USA",,335124
+351,"SPHD","Invesco S&P 500 High Div Low Vol ETF","Financial","Exchange Traded Fund","USA",,329266
+352,"TECS","Direxion Daily Technology Bear 3X ETF","Financial","Exchange Traded Fund","USA",,326744
+353,"TMV","Direxion Daily 20+ Yr Trsy Bear 3X ETF","Financial","Exchange Traded Fund","USA",,325587
+354,"HYD","VanEck Vectors High-Yield Municipal ETF","Financial","Exchange Traded Fund","USA",,325533
+355,"PRF","Invesco FTSE RAFI US 1000 ETF","Financial","Exchange Traded Fund","USA",,325020
+356,"INTF","iShares Edge MSCI Multifactor Intl ETF","Financial","Exchange Traded Fund","USA",,323405
+357,"CFO","VictoryShares US 500 Enh Vol Wtd ETF","Financial","Exchange Traded Fund","USA",,318910
+358,"SPTS","SPDR Portfolio Short Term Treasury ETF","Financial","Exchange Traded Fund","USA",,316857
+359,"IJS","iShares S&P Small-Cap 600 Value ETF","Financial","Exchange Traded Fund","USA",,316442
+360,"DBE","Invesco DB Energy","Financial","Exchange Traded Fund","USA",,316332
+361,"SPTL","SPDR Portfolio Long Term Treasury ETF","Financial","Exchange Traded Fund","USA",,311934
+362,"PTLC","Pacer Trendpilot US Large Cap ETF","Financial","Exchange Traded Fund","USA",,311307
+363,"XSLV","Invesco S&P SmallCap Low Volatility ETF","Financial","Exchange Traded Fund","USA",,308643
+364,"LRGF","iShares Edge MSCI Multifactor USA ETF","Financial","Exchange Traded Fund","USA",,308346
+365,"MNA","IQ Merger Arbitrage ETF","Financial","Exchange Traded Fund","USA",,304896
+366,"BNO","United States Brent Oil","Financial","Exchange Traded Fund","USA",,303926
+367,"RDIV","Oppenheimer S&P Ultra Dividend Rev ETF","Financial","Exchange Traded Fund","USA",,301922
+368,"GWX","SPDR S&P International Small Cap ETF","Financial","Exchange Traded Fund","USA",,300094
+369,"FV","First Trust Dorsey Wright Focus 5 ETF","Financial","Exchange Traded Fund","USA",,299420
+370,"EPOL","iShares MSCI Poland ETF","Financial","Exchange Traded Fund","USA",,296591
+371,"VMBS","Vanguard Mortgage-Backed Secs ETF","Financial","Exchange Traded Fund","USA",,296203
+372,"VXF","Vanguard Extended Market ETF","Financial","Exchange Traded Fund","USA",,295178
+373,"KOLD","ProShares UltraShort Bloomberg Natrl Gas","Financial","Exchange Traded Fund","USA",,293441
+374,"XMLV","Invesco S&P MidCap Low Volatility ETF","Financial","Exchange Traded Fund","USA",,292600
+375,"ILPT","Industrial Logistics Properties Trust","Financial","Exchange Traded Fund","USA",1266.35,290334
+376,"FDT","First Trust Dev Mkts Ex-US AlphaDEX ETF","Financial","Exchange Traded Fund","USA",,287859
+377,"TMF","Direxion Daily 20+ Yr Trsy Bull 3X ETF","Financial","Exchange Traded Fund","USA",,287133
+378,"DEM","WisdomTree Emerging Markets High Div ETF","Financial","Exchange Traded Fund","USA",,284995
+379,"IYZ","iShares US Telecommunications ETF","Financial","Exchange Traded Fund","USA",,276277
+380,"IXC","iShares Global Energy ETF","Financial","Exchange Traded Fund","USA",,275407
+381,"DBA","Invesco DB Agriculture","Financial","Exchange Traded Fund","USA",,275364
+382,"FDD","First Trust STOXX European Sel Div ETF","Financial","Exchange Traded Fund","USA",,274468
+383,"VOX","Vanguard Communication Services ETF","Financial","Exchange Traded Fund","USA",,273741
+384,"IJJ","iShares S&P Mid-Cap 400 Value ETF","Financial","Exchange Traded Fund","USA",,272539
+385,"BBJP","JPMorgan BetaBuilders Japan ETF","Financial","Exchange Traded Fund","USA",,271911
+386,"MIE","Cohen & Steers MLP Income and Energy Opportunity Fund, Inc.","Financial","Exchange Traded Fund","USA",,271361
+387,"IBDK","iShares iBonds Dec 2019 Term Corp ETF","Financial","Exchange Traded Fund","USA",,270547
+388,"HACK","ETFMG Prime Cyber Security ETF","Financial","Exchange Traded Fund","USA",,269531
+389,"DFJ","WisdomTree Japan SmallCap Dividend ETF","Financial","Exchange Traded Fund","USA",,269035
+390,"IGV","iShares North American Tech-Software ETF","Financial","Exchange Traded Fund","USA",,266555
+391,"IUSB","iShares Core Total USD Bond Market ETF","Financial","Exchange Traded Fund","USA",,265376
+392,"ARGT","Global X MSCI Argentina ETF","Financial","Exchange Traded Fund","USA",,263590
+393,"IQDF","FlexShares Intl Qual Div ETF","Financial","Exchange Traded Fund","USA",,262749
+394,"EWN","iShares MSCI Netherlands ETF","Financial","Exchange Traded Fund","USA",,259220
+395,"SNLN","Highland/iBoxx Senior Loan ETF","Financial","Exchange Traded Fund","USA",,258121
+396,"VGIT","Vanguard Intmdt-Term Trs ETF","Financial","Exchange Traded Fund","USA",,256455
+397,"SDOG","ALPS Sector Dividend Dogs ETF","Financial","Exchange Traded Fund","USA",,256199
+398,"HEZU","iShares Currency Hedged MSCI Eurozn ETF","Financial","Exchange Traded Fund","USA",,256065
+399,"IBDM","iShares iBonds Dec 2021 Term Corp ETF","Financial","Exchange Traded Fund","USA",,256048
+400,"QAI","IQ Hedge Multi-Strategy Tracker ETF","Financial","Exchange Traded Fund","USA",,255148
+401,"USOU","United States 3x Oil","Financial","Exchange Traded Fund","USA",,253012
+402,"FM","iShares MSCI Frontier 100 ETF","Financial","Exchange Traded Fund","USA",,251097
+403,"SDIV","Global X SuperDividend ETF","Financial","Exchange Traded Fund","USA",,251015
+404,"IBDO","iShares iBonds Dec 2023 Term Corp ETF","Financial","Exchange Traded Fund","USA",,250146
+405,"PRFZ","Invesco FTSE RAFI US 1500 Small-Mid ETF","Financial","Exchange Traded Fund","USA",,249162
+406,"SPSM","SPDR Portfolio Small Cap ETF","Financial","Exchange Traded Fund","USA",,249016
+407,"BSJK","Invesco BulletShares 2020 HY Corp Bd ETF","Financial","Exchange Traded Fund","USA",,246234
+408,"DON","WisdomTree US MidCap Dividend ETF","Financial","Exchange Traded Fund","USA",,245416
+409,"VDC","Vanguard Consumer Staples ETF","Financial","Exchange Traded Fund","USA",,245273
+410,"DGRW","WisdomTree US Quality Dividend Gr ETF","Financial","Exchange Traded Fund","USA",,244623
+411,"SIVR","Aberdeen Standard Phys Silver Shrs ETF","Financial","Exchange Traded Fund","USA",,243412
+412,"CSML","IQ Chaikin US Small Cap ETF","Financial","Exchange Traded Fund","USA",,239800
+413,"PZA","Invesco National AMT-Free Muni Bd ETF","Financial","Exchange Traded Fund","USA",,239470
+414,"MOAT","VanEck Vectors Morningstar Wide Moat ETF","Financial","Exchange Traded Fund","USA",,237828
+415,"KIE","SPDR S&P Insurance ETF","Financial","Exchange Traded Fund","USA",,236338
+416,"SPYD","SPDR Portfolio S&P 500 High Div ETF","Financial","Exchange Traded Fund","USA",,236135
+417,"RDVY","First Trust Rising Dividend Achiev ETF","Financial","Exchange Traded Fund","USA",,234336
+418,"FEM","First Trust Emerging Mrkts AlphaDEX ETF","Financial","Exchange Traded Fund","USA",,234027
+419,"FDL","First Trust Morningstar Div Leaders ETF","Financial","Exchange Traded Fund","USA",,233684
+420,"FCOM","Fidelity MSCI Communication ServicesETF","Financial","Exchange Traded Fund","USA",,233048
+421,"IGIB","iShares Intermediate-Term Corp Bd ETF","Financial","Exchange Traded Fund","USA",,231706
+422,"URTY","ProShares UltraPro Russell2000","Financial","Exchange Traded Fund","USA",,230856
+423,"HYLS","First Trust Tactical High Yield ETF","Financial","Exchange Traded Fund","USA",,229161
+424,"ERUS","iShares MSCI Russia Capped ETF","Financial","Exchange Traded Fund","USA",,228892
+425,"ECH","iShares MSCI Chile Capped ETF","Financial","Exchange Traded Fund","USA",,227466
+426,"TECL","Direxion Daily Technology Bull 3X ETF","Financial","Exchange Traded Fund","USA",,225889
+427,"DES","WisdomTree US SmallCap Dividend ETF","Financial","Exchange Traded Fund","USA",,223394
+428,"PHB","Invesco Fundamental Hi Yld Corp Bd ETF","Financial","Exchange Traded Fund","USA",,222081
+429,"BIB","ProShares Ultra Nasdaq Biotechnology","Financial","Exchange Traded Fund","USA",,221773
+430,"EPHE","iShares MSCI Philippines ETF","Financial","Exchange Traded Fund","USA",,219334
+431,"CQQQ","Invesco China Technology ETF","Financial","Exchange Traded Fund","USA",,219253
+432,"BWZ","SPDR Blmbg Barclays ST Intrn TrsBd ETF","Financial","Exchange Traded Fund","USA",,219110
+433,"FHLC","Fidelity MSCI Health Care ETF","Financial","Exchange Traded Fund","USA",,218503
+434,"HYZD","WisdomTree Interest Rt Hdg Hi Yld Bd ETF","Financial","Exchange Traded Fund","USA",,218294
+435,"PEY","Invesco High Yield Eq Div Achiev ETF","Financial","Exchange Traded Fund","USA",,218149
+436,"IEO","iShares US Oil & Gas Explor & Prod ETF","Financial","Exchange Traded Fund","USA",,217113
+437,"HYS","PIMCO 0-5 Year High Yield Corp Bd ETF","Financial","Exchange Traded Fund","USA",,217050
+438,"FNCL","Fidelity MSCI Financials ETF","Financial","Exchange Traded Fund","USA",,216063
+439,"GNR","SPDR S&P Global Natural Resources ETF","Financial","Exchange Traded Fund","USA",,215486
+440,"BSJJ","Invesco BulletShares 2019 HY Corp Bd ETF","Financial","Exchange Traded Fund","USA",,215163
+441,"JPIN","JPMorgan Diversified Return Intl Eq ETF","Financial","Exchange Traded Fund","USA",,214911
+442,"SBIO","ALPS Medical Breakthroughs ETF","Financial","Exchange Traded Fund","USA",,214736
+443,"DSI","iShares MSCI KLD 400 Social ETF","Financial","Exchange Traded Fund","USA",,214494
+444,"GXG","Global X MSCI Colombia ETF","Financial","Exchange Traded Fund","USA",,213422
+445,"GEM","Goldman Sachs ActiveBeta EMkts Eq ETF","Financial","Exchange Traded Fund","USA",,210515
+446,"SLYV","SPDR S&P 600 Small Cap Value ETF","Financial","Exchange Traded Fund","USA",,207572
+447,"FINX","Global X FinTech ETF","Financial","Exchange Traded Fund","USA",,206898
+448,"REM","iShares Mortgage Real Estate Capped ETF","Financial","Exchange Traded Fund","USA",,206059
+449,"IDLV","Invesco S&P Intl Dev Low Vol ETF","Financial","Exchange Traded Fund","USA",,205704
+450,"FFTY","Innovator IBD 50 ETF","Financial","Exchange Traded Fund","USA",,205453
+451,"VYMI","Vanguard Intl Hi Div Yld Idx ETF","Financial","Exchange Traded Fund","USA",,202209
+452,"ARKK","ARK Innovation ETF","Financial","Exchange Traded Fund","USA",,199413
+453,"VAW","Vanguard Materials ETF","Financial","Exchange Traded Fund","USA",,195868
+454,"GBIL","Goldman Sachs Access Treasury 0-1 Yr ETF","Financial","Exchange Traded Fund","USA",,195444
+455,"THD","iShares MSCI Thailand Capped ETF","Financial","Exchange Traded Fund","USA",,195393
+456,"VWOB","Vanguard Emerging Mkts Govt Bd ETF","Financial","Exchange Traded Fund","USA",,195059
+457,"IGOV","iShares International Treasury Bond ETF","Financial","Exchange Traded Fund","USA",,195008
+458,"WTIU","UBS ETRACS ProShares Dly 3x Lng Crud ETN","Financial","Exchange Traded Fund","USA",,194974
+459,"BSCL","Invesco BulletShares 2021 Corp Bd ETF","Financial","Exchange Traded Fund","USA",,191923
+460,"FREL","Fidelity MSCI Real Estate ETF","Financial","Exchange Traded Fund","USA",,191499
+461,"VPL","Vanguard FTSE Pacific ETF","Financial","Exchange Traded Fund","USA",,191130
+462,"VOT","Vanguard Mid-Cap Growth ETF","Financial","Exchange Traded Fund","USA",,189763
+463,"ACWF","iShares Edge MSCI Multifactor Global ETF","Financial","Exchange Traded Fund","USA",,188854
+464,"BSJL","Invesco BulletShares 2021 HY Corp Bd ETF","Financial","Exchange Traded Fund","USA",,187498
+465,"UWM","ProShares Ultra Russell2000","Financial","Exchange Traded Fund","USA",,187497
+466,"FLTR","VanEck Vectors Investment Grd Fl Rt ETF","Financial","Exchange Traded Fund","USA",,187293
+467,"ICLN","iShares Global Clean Energy ETF","Financial","Exchange Traded Fund","USA",,186345
+468,"BDCL","UBS ETRACS 2xLvg Lng WF Busn Dev Co ETN","Financial","Exchange Traded Fund","USA",,186145
+469,"URA","Global X Uranium ETF","Financial","Exchange Traded Fund","USA",,183766
+470,"ANGL","VanEck Vectors Fallen Angel HiYld Bd ETF","Financial","Exchange Traded Fund","USA",,181741
+471,"NUDM","NuShares ESG Intl Dev Mkts Eq ETF","Financial","Exchange Traded Fund","USA",,181177
+472,"IXJ","iShares Global Healthcare ETF","Financial","Exchange Traded Fund","USA",,180418
+473,"ITM","VanEck Vectors AMT-Free Interm Muni ETF","Financial","Exchange Traded Fund","USA",,180188
+474,"GLDM","SPDR Gold MiniShares","Financial","Exchange Traded Fund","USA",,180061
+475,"FXH","First Trust Health Care AlphaDEX ETF","Financial","Exchange Traded Fund","USA",,179325
+476,"VPU","Vanguard Utilities ETF","Financial","Exchange Traded Fund","USA",,178388
+477,"PDN","Invesco FTSE RAFI Dev Mkts ex-US S/M ETF","Financial","Exchange Traded Fund","USA",,177564
+478,"RWR","SPDR Dow Jones REIT ETF","Financial","Exchange Traded Fund","USA",,176799
+479,"FDIS","Fidelity MSCI Consumer Discret ETF","Financial","Exchange Traded Fund","USA",,175369
+480,"PFXF","VanEck Vectors Pref Secs ex Fincls ETF","Financial","Exchange Traded Fund","USA",,172267
+481,"PCEF","Invesco CEF Income Composite ETF","Financial","Exchange Traded Fund","USA",,172106
+482,"CEFL","UBS ETRACS Mthly Py 2xLvg Closed-End ETN","Financial","Exchange Traded Fund","USA",,170939
+483,"FXL","First Trust Technology AlphaDEX ETF","Financial","Exchange Traded Fund","USA",,167379
+484,"INDY","iShares India 50 ETF","Financial","Exchange Traded Fund","USA",,167163
+485,"BSJM","Invesco BulletShares 2022 HY Corp Bd ETF","Financial","Exchange Traded Fund","USA",,165695
+486,"VTWO","Vanguard Russell 2000 ETF","Financial","Exchange Traded Fund","USA",,165637
+487,"ISTB","iShares Core 1-5 Year USD Bond ETF","Financial","Exchange Traded Fund","USA",,164413
+488,"FNY","First Trust Mid Cap Growth AlphaDEX ETF","Financial","Exchange Traded Fund","USA",,164153
+489,"ITA","iShares US Aerospace & Defense ETF","Financial","Exchange Traded Fund","USA",,164020
+490,"IHF","iShares US Healthcare Providers ETF","Financial","Exchange Traded Fund","USA",,163443
+491,"QTEC","First Trust NASDAQ-100-Tech Sector ETF","Financial","Exchange Traded Fund","USA",,163385
+492,"SEA","Claymore/Delta Global Shipping","Financial","Exchange Traded Fund","USA",,162901
+493,"IBDQ","iShares iBonds Dec 2025 Term Corp ETF","Financial","Exchange Traded Fund","USA",,162700
+494,"USRT","iShares Core US REIT ETF","Financial","Exchange Traded Fund","USA",,161799
+495,"VONV","Vanguard Russell 1000 Value ETF","Financial","Exchange Traded Fund","USA",,161014
+496,"LIT","Global X Lithium & Battery Tech ETF","Financial","Exchange Traded Fund","USA",,160782
+497,"SPHQ","Invesco S&P 500 Quality ETF","Financial","Exchange Traded Fund","USA",,160630
+498,"AMU","UBS ETRACS Alerian MLP ETN","Financial","Exchange Traded Fund","USA",,160220
+499,"RYJ","Invesco Raymond James SB-1 Equity ETF","Financial","Exchange Traded Fund","USA",,159270
+500,"SEF","ProShares Short Financials","Financial","Exchange Traded Fund","USA",,159189
+501,"BIZD","VanEck Vectors BDC Income ETF","Financial","Exchange Traded Fund","USA",,158527
+502,"SUB","iShares Short-Term National Muni Bd ETF","Financial","Exchange Traded Fund","USA",,157058
+503,"IXN","iShares Global Tech ETF","Financial","Exchange Traded Fund","USA",,156775
+504,"PXQ","Invesco Dynamic Networking ETF","Financial","Exchange Traded Fund","USA",,154341
+505,"GVI","iShares Intermediate Govt/Crdt Bd ETF","Financial","Exchange Traded Fund","USA",,154311
+506,"IGRO","iShares International Dividend Gr ETF","Financial","Exchange Traded Fund","USA",,154186
+507,"USIG","iShares Broad USD Invm Grd Corp Bd ETF","Financial","Exchange Traded Fund","USA",,150548
+508,"FCG","First Trust Natural Gas ETF","Financial","Exchange Traded Fund","USA",,148446
+509,"EDZ","Direxion Daily MSCI Em Mkts Bear 3X ETF","Financial","Exchange Traded Fund","USA",,147657
+510,"MGK","Vanguard Mega Cap Growth ETF","Financial","Exchange Traded Fund","USA",,146398
+511,"VIGI","Vanguard Intl Div Apprec ETF","Financial","Exchange Traded Fund","USA",,146278
+512,"YANG","Direxion Daily FTSE China Bear 3X ETF","Financial","Exchange Traded Fund","USA",,145048
+513,"IBDS","iShares iBonds Dec 2027 Term Corp ETF","Financial","Exchange Traded Fund","USA",,144474
+514,"MEAR","iShares Short Maturity Municipal Bd ETF","Financial","Exchange Traded Fund","USA",,143390
+515,"RUSS","Direxion Daily Russia Bear 3X ETF","Financial","Exchange Traded Fund","USA",,142523
+516,"EEMA","iShares MSCI Emerging Markets Asia ETF","Financial","Exchange Traded Fund","USA",,141930
+517,"QDF","FlexShares Quality Dividend ETF","Financial","Exchange Traded Fund","USA",,141821
+518,"SMMD","iShares Russell 2500 ETF","Financial","Exchange Traded Fund","USA",,141546
+519,"PFFD","Global X US Preferred ETF","Financial","Exchange Traded Fund","USA",,140796
+520,"DLS","WisdomTree International SmallCp Div ETF","Financial","Exchange Traded Fund","USA",,140445
+521,"RWO","SPDR Dow Jones Global Real Estate ETF","Financial","Exchange Traded Fund","USA",,140276
+522,"FXR","First Trust Indtls/PrdcrDurbAlphaDEXETF","Financial","Exchange Traded Fund","USA",,138702
+523,"PSK","SPDR Wells Fargo Preferred Stock ETF","Financial","Exchange Traded Fund","USA",,138372
+524,"FXO","First Trust Financials AlphaDEX ETF","Financial","Exchange Traded Fund","USA",,137623
+525,"BBAX","JPMorgan BetaBuilders Dev Asia ex-JpnETF","Financial","Exchange Traded Fund","USA",,136698
+526,"EET","ProShares Ultra MSCI Emerging Markets","Financial","Exchange Traded Fund","USA",,135790
+527,"MDIV","Multi-Asset Diversified Income ETF","Financial","Exchange Traded Fund","USA",,135261
+528,"CHAU","Direxion Dly CSI 300 CHN A Shr Bl 2X ETF","Financial","Exchange Traded Fund","USA",,134232
+529,"SIL","Global X Silver Miners ETF","Financial","Exchange Traded Fund","USA",,133815
+530,"FEP","First Trust Europe AlphaDEX ETF","Financial","Exchange Traded Fund","USA",,133270
+531,"CIBR","First Trust NASDAQ Cybersecurity ETF","Financial","Exchange Traded Fund","USA",,133073
+532,"BIS","ProShares UltraShort Nasdaq Biotech","Financial","Exchange Traded Fund","USA",,133061
+533,"DGS","WisdomTree Emerging Markets SmCp Div ETF","Financial","Exchange Traded Fund","USA",,132409
+534,"BOIL","ProShares Ultra Bloomberg Natural Gas","Financial","Exchange Traded Fund","USA",,131966
+535,"CMF","iShares California Muni Bond ETF","Financial","Exchange Traded Fund","USA",,131793
+536,"ERY","Direxion Daily Energy Bear 3X ETF","Financial","Exchange Traded Fund","USA",,131739
+537,"VONG","Vanguard Russell 1000 Growth ETF","Financial","Exchange Traded Fund","USA",,130912
+538,"IHDG","WisdomTree Intl Hdgd Qual Div Gr ETF","Financial","Exchange Traded Fund","USA",,130127
+539,"IBDN","iShares iBonds Dec 2022 Term Corp ETF","Financial","Exchange Traded Fund","USA",,129502
+540,"COMT","iShares Commodities Select Strategy ETF","Financial","Exchange Traded Fund","USA",,128205
+541,"PICK","iShares MSCI Global Mtls&Mng Prdcrs ETF","Financial","Exchange Traded Fund","USA",,128015
+542,"SLYG","SPDR S&P 600 Small Cap Growth ETF","Financial","Exchange Traded Fund","USA",,127987
+543,"IYG","iShares US Financial Services ETF","Financial","Exchange Traded Fund","USA",,127174
+544,"DWM","WisdomTree International Equity ETF","Financial","Exchange Traded Fund","USA",,127005
+545,"IDOG","ALPS International Sector Div Dogs ETF","Financial","Exchange Traded Fund","USA",,124735
+546,"EDC","Direxion Daily MSCI Em Mkts Bull 3X ETF","Financial","Exchange Traded Fund","USA",,124697
+547,"FDVV","Fidelity High Dividend ETF","Financial","Exchange Traded Fund","USA",,124486
+548,"PWV","Invesco Dynamic Large Cap Value ETF","Financial","Exchange Traded Fund","USA",,123072
+549,"XT","iShares Exponential Technologies ETF","Financial","Exchange Traded Fund","USA",,122721
+550,"JHMM","JHancock Multifactor Mid Cap ETF","Financial","Exchange Traded Fund","USA",,122063
+551,"PWB","Invesco Dynamic Large Cap Growth ETF","Financial","Exchange Traded Fund","USA",,121889
+552,"VCR","Vanguard Consumer Discretionary ETF","Financial","Exchange Traded Fund","USA",,121178
+553,"IYT","iShares Transportation Average ETF","Financial","Exchange Traded Fund","USA",,120906
+554,"IBDL","iShares iBonds Dec 2020 Term Corp ETF","Financial","Exchange Traded Fund","USA",,120585
+555,"HYMB","SPDR Nuveen S&P High Yield Muni Bd ETF","Financial","Exchange Traded Fund","USA",,120126
+556,"IYH","iShares US Healthcare ETF","Financial","Exchange Traded Fund","USA",,120005
+557,"DRW","WisdomTree Global ex-US Real Estate ETF","Financial","Exchange Traded Fund","USA",,119566
+558,"VIS","Vanguard Industrials ETF","Financial","Exchange Traded Fund","USA",,119042
+559,"CURE","Direxion Daily Healthcare Bull 3X ETF","Financial","Exchange Traded Fund","USA",,118372
+560,"SCHR","Schwab Intermediate-Term US Trs ETF","Financial","Exchange Traded Fund","USA",,118323
+561,"XHS","SPDR S&P Health Care Services ETF","Financial","Exchange Traded Fund","USA",,118115
+562,"FVC","First Trust Dorsey Wright Dynamic Foc 5","Financial","Exchange Traded Fund","USA",,117829
+563,"OUSM","O'Shares FTSE Russell Sm Cp Qual Div","Financial","Exchange Traded Fund","USA",,116868
+564,"IDEV","iShares Core MSCI Intl Dev Mkts ETF","Financial","Exchange Traded Fund","USA",,116409
+565,"BSCM","Invesco BulletShares 2022 Corp Bd ETF","Financial","Exchange Traded Fund","USA",,116140
+566,"FTXO","First Trust Nasdaq Bank ETF","Financial","Exchange Traded Fund","USA",,116033
+567,"BSCI","Invesco BulletShares 2018 Corp Bd ETF","Financial","Exchange Traded Fund","USA",,115882
+568,"YYY","YieldShares High Income ETF","Financial","Exchange Traded Fund","USA",,115709
+569,"DWX","SPDR S&P International Dividend ETF","Financial","Exchange Traded Fund","USA",,115038
+570,"EELV","Invesco S&P Emerging Markets Low Vol ETF","Financial","Exchange Traded Fund","USA",,113705
+571,"VOOG","Vanguard S&P 500 Growth ETF","Financial","Exchange Traded Fund","USA",,113063
+572,"VGLT","Vanguard Long-Term Treasury ETF","Financial","Exchange Traded Fund","USA",,112494
+573,"IFGL","iShares International Dev Real Est ETF","Financial","Exchange Traded Fund","USA",,112051
+574,"LEMB","iShares JP Morgan EM Local Ccy Bd ETF","Financial","Exchange Traded Fund","USA",,111983
+575,"FNGU","MicroSectors FANG+ 3X Leveraged ETN","Financial","Exchange Traded Fund","USA",,110808
+576,"PTMC","Pacer Trendpilot US Mid Cap ETF","Financial","Exchange Traded Fund","USA",,110632
+577,"URTH","iShares MSCI World ETF","Financial","Exchange Traded Fund","USA",,110252
+578,"DVYE","iShares Emerging Markets Dividend ETF","Financial","Exchange Traded Fund","USA",,109575
+579,"PUI","Invesco DWA Utilities Momentum ETF","Financial","Exchange Traded Fund","USA",,108646
+580,"IBUY","Amplify Online Retail ETF","Financial","Exchange Traded Fund","USA",,107650
+581,"IVLU","iShares Edge MSCI Intl Value Factor ETF","Financial","Exchange Traded Fund","USA",,104884
+582,"SLY","SPDR S&P 600 Small Cap ETF","Financial","Exchange Traded Fund","USA",,104155
+583,"OUNZ","VanEck Merk Gold Trust","Financial","Exchange Traded Fund","USA",,103969
+584,"MDYV","SPDR S&P 400 Mid Cap Value ETF","Financial","Exchange Traded Fund","USA",,103697
+585,"IPE","SPDR Blmbg Barclays TIPS ETF","Financial","Exchange Traded Fund","USA",,103576
+586,"RFDI","First Trust RiverFront Dyn Dev Intl ETF","Financial","Exchange Traded Fund","USA",,103509
+587,"JHMS","JHancock Multifactor Consumer Stapl ETF","Financial","Exchange Traded Fund","USA",,102331
+588,"HYEM","VanEck Vectors EM High Yield Bond ETF","Financial","Exchange Traded Fund","USA",,101840
+589,"TDIV","Think Morningstar High Dividend ETF","Financial","Exchange Traded Fund","USA",,100008
+590,"RPG","Invesco S&P 500 Pure Growth ETF","Financial","Exchange Traded Fund","USA",,99414
+591,"STIP","iShares 0-5 Year TIPS Bond ETF","Financial","Exchange Traded Fund","USA",,99083
+592,"FPX","First Trust US Equity Opportunities ETF","Financial","Exchange Traded Fund","USA",,98669
+593,"IEZ","iShares US Oil Equipment & Services ETF","Financial","Exchange Traded Fund","USA",,98484
+594,"XHE","SPDR S&P Health Care Equipment ETF","Financial","Exchange Traded Fund","USA",,97511
+595,"ICSH","iShares Ultra Short-Term Bond ETF","Financial","Exchange Traded Fund","USA",,97334
+596,"PCK","PIMCO California Municipal Income Fund II","Financial","Exchange Traded Fund","USA",256.94,97174
+597,"ECON","Columbia Emerging Markets Consumer ETF","Financial","Exchange Traded Fund","USA",,96362
+598,"SPLB","SPDR Portfolio Long Term Corp Bd ETF","Financial","Exchange Traded Fund","USA",,95464
+599,"MRRL","UBS ETRACS M Py 2xLvg MortgREIT ETN SerB","Financial","Exchange Traded Fund","USA",,94958
+600,"AIEQ","AI Powered Equity ETF","Financial","Exchange Traded Fund","USA",,94747
+601,"RYF","Invesco S&P 500 Equal Weight Fincl ETF","Financial","Exchange Traded Fund","USA",,94481
+602,"RING","iShares MSCI Global Gold Miners ETF","Financial","Exchange Traded Fund","USA",,94020
+603,"UYG","ProShares Ultra Financials","Financial","Exchange Traded Fund","USA",,93746
+604,"SKF","ProShares UltraShort Financials","Financial","Exchange Traded Fund","USA",,93739
+605,"QYLD","Horizons NASDAQ 100 Covered Call ETF","Financial","Exchange Traded Fund","USA",,93666
+606,"VIOO","Vanguard S&P Small-Cap 600 ETF","Financial","Exchange Traded Fund","USA",,93529
+607,"FTA","First Trust Large Cap Val AlphaDEX ETF","Financial","Exchange Traded Fund","USA",,92700
+608,"VNM","VanEck Vectors Vietnam ETF","Financial","Exchange Traded Fund","USA",,92655
+609,"RJI","ELEMENTS Rogers Intl Cmdty TR ETN","Financial","Exchange Traded Fund","USA",,92407
+610,"TAN","Invesco Solar ETF","Financial","Exchange Traded Fund","USA",,92379
+611,"PSCC","Invesco S&P SmallCap Consumer Stapl ETF","Financial","Exchange Traded Fund","USA",,92275
+612,"TLTD","FlexShares Mstar DevMks exUS FctTilt ETF","Financial","Exchange Traded Fund","USA",,91957
+613,"ESGE","iShares ESG MSCI EM ETF","Financial","Exchange Traded Fund","USA",,91640
+614,"IPAY","ETFMG Prime Mobile Payments ETF","Financial","Exchange Traded Fund","USA",,91573
+615,"EZM","WisdomTree US MidCap Earnings ETF","Financial","Exchange Traded Fund","USA",,91159
+616,"BOND","PIMCO Active Bond ETF","Financial","Exchange Traded Fund","USA",,90091
+617,"DWLD","Davis Select Worldwide ETF","Financial","Exchange Traded Fund","USA",,89454
+618,"STK","Columbia Seligman Premium Technology Growth Fund","Financial","Exchange Traded Fund","USA",,89189
+619,"MDYG","SPDR S&P 400 Mid Cap Growth ETF","Financial","Exchange Traded Fund","USA",,88953
+620,"DIG","ProShares Ultra Oil & Gas","Financial","Exchange Traded Fund","USA",,88552
+621,"FXE","Invesco CurrencyShares Euro Currency","Financial","Exchange Traded Fund","USA",,88267
+622,"VIIX","VelocityShares VIX ST ETN","Financial","Exchange Traded Fund","USA",,88234
+623,"DRV","Direxion Daily MSCI Real Est Bear 3X ETF","Financial","Exchange Traded Fund","USA",,87483
+624,"IYM","iShares US Basic Materials ETF","Financial","Exchange Traded Fund","USA",,87178
+625,"HYLB","Xtrackers USD High Yield Corp Bd ETF","Financial","Exchange Traded Fund","USA",,87118
+626,"RZG","Invesco S&P SmallCap 600 Pure Gr ETF","Financial","Exchange Traded Fund","USA",,86627
+627,"GAL","SPDR SSgA Global Allocation ETF","Financial","Exchange Traded Fund","USA",,86402
+628,"BAB","Invesco Taxable Municipal Bond ETF","Financial","Exchange Traded Fund","USA",,86330
+629,"IAGG","iShares Core International Aggt Bd ETF","Financial","Exchange Traded Fund","USA",,85504
+630,"FGD","First Trust Dow Jones Global Sel Div ETF","Financial","Exchange Traded Fund","USA",,85168
+631,"BSCN","Invesco BulletShares 2023 Corp Bd ETF","Financial","Exchange Traded Fund","USA",,85049
+632,"MGV","Vanguard Mega Cap Value ETF","Financial","Exchange Traded Fund","USA",,84825
+633,"QDEF","FlexShares Quality Dividend Defensv ETF","Financial","Exchange Traded Fund","USA",,84753
+634,"USLV","VelocityShares 3x Long Silver ETN","Financial","Exchange Traded Fund","USA",,84692
+635,"EWO","iShares MSCI Austria Capped ETF","Financial","Exchange Traded Fund","USA",,84332
+636,"OUSA","O'Shares FTSE US Quality Dividend ETF","Financial","Exchange Traded Fund","USA",,83968
+637,"XSOE","WisdomTree EmMkts ex-Stt-Ownd EntrprsETF","Financial","Exchange Traded Fund","USA",,82930
+638,"PUTW","WisdomTree CBOE S&P500 PutWriteStrat ETF","Financial","Exchange Traded Fund","USA",,82486
+639,"FEX","First Trust Large Cap Core AlphaDEX ETF","Financial","Exchange Traded Fund","USA",,82315
+640,"SJB","ProShares Short High Yield","Financial","Exchange Traded Fund","USA",,82303
+641,"REGL","ProShares S&P MidCap 400 Dividend Arst","Financial","Exchange Traded Fund","USA",,82054
+642,"WEAT","Teucrium Wheat ETF","Financial","Exchange Traded Fund","USA",,81471
+643,"RYT","Invesco S&P 500 Equal Weight Tech ETF","Financial","Exchange Traded Fund","USA",,81382
+644,"USCI","United States Commodity Index","Financial","Exchange Traded Fund","USA",,80938
+645,"PSCE","Invesco S&P SmallCap Energy ETF","Financial","Exchange Traded Fund","USA",,80697
+646,"FXG","First Trust Cnsmr Staples AlphaDEX ETF","Financial","Exchange Traded Fund","USA",,79674
+647,"PKW","Invesco BuyBack Achievers ETF","Financial","Exchange Traded Fund","USA",,78696
+648,"USEQ","Invesco Russell 1000 Enhanced Eq Wt ETF","Financial","Exchange Traded Fund","USA",,78360
+649,"PPH","VanEck Vectors Pharmaceutical ETF","Financial","Exchange Traded Fund","USA",,78316
+650,"VNLA","Janus Henderson Short Duration Inc ETF","Financial","Exchange Traded Fund","USA",,77801
+651,"ARKG","ARK Genomic Revolution Multi-Sector ETF","Financial","Exchange Traded Fund","USA",,77499
+652,"PDP","Invesco DWA Momentum ETF","Financial","Exchange Traded Fund","USA",,77463
+653,"TTT","ProShares UltraPro Short 20+ Year Trs","Financial","Exchange Traded Fund","USA",,77338
+654,"ARKW","ARK Web x.0 ETF","Financial","Exchange Traded Fund","USA",,77021
+655,"KBA","KraneShares Bosera MSCI China A ETF","Financial","Exchange Traded Fund","USA",,76476
+656,"QQEW","First Trust NASDAQ-100 Equal Wtd ETF","Financial","Exchange Traded Fund","USA",,76340
+657,"GIGB","Goldman Sachs Acss Invmt Grd Corp Bd ETF","Financial","Exchange Traded Fund","USA",,76211
+658,"CMDY","iShares Bloomberg Roll Sel Brd Cmdty ETF","Financial","Exchange Traded Fund","USA",,76001
+659,"ROUS","Hartford Multifactor US Equity ETF","Financial","Exchange Traded Fund","USA",,75942
+660,"EDV","Vanguard Extended Duration Trs ETF","Financial","Exchange Traded Fund","USA",,75603
+661,"PIE","Invesco DWA Emerging Markets Mom ETF","Financial","Exchange Traded Fund","USA",,75550
+662,"IDU","iShares US Utilities ETF","Financial","Exchange Traded Fund","USA",,75049
+663,"IYC","iShares US Consumer Services ETF","Financial","Exchange Traded Fund","USA",,74617
+664,"DWSH","AdvisorShares Dorsey Wright Short ETF","Financial","Exchange Traded Fund","USA",,73752
+665,"BBCA","JPMorgan BetaBuilders Canada ETF","Financial","Exchange Traded Fund","USA",,73401
+666,"KBWY","Invesco KBW Premium Yield Eq REIT ETF","Financial","Exchange Traded Fund","USA",,73214
+667,"RLY","SPDR SSgA Multi-Asset Real Return ETF","Financial","Exchange Traded Fund","USA",,73047
+668,"FLQL","Franklin LibertyQ US Equity ETF","Financial","Exchange Traded Fund","USA",,72994
+669,"XAR","SPDR S&P Aerospace & Defense ETF","Financial","Exchange Traded Fund","USA",,72836
+670,"PSCH","Invesco S&P SmallCap Health Care ETF","Financial","Exchange Traded Fund","USA",,72700
+671,"IBDP","iShares iBonds Dec 2024 Term Corp ETF","Financial","Exchange Traded Fund","USA",,72538
+672,"FCVT","First Trust SSI Strat Convert Secs ETF","Financial","Exchange Traded Fund","USA",,72050
+673,"IHI","iShares US Medical Devices ETF","Financial","Exchange Traded Fund","USA",,72023
+674,"PTEU","Pacer Trendpilot European ETF","Financial","Exchange Traded Fund","USA",,71853
+675,"FPEI","First Trust Instl Pref Secs and Inc ETF","Financial","Exchange Traded Fund","USA",,71208
+676,"CID","VictoryShares Intl Hi Div Vol Wtd ETF","Financial","Exchange Traded Fund","USA",,71043
+677,"RPV","Invesco S&P 500 Pure Value ETF","Financial","Exchange Traded Fund","USA",,70663
+678,"PTNQ","Pacer Trendpilot 100 ETF","Financial","Exchange Traded Fund","USA",,70454
+679,"EDOG","ALPS Emerging Sector Dividend Dogs ETF","Financial","Exchange Traded Fund","USA",,69839
+680,"DIV","Global X SuperDividend US ETF","Financial","Exchange Traded Fund","USA",,69398
+681,"RYE","Invesco S&P 500 Equal Weight Energy ETF","Financial","Exchange Traded Fund","USA",,68014
+682,"VXXB","iPath B S&P 500 VIX S/T Futs ETN","Financial","Exchange Traded Fund","USA",,67665
+683,"DLN","WisdomTree US LargeCap Dividend ETF","Financial","Exchange Traded Fund","USA",,66996
+684,"DBP","Invesco DB Precious Metals","Financial","Exchange Traded Fund","USA",,66879
+685,"HEEM","iShares Currency Hedged MSCI Em Mkts ETF","Financial","Exchange Traded Fund","USA",,66382
+686,"PSP","Invesco Global Listed Private Equity ETF","Financial","Exchange Traded Fund","USA",,66234
+687,"AGGY","WisdomTree Yield Enhanced US Aggt Bd ETF","Financial","Exchange Traded Fund","USA",,66111
+688,"PBP","Invesco S&P 500 BuyWrite ETF","Financial","Exchange Traded Fund","USA",,65953
+689,"KBWD","Invesco KBW High Dividend Yld Fincl ETF","Financial","Exchange Traded Fund","USA",,65554
+690,"KOL","VanEck Vectors Coal ETF","Financial","Exchange Traded Fund","USA",,65260
+691,"FXU","First Trust Utilities AlphaDEX ETF","Financial","Exchange Traded Fund","USA",,65203
+692,"CDC","VictoryShares US EQ Inc Enh Vol Wtd ETF","Financial","Exchange Traded Fund","USA",,63639
+693,"JSMD","Janus Henderson Small/Md Cp Gr Alpha ETF","Financial","Exchange Traded Fund","USA",,63140
+694,"DIM","WisdomTree International MidCap Div ETF","Financial","Exchange Traded Fund","USA",,62695
+695,"RIGS","RiverFront Strategic Income ETF","Financial","Exchange Traded Fund","USA",,62435
+696,"RWL","Oppenheimer S&P 500 Revenue ETF","Financial","Exchange Traded Fund","USA",,62131
+697,"VONE","Vanguard Russell 1000 ETF","Financial","Exchange Traded Fund","USA",,61518
+698,"WTID","UBS ETRACS ProShares Dly 3x Invrs CrdETN","Financial","Exchange Traded Fund","USA",,61181
+699,"CFA","VictoryShares US 500 Volatility Wtd ETF","Financial","Exchange Traded Fund","USA",,60798
+700,"JKL","iShares Morningstar Small-Cap Value ETF","Financial","Exchange Traded Fund","USA",,60742
+701,"EWK","iShares MSCI Belgium Capped ETF","Financial","Exchange Traded Fund","USA",,60275
+702,"SPFF","Global X SuperIncome Preferred ETF","Financial","Exchange Traded Fund","USA",,60213
+703,"IVOO","Vanguard S&P Mid-Cap 400 ETF","Financial","Exchange Traded Fund","USA",,59920
+704,"EMHY","iShares Emerging Markets High Yld Bd ETF","Financial","Exchange Traded Fund","USA",,59675
+705,"INDL","Direxion Daily MSCI India Bull 3x ETF","Financial","Exchange Traded Fund","USA",,58950
+706,"EWZS","iShares MSCI Brazil Small-Cap ETF","Financial","Exchange Traded Fund","USA",,58123
+707,"PXE","Invesco Dynamic Engy Explr & Prdtn ETF","Financial","Exchange Traded Fund","USA",,57836
+708,"EMQQ","EMQQ Emerging Markets Intrnt & Ecmrc ETF","Financial","Exchange Traded Fund","USA",,57792
+709,"CWEB","Direxion Dly CSI CHN Itnet Bull 2X Shrs","Financial","Exchange Traded Fund","USA",,57682
+710,"MIDZ","Direxion Daily Mid Cap Bear 3X ETF","Financial","Exchange Traded Fund","USA",,57604
+711,"USMF","WisdomTree US Multifactor","Financial","Exchange Traded Fund","USA",,57533
+712,"ESGD","iShares MSCI EAFE ESG Optimized ETF","Financial","Exchange Traded Fund","USA",,57326
+713,"DXJS","WisdomTree Japan Hedged SmallCap Eq ETF","Financial","Exchange Traded Fund","USA",,56741
+714,"SMDV","ProShares Russell 2000 Dividend Growers","Financial","Exchange Traded Fund","USA",,56534
+715,"MGC","Vanguard Mega Cap ETF","Financial","Exchange Traded Fund","USA",,56208
+716,"BSJN","Invesco BulletShares 2023 HY Corp Bd ETF","Financial","Exchange Traded Fund","USA",,56015
+717,"USOD","United States 3x Short Oil","Financial","Exchange Traded Fund","USA",,56004
+718,"EBND","SPDR Blmbg Barclays Em Mkts Lcl Bd ETF","Financial","Exchange Traded Fund","USA",,55900
+719,"VCLT","Vanguard Long-Term Corporate Bd ETF","Financial","Exchange Traded Fund","USA",,55510
+720,"BTAL","AGFiQ US Market Neutral Anti-Beta","Financial","Exchange Traded Fund","USA",,55242
+721,"PIZ","Invesco DWA Developed Markets Mom ETF","Financial","Exchange Traded Fund","USA",,55150
+722,"DFE","WisdomTree Europe SmallCap Dividend ETF","Financial","Exchange Traded Fund","USA",,55118
+723,"EWX","SPDR S&P Emerging Markets Small Cap ETF","Financial","Exchange Traded Fund","USA",,54635
+724,"EEMS","iShares MSCI Emerging Markets Sm-Cp ETF","Financial","Exchange Traded Fund","USA",,54533
+725,"DOL","WisdomTree International LargeCp Div ETF","Financial","Exchange Traded Fund","USA",,53638
+726,"IPKW","Invesco Intl BuyBack Achiev ETF","Financial","Exchange Traded Fund","USA",,53480
+727,"FNGD","MicroSectors FANG+ -3X Invrs Lvrgd ETN","Financial","Exchange Traded Fund","USA",,53375
+728,"FTC","First Trust Large Cap Gr AlphaDEX ETF","Financial","Exchange Traded Fund","USA",,53190
+729,"LVHB","Innovator Lunt Low Vol/High Beta Tact","Financial","Exchange Traded Fund","USA",,53132
+730,"VOOV","Vanguard S&P 500 Value ETF","Financial","Exchange Traded Fund","USA",,52967
+731,"RUSL","Direxion Daily Russia Bull 3X ETF","Financial","Exchange Traded Fund","USA",,52521
+732,"DUG","ProShares UltraShort Oil & Gas","Financial","Exchange Traded Fund","USA",,52501
+733,"FFR","First Trust FTSE EN Dev Mkts Rel Est ETF","Financial","Exchange Traded Fund","USA",,52198
+734,"IWY","iShares Russell Top 200 Growth ETF","Financial","Exchange Traded Fund","USA",,51928
+735,"DDWM","WisdomTree Dynamic Ccy Hdgd Intl Eq ETF","Financial","Exchange Traded Fund","USA",,51648
+736,"UGA","United States Gasoline","Financial","Exchange Traded Fund","USA",,51631
+737,"STPZ","PIMCO 1-5 Year US TIPS ETF","Financial","Exchange Traded Fund","USA",,51580
+738,"DWAS","Invesco DWA SmallCap Momentum ETF","Financial","Exchange Traded Fund","USA",,51505
+739,"IAI","iShares US Broker-Dealers&Secs Exchs ETF","Financial","Exchange Traded Fund","USA",,51315
+740,"HYLD","High Yield ETF","Financial","Exchange Traded Fund","USA",,51269
+741,"BDCS","UBS ETRACS Wells Fargo Busn Dev Co ETN","Financial","Exchange Traded Fund","USA",,50881
+742,"SRET","Global X SuperDividend REIT ETF","Financial","Exchange Traded Fund","USA",,50865
+743,"IGM","iShares North American Tech ETF","Financial","Exchange Traded Fund","USA",,50261
+744,"IBMI","iShares iBonds Sep 2020 Term Muni Bd ETF","Financial","Exchange Traded Fund","USA",,50129
+745,"EXI","iShares Global Industrials ETF","Financial","Exchange Traded Fund","USA",,50107
+746,"IVOV","Vanguard S&P Mid-Cap 400 Value ETF","Financial","Exchange Traded Fund","USA",,50086
+747,"NIB","iPath Bloomberg Cocoa SubTR ETN","Financial","Exchange Traded Fund","USA",,50058
+748,"SMHD","UBS ETRACS M Py 2xLvg US Sm Cp HiDiv ETN","Financial","Exchange Traded Fund","USA",,49676
+749,"ESGV","Vanguard ESG US Stock ETF","Financial","Exchange Traded Fund","USA",,49594
+750,"HYHG","ProShares High Yield-Interest Rate Hdgd","Financial","Exchange Traded Fund","USA",,49389
+751,"IPAC","iShares Core MSCI Pacific ETF","Financial","Exchange Traded Fund","USA",,49032
+752,"VBND","Vident Core US Bond Strategy ETF","Financial","Exchange Traded Fund","USA",,48800
+753,"ROM","ProShares Ultra Technology","Financial","Exchange Traded Fund","USA",,48575
+754,"ZROZ","PIMCO 25+ Year Zero Coupon US Trs ETF","Financial","Exchange Traded Fund","USA",,48257
+755,"IWC","iShares Micro-Cap ETF","Financial","Exchange Traded Fund","USA",,48116
+756,"TDTF","FlexShares iBoxx 5Yr Target Dur TIPS ETF","Financial","Exchange Traded Fund","USA",,48068
+757,"IOO","iShares Global 100 ETF","Financial","Exchange Traded Fund","USA",,47898
+758,"JHML","JHancock Multifactor Large Cap ETF","Financial","Exchange Traded Fund","USA",,47830
+759,"FLJP","Franklin FTSE Japan ETF","Financial","Exchange Traded Fund","USA",,47087
+760,"FIHD","UBS AG FI Enhanced Global High Yield ETN","Financial","Exchange Traded Fund","USA",,46918
+761,"IHE","iShares US Pharmaceuticals ETF","Financial","Exchange Traded Fund","USA",,46729
+762,"PULS","PGIM Ultra Short Bond ETF","Financial","Exchange Traded Fund","USA",,46729
+763,"AGQ","ProShares Ultra Silver","Financial","Exchange Traded Fund","USA",,46475
+764,"CVY","Invesco Zacks Multi-Asset Income ETF","Financial","Exchange Traded Fund","USA",,46060
+765,"EFAD","ProShares MSCI EAFE Dividend Growers","Financial","Exchange Traded Fund","USA",,45936
+766,"IXG","iShares Global Financials ETF","Financial","Exchange Traded Fund","USA",,45610
+767,"SLQD","iShares 0-5 Year Invmt Grade Corp Bd ETF","Financial","Exchange Traded Fund","USA",,45536
+768,"FTGC","First Trust Global Tact Cmdty Strat ETF","Financial","Exchange Traded Fund","USA",,45469
+769,"FBZ","First Trust Brazil AlphaDEX ETF","Financial","Exchange Traded Fund","USA",,45362
+770,"IBND","SPDR Blmbg Barclays Intl Corp Bd ETF","Financial","Exchange Traded Fund","USA",,45177
+771,"ZIV","VelocityShares Daily Inverse VIX MT ETN","Financial","Exchange Traded Fund","USA",,45176
+772,"SUSA","iShares MSCI USA ESG Select ETF","Financial","Exchange Traded Fund","USA",,45079
+773,"PPA","Invesco Aerospace & Defense ETF","Financial","Exchange Traded Fund","USA",,45029
+774,"TTAC","TrimTabs All Cap US Free-Cash-Flow ETF","Financial","Exchange Traded Fund","USA",,44946
+775,"SRS","ProShares UltraShort Real Estate","Financial","Exchange Traded Fund","USA",,44501
+776,"FTLS","First Trust Long/Short Equity ETF","Financial","Exchange Traded Fund","USA",,44266
+777,"IGHG","ProShares Investment Grade-Intr Rt Hdgd","Financial","Exchange Traded Fund","USA",,44181
+778,"GSSC","Goldman Sachs ActiveBeta US SmCp Eq ETF","Financial","Exchange Traded Fund","USA",,44074
+779,"IYJ","iShares US Industrials ETF","Financial","Exchange Traded Fund","USA",,43803
+780,"SOCL","Global X Social Media ETF","Financial","Exchange Traded Fund","USA",,43748
+781,"ICVT","iShares Convertible Bond ETF","Financial","Exchange Traded Fund","USA",,43609
+782,"UBIO","ProShares UltraPro Nasdaq Biotechnology","Financial","Exchange Traded Fund","USA",,43393
+783,"FBND","Fidelity Total Bond ETF","Financial","Exchange Traded Fund","USA",,43333
+784,"QQQE","Direxion NASDAQ-100 Equal Wtd ETF","Financial","Exchange Traded Fund","USA",,43197
+785,"ZBIO","ProShares UltraPro Short Nasdaq Biotech","Financial","Exchange Traded Fund","USA",,43104
+786,"GVIP","Goldman Sachs Hedge Industry VIP ETF","Financial","Exchange Traded Fund","USA",,42652
+787,"PXSG","Invesco Russell 2000 Pure Growth ETF","Financial","Exchange Traded Fund","USA",,42608
+788,"EES","WisdomTree US SmallCap Earnings ETF","Financial","Exchange Traded Fund","USA",,42564
+789,"IYLD","iShares Morningstar Multi-Asset Inc ETF","Financial","Exchange Traded Fund","USA",,42062
+790,"IBMK","iShares iBonds Dec 2022 Term Muni Bd ETF","Financial","Exchange Traded Fund","USA",,41922
+791,"FEMS","First Trust Emerg Mkts SC AlphaDEX ETF","Financial","Exchange Traded Fund","USA",,41782
+792,"FIDU","Fidelity MSCI Industrials ETF","Financial","Exchange Traded Fund","USA",,41781
+793,"LMLP","UBS ETRACS M Py 2xLvg WF MLP Ex-Engy ETN","Financial","Exchange Traded Fund","Canada",,41571
+794,"IQDE","FlexShares Intl Qual Div Defensv ETF","Financial","Exchange Traded Fund","USA",,41266
+795,"USHY","iShares Broad USD High Yield Corp Bd ETF","Financial","Exchange Traded Fund","USA",,41129
+796,"FYC","First Trust Small Cap Gr AlphaDEX ETF","Financial","Exchange Traded Fund","USA",,41055
+797,"EQAL","Invesco Russell 1000 Equal Weight ETF","Financial","Exchange Traded Fund","USA",,41029
+798,"BSCP","Invesco BulletShares 2025 Corp Bd ETF","Financial","Exchange Traded Fund","USA",,40962
+799,"NORW","Global X MSCI Norway ETF","Financial","Exchange Traded Fund","USA",,40795
+800,"ROBT","FT Nasdaq Artfcl Intllgnc and Rbtc ETF","Financial","Exchange Traded Fund","USA",,40780
+801,"VXZ","iPath S&P 500 VIX MT Futures ETN","Financial","Exchange Traded Fund","USA",,40433
+802,"JKE","iShares Morningstar Large-Cap Growth ETF","Financial","Exchange Traded Fund","USA",,40421
+803,"CEZ","VictoryShares Emerging Mkt Vol Wtd ETF","Financial","Exchange Traded Fund","USA",,40406
+804,"PXJ","Invesco Dynamic Oil & Gas Services ETF","Financial","Exchange Traded Fund","USA",,40191
+805,"AGZD","WisdomTree Interest RtHdgUS Aggt Bd ETF","Financial","Exchange Traded Fund","USA",,40161
+806,"HEWG","iShares Currency Hedged MSCI Germany ETF","Financial","Exchange Traded Fund","USA",,40070
+807,"FMAT","Fidelity MSCI Materials ETF","Financial","Exchange Traded Fund","USA",,39978
+808,"FLQE","Franklin LibertyQ Emerging Markets ETF","Financial","Exchange Traded Fund","USA",,39742
+809,"BSCO","Invesco BulletShares 2024 Corp Bd ETF","Financial","Exchange Traded Fund","USA",,39656
+810,"PAVE","Global X US Infrastructure Dev ETF","Financial","Exchange Traded Fund","USA",,39634
+811,"WBIH","WBI BullBear Global High Income ETF","Financial","Exchange Traded Fund","USA",,39444
+812,"EDIV","SPDR S&P Emerging Markets Dividend ETF","Financial","Exchange Traded Fund","USA",,39121
+813,"EMGF","iShares Edge MSCI Multifactor EmMkts ETF","Financial","Exchange Traded Fund","USA",,38915
+814,"FYX","First Trust Small Cap Core AlphaDEX ETF","Financial","Exchange Traded Fund","USA",,38558
+815,"GHYG","iShares US & Intl High Yield Corp Bd ETF","Financial","Exchange Traded Fund","USA",,38485
+816,"SCIF","VanEck Vectors India Small-Cap ETF","Financial","Exchange Traded Fund","USA",,38011
+817,"VIXM","ProShares VIX Mid-Term Futures","Financial","Exchange Traded Fund","USA",,37783
+818,"KXI","iShares Global Consumer Staples ETF","Financial","Exchange Traded Fund","USA",,37471
+819,"DVP","Deep Value ETF","Financial","Exchange Traded Fund","USA",,37087
+820,"CSF","VictoryShares US Discv Enh Vol Wtd ETF","Financial","Exchange Traded Fund","USA",,37077
+821,"XSD","SPDR S&P Semiconductor ETF","Financial","Exchange Traded Fund","USA",,36985
+822,"ACIM","SPDR MSCI ACWI IMI ETF","Financial","Exchange Traded Fund","USA",,36740
+823,"VIDI","Vident International Equity","Financial","Exchange Traded Fund","USA",,36667
+824,"KSA","iShares MSCI Saudi Arabia ETF","Financial","Exchange Traded Fund","USA",,36610
+825,"SPHB","Invesco S&P 500 High Beta ETF","Financial","Exchange Traded Fund","USA",,36590
+826,"NAIL","Direxion Daily Hmbldrs&Supls Bull 3X ETF","Financial","Exchange Traded Fund","USA",,36453
+827,"ISCF","iShares Edge MSCI Mltfct Intl SmCp ETF","Financial","Exchange Traded Fund","USA",,36427
+828,"DBJP","Xtrackers MSCI Japan Hedged Equity ETF","Financial","Exchange Traded Fund","USA",,36384
+829,"HFXI","IQ 50 Percent Hedged FTSE Intl ETF","Financial","Exchange Traded Fund","USA",,36369
+830,"CRAK","VanEck Vectors Oil Refiners ETF","Financial","Exchange Traded Fund","USA",,36098
+831,"FEU","SPDR STOXX Europe 50 ETF","Financial","Exchange Traded Fund","USA",,36000
+832,"LVHD","Legg Mason Low Volatility High Div ETF","Financial","Exchange Traded Fund","USA",,35910
+833,"AIA","iShares Asia 50 ETF","Financial","Exchange Traded Fund","USA",,35587
+834,"UGLD","VelocityShares 3x Long Gold ETN","Financial","Exchange Traded Fund","USA",,35442
+835,"FIXD","First Trust TCWOpportunistic Fxd Inc ETF","Financial","Exchange Traded Fund","USA",,34921
+836,"OIL","iPath B S&P GSCI Crude Oil TR ETN","Financial","Exchange Traded Fund","USA",,34912
+837,"MLPQ","UBS ETRACS 2xMLvgAlerianMLPIfr ETN SerB","Financial","Exchange Traded Fund","USA",,34741
+838,"FILL","iShares MSCI Global Energy Producers ETF","Financial","Exchange Traded Fund","USA",,34704
+839,"DTH","WisdomTree International High Div ETF","Financial","Exchange Traded Fund","USA",,34668
+840,"QABA","First Trust NASDAQ ABA Community Bk ETF","Financial","Exchange Traded Fund","USA",,34493
+841,"EUO","ProShares UltraShort Euro","Financial","Exchange Traded Fund","USA",,34456
+842,"JKD","iShares Morningstar Large-Cap ETF","Financial","Exchange Traded Fund","USA",,34289
+843,"PPLT","Aberdeen Standard Phys Platinum Shrs ETF","Financial","Exchange Traded Fund","USA",,34192
+844,"VUSE","Vident Core US Equity","Financial","Exchange Traded Fund","USA",,34108
+845,"NFRA","FlexShares STOXX Global Broad Infras ETF","Financial","Exchange Traded Fund","USA",,34083
+846,"DBB","Invesco DB Base Metals","Financial","Exchange Traded Fund","USA",,33996
+847,"IYY","iShares Dow Jones US ETF","Financial","Exchange Traded Fund","USA",1113.85,33862
+848,"FNX","First Trust Mid Cap Core AlphaDEX ETF","Financial","Exchange Traded Fund","USA",,33793
+849,"RHS","Invesco S&P 500 Eql Wt Cnsm Stapl ETF","Financial","Exchange Traded Fund","USA",,33740
+850,"PIN","Invesco India ETF","Financial","Exchange Traded Fund","USA",,33716
+851,"HUSV","First Trust Hrzn MgdVolatil Domestic ETF","Financial","Exchange Traded Fund","USA",,33619
+852,"GXC","SPDR S&P China ETF","Financial","Exchange Traded Fund","USA",,33565
+853,"SPDN","Direxion Daily S&P 500 Bear 1X ETF","Financial","Exchange Traded Fund","USA",,33392
+854,"FNDB","Schwab Fundamental US Broad Market ETF","Financial","Exchange Traded Fund","USA",,33369
+855,"ONEQ","Fidelity NASDAQ Composite Tr Stk ETF","Financial","Exchange Traded Fund","USA",,33306
+856,"TERM","EquityCompass Tactical Risk Mgr ETF","Financial","Exchange Traded Fund","USA",,33242
+857,"FVAL","Fidelity Value Factor ETF","Financial","Exchange Traded Fund","USA",,33186
+858,"NFLT","Virtus Newfleet Multi-Sect Bd ETF","Financial","Exchange Traded Fund","USA",,33140
+859,"XMPT","VanEck Vectors CEF Municipal Income ETF","Financial","Exchange Traded Fund","USA",,33113
+860,"OLD","The Long-Term Care ETF","Financial","Exchange Traded Fund","USA",,33065
+861,"FKU","First Trust United Kingdom AlphaDEX ETF","Financial","Exchange Traded Fund","USA",,33026
+862,"ROGS","Hartford Multifactor Global SmallCap ETF","Financial","Exchange Traded Fund","USA",,32776
+863,"BLOK","Amplify Transformational Data Shrg ETF","Financial","Exchange Traded Fund","USA",,32768
+864,"DRN","Direxion Daily MSCI Real Est Bull 3X ETF","Financial","Exchange Traded Fund","USA",,32503
+865,"RYU","Invesco S&P 500 Equal Weight Utilts ETF","Financial","Exchange Traded Fund","USA",,32304
+866,"DFEN","Direxion Dly Aerospace&Def Bl 3X ShsETF","Financial","Exchange Traded Fund","USA",,32173
+867,"IVOG","Vanguard S&P Mid-Cap 400 Growth ETF","Financial","Exchange Traded Fund","USA",,32147
+868,"IMTM","iShares Edge MSCI Intl Momentum Fctr ETF","Financial","Exchange Traded Fund","USA",,32057
+869,"IQDG","WisdomTree International Qual Div Gr ETF","Financial","Exchange Traded Fund","USA",,31917
+870,"TLTE","FlexShares Mstar EmgMkts FctTilt ETF","Financial","Exchange Traded Fund","USA",,31853
+871,"TILT","FlexShares Mstar US Mkt Factors Tilt ETF","Financial","Exchange Traded Fund","USA",,31787
+872,"AGGP","IQ Enhanced Core Plus Bond US ETF","Financial","Exchange Traded Fund","USA",,31580
+873,"AGZ","iShares Agency Bond ETF","Financial","Exchange Traded Fund","USA",,31534
+874,"BSCQ","Invesco BulletShares 2026 Corp Bd ETF","Financial","Exchange Traded Fund","USA",,31411
+875,"FXC","Invesco CurrencyShares Canadian Dollar","Financial","Exchange Traded Fund","USA",,31307
+876,"XPH","SPDR S&P Pharmaceuticals ETF","Financial","Exchange Traded Fund","USA",,31163
+877,"GMF","SPDR S&P Emerging Asia Pacific ETF","Financial","Exchange Traded Fund","USA",,31010
+878,"CSB","VictoryShares US SmCp Hi Div Vol Wtd ETF","Financial","Exchange Traded Fund","USA",,30827
+879,"MOO","VanEck Vectors Agribusiness ETF","Financial","Exchange Traded Fund","USA",,30800
+880,"JPSE","JPMorgan Divers Ret US Small Cap Eq ETF","Financial","Exchange Traded Fund","USA",,30517
+881,"KNOW","Direxion All Cap Insider Sentiment ETF","Financial","Exchange Traded Fund","USA",,30320
+882,"CIZ","VictoryShares Developed Enh Vol Wtd ETF","Financial","Exchange Traded Fund","USA",,30125
+883,"GCOW","Pacer Global Cash Cows Dividend ETF","Financial","Exchange Traded Fund","USA",,30084
+884,"DSLV","VelocityShares 3x Inverse Silver ETN","Financial","Exchange Traded Fund","USA",,30073
+885,"PSI","Invesco Dynamic Semiconductors ETF","Financial","Exchange Traded Fund","USA",,30043
+886,"DTYS","iPath US Treasury 10-year Bear ETN","Financial","Exchange Traded Fund","USA",,29996
+887,"FMB","First Trust Managed Municipal ETF","Financial","Exchange Traded Fund","USA",,29812
+888,"VSGX","Vanguard ESG International Stock ETF","Financial","Exchange Traded Fund","USA",,29729
+889,"SOYB","Teucrium Soybean ETF","Financial","Exchange Traded Fund","USA",,29624
+890,"CEFS","Saba Closed-End Funds ETF","Financial","Exchange Traded Fund","USA",,29597
+891,"IQLT","iShares Edge MSCI Intl Quality Fctr ETF","Financial","Exchange Traded Fund","USA",,29570
+892,"ITE","SPDR Blmbg Barclays Interm Term Trs ETF","Financial","Exchange Traded Fund","USA",,29529
+893,"CANE","Teucrium Sugar ETF","Financial","Exchange Traded Fund","USA",,29522
+894,"VRIG","Invesco Variable Rate Investment Grd ETF","Financial","Exchange Traded Fund","USA",,29362
+895,"IEUS","iShares MSCI Europe Small-Cap ETF","Financial","Exchange Traded Fund","USA",,29345
+896,"CHIX","Global X China Financials ETF","Financial","Exchange Traded Fund","USA",,29313
+897,"DEUS","Xtrackers Russell 1000 Cmprhsv Fac ETF","Financial","Exchange Traded Fund","USA",,29276
+898,"CMBS","iShares CMBS ETF","Financial","Exchange Traded Fund","USA",,29246
+899,"IBML","iShares iBonds Dec 2023 Term Muni Bd ETF","Financial","Exchange Traded Fund","USA",,29097
+900,"DWFI","SPDR Dorsey Wright Fixed Inc Allc ETF","Financial","Exchange Traded Fund","USA",,29091
+901,"RFCI","RiverFront Dynamic Core Income ETF","Financial","Exchange Traded Fund","USA",,28763
+902,"OILK","ProShares K-1 Free Crude Oil Strategy","Financial","Exchange Traded Fund","USA",,28609
+903,"GII","SPDR S&P Global Infrastructure ETF","Financial","Exchange Traded Fund","USA",,28455
+904,"GYLD","Arrow Dow Jones Global Yield ETF","Financial","Exchange Traded Fund","USA",,28396
+905,"WIP","SPDR FTSE Intl Govt Infl-Protd Bd ETF","Financial","Exchange Traded Fund","USA",,28365
+906,"IBMH","iShares iBonds Sep 2019 Term Muni Bd ETF","Financial","Exchange Traded Fund","USA",,28239
+907,"PGHY","Invesco Global Short Term Hi Yld Bd ETF","Financial","Exchange Traded Fund","USA",,28199
+908,"BLCN","Reality Shares Nasdaq NexGen Economy ETF","Financial","Exchange Traded Fund","USA",,28115
+909,"CEY","VictoryShares Em Mkt Hi Div Vol Wtd ETF","Financial","Exchange Traded Fund","USA",,27946
+910,"SGDM","Sprott Gold Miners ETF","Financial","Exchange Traded Fund","USA",,27860
+911,"CORP","PIMCO Investment Grade Corporate Bd ETF","Financial","Exchange Traded Fund","USA",,27835
+912,"EWRE","Invesco S&P 500 Equal Wt Real Estt ETF","Financial","Exchange Traded Fund","USA",,27755
+913,"JPUS","JPMorgan Diversified Return US Eq ETF","Financial","Exchange Traded Fund","USA",,27694
+914,"QMOM","Alpha Architect US Quantitative Momt ETF","Financial","Exchange Traded Fund","USA",,27691
+915,"TMFC","Motley Fool 100 ETF","Financial","Exchange Traded Fund","USA",,27510
+916,"RFDA","RiverFront Dynamic US Dividend Advtg ETF","Financial","Exchange Traded Fund","USA",,27265
+917,"WBIY","WBI Power Factor High Dividend ETF","Financial","Exchange Traded Fund","USA",,27097
+918,"WDIV","SPDR S&P Global Dividend ETF","Financial","Exchange Traded Fund","USA",,26835
+919,"UIVM","USAA MSCI Intl Val Mom Blnd ETF","Financial","Exchange Traded Fund","USA",,26749
+920,"FRAK","VanEck Vectors Unconvnt Oil & Gas ETF","Financial","Exchange Traded Fund","USA",,26440
+921,"ADRD","Invesco BLDRS Developed Markets 100 ADR","Financial","Exchange Traded Fund","USA",,26365
+922,"SMLF","iShares Edge MSCI Mltfct USA SmCp ETF","Financial","Exchange Traded Fund","USA",,26305
+923,"KLDW","Knowledge Leaders Developed World ETF","Financial","Exchange Traded Fund","USA",,26225
+924,"PAK","Global X MSCI Pakistan ETF","Financial","Exchange Traded Fund","USA",,26123
+925,"FXZ","First Trust Materials AlphaDEX ETF","Financial","Exchange Traded Fund","USA",,26116
+926,"BSJI","Invesco BulletShares 2018 HY Corp Bd ETF","Financial","Exchange Traded Fund","USA",,25615
+927,"CDL","VictoryShares US LgCp Hi Div Vol Wtd ETF","Financial","Exchange Traded Fund","USA",,25507
+928,"CNYA","iShares MSCI China A ETF","Financial","Exchange Traded Fund","USA",,25322
+929,"AADR","AdvisorShares Dorsey Wright ADR ETF","Financial","Exchange Traded Fund","USA",,25262
+930,"FDMO","Fidelity Momentum Factor ETF","Financial","Exchange Traded Fund","USA",,25217
+931,"RGI","Invesco S&P 500 Equal Wt Indls ETF","Financial","Exchange Traded Fund","USA",,25153
+932,"AAAU","Perth Mint Physical Gold ETF","Financial","Exchange Traded Fund","USA",,25121
+933,"EUSA","iShares MSCI USA Equal Weighted ETF","Financial","Exchange Traded Fund","USA",,24844
+934,"VIOV","Vanguard S&P Small-Cap 600 Value ETF","Financial","Exchange Traded Fund","USA",,24755
+935,"FDRR","Fidelity Dividend ETF for Rising Rates","Financial","Exchange Traded Fund","USA",,24696
+936,"COWZ","Pacer US Cash Cows 100 ETF","Financial","Exchange Traded Fund","USA",,24692
+937,"RFFC","RiverFront Dynamic US Flex-Cap ETF","Financial","Exchange Traded Fund","USA",,23935
+938,"DBAW","Xtrackers MSCI All World exUS Hdg Eq ETF","Financial","Exchange Traded Fund","USA",,23912
+939,"EPS","WisdomTree US Earnings 500 ETF","Financial","Exchange Traded Fund","USA",,23864
+940,"DFNL","Davis Select Financial ETF","Financial","Exchange Traded Fund","USA",,23848
+941,"KURE","KraneShares MSCI All China Hlth Care ETF","Financial","Exchange Traded Fund","USA",,23834
+942,"GVAL","Cambria Global Value ETF","Financial","Exchange Traded Fund","USA",,23754
+943,"SGOL","Aberdeen Standard Phys SwissGold Shr ETF","Financial","Exchange Traded Fund","USA",,23746
+944,"GAMR","ETFMG Video Game Tech ETF","Financial","Exchange Traded Fund","USA",,23744
+945,"SHYL","Xtrackers Short Duration High Yld Bd ETF","Financial","Exchange Traded Fund","USA",,23742
+946,"HTUS","Hull Tactical US ETF","Financial","Exchange Traded Fund","USA",,23721
+947,"EPV","ProShares UltraShort FTSE Europe","Financial","Exchange Traded Fund","USA",,23551
+948,"PNQI","Invesco NASDAQ Internet ETF","Financial","Exchange Traded Fund","USA",,23521
+949,"REMX","VanEck Vectors Rare Earth/Strat Mtls ETF","Financial","Exchange Traded Fund","USA",,23494
+950,"SNSR","Global X Internet of Things ETF","Financial","Exchange Traded Fund","USA",,23297
+951,"ARKQ","ARK Industrial Innovation ETF","Financial","Exchange Traded Fund","USA",,23256
+952,"DTD","WisdomTree US Total Dividend ETF","Financial","Exchange Traded Fund","USA",,23071
+953,"HYXU","iShares International High Yield Bd ETF","Financial","Exchange Traded Fund","USA",,23039
+954,"GSP","iPath S&P GSCI Total Return ETN","Financial","Exchange Traded Fund","USA",,22870
+955,"GLDI","Credit Suisse X-Links Gold Cov Call ETN","Financial","Exchange Traded Fund","USA",,22782
+956,"JKI","iShares Morningstar Mid-Cap Value ETF","Financial","Exchange Traded Fund","USA",,22561
+957,"CARZ","First Trust NASDAQ Global Auto ETF","Financial","Exchange Traded Fund","USA",,22550
+958,"FXY","Invesco CurrencyShares Japanese Yen","Financial","Exchange Traded Fund","USA",,22427
+959,"FINU","ProShares UltraPro Financial Select Sect","Financial","Exchange Traded Fund","USA",,22015
+960,"IBMJ","iShares iBonds Dec 2021 Term Muni Bd ETF","Financial","Exchange Traded Fund","USA",,21986
+961,"LDUR","PIMCO Enhanced Low Duration Active ETF","Financial","Exchange Traded Fund","USA",,21868
+962,"DWPP","First Trust Dorsey Wrght People's Pt ETF","Financial","Exchange Traded Fund","USA",,21836
+963,"ESGU","iShares MSCI USA ESG Optimized ETF","Financial","Exchange Traded Fund","USA",,21830
+964,"BKF","iShares MSCI BRIC ETF","Financial","Exchange Traded Fund","USA",,21791
+965,"PALL","Aberdeen Standard Phys PalladiumShrs ETF","Financial","Exchange Traded Fund","USA",,21723
+966,"AIRR","First Trust RBA Amer Indl RenaisTM ETF","Financial","Exchange Traded Fund","USA",,21653
+967,"PSMB","Invesco Balanced Multi-Asset Allc ETF","Financial","Exchange Traded Fund","USA",,21615
+968,"DEW","WisdomTree Global High Dividend ETF","Financial","Exchange Traded Fund","USA",,21608
+969,"JHMD","JHancock Multifactor Developed Intl ETF","Financial","Exchange Traded Fund","USA",,21596
+970,"FAD","First Trust Multi Cap Gr AlphaDEX ETF","Financial","Exchange Traded Fund","USA",,21542
+971,"PBS","Invesco Dynamic Media ETF","Financial","Exchange Traded Fund","USA",,21528
+972,"TIPX","SPDR Blmbg Barclays 1-10 Year TIPS ETF","Financial","Exchange Traded Fund","USA",,21485
+973,"EUSC","WisdomTree Europe Hedged SmallCap Eq ETF","Financial","Exchange Traded Fund","USA",,21381
+974,"HYGH","iShares Interest Rate Hdg Hi Yld Bd ETF","Financial","Exchange Traded Fund","USA",,21374
+975,"PST","ProShares UltraShort 7-10 Year Treasury","Financial","Exchange Traded Fund","USA",,21273
+976,"IYK","iShares US Consumer Goods ETF","Financial","Exchange Traded Fund","USA",,21101
+977,"EWGS","iShares MSCI Germany Small-Cap ETF","Financial","Exchange Traded Fund","USA",,20964
+978,"JPEM","JPMorgan Diversified Return EMkts Eq ETF","Financial","Exchange Traded Fund","USA",,20816
+979,"UCI","UBS ETRACS CMCI Total Return ETN","Financial","Exchange Traded Fund","USA",,20712
+980,"FDLO","Fidelity Low Volatility Factor ETF","Financial","Exchange Traded Fund","USA",,20674
+981,"PKB","Invesco Dynamic Building & Const ETF","Financial","Exchange Traded Fund","USA",,20412
+982,"QUS","SPDR MSCI USA StrategicFactors ETF","Financial","Exchange Traded Fund","USA",,20374
+983,"DHS","WisdomTree US High Dividend ETF","Financial","Exchange Traded Fund","USA",,20276
+984,"PGAL","Global X MSCI Portugal ETF","Financial","Exchange Traded Fund","USA",,20260
+985,"PJP","Invesco Dynamic Pharmaceuticals ETF","Financial","Exchange Traded Fund","USA",,20241
+986,"SMB","VanEck Vectors AMT-Free Short Muni ETF","Financial","Exchange Traded Fund","USA",,20158
+987,"FXD","First Trust Cnsmr Discret AlphaDEX ETF","Financial","Exchange Traded Fund","USA",,20028
+988,"DBEM","Xtrackers MSCI Em Mkts Hdg Eq ETF","Financial","Exchange Traded Fund","USA",,19998
+989,"IGN","iShares North Amer Tech-Multimd Ntwk ETF","Financial","Exchange Traded Fund","USA",,19878
+990,"SILJ","ETFMG Prime Junior Silver ETF","Financial","Exchange Traded Fund","USA",,19819
+991,"PWZ","Invesco California AMT-Free Muni Bd ETF","Financial","Exchange Traded Fund","USA",,19785
+992,"MEXX","Direxion Dly MSCI Mexico Bull 3X ShsETF","Financial","Exchange Traded Fund","USA",,19630
+993,"UTSL","Direxion Daily Utilities Bull 3X ETF","Financial","Exchange Traded Fund","USA",,19601
+994,"MORT","VanEck Vectors Mortgage REIT Income ETF","Financial","Exchange Traded Fund","USA",,19537
+995,"CGW","Invesco S&P Global Water ETF","Financial","Exchange Traded Fund","USA",,19503
+996,"CSM","ProShares Large Cap Core Plus","Financial","Exchange Traded Fund","USA",,19476
+997,"VTWV","Vanguard Russell 2000 Value ETF","Financial","Exchange Traded Fund","USA",,19352
+998,"EURL","Direxion Daily FTSE Europe Bull 3X ETF","Financial","Exchange Traded Fund","USA",,19345
+999,"RJA","ELEMENTS Rogers Intl Cmdty Agri TR ETN","Financial","Exchange Traded Fund","USA",,19188
+1000,"HDEF","Xtrackers MSCI EAFE High Div Yld Eq ETF","Financial","Exchange Traded Fund","USA",,18880
+1001,"YLD","Principal EDGE Active Income ETF","Financial","Exchange Traded Fund","USA",,18809
+1002,"CHIQ","Global X China Consumer ETF","Financial","Exchange Traded Fund","USA",,18756
+1003,"MMIN","IQ MacKay Shields Muncpl Insrd ETF","Financial","Exchange Traded Fund","USA",,18602
+1004,"PXI","Invesco DWA Energy Momentum ETF","Financial","Exchange Traded Fund","USA",,18575
+1005,"SPPP","Sprott Physical Platinum and Palladium Trust","Financial","Exchange Traded Fund","USA",,18516
+1006,"FLTB","Fidelity Limited Term Bond ETF","Financial","Exchange Traded Fund","USA",,18461
+1007,"MVIN","Natixis Seeyond Intl Mnmm Volatil ETF","Financial","Exchange Traded Fund","USA",,18439
+1008,"CZA","Invesco Zacks Mid-Cap ETF","Financial","Exchange Traded Fund","USA",,18423
+1009,"MBG","SPDR Blmbg Barclays Mortg Backed Bd ETF","Financial","Exchange Traded Fund","USA",,18363
+1010,"SKOR","FlexShares Credit-Scored US Corp Bd ETF","Financial","Exchange Traded Fund","USA",,18191
+1011,"BCI","Aberdeen Standard Blmb AllCmdStrK1Fr ETF","Financial","Exchange Traded Fund","USA",,18164
+1012,"FRN","Invesco Frontier Markets ETF","Financial","Exchange Traded Fund","USA",,18064
+1013,"TBX","ProShares Short 7-10 Year Treasury","Financial","Exchange Traded Fund","USA",,17947
+1014,"LALT","Invesco Multi-Strategy Alternative ETF","Financial","Exchange Traded Fund","USA",,17859
+1015,"VTC","Vanguard Total Corporate Bond ETF","Financial","Exchange Traded Fund","USA",,17474
+1016,"XTN","SPDR S&P Transportation ETF","Financial","Exchange Traded Fund","USA",,17467
+1017,"BZQ","ProShares UltraShort MSCI Brazil Capped","Financial","Exchange Traded Fund","USA",,17371
+1018,"FTXN","First Trust Nasdaq Oil & Gas ETF","Financial","Exchange Traded Fund","USA",,17360
+1019,"QCLN","First Trust NASDAQ Cln Edge GrnEngyETF","Financial","Exchange Traded Fund","USA",,17326
+1020,"FLEE","Franklin FTSE Europe ETF","Financial","Exchange Traded Fund","USA",,17300
+1021,"MYY","ProShares Short MidCap400","Financial","Exchange Traded Fund","USA",,17250
+1022,"PSJ","Invesco Dynamic Software ETF","Financial","Exchange Traded Fund","USA",,17214
+1023,"GASX","Direxion Daily Nat Gas Rltd Bear 3X ETF","Financial","Exchange Traded Fund","USA",,17195
+1024,"OGIG","O'Shares Global Internet Giants ETF","Financial","Exchange Traded Fund","USA",,17162
+1025,"FQAL","Fidelity Quality Factor ETF","Financial","Exchange Traded Fund","USA",,16792
+1026,"SLVP","iShares MSCI Global Silver Miners ETF","Financial","Exchange Traded Fund","USA",,16688
+1027,"SUSB","iShares ESG 1-5 Year USD Corp Bd ETF","Financial","Exchange Traded Fund","USA",,16651
+1028,"PTH","Invesco DWA Healthcare Momentum ETF","Financial","Exchange Traded Fund","USA",,16631
+1029,"PHO","Invesco Water Resources ETF","Financial","Exchange Traded Fund","USA",,16606
+1030,"MIDU","Direxion Daily Mid Cap Bull 3X ETF","Financial","Exchange Traded Fund","USA",,16581
+1031,"JKF","iShares Morningstar Large-Cap Value ETF","Financial","Exchange Traded Fund","USA",,16555
+1032,"PEX","ProShares Global Listed Private Equity","Financial","Exchange Traded Fund","USA",,16491
+1033,"RYH","Invesco S&P 500 Equal Wt Hlth Care ETF","Financial","Exchange Traded Fund","USA",,16359
+1034,"SMIN","iShares MSCI India Small-Cap ETF","Financial","Exchange Traded Fund","USA",,16288
+1035,"RWJ","Oppenheimer S&P SmallCap 600 Revenue ETF","Financial","Exchange Traded Fund","USA",,16176
+1036,"FJP","First Trust Japan AlphaDEX ETF","Financial","Exchange Traded Fund","USA",,16047
+1037,"CNCR","Loncar Cancer Immunotherapy ETF","Financial","Exchange Traded Fund","USA",,15993
+1038,"CALF","Pacer US Small Cap Cash Cows 100 ETF","Financial","Exchange Traded Fund","USA",,15890
+1039,"DTO","DB Crude Oil Double Short ETN","Financial","Exchange Traded Fund","USA",,15887
+1040,"DDG","ProShares Short Oil & Gas","Financial","Exchange Traded Fund","USA",,15880
+1041,"UDN","Invesco DB US Dollar Bearish","Financial","Exchange Traded Fund","USA",,15856
+1042,"IHY","VanEck Vectors Intl Hi Yld Bd ETF","Financial","Exchange Traded Fund","USA",,15816
+1043,"GNMA","iShares GNMA Bond ETF","Financial","Exchange Traded Fund","USA",,15757
+1044,"ENOR","iShares MSCI Norway ETF","Financial","Exchange Traded Fund","USA",,15752
+1045,"FNG","AdvisorShares New Tech and Media ETF","Financial","Exchange Traded Fund","USA",,15751
+1046,"DYLS","WisdomTree Dynamic Long/Short US Eq ETF","Financial","Exchange Traded Fund","USA",,15749
+1047,"PFFA","Virtus InfraCap US Preferred Stock ETF","Financial","Exchange Traded Fund","USA",,15717
+1048,"NYF","iShares New York Muni Bond ETF","Financial","Exchange Traded Fund","USA",,15711
+1049,"DGRE","WisdomTree Emerging Mkts Qual Div Gr ETF","Financial","Exchange Traded Fund","USA",,15698
+1050,"ENZL","iShares MSCI New Zealand ETF","Financial","Exchange Traded Fund","USA",,15567
+1051,"IGEB","iShares Edge Investment Grade Enh Bd ETF","Financial","Exchange Traded Fund","USA",,15539
+1052,"COPX","Global X Copper Miners ETF","Financial","Exchange Traded Fund","USA",,15520
+1053,"HSPX","Horizons S&P 500 Covered Call ETF","Financial","Exchange Traded Fund","USA",,15453
+1054,"PPSC","PortfolioPlus S&P Small Cap ETF","Financial","Exchange Traded Fund","USA",,15381
+1055,"DWLV","Invesco DWA Momentum & Low Vol Rttn ETF","Financial","Exchange Traded Fund","USA",,15367
+1056,"PSCT","Invesco S&P SmallCap Info Tech ETF","Financial","Exchange Traded Fund","USA",,15267
+1057,"RFEM","First Trust RiverFront Dyn Em Mkts ETF","Financial","Exchange Traded Fund","USA",,15244
+1058,"ALTY","Global X SuperDividend Alternatives ETF","Financial","Exchange Traded Fund","USA",,15111
+1059,"MVV","ProShares Ultra MidCap400","Financial","Exchange Traded Fund","USA",,15098
+1060,"SMMV","iShares Edge MSCI Min Vol USA Sm-Cp ETF","Financial","Exchange Traded Fund","USA",,15033
+1061,"ELD","WisdomTree Emerging Markets Lcl Dbt ETF","Financial","Exchange Traded Fund","USA",,14977
+1062,"FEMB","First Trust Emerging Mkts Lcl Ccy Bd ETF","Financial","Exchange Traded Fund","USA",,14951
+1063,"GCC","WisdomTree Continuous Commodity ETF","Financial","Exchange Traded Fund","USA",,14940
+1064,"FCOR","Fidelity Corporate Bond ETF","Financial","Exchange Traded Fund","USA",,14921
+1065,"CEMB","iShares JP Morgan EM Corporate Bond ETF","Financial","Exchange Traded Fund","USA",,14918
+1066,"EMBH","iShares Interest Rate Hdg Em Mkts Bd ETF","Financial","Exchange Traded Fund","USA",,14832
+1067,"ENFR","Alerian Energy Infrastructure ETF","Financial","Exchange Traded Fund","USA",,14823
+1068,"RFEU","First Trust RiverFront Dynamic Eurp ETF","Financial","Exchange Traded Fund","USA",,14820
+1069,"PXMG","Invesco Russell MidCap Pure Growth ETF","Financial","Exchange Traded Fund","USA",,14420
+1070,"PBB","Prospect Capital Corporation NT 061524","Financial","Exchange Traded Fund","USA",,14387
+1071,"IPFF","iShares International Preferred Stk ETF","Financial","Exchange Traded Fund","USA",,14370
+1072,"DEF","Invesco Defensive Equity ETF","Financial","Exchange Traded Fund","USA",,14368
+1073,"JO","iPath B Bloomberg Coffee Ttl Ret ETN","Financial","Exchange Traded Fund","USA",,14306
+1074,"BSJO","Invesco BulletShares 2024 HY Corp Bd ETF","Financial","Exchange Traded Fund","USA",,14261
+1075,"RETL","Direxion Daily Retail Bull 3X ETF","Financial","Exchange Traded Fund","USA",,14259
+1076,"DGL","Invesco DB Gold","Financial","Exchange Traded Fund","USA",,14229
+1077,"IGLB","iShares Long-Term Corporate Bond ETF","Financial","Exchange Traded Fund","USA",,14223
+1078,"XLG","Invesco S&P 500 Top 50 ETF","Financial","Exchange Traded Fund","USA",,14207
+1079,"BLHY","Virtus Newfleet Dynamic Credit ETF","Financial","Exchange Traded Fund","USA",,14194
+1080,"IXP","iShares Global Comm Services ETF","Financial","Exchange Traded Fund","USA",,14103
+1081,"FXP","ProShares UltraShort FTSE China 50","Financial","Exchange Traded Fund","USA",,13884
+1082,"MXI","iShares Global Materials ETF","Financial","Exchange Traded Fund","USA",,13853
+1083,"REK","ProShares Short Real Estate","Financial","Exchange Traded Fund","USA",,13754
+1084,"CORN","Teucrium Corn ETF","Financial","Exchange Traded Fund","USA",,13737
+1085,"RALS","ProShares RAFI Long/Short","Financial","Exchange Traded Fund","USA",,13705
+1086,"VTHR","Vanguard Russell 3000 ETF","Financial","Exchange Traded Fund","USA",,13686
+1087,"REFA","Oppenheimer International Revenue ETF","Financial","Exchange Traded Fund","USA",,13600
+1088,"HUSE","Strategy Shares US Market Rotn Stgy ETF","Financial","Exchange Traded Fund","USA",,13591
+1089,"TLH","iShares 10-20 Year Treasury Bond ETF","Financial","Exchange Traded Fund","USA",,13527
+1090,"RXL","ProShares Ultra Health Care","Financial","Exchange Traded Fund","USA",,13523
+1091,"FINZ","ProShares UltraPro Short Fincl Sel Sect","Financial","Exchange Traded Fund","USA",,13428
+1092,"PGJ","Invesco Golden Dragon China ETF","Financial","Exchange Traded Fund","USA",,13390
+1093,"MUNI","PIMCO Intermediate Municipal Bd Actv ETF","Financial","Exchange Traded Fund","USA",,13333
+1094,"ROAM","Hartford Multifactor Emerging Mkts ETF","Financial","Exchange Traded Fund","USA",,13140
+1095,"MINC","AdvisorShares Newfleet Mult-Sect Inc ETF","Financial","Exchange Traded Fund","USA",,13051
+1096,"COMB","GraniteShares Blmbrg CmdtyBrdStr NoK1ETF","Financial","Exchange Traded Fund","USA",,12923
+1097,"IWL","iShares Russell Top 200 ETF","Financial","Exchange Traded Fund","USA",,12875
+1098,"ULST","SPDR SSgA Ultra Short Term Bond ETF","Financial","Exchange Traded Fund","USA",,12860
+1099,"WOOD","iShares Global Timber & Forestry ETF","Financial","Exchange Traded Fund","USA",,12859
+1100,"JXI","iShares Global Utilities ETF","Financial","Exchange Traded Fund","USA",,12792
+1101,"TRTY","Cambria Trinity ETF","Financial","Exchange Traded Fund","USA",,12779
+1102,"RWK","Oppenheimer S&P MidCap 400 Revenue ETF","Financial","Exchange Traded Fund","USA",,12765
+1103,"CNY","Market Vectors Chinese Renminbi/USD ETN","Financial","Exchange Traded Fund","USA",,12664
+1104,"BRF","VanEck Vectors Brazil Small-Cap ETF","Financial","Exchange Traded Fund","USA",,12658
+1105,"SMLV","SPDR SSGA US Small Cap Low Volatil ETF","Financial","Exchange Traded Fund","USA",,12621
+1106,"ZMLP","Direxion Zacks MLP High Income ETF","Financial","Exchange Traded Fund","USA",,12616
+1107,"USD","ProShares Ultra Semiconductors","Financial","Exchange Traded Fund","USA",,12615
+1108,"FKO","First Trust South Korea AlphaDEX ETF","Financial","Exchange Traded Fund","USA",,12563
+1109,"SHYD","VanEck Vectors Short High-Yield Muni ETF","Financial","Exchange Traded Fund","USA",,12558
+1110,"SSG","ProShares UltraShort Semiconductors","Financial","Exchange Traded Fund","USA",,12548
+1111,"FTHI","First Trust BuyWrite Income ETF","Financial","Exchange Traded Fund","USA",,12500
+1112,"VMOT","Alpha Architect Value Momentum Trend ETF","Financial","Exchange Traded Fund","USA",,12494
+1113,"PSMG","Invesco Growth Multi-Asset Allc ETF","Financial","Exchange Traded Fund","USA",,12492
+1114,"SPYB","SPDR S&P 500 Buyback ETF","Financial","Exchange Traded Fund","USA",,12346
+1115,"GQRE","FlexShares Glbl Quality Real Estate ETF","Financial","Exchange Traded Fund","USA",,12279
+1116,"FIW","First Trust Water ETF","Financial","Exchange Traded Fund","USA",,12270
+1117,"EPU","iShares MSCI All Peru ETF","Financial","Exchange Traded Fund","USA",,12269
+1118,"HYND","WisdomTree Negative Dur High Yld Bd ETF","Financial","Exchange Traded Fund","USA",,12126
+1119,"VTWG","Vanguard Russell 2000 Growth ETF","Financial","Exchange Traded Fund","USA",,12114
+1120,"EWUS","iShares MSCI United Kingdom Small-Cp ETF","Financial","Exchange Traded Fund","USA",,12102
+1121,"HDMV","First Trust Hrzn MgdVolatil Dev Intl ETF","Financial","Exchange Traded Fund","USA",,12043
+1122,"CACG","ClearBridge All Cap Growth ETF","Financial","Exchange Traded Fund","USA",,11974
+1123,"REW","ProShares UltraShort Technology","Financial","Exchange Traded Fund","USA",,11897
+1124,"IBDR","iShares iBonds Dec 2026 Term Corp ETF","Financial","Exchange Traded Fund","USA",,11838
+1125,"FYT","First Trust Small Cap Val AlphaDEX ETF","Financial","Exchange Traded Fund","USA",,11795
+1126,"SDEM","Global X MSCI SuperDividend Em Mkts ETF","Financial","Exchange Traded Fund","USA",,11778
+1127,"WBII","WBI BullBear Global Income ETF","Financial","Exchange Traded Fund","USA",,11772
+1128,"JKH","iShares Morningstar Mid-Cap Growth ETF","Financial","Exchange Traded Fund","USA",,11678
+1129,"JPEU","ETFS Short JPY Long EUR","Financial","Exchange Traded Fund","USA",,11664
+1130,"DUSA","Davis Select US Equity ETF","Financial","Exchange Traded Fund","USA",,11651
+1131,"JKG","iShares Morningstar Mid-Cap ETF","Financial","Exchange Traded Fund","USA",,11579
+1132,"UBOT","Direxion Dly Rbtc,AtfclItlgcAutoBl3XShrs","Financial","Exchange Traded Fund","USA",,11575
+1133,"TAIL","Cambria Tail Risk ETF","Financial","Exchange Traded Fund","USA",,11481
+1134,"MLN","VanEck Vectors AMT-Free Long Muni ETF","Financial","Exchange Traded Fund","USA",,11454
+1135,"PSL","Invesco DWA Consumer Staples Mom ETF","Financial","Exchange Traded Fund","USA",,11309
+1136,"PFM","Invesco Dividend Achievers ETF","Financial","Exchange Traded Fund","USA",,11277
+1137,"WTMF","WisdomTree Managed Futures Strategy ETF","Financial","Exchange Traded Fund","USA",,10993
+1138,"PSAU","Invesco Global Gold and Prec Mtls ETF","Financial","Exchange Traded Fund","USA",,10980
+1139,"VIOG","Vanguard S&P Small-Cap 600 Growth ETF","Financial","Exchange Traded Fund","USA",,10954
+1140,"XITK","SPDR FactSet Innovative Technology ETF","Financial","Exchange Traded Fund","USA",,10850
+1141,"CLRG","IQ Chaikin US Large Cap ETF","Financial","Exchange Traded Fund","USA",,10800
+1142,"FAN","First Trust Global Wind Energy ETF","Financial","Exchange Traded Fund","USA",,10775
+1143,"PBE","Invesco Dynamic Biotech & Genome ETF","Financial","Exchange Traded Fund","USA",,10730
+1144,"PXLG","Invesco Russell Top 200 Pure Growth ETF","Financial","Exchange Traded Fund","USA",,10706
+1145,"RISE","Sit Rising Rate ETF","Financial","Exchange Traded Fund","USA",,10602
+1146,"UITB","USAA Core Intermediate-Term Bond ETF","Financial","Exchange Traded Fund","USA",,10502
+1147,"HAO","Invesco China Small Cap ETF","Financial","Exchange Traded Fund","USA",,10440
+1148,"PZD","Invesco Cleantech ETF","Financial","Exchange Traded Fund","USA",,10440
+1149,"BFOR","Barron's 400 ETF","Financial","Exchange Traded Fund","USA",,10398
+1150,"CXSE","WisdomTree China ex-State-Owd Entpr ETF","Financial","Exchange Traded Fund","USA",,10384
+1151,"DPST","Direxion Daily Regional Bnks Bull 3X ETF","Financial","Exchange Traded Fund","USA",,10358
+1152,"UTES","Reaves Utilities ETF","Financial","Exchange Traded Fund","USA",,10341
+1153,"UCON","First Trust TCW Unconstrained Pls Bd ETF","Financial","Exchange Traded Fund","USA",,10319
+1154,"TPOR","Direxion Dly Transp Bull 3X Shrs ETF","Financial","Exchange Traded Fund","USA",,10267
+1155,"DGLD","VelocityShares 3x Inverse Gold ETN","Financial","Exchange Traded Fund","USA",,10266
+1156,"LGLV","SPDR SSGA US Large Cap Low Volatil ETF","Financial","Exchange Traded Fund","USA",,10189
+1157,"JKJ","iShares Morningstar Small-Cap ETF","Financial","Exchange Traded Fund","USA",,10187
+1158,"VFMF","Vanguard US Multifactor ETF","Financial","Exchange Traded Fund","USA",,10101
+1159,"PBW","Invesco WilderHill Clean Energy ETF","Financial","Exchange Traded Fund","USA",,10075
+1160,"PFIG","Invesco Fdmtl Invmt Grd Corp Bd ETF","Financial","Exchange Traded Fund","USA",,10067
+1161,"PIO","Invesco Global Water ETF","Financial","Exchange Traded Fund","USA",,10040
+1162,"BBC","Virtus LifeSci Biotech Clinical Trls ETF","Financial","Exchange Traded Fund","USA",,10038
+1163,"GTO","Invesco Total Return Bond ETF","Financial","Exchange Traded Fund","USA",,10024
+1164,"ROOF","IQ US Real Estate Small Cap ETF","Financial","Exchange Traded Fund","USA",,10001
+1165,"DEZU","iShares Adaptive Ccy Hdg MSCI Eurozn ETF","Financial","Exchange Traded Fund","USA",,10000
+1166,"INXX","Columbia India Infrastructure ETF","Financial","Exchange Traded Fund","USA",,10000
+1167,"QAT","iShares MSCI Qatar ETF","Financial","Exchange Traded Fund","USA",,9986
+1168,"SLVO","Credit Suisse X-Links Silver CovCall ETN","Financial","Exchange Traded Fund","USA",,9972
+1169,"URE","ProShares Ultra Real Estate","Financial","Exchange Traded Fund","USA",,9965
+1170,"FLSW","Franklin FTSE Switzerland ETF","Financial","Exchange Traded Fund","USA",,9937
+1171,"FEUZ","First Trust Eurozone AlphaDEX ETF","Financial","Exchange Traded Fund","USA",,9914
+1172,"EFZ","ProShares Short MSCI EAFE","Financial","Exchange Traded Fund","USA",,9888
+1173,"FIDI","Fidelity International High Div ETF","Financial","Exchange Traded Fund","USA",,9882
+1174,"GRID","First Trust NASDAQ Cln EdgeStGidIfsETF","Financial","Exchange Traded Fund","USA",,9863
+1175,"WBIG","WBI BullBear Yield 1000 ETF","Financial","Exchange Traded Fund","USA",,9744
+1176,"WBIC","WBI BullBear Yield 2000 ETF","Financial","Exchange Traded Fund","USA",,9679
+1177,"RTH","VanEck Vectors Retail ETF","Financial","Exchange Traded Fund","USA",,9656
+1178,"DTN","WisdomTree US Dividend ex-Financials ETF","Financial","Exchange Traded Fund","USA",,9650
+1179,"SYE","SPDR MFS Systematic Core Equity ETF","Financial","Exchange Traded Fund","USA",,9646
+1180,"IBMM","iShares iBonds Dec 2024 Term Muni Bond","Financial","Exchange Traded Fund","USA",,9556
+1181,"TRMT","Tremont Mortgage Trust","Financial","Exchange Traded Fund","USA",30.75,9544
+1182,"JPGE","JPMorgan Diversified Return Glbl Eq ETF","Financial","Exchange Traded Fund","USA",,9510
+1183,"FSZ","First Trust Switzerland AlphaDEX ETF","Financial","Exchange Traded Fund","USA",,9251
+1184,"EDOW","First Trust Dow 30 Equal Weight ETF","Financial","Exchange Traded Fund","USA",,9226
+1185,"LTPZ","PIMCO 15+ Year US TIPS ETF","Financial","Exchange Traded Fund","USA",,9194
+1186,"CSD","Invesco S&P Spin-Off ETF","Financial","Exchange Traded Fund","USA",,9185
+1187,"JPGB","JPMorgan Global Bond Opportunities ETF","Financial","Exchange Traded Fund","USA",,9161
+1188,"USL","United States 12 Month Oil","Financial","Exchange Traded Fund","USA",,9154
+1189,"ILTB","iShares Core 10+ Year USD Bond ETF","Financial","Exchange Traded Fund","USA",,9134
+1190,"FDM","First Trust Dow Jones Sel MicroCap ETF","Financial","Exchange Traded Fund","USA",,9131
+1191,"DIVY","Reality Shares DIVS ETF","Financial","Exchange Traded Fund","USA",,9027
+1192,"KORU","Direxion Daily South Korea Bull 3X ETF","Financial","Exchange Traded Fund","USA",,9012
+1193,"FPXI","First Trust International IPO ETF","Financial","Exchange Traded Fund","USA",,8966
+1194,"MILN","Global X Millennials Thematic ETF","Financial","Exchange Traded Fund","USA",,8923
+1195,"XRLV","Invesco S&P 500 ex-Rate Snsv LowVol ETF","Financial","Exchange Traded Fund","USA",,8890
+1196,"EUDG","WisdomTree Europe Quality Div Gr ETF","Financial","Exchange Traded Fund","USA",,8828
+1197,"GLTR","Aberdeen Standard Phys PrecMtlBskShr ETF","Financial","Exchange Traded Fund","USA",,8825
+1198,"BBH","VanEck Vectors Biotech ETF","Financial","Exchange Traded Fund","USA",,8817
+1199,"VFQY","Vanguard US Quality Factor ETF","Financial","Exchange Traded Fund","USA",,8736
+1200,"IWX","iShares Russell Top 200 Value ETF","Financial","Exchange Traded Fund","USA",,8731
+1201,"BOUT","Innovator IBD Breakout Opps ETF","Financial","Exchange Traded Fund","USA",,8696
+1202,"SCJ","iShares MSCI Japan Small-Cap ETF","Financial","Exchange Traded Fund","USA",,8535
+1203,"FXB","Invesco CcyShrs British Pound Stlg","Financial","Exchange Traded Fund","USA",,8522
+1204,"GOEX","Global X Gold Explorers ETF","Financial","Exchange Traded Fund","USA",,8518
+1205,"CBND","SPDR Bloomberg Barclays Corp Bd ETF","Financial","Exchange Traded Fund","USA",,8509
+1206,"JETS","US Global Jets ETF","Financial","Exchange Traded Fund","USA",,8499
+1207,"PHDG","Invesco S&P 500 Downside Hedged ETF","Financial","Exchange Traded Fund","USA",,8415
+1208,"GRES","IQ Global Resources ETF","Financial","Exchange Traded Fund","USA",,8384
+1209,"BAR","GraniteShares Gold Trust","Financial","Exchange Traded Fund","USA",,8374
+1210,"FXA","Invesco CcyShrs Australian Dllr Trust","Financial","Exchange Traded Fund","USA",,8278
+1211,"PEK","VanEck Vectors ChinaAMC CSI 300 ETF","Financial","Exchange Traded Fund","USA",,8273
+1212,"WDRW","Direxion Daily Regional Bnks Bear 3X ETF","Financial","Exchange Traded Fund","USA",,8268
+1213,"KRMA","Global X Conscious Companies ETF","Financial","Exchange Traded Fund","USA",,8200
+1214,"IGBH","iShares Interest Rate Hdg L/T Corp BdETF","Financial","Exchange Traded Fund","USA",,8186
+1215,"DGRS","WisdomTree US SmallCap Qual Div Gr ETF","Financial","Exchange Traded Fund","USA",,8173
+1216,"FLGE","Credit Suisse FI Large Cap Gr Enh ETN","Financial","Exchange Traded Fund","USA",,8134
+1217,"IBDC","iShares iBonds Mar 2020 Term Corp ETF","Financial","Exchange Traded Fund","USA",,8113
+1218,"SPMO","Invesco S&P 500 Momentum ETF","Financial","Exchange Traded Fund","USA",,8089
+1219,"FAB","First Trust Multi Cap Val AlphaDEX ETF","Financial","Exchange Traded Fund","USA",,8011
+1220,"USMC","Principal US Mega-Cap Multi-Factor ETF","Financial","Exchange Traded Fund","USA",,7991
+1221,"FNI","First Trust Chindia ETF","Financial","Exchange Traded Fund","USA",,7924
+1222,"SPYX","SPDR S&P 500 Fossil Fuel Rsrv Free ETF","Financial","Exchange Traded Fund","USA",,7882
+1223,"REML","Credit Suisse X-LinksMP2xLvgMortREIT ETN","Financial","Exchange Traded Fund","USA",,7828
+1224,"IQDY","FlexShares Intl Qual Div Dynamic ETF","Financial","Exchange Traded Fund","USA",,7820
+1225,"REZ","iShares Residential Real Estate Capd ETF","Financial","Exchange Traded Fund","USA",,7803
+1226,"FLCH","Franklin FTSE China ETF","Financial","Exchange Traded Fund","USA",,7794
+1227,"LQDH","iShares $ Corp Bond Intr Rt H ETF $ Dist","Financial","Exchange Traded Fund","USA",,7730
+1228,"NUAG","NuShares Enhanced Yield US Aggt Bd ETF","Financial","Exchange Traded Fund","USA",,7691
+1229,"JPHY","JPMorgan Disciplined High Yield ETF","Financial","Exchange Traded Fund","USA",,7670
+1230,"PSCU","Invesco S&P SmallCap Ult & Comnc Svc ETF","Financial","Exchange Traded Fund","USA",,7663
+1231,"KBWR","Invesco KBW Regional Banking ETF","Financial","Exchange Traded Fund","USA",,7656
+1232,"TAO","Invesco China Real Estate ETF","Financial","Exchange Traded Fund","USA",,7627
+1233,"JHMU","JHancock Multifactor Utilities ETF","Financial","Exchange Traded Fund","USA",,7619
+1234,"QEFA","SPDR MSCI EAFE StrategicFactors ETF","Financial","Exchange Traded Fund","USA",,7559
+1235,"VAMO","Cambria Value and Momentum ETF","Financial","Exchange Traded Fund","USA",,7533
+1236,"LFEQ","VanEck Vectors NDR CMG Lg/FlatAllc ETF","Financial","Exchange Traded Fund","USA",,7528
+1237,"QQXT","First Trust NASDAQ-100 ex-Tech Sect ETF","Financial","Exchange Traded Fund","USA",,7512
+1238,"RFG","Invesco S&P MidCap 400 Pure Growth ETF","Financial","Exchange Traded Fund","USA",,7411
+1239,"PLCY","EventShares US Policy Alpha ETF","Financial","Exchange Traded Fund","USA",,7375
+1240,"RXI","iShares Global Consumer Discr ETF","Financial","Exchange Traded Fund","USA",,7374
+1241,"GMOM","Cambria Global Momentum ETF","Financial","Exchange Traded Fund","USA",,7301
+1242,"WPS","iShares International Dev Prpty ETF","Financial","Exchange Traded Fund","USA",,7297
+1243,"MOTI","VanEck Vectors Morningstar Intl Moat ETF","Financial","Exchange Traded Fund","USA",,7253
+1244,"PBD","Invesco Global Clean Energy ETF","Financial","Exchange Traded Fund","USA",,7250
+1245,"PBJ","Invesco Dynamic Food & Beverage ETF","Financial","Exchange Traded Fund","USA",,7238
+1246,"XSW","SPDR S&P Software & Services ETF","Financial","Exchange Traded Fund","USA",,7149
+1247,"CUT","Invesco MSCI Global Timber ETF","Financial","Exchange Traded Fund","USA",,7075
+1248,"QVAL","Alpha Architect US Quantitative Val ETF","Financial","Exchange Traded Fund","USA",,7032
+1249,"OEUR","O'Shares FTSE Europe Quality Div ETF","Financial","Exchange Traded Fund","USA",,7006
+1250,"DJCI","UBS ETRACS Bloomberg Cmdty Tot Ret ETN","Financial","Exchange Traded Fund","USA",,6963
+1251,"DINT","Davis Select International ETF","Financial","Exchange Traded Fund","USA",,6961
+1252,"IDX","VanEck Vectors Indonesia ETF","Financial","Exchange Traded Fund","USA",,6907
+1253,"EYLD","Cambria Emerging Shareholder Yield ETF","Financial","Exchange Traded Fund","USA",,6904
+1254,"XKFS","SPDR Kensho Future Security ETF","Financial","Exchange Traded Fund","USA",,6898
+1255,"RVNU","Xtrackers Municipal Infras Rev Bd ETF","Financial","Exchange Traded Fund","USA",,6803
+1256,"DPK","Direxion Daily MSCI Dev Mkts Bear 3X ETF","Financial","Exchange Traded Fund","USA",,6802
+1257,"SIZE","iShares Edge MSCI USA Size Factor ETF","Financial","Exchange Traded Fund","USA",,6748
+1258,"DZZ","DB Gold Double Short ETN","Financial","Exchange Traded Fund","USA",,6719
+1259,"JPME","JPMorgan Divers Ret US Mid Cp Eq ETF","Financial","Exchange Traded Fund","USA",,6700
+1260,"RCD","Invesco S&P 500 Equal Wt Cnsm Disc ETF","Financial","Exchange Traded Fund","USA",,6690
+1261,"WBIR","WBI BullBear Global Rotation ETF","Financial","Exchange Traded Fund","USA",,6573
+1262,"ITEQ","BlueStar Israel Technology ETF","Financial","Exchange Traded Fund","USA",,6567
+1263,"EUMV","iShares Edge MSCI Min Vol Europe ETF","Financial","Exchange Traded Fund","USA",,6557
+1264,"EMTY","ProShares Decline of the Retl Store ETF","Financial","Exchange Traded Fund","USA",,6550
+1265,"DTEC","ALPS Disruptive Technologies ETF","Financial","Exchange Traded Fund","USA",,6478
+1266,"YCS","ProShares UltraShort Yen","Financial","Exchange Traded Fund","USA",,6463
+1267,"DVHL","UBS ETRACS M Py 2xLvg Divers Hi Inc ETN","Financial","Exchange Traded Fund","USA",,6423
+1268,"UJUL","Innovator S&P 500 Ultra Buffer ETF July","Financial","Exchange Traded Fund","USA",,6400
+1269,"DXGE","WisdomTree Germany Hedged Equity ETF","Financial","Exchange Traded Fund","USA",,6398
+1270,"AMJL","Credit Suisse X-Links Monthly Pay 2xLeveraged Alerian MLP Index ETN","Financial","Exchange Traded Fund","USA",,6339
+1271,"PRNT","The 3D Printing ETF","Financial","Exchange Traded Fund","USA",,6311
+1272,"EFNL","iShares MSCI Finland ETF","Financial","Exchange Traded Fund","USA",,6303
+1273,"WREI","Invesco Wilshire US REIT ETF","Financial","Exchange Traded Fund","USA",,6224
+1274,"CLIX","ProShares Long Online/Short Stores ETF","Financial","Exchange Traded Fund","USA",,6186
+1275,"USDU","WisdomTree Bloomberg US Dllr Bullish ETF","Financial","Exchange Traded Fund","USA",,6165
+1276,"PSCF","Invesco S&P SmallCap Financials ETF","Financial","Exchange Traded Fund","USA",,6135
+1277,"JPMV","iShares Edge MSCI Min Vol Japan ETF","Financial","Exchange Traded Fund","USA",,6125
+1278,"LDRS","Innovator IBD ETF Leaders","Financial","Exchange Traded Fund","USA",,6125
+1279,"STOT","SPDR DoubleLine Shrt Dur Ttl RetTactETF","Financial","Exchange Traded Fund","USA",,6071
+1280,"ECNS","iShares MSCI China Small-Cap ETF","Financial","Exchange Traded Fund","USA",,6043
+1281,"BLES","Inspire Global Hope ETF","Financial","Exchange Traded Fund","USA",,6029
+1282,"EFU","ProShares UltraShort MSCI EAFE","Financial","Exchange Traded Fund","USA",,6015
+1283,"JPHF","JPMorgan Diversified Alternative ETF","Financial","Exchange Traded Fund","USA",,6006
+1284,"JPN","Xtrackers Japan JPX-Nikkei 400 Eq ETF","Financial","Exchange Traded Fund","USA",,5996
+1285,"IRBO","iShares Robotics and Artfcl Intlgc ETF","Financial","Exchange Traded Fund","USA",,5996
+1286,"ENTR","ERShares Entrepreneur 30 ETF","Financial","Exchange Traded Fund","USA",,5965
+1287,"XWEB","SPDR S&P Internet ETF","Financial","Exchange Traded Fund","USA",,5914
+1288,"SPUU","Direxion Daily S&P 500 Bull 2X ETF","Financial","Exchange Traded Fund","USA",,5894
+1289,"TIPZ","PIMCO Broad US TIPS ETF","Financial","Exchange Traded Fund","USA",,5886
+1290,"SBB","ProShares Short SmallCap600","Financial","Exchange Traded Fund","USA",,5884
+1291,"RSXJ","VanEck Vectors Russia Small-Cap ETF","Financial","Exchange Traded Fund","USA",,5878
+1292,"UGL","ProShares Ultra Gold","Financial","Exchange Traded Fund","USA",,5855
+1293,"ESML","iShares MSCI USA Sml-Cp ESG Optmzd ETF","Financial","Exchange Traded Fund","USA",,5826
+1294,"GHYB","Goldman Sachs Access Hi Yld Corp Bd ETF","Financial","Exchange Traded Fund","USA",,5794
+1295,"TOLZ","ProShares DJ Brookfield Global Infras","Financial","Exchange Traded Fund","USA",,5754
+1296,"HAP","VanEck Vectors Natural Resources ETF","Financial","Exchange Traded Fund","USA",,5724
+1297,"FNK","First Trust Mid Cap Value AlphaDEX ETF","Financial","Exchange Traded Fund","USA",,5713
+1298,"MLPZ","UBS ETRACS 2x M Lvg S&P MLP ETN SerB","Financial","Exchange Traded Fund","USA",,5710
+1299,"PICB","Invesco International Corporate Bond ETF","Financial","Exchange Traded Fund","USA",,5694
+1300,"CLTL","Invesco Treasury Collateral ETF","Financial","Exchange Traded Fund","USA",,5654
+1301,"SYLD","Cambria Shareholder Yield ETF","Financial","Exchange Traded Fund","USA",,5641
+1302,"GULF","WisdomTree Middle East Dividend ETF","Financial","Exchange Traded Fund","USA",,5617
+1303,"NULV","NuShares ESG Large-Cap Value ETF","Financial","Exchange Traded Fund","USA",,5579
+1304,"EDEN","iShares MSCI Denmark ETF","Financial","Exchange Traded Fund","USA",,5576
+1305,"IFLY","ETFMG Drone Economy Strategy ETF","Financial","Exchange Traded Fund","USA",,5505
+1306,"BATT","Amplify Advcd Btty Mtls and Matrls ETF","Financial","Exchange Traded Fund","USA",,5497
+1307,"HDLV","UBS ETRACS M Py 2xLvg US HiDivLowVol ETN","Financial","Exchange Traded Fund","USA",,5448
+1308,"JHSC","JHancock Multifactor Small Cap ETF","Financial","Exchange Traded Fund","USA",,5433
+1309,"JKK","iShares Morningstar Small-Cap Growth ETF","Financial","Exchange Traded Fund","USA",,5428
+1310,"DNL","WisdomTree Global ex-US Qual Div Gr ETF","Financial","Exchange Traded Fund","USA",,5410
+1311,"EMIF","iShares Emerging Markets Infras ETF","Financial","Exchange Traded Fund","USA",,5409
+1312,"GRMY","Xtrackers Germany Equity ETF","Financial","Exchange Traded Fund","USA",,5400
+1313,"EURZ","Xtrackers Eurozone Equity ETF","Financial","Exchange Traded Fund","USA",,5400
+1314,"CPER","United States Copper Index","Financial","Exchange Traded Fund","USA",,5398
+1315,"FRI","First Trust S&P REIT ETF","Financial","Exchange Traded Fund","USA",,5354
+1316,"ZSL","ProShares UltraShort Silver","Financial","Exchange Traded Fund","USA",,5307
+1317,"FLN","First Trust Latin America AlphaDEX ETF","Financial","Exchange Traded Fund","USA",,5301
+1318,"DVYA","iShares Asia/Pacific Dividend ETF","Financial","Exchange Traded Fund","USA",,5259
+1319,"CHAD","Direxion Dly CSI 300 Chn A Shr Br 1X ETF","Financial","Exchange Traded Fund","USA",,5246
+1320,"SMDD","ProShares UltraPro Short MidCap400","Financial","Exchange Traded Fund","USA",,5237
+1321,"WBIA","WBI BullBear Rising Income 2000 ETF","Financial","Exchange Traded Fund","USA",,5232
+1322,"XPP","ProShares Ultra FTSE China 50","Financial","Exchange Traded Fund","USA",,5197
+1323,"BFO","Blackrock Florida Municipal 202","Financial","Exchange Traded Fund","USA",77.70,5105
+1324,"FANZ","ProSports Sponsors ETF","Financial","Exchange Traded Fund","USA",,5102
+1325,"FIEE","UBS AG FI Enhanced Europe 50 ETN","Financial","Exchange Traded Fund","USA",,4970
+1326,"KCNY","KraneShares E China Comrcl Paper ETF","Financial","Exchange Traded Fund","USA",,4952
+1327,"UEVM","USAA MSCI Emerg Mkts Val Mom Blnd ETF","Financial","Exchange Traded Fund","USA",,4909
+1328,"SZNE","Pacer CFRA-Stovall Eq WghtSeasnlRottnETF","Financial","Exchange Traded Fund","USA",,4882
+1329,"BSJP","Invesco BulletShares 2025 HY Corp Bd ETF","Financial","Exchange Traded Fund","USA",,4880
+1330,"DYY","DB Commodity Double Long ETN","Financial","Exchange Traded Fund","USA",,4878
+1331,"CROC","ProShares UltraShort Australian Dollar","Financial","Exchange Traded Fund","USA",,4875
+1332,"AUSE","WisdomTree Australia Dividend ETF","Financial","Exchange Traded Fund","USA",,4870
+1333,"QEMM","SPDR MSCI Emerging Mkts StratcFacts ETF","Financial","Exchange Traded Fund","USA",,4863
+1334,"FBGX","UBS AG FI Enhanced Large Cap Growth ETN","Financial","Exchange Traded Fund","USA",,4859
+1335,"SHAG","WisdomTree Yield Enh US S-T Aggt Bd ETF","Financial","Exchange Traded Fund","USA",,4845
+1336,"TYO","Direxion Daily 7-10 Yr Trs Bear 3X ETF","Financial","Exchange Traded Fund","USA",,4816
+1337,"DAX","Horizons DAX Germany ETF","Financial","Exchange Traded Fund","USA",,4783
+1338,"GDXX","ProShares Ultra Gold Miners","Financial","Exchange Traded Fund","USA",,4733
+1339,"IDHQ","Invesco S&P International Dev Qual ETF","Financial","Exchange Traded Fund","USA",,4725
+1340,"FIBR","iShares Edge US Fixed Income Bal Rsk ETF","Financial","Exchange Traded Fund","USA",,4702
+1341,"GSEU","Goldman Sachs ActiveBeta Europe Eq ETF","Financial","Exchange Traded Fund","USA",,4686
+1342,"IMTB","iShares Core 5-10 Year USD Bond ETF","Financial","Exchange Traded Fund","USA",,4677
+1343,"IDLB","Invesco FTSE Intl Low Beta Eq Wt ETF","Financial","Exchange Traded Fund","USA",,4659
+1344,"IEIH","iShares Evolved US Innvtv Hlthcare ETF","Financial","Exchange Traded Fund","USA",,4652
+1345,"QLTA","A Rated Corporate Bond ETF","Financial","Exchange Traded Fund","USA",,4651
+1346,"JHMH","JHancock Multifactor Health Care ETF","Financial","Exchange Traded Fund","USA",,4642
+1347,"USLB","Invesco Russell 1000 Low Beta Eq Wt ETF","Financial","Exchange Traded Fund","USA",,4638
+1348,"WBIL","WBI BullBear Quality 1000 ETF","Financial","Exchange Traded Fund","USA",,4630
+1349,"IVAL","Alpha Architect Intl Quant Val ETF","Financial","Exchange Traded Fund","USA",,4608
+1350,"WBIE","WBI BullBear Rising Income 1000 ETF","Financial","Exchange Traded Fund","USA",,4606
+1351,"GSEW","Goldman Sachs Equal Wght US Lg Cp Eq ETF","Financial","Exchange Traded Fund","USA",,4577
+1352,"INCO","Columbia India Consumer ETF","Financial","Exchange Traded Fund","USA",,4536
+1353,"JUST","Goldman Sachs JUST US Large Cap Eq ETF","Financial","Exchange Traded Fund","USA",,4531
+1354,"IETC","iShares Evolved US Technology ETF","Financial","Exchange Traded Fund","USA",,4490
+1355,"CATH","Global X S&P 500 Catholic Values ETF","Financial","Exchange Traded Fund","USA",,4472
+1356,"FLGB","Franklin FTSE United Kingdom ETF","Financial","Exchange Traded Fund","USA",,4427
+1357,"ONLN","ProShares Online Retail ETF","Financial","Exchange Traded Fund","USA",,4427
+1358,"PPTY","PPTY US Dversfd Rl Est ETF","Financial","Exchange Traded Fund","USA",,4400
+1359,"KCE","SPDR S&P Capital Markets ETF","Financial","Exchange Traded Fund","USA",,4397
+1360,"BNDC","FlexShares Core Select Bond ETF","Financial","Exchange Traded Fund","USA",,4385
+1361,"RNDM","First Trust Developed Intl Eq Sel ETF","Financial","Exchange Traded Fund","USA",,4380
+1362,"PXLV","Invesco Russell Top 200 Pure Value ETF","Financial","Exchange Traded Fund","USA",,4367
+1363,"CHGX","Change Finance US LgCp FossilFuel Fr ETF","Financial","Exchange Traded Fund","USA",,4356
+1364,"FALN","iShares Fallen Angels USD Bond ETF","Financial","Exchange Traded Fund","USA",,4347
+1365,"PEJ","Invesco Dynamic Leisure and Entmnt ETF","Financial","Exchange Traded Fund","USA",,4343
+1366,"DGP","DB Gold Double Long ETN","Financial","Exchange Traded Fund","USA",,4306
+1367,"DOO","WisdomTree Intl Div ex-Fincls ETF","Financial","Exchange Traded Fund","USA",,4302
+1368,"EIRL","iShares MSCI Ireland ETF","Financial","Exchange Traded Fund","USA",,4300
+1369,"IAK","iShares US Insurance ETF","Financial","Exchange Traded Fund","USA",,4295
+1370,"BBP","Virtus LifeSci Biotech Products ETF","Financial","Exchange Traded Fund","USA",,4268
+1371,"RFAP","First Trust RiverFront Dyn Asia Pac ETF","Financial","Exchange Traded Fund","USA",,4246
+1372,"GENY","Principal Millennials ETF","Financial","Exchange Traded Fund","USA",,4240
+1373,"SLIM","The Obesity ETF","Financial","Exchange Traded Fund","USA",,4236
+1374,"SGDJ","ALPS Sprott Junior Gold Miners ETF","Financial","Exchange Traded Fund","USA",,4232
+1375,"BAL","iPath B Bloomberg Cotton Ttl Ret ETN","Financial","Exchange Traded Fund","USA",,4214
+1376,"NUSC","NuShares ESG Small-Cap ETF","Financial","Exchange Traded Fund","USA",,4205
+1377,"LOUP","Innovator Loup Frontier Tech ETF","Financial","Exchange Traded Fund","USA",,4196
+1378,"UPW","ProShares Ultra Utilities","Financial","Exchange Traded Fund","USA",,4191
+1379,"PRN","Invesco DWA Industrials Momentum ETF","Financial","Exchange Traded Fund","USA",,4172
+1380,"WFHY","WisdomTree Fundamental US Hi Yld Corp Bd","Financial","Exchange Traded Fund","USA",,4153
+1381,"PFI","Invesco DWA Financial Momentum ETF","Financial","Exchange Traded Fund","USA",,4147
+1382,"GSJY","Goldman Sachs ActiveBeta Japan Eq ETF","Financial","Exchange Traded Fund","USA",,4141
+1383,"SPDV","AAM S&P 500 High Dividend Value ETF","Financial","Exchange Traded Fund","USA",,4116
+1384,"FCEF","First Trust CEF Income Opportunity ETF","Financial","Exchange Traded Fund","USA",,4103
+1385,"PUW","Invesco WilderHill Progressive Engy ETF","Financial","Exchange Traded Fund","USA",,4101
+1386,"XTL","SPDR S&P Telecom ETF","Financial","Exchange Traded Fund","USA",,4083
+1387,"SDD","ProShares UltraShort SmallCap600","Financial","Exchange Traded Fund","USA",,4066
+1388,"YMLP","VanEck Vectors High Income MLP ETF","Financial","Exchange Traded Fund","USA",,4046
+1389,"KOIN","Innovation Shares NextGen Protocol ETF","Financial","Exchange Traded Fund","USA",,4036
+1390,"FIVA","Fidelity International Value Factor ETF","Financial","Exchange Traded Fund","USA",,4013
+1391,"SDCI","USCF SummerHaven Dyn CmdtyStgy NoK-1 ETF","Financial","Exchange Traded Fund","USA",,4011
+1392,"DWAQ","Invesco DWA NASDAQ Momentum ETF","Financial","Exchange Traded Fund","USA",,3973
+1393,"DVEM","WisdomTree Emerging Markets Dividend ETF","Financial","Exchange Traded Fund","USA",,3972
+1394,"JHMF","JHancock Multifactor Financials ETF","Financial","Exchange Traded Fund","USA",,3970
+1395,"EDOM","WisdomTree Europe Domestic Economy ETF","Financial","Exchange Traded Fund","USA",,3965
+1396,"FLDR","Fidelity Low Duration Bond Factor ETF","Financial","Exchange Traded Fund","USA",,3963
+1397,"USTB","USAA Core Short-Term Bond ETF","Financial","Exchange Traded Fund","USA",,3962
+1398,"NULG","NuShares ESG Large-Cap Growth ETF","Financial","Exchange Traded Fund","USA",,3942
+1399,"BBRC","Columbia Beyond BRICs ETF","Financial","Exchange Traded Fund","USA",,3912
+1400,"DWIN","Invesco DWA Tactical Multi-Asset Inc ETF","Financial","Exchange Traded Fund","USA",,3894
+1401,"RTM","Invesco S&P 500 Equal Weight Matrls ETF","Financial","Exchange Traded Fund","USA",,3887
+1402,"MCRO","IQ Hedge Macro Tracker ETF","Financial","Exchange Traded Fund","USA",,3875
+1403,"JPXN","iShares JPX-Nikkei 400 ETF","Financial","Exchange Traded Fund","USA",,3854
+1404,"WBIF","WBI BullBear Value 1000 ETF","Financial","Exchange Traded Fund","USA",,3849
+1405,"AFK","VanEck Vectors Africa ETF","Financial","Exchange Traded Fund","USA",,3775
+1406,"DHDG","WisdomTree Dyn Ccy Hdgd Intl Qual Div Gr","Financial","Exchange Traded Fund","USA",,3763
+1407,"SHE","SPDR SSGA Gender Diversity ETF","Financial","Exchange Traded Fund","USA",,3733
+1408,"VFVA","Vanguard US Value Factor ETF","Financial","Exchange Traded Fund","USA",,3700
+1409,"EMFM","Global X Next Emerging & Frontier ETF","Financial","Exchange Traded Fund","USA",,3695
+1410,"BIKR","Rogers AI Global Macro ETF","Financial","Exchange Traded Fund","USA",,3688
+1411,"ISRA","VanEck Vectors Israel ETF","Financial","Exchange Traded Fund","USA",,3674
+1412,"FLBR","Franklin FTSE Brazil ETF","Financial","Exchange Traded Fund","USA",,3673
+1413,"IBCE","iShares iBonds Mar 2023Tm CorpexFncl ETF","Financial","Exchange Traded Fund","USA",,3662
+1414,"PSCI","Invesco S&P SmallCap Industrials ETF","Financial","Exchange Traded Fund","USA",,3661
+1415,"DIVB","iShares US Dividend and Buyback ETF","Financial","Exchange Traded Fund","USA",,3660
+1416,"CRBN","iShares MSCI ACWI Low Carbon Target ETF","Financial","Exchange Traded Fund","USA",,3656
+1417,"EMTL","SPDR DoubleLine Emerg Mkts Fxd Inc ETF","Financial","Exchange Traded Fund","USA",,3649
+1418,"PTF","Invesco DWA Technology Momentum ETF","Financial","Exchange Traded Fund","USA",,3634
+1419,"HECO","Strategy Shares EcoLogical Strategy ETF","Financial","Exchange Traded Fund","USA",,3619
+1420,"EMDV","ProShares MSCI Emerg Mkts Div Growers","Financial","Exchange Traded Fund","USA",,3603
+1421,"IBDT","iShares iBonds Dec 2028 Term Corp ETF","Financial","Exchange Traded Fund","USA",,3590
+1422,"AIIQ","Equbot AI Powered International Eq ETF","Financial","Exchange Traded Fund","USA",,3564
+1423,"KEMQ","KraneShares Em Mkts Cnsmr Tech ETF","Financial","Exchange Traded Fund","USA",,3554
+1424,"ONTL","O'Shares FTSE Russell Intl Qual Div","Financial","Exchange Traded Fund","USA",,3540
+1425,"IGIH","Xtrackers Inv Grd Bd Intst Rt Hdg ETF","Financial","Exchange Traded Fund","USA",,3534
+1426,"CWS","AdvisorShares Focused Equity ETF","Financial","Exchange Traded Fund","China",,3529
+1427,"UST","ProShares Ultra 7-10 Year Treasury","Financial","Exchange Traded Fund","USA",,3526
+1428,"VEGA","AdvisorShares STAR Global Buy-Write ETF","Financial","Exchange Traded Fund","USA",,3512
+1429,"COM","Direxion Auspice Broad Cmdty Strat ETF","Financial","Exchange Traded Fund","USA",,3509
+1430,"XUSA","QuantX Dynamic Beta US Equity ETF","Financial","Exchange Traded Fund","USA",,3503
+1431,"UNL","United States 12 Month Natural Gas","Financial","Exchange Traded Fund","USA",,3490
+1432,"WBIB","WBI BullBear Value 2000 ETF","Financial","Exchange Traded Fund","USA",,3476
+1433,"JSML","Janus Henderson Small Cap Gr Alpha ETF","Financial","Exchange Traded Fund","USA",,3457
+1434,"FDIV","First Trust Strategic Income ETF","Financial","Exchange Traded Fund","USA",,3441
+1435,"FTRI","First Trust Indxx Glbl Natrl Res Inc ETF","Financial","Exchange Traded Fund","USA",,3421
+1436,"FLTW","Franklin FTSE Taiwan ETF","Financial","Exchange Traded Fund","USA",,3413
+1437,"PXSV","Invesco Russell 2000 Pure Value ETF","Financial","Exchange Traded Fund","USA",,3377
+1438,"SMMU","PIMCO Short Term Municipal Bond Actv ETF","Financial","Exchange Traded Fund","USA",,3375
+1439,"SRVR","Pacer Benchmark Data&Infras RE SCTR ETF","Financial","Exchange Traded Fund","USA",,3350
+1440,"AGT","iShares MSCI Argentina & Glb Exps ETF","Financial","Exchange Traded Fund","USA",,3321
+1441,"BICK","First Trust BICK ETF","Financial","Exchange Traded Fund","USA",,3296
+1442,"DEEF","Xtrackers FTSE Dev ex US Cmprhsv Fac ETF","Financial","Exchange Traded Fund","USA",,3261
+1443,"KBWP","Invesco KBW Property & Casualty Ins ETF","Financial","Exchange Traded Fund","USA",,3236
+1444,"WBID","WBI BullBear Quality 2000 ETF","Financial","Exchange Traded Fund","USA",,3234
+1445,"DVYL","UBS ETRACS Mthly Py 2xLvg DJ Sel Div ETN","Financial","Exchange Traded Fund","USA",,3224
+1446,"LKOR","FlexShares Crdt-Scrd US Lng Corp Bd ETF","Financial","Exchange Traded Fund","USA",,3200
+1447,"FYLD","Cambria Foreign Shareholder Yield ETF","Financial","Exchange Traded Fund","USA",,3191
+1448,"CAPE","Barclays ETN+ Shiller Capet","Financial","Exchange Traded Fund","USA",,3154
+1449,"MZZ","ProShares UltraShort MidCap400","Financial","Exchange Traded Fund","USA",,3147
+1450,"TUZ","PIMCO 1-3 Year US Treasury ETF","Financial","Exchange Traded Fund","USA",,3118
+1451,"PBUS","Invesco PureBeta MSCI USA ETF","Financial","Exchange Traded Fund","USA",,3115
+1452,"FCTR","First Trust Lunt US Factor Rotation ETF","Financial","Exchange Traded Fund","USA",,3103
+1453,"USAI","American Energy Independence ETF","Financial","Exchange Traded Fund","USA",,3101
+1454,"FAAR","First Trust Alt Abs Ret Strat ETF","Financial","Exchange Traded Fund","USA",,3094
+1455,"HYIH","Xtrackers Hi Yld Cor Bd Intst Rt Hdg ETF","Financial","Exchange Traded Fund","USA",,3072
+1456,"DMRL","DeltaShares S&P 500 Managed Risk ETF","Financial","Exchange Traded Fund","USA",,3065
+1457,"PLW","Invesco 1-30 Laddered Treasury ETF","Financial","Exchange Traded Fund","USA",,3035
+1458,"EEMX","SPDR MSCI Em Mkts Fossil Fuel Free ETF","Financial","Exchange Traded Fund","USA",,3033
+1459,"JHME","JHancock Multifactor Energy ETF","Financial","Exchange Traded Fund","USA",,3016
+1460,"JPNL","Direxion Daily Japan Bull 3X ETF","Financial","Exchange Traded Fund","USA",,3006
+1461,"DGZ","DB Gold Short ETN","Financial","Exchange Traded Fund","USA",,3005
+1462,"BOON","NYSE Pickens Oil Response ETF","Financial","Exchange Traded Fund","USA",,3000
+1463,"LVL","Invesco S&P Global Dividend Opps ETF","Financial","Exchange Traded Fund","USA",,2986
+1464,"NGE","Global X MSCI Nigeria ETF","Financial","Exchange Traded Fund","USA",,2968
+1465,"NANR","SPDR S&P North American Natural Res ETF","Financial","Exchange Traded Fund","USA",,2933
+1466,"LEGR","First Trust Indxx Invtv Tnsctn&Prcs ETF","Financial","Exchange Traded Fund","USA",,2906
+1467,"FXF","Invesco CurrencyShares Swiss Franc","Financial","Exchange Traded Fund","USA",,2890
+1468,"VSMV","VictoryShares US Mult-Fctr Mnmm Vltl ETF","Financial","Exchange Traded Fund","USA",,2887
+1469,"EEV","ProShares UltraShort MSCI Emerging Mkts","Financial","Exchange Traded Fund","USA",,2874
+1470,"BJK","VanEck Vectors Gaming ETF","Financial","Exchange Traded Fund","USA",,2852
+1471,"BYLD","iShares Yield Optimized Bond ETF","Financial","Exchange Traded Fund","USA",,2844
+1472,"PWS","Pacer WealthShield ETF","Financial","Exchange Traded Fund","USA",,2841
+1473,"RNEM","First Trust Emerging Markets Eq Sel ETF","Financial","Exchange Traded Fund","USA",,2823
+1474,"TYD","Direxion Daily 7-10 Yr Trs Bull 3X ETF","Financial","Exchange Traded Fund","USA",,2822
+1475,"SLX","VanEck Vectors Steel ETF","Financial","Exchange Traded Fund","USA",,2818
+1476,"GEX","VanEck Vectors Global Alt Energy ETF","Financial","Exchange Traded Fund","USA",,2805
+1477,"OBOR","KraneShares MSCI One Belt One Road ETF","Financial","Exchange Traded Fund","USA",,2803
+1478,"PYZ","Invesco DWA Basic Materials Momentum ETF","Financial","Exchange Traded Fund","USA",,2803
+1479,"SIJ","ProShares UltraShort Industrials","Financial","Exchange Traded Fund","USA",,2791
+1480,"ULVM","USAA MSCI USA Value Mom Blnd ETF","Financial","Exchange Traded Fund","USA",,2785
+1481,"RFUN","RiverFront Dynamic Unconstrained Inc ETF","Financial","Exchange Traded Fund","USA",,2777
+1482,"NFO","Invesco Insider Sentiment ETF","Financial","Exchange Traded Fund","USA",,2772
+1483,"PPLC","PortfolioPlus S&P 500 ETF","Financial","Exchange Traded Fund","USA",,2760
+1484,"INKM","SPDR SSgA Income Allocation ETF","Financial","Exchange Traded Fund","USA",,2742
+1485,"CN","Xtrackers MSCI All China Equity ETF","Financial","Exchange Traded Fund","USA",,2741
+1486,"QDYN","FlexShares Quality Dividend Dynamic ETF","Financial","Exchange Traded Fund","USA",,2738
+1487,"HYLV","IQ S&P High Yield Low Volatility Bd ETF","Financial","Exchange Traded Fund","USA",,2718
+1488,"URR","Market Vectors Double Long Euro ETN","Financial","Exchange Traded Fund","USA",,2708
+1489,"EIS","iShares MSCI Israel Capped ETF","Financial","Exchange Traded Fund","USA",,2705
+1490,"GDXS","ProShares UltraShort Gold Miners","Financial","Exchange Traded Fund","USA",,2690
+1491,"BOSS","Global X Founder-Run Companies ETF","Financial","Exchange Traded Fund","USA",,2689
+1492,"FLRU","Franklin FTSE Russia ETF","Financial","Exchange Traded Fund","USA",,2688
+1493,"LOWC","SPDR MSCI ACWI Low Carbon Target ETF","Financial","Exchange Traded Fund","USA",,2681
+1494,"RZV","Invesco S&P SmallCap 600 Pure Value ETF","Financial","Exchange Traded Fund","USA",,2655
+1495,"EQWL","Invesco Russell Top 200 Equal Weight ETF","Financial","Exchange Traded Fund","USA",,2638
+1496,"NUBD","NuShares ESG US Aggregate Bond ETF","Financial","Exchange Traded Fund","USA",,2629
+1497,"ACT","AdvisorShares Vice ETF","Financial","Exchange Traded Fund","USA",,2622
+1498,"IFEU","iShares Europe Developed Real Estate ETF","Financial","Exchange Traded Fund","USA",,2616
+1499,"PWC","Invesco Dynamic Market ETF","Financial","Exchange Traded Fund","USA",,2595
+1500,"DJD","Invesco Dow Jones Industrial Avg Div ETF","Financial","Exchange Traded Fund","USA",,2584
+1501,"AUSF","Global X Adaptive US Factor ETF","Financial","Exchange Traded Fund","USA",,2580
+1502,"YMLI","VanEck Vectors High Inc Infras MLP ETF","Financial","Exchange Traded Fund","USA",,2566
+1503,"DUSL","Direxion Dly Industrials Bull 3X ShsETF","Financial","Exchange Traded Fund","USA",,2550
+1504,"CSA","VictoryShares US Small Cap Vol Wtd ETF","Financial","Exchange Traded Fund","USA",,2532
+1505,"XSHQ","Invesco S&P SmallCap Quality ETF","Financial","Exchange Traded Fund","USA",,2510
+1506,"RNLC","First Trust Large Cap US Equity Sel ETF","Financial","Exchange Traded Fund","USA",,2471
+1507,"ISMD","Inspire Small/Mid Cap Impact ETF","Financial","Exchange Traded Fund","USA",,2464
+1508,"FVL","First Trust Value Line 100 ETF ETF","Financial","Exchange Traded Fund","USA",,2460
+1509,"QED","IQ Hedge Event-Driven Tracker ETF","Financial","Exchange Traded Fund","USA",,2458
+1510,"JHMT","JHancock Multifactor Technology ETF","Financial","Exchange Traded Fund","USA",,2455
+1511,"FTSD","Franklin Liberty Short Dur US Govt ETF","Financial","Exchange Traded Fund","USA",,2451
+1512,"ADRE","Invesco BLDRS Emerging Markets 50 ADR","Financial","Exchange Traded Fund","USA",,2414
+1513,"MLPC","C-Tracks ETN Bsd on Perf of M/H MLP Fdmt","Financial","Exchange Traded Fund","USA",,2400
+1514,"FPA","First Trust AsiaPac ex-Jpn AlphaDEX ETF","Financial","Exchange Traded Fund","USA",,2392
+1515,"MRGR","ProShares Merger","Financial","Exchange Traded Fund","USA",,2380
+1516,"IMLP","iPath S&P MLP ETN","Financial","Exchange Traded Fund","USA",,2375
+1517,"FTXL","First Trust Nasdaq Semiconductor ETF","Financial","Exchange Traded Fund","USA",,2349
+1518,"HEWU","iShares Currency Hedged MSCI UK ETF","Financial","Exchange Traded Fund","USA",,2345
+1519,"CJNK","SPDR ICE BofAML Crossover Corp Bd ETF","Financial","Exchange Traded Fund","USA",,2344
+1520,"RVRS","Reverse Cap Weighted US Large Cap ETF","Financial","Exchange Traded Fund","USA",,2343
+1521,"ONEV","SPDR Russell 1000 Low Vol Foc ETF","Financial","Exchange Traded Fund","USA",,2332
+1522,"EGPT","VanEck Vectors Egypt ETF","Financial","Exchange Traded Fund","USA",,2302
+1523,"GURU","Global X Guru ETF","Financial","Exchange Traded Fund","USA",,2297
+1524,"DXJF","WisdomTree Japan Hedged Financials ETF","Financial","Exchange Traded Fund","USA",,2296
+1525,"AIQ","Global X Future Analytics Tech ETF","Financial","Exchange Traded Fund","USA",,2290
+1526,"PSC","Principal US Small Cap Mlt Fac Ind ETF","Financial","Exchange Traded Fund","USA",,2289
+1527,"UYM","ProShares Ultra Basic Materials","Financial","Exchange Traded Fund","USA",,2282
+1528,"DIAL","Columbia Diversified Fixed Inc Allc ETF","Financial","Exchange Traded Fund","USA",,2259
+1529,"SGG","iPath B Bloomberg Sugar Ttl Ret ETN","Financial","Exchange Traded Fund","USA",,2224
+1530,"SUSC","iShares ESG USD Corporate Bond ETF","Financial","Exchange Traded Fund","USA",,2215
+1531,"PREF","Principal Spectrum Pref Secs Actv ETF","Financial","Exchange Traded Fund","USA",,2208
+1532,"PSCD","Invesco S&P SmallCap Cnsmr Discret ETF","Financial","Exchange Traded Fund","USA",,2203
+1533,"HEWC","iShares Currency Hedged MSCI Canada ETF","Financial","Exchange Traded Fund","USA",,2201
+1534,"OSCV","Opus Small Cap Value Plus ETF","Financial","Exchange Traded Fund","USA",,2196
+1535,"IPO","Renaissance IPO ETF","Financial","Exchange Traded Fund","USA",,2191
+1536,"EPRF","Innovator S&P Investment Grade Pref ETF","Financial","Exchange Traded Fund","USA",,2165
+1537,"GBF","iShares Government/Credit Bond ETF","Financial","Exchange Traded Fund","USA",,2157
+1538,"EFAX","SPDR MSCI EAFE Fossil Fuel Free ETF","Financial","Exchange Traded Fund","USA",,2150
+1539,"EMCG","WisdomTree Emerging Markets Cnsmr Gr ETF","Financial","Exchange Traded Fund","USA",,2134
+1540,"IBD","Inspire Corporate Bond Impact ETF","Financial","Exchange Traded Fund","USA",,2124
+1541,"JPIH","JPMorgan Divers Ret Intl Ccy Hdgd ETF","Financial","Exchange Traded Fund","USA",,2103
+1542,"AUGR","Defiance Future Tech ETF","Financial","Exchange Traded Fund","USA",,2101
+1543,"FXSG","Invesco CurrencyShares Singapore Dollar","Financial","Exchange Traded Fund","USA",,2092
+1544,"TLDH","FlexShares Ccy Hdgd MSDM ex-USFct TltIdx","Financial","Exchange Traded Fund","USA",,2072
+1545,"HDAW","Xtrackers MSCI All WldexUSHiDivYldHEqETF","Financial","Exchange Traded Fund","USA",,2068
+1546,"SMN","ProShares UltraShort Basic Materials","Financial","Exchange Traded Fund","USA",,2035
+1547,"FMHI","First Trust Municipal High Income ETF","Financial","Exchange Traded Fund","USA",,2034
+1548,"LBJ","Direxion Daily Latin America Bull 3X ETF","Financial","Exchange Traded Fund","USA",,2028
+1549,"BSCR","Invesco BulletShares 2027 Corp Bd ETF","Financial","Exchange Traded Fund","USA",,2027
+1550,"MFEM","PIMCO RAFI Dyn Mlt-Fctr Emrg Mkts Eq ETF","Financial","Exchange Traded Fund","USA",,2021
+1551,"FTVA","Aptus Fortified Value ETF","Financial","Exchange Traded Fund","USA",,2011
+1552,"VFMO","Vanguard US Momentum Factor ETF","Financial","Exchange Traded Fund","USA",,1998
+1553,"GOAU","US Global GO GOLD and Prec Mtl Mnrs ETF","Financial","Exchange Traded Fund","USA",,1993
+1554,"ONEO","SPDR Russell 1000 Momentum Focus ETF","Financial","Exchange Traded Fund","USA",,1950
+1555,"USOI","Credit Suisse X-Lnks Crde OlShrsCvCllETN","Financial","Exchange Traded Fund","USA",,1950
+1556,"FLFR","Franklin FTSE France ETF","Financial","Exchange Traded Fund","USA",,1950
+1557,"ALFA","AlphaClone Alternative Alpha ETF","Financial","Exchange Traded Fund","USA",,1948
+1558,"DWAT","Arrow DWA Tactical ETF","Financial","Exchange Traded Fund","USA",,1944
+1559,"RFV","Invesco S&P MidCap 400 Pure Value ETF","Financial","Exchange Traded Fund","USA",,1928
+1560,"EXT","WisdomTree US Total Earnings ETF","Financial","Exchange Traded Fund","USA",,1924
+1561,"PSMM","Invesco Mod Cnsrv Multi-Asst Allc ETF","Financial","Exchange Traded Fund","USA",,1923
+1562,"HAWX","iShares Currency Hdgd MSCI ACWI exUS ETF","Financial","Exchange Traded Fund","USA",,1910
+1563,"VEGI","iShares MSCI Global Agricltr Prdcrs ETF","Financial","Exchange Traded Fund","USA",,1909
+1564,"GXF","Global X FTSE Nordic Region ETF","Financial","Exchange Traded Fund","USA",,1901
+1565,"TAPR","Barclays Inverse US Treasury Aggt ETN","Financial","Exchange Traded Fund","USA",,1900
+1566,"LBDC","UBS ETRACS 2xLvg Lng WF B D Co ETN SerB","Financial","Exchange Traded Fund","USA",,1897
+1567,"ESPO","VanEck Vectors Vdo Gaming and eSprts ETF","Financial","Exchange Traded Fund","USA",,1895
+1568,"VFMV","Vanguard US Minimum Volatility ETF","Financial","Exchange Traded Fund","USA",,1889
+1569,"FGM","First Trust Germany AlphaDEX ETF","Financial","Exchange Traded Fund","USA",,1888
+1570,"PSET","Principal Price Setters ETF","Financial","Exchange Traded Fund","USA",,1884
+1571,"PAGG","Invesco Global Agriculture ETF","Financial","Exchange Traded Fund","USA",,1882
+1572,"MFDX","PIMCO RAFI Dyn Multi-Factor Intl Eq ETF","Financial","Exchange Traded Fund","USA",,1873
+1573,"ASHS","Xtrackers Harvest CSI 500 CHN A SmCp ETF","Financial","Exchange Traded Fund","USA",,1847
+1574,"UMDD","ProShares UltraPro MidCap400","Financial","Exchange Traded Fund","USA",,1842
+1575,"EQLT","Workplace Equality ETF","Financial","Exchange Traded Fund","USA",,1837
+1576,"ETHO","Etho Climate Leadership US ETF","Financial","Exchange Traded Fund","USA",,1834
+1577,"DBGR","Xtrackers MSCI Germany Hedged Equity ETF","Financial","Exchange Traded Fund","USA",,1831
+1578,"GHII","Invesco S&P High Income Infras ETF","Financial","Exchange Traded Fund","USA",,1811
+1579,"ESG","FlexShares STOXX US ESG Impact ETF","Financial","Exchange Traded Fund","USA",,1803
+1580,"TCTL","Premise Capital Frntr Advtg Dvrs Tct ETF","Financial","Exchange Traded Fund","USA",,1797
+1581,"PY","Principal Shareholder Yield ETF","Financial","Exchange Traded Fund","USA",,1776
+1582,"DRIV","Global X Atnms & Elctrc Vhcls ETF","Financial","Exchange Traded Fund","USA",,1776
+1583,"ICOL","iShares MSCI Colombia ETF","Financial","Exchange Traded Fund","USA",,1761
+1584,"ADRA","Invesco BLDRS Asia 50 ADR","Financial","Exchange Traded Fund","USA",,1745
+1585,"QARP","Xtrackers Russell 1000 US QARP ETF","Financial","Exchange Traded Fund","USA",,1728
+1586,"EFAS","Global X MSCI SuperDividend EAFE ETF","Financial","Exchange Traded Fund","USA",,1728
+1587,"BSJQ","Invesco BulletShares 2026 HY Corp Bd ETF","Financial","Exchange Traded Fund","USA",,1717
+1588,"EASI","Amplify EASI Tactical Growth ETF","Financial","Exchange Traded Fund","USA",,1700
+1589,"PVI","Invesco VRDO Tax-Free Weekly ETF","Financial","Exchange Traded Fund","USA",,1695
+1590,"FDHY","Fidelity High Yield Factor ETF","Financial","Exchange Traded Fund","USA",,1692
+1591,"AGND","WisdomTree Negative Dur US Aggt Bd ETF","Financial","Exchange Traded Fund","USA",,1689
+1592,"RNMC","First Trust Mid Cap US Equity Select ETF","Financial","Exchange Traded Fund","USA",,1686
+1593,"ENY","Invesco Canadian Energy Income ETF","Financial","Exchange Traded Fund","USA",,1684
+1594,"SCIN","Columbia India Small Cap ETF","Financial","Exchange Traded Fund","USA",,1683
+1595,"YXI","ProShares Short FTSE China 50","Financial","Exchange Traded Fund","USA",,1683
+1596,"CYB","WisdomTree Chinese Yuan Strategy ETF","Financial","Exchange Traded Fund","USA",,1673
+1597,"SOIL","Global X Fertilizers/Potash ETF","Financial","Exchange Traded Fund","USA",,1671
+1598,"PEZ","Invesco DWA Consumer Cyclicals Mom ETF","Financial","Exchange Traded Fund","USA",,1665
+1599,"DDLS","WisdomTree Dyn Ccy Hdgd Intl SmCp Eq ETF","Financial","Exchange Traded Fund","USA",,1642
+1600,"DWTR","Invesco DWA Tactical Sector Rotation ETF","Financial","Exchange Traded Fund","USA",,1629
+1601,"EMXC","iShares MSCI Emerging Mkts ex China ETF","Financial","Exchange Traded Fund","USA",,1626
+1602,"IMOM","Alpha Architect Intl Quant Momt ETF","Financial","Exchange Traded Fund","USA",,1615
+1603,"EWMC","Invesco S&P MidCap 400 Equal Weight ETF","Financial","Exchange Traded Fund","USA",,1613
+1604,"CHIE","Global X China Energy ETF","Financial","Exchange Traded Fund","USA",,1600
+1605,"PZT","Invesco New York AMT-Free Muni Bd ETF","Financial","Exchange Traded Fund","USA",,1593
+1606,"SDP","ProShares UltraShort Utilities","Financial","Exchange Traded Fund","USA",,1588
+1607,"EWV","ProShares UltraShort MSCI Japan","Financial","Exchange Traded Fund","USA",,1583
+1608,"FLIY","Franklin FTSE Italy ETF","Financial","Exchange Traded Fund","USA",,1574
+1609,"EXIV","VelocityShares 1x Dly Invrs VSTOXXFtsETN","Financial","Exchange Traded Fund","USA",,1571
+1610,"BBRE","JPMorgan BetaBuilders MSCI US REIT ETF","Financial","Exchange Traded Fund","USA",,1552
+1611,"TLEH","FlexShares Ccy Hdgd MS EM Fct TiltIdx","Financial","Exchange Traded Fund","USA",,1551
+1612,"JJC","iPath B Bloomberg Copper Ttl Ret ETN","Financial","Exchange Traded Fund","USA",,1542
+1613,"QMN","IQ Hedge Market Neutral Tracker ETF","Financial","Exchange Traded Fund","USA",,1538
+1614,"CUMB","Virtus Cumberland Municipal Bond ETF","Financial","Exchange Traded Fund","USA",,1536
+1615,"ERM","EquityCompass Risk Manager ETF","Financial","Exchange Traded Fund","USA",,1534
+1616,"EUXL","Direxion Dly EURO ST 50(R) Bl 3X ShsETF","Financial","Exchange Traded Fund","USA",,1530
+1617,"LVHI","Legg Mason Intl Low Volatil Hi Div ETF","Financial","Exchange Traded Fund","USA",,1523
+1618,"FLKR","Franklin FTSE South Korea ETF","Financial","Exchange Traded Fund","USA",,1505
+1619,"HEWY","iShares Currency Hedged MSCI SouthKr ETF","Financial","Exchange Traded Fund","USA",,1501
+1620,"MFUS","PIMCO RAFI Dyn Multi-Factor US Eq ETF","Financial","Exchange Traded Fund","USA",,1456
+1621,"DGT","SPDR Global Dow ETF","Financial","Exchange Traded Fund","USA",,1418
+1622,"PLND","VanEck Vectors Poland ETF","Financial","Exchange Traded Fund","USA",,1409
+1623,"SYV","SPDR MFS Systematic Value Equity ETF","Financial","Exchange Traded Fund","USA",,1409
+1624,"FCAN","First Trust Canada AlphaDEX ETF","Financial","Exchange Traded Fund","USA",,1405
+1625,"CEW","WisdomTree Emerging Currency Strat ETF","Financial","Exchange Traded Fund","USA",,1404
+1626,"GARD","Reality Shares Divcon Dividend Guard ETF","Financial","Exchange Traded Fund","USA",,1395
+1627,"BTEC","Principal Healthcare Innovators ETF","Financial","Exchange Traded Fund","USA",,1385
+1628,"FMF","First Trust Morningstar Mgd FutsStrt ETF","Financial","Exchange Traded Fund","USA",,1384
+1629,"QINT","American Century Quality Dvrs Intl ETF","Financial","Exchange Traded Fund","USA",,1382
+1630,"UBT","ProShares Ultra 20+ Year Treasury","Financial","Exchange Traded Fund","USA",,1378
+1631,"GLL","ProShares UltraShort Gold","Financial","Exchange Traded Fund","USA",,1372
+1632,"TUSA","First Trust Total US Market AlphaDEX ETF","Financial","Exchange Traded Fund","USA",,1355
+1633,"EQL","ALPS Equal Sector Weight ETF","Financial","Exchange Traded Fund","USA",,1353
+1634,"BEMO","Aptus Behavioral Momentum ETF","Financial","Exchange Traded Fund","USA",,1321
+1635,"STPP","iPath US Treasury Steepener ETN","Financial","Exchange Traded Fund","USA",,1318
+1636,"BZF","WisdomTree Brazilian Real Strategy ETF","Financial","Exchange Traded Fund","USA",,1316
+1637,"FTLB","First Trust Hedged BuyWrite Income ETF","Financial","Exchange Traded Fund","USA",,1310
+1638,"YLCO","Global X YieldCo ETF","Financial","Exchange Traded Fund","USA",,1276
+1639,"HOLD","AdvisorShares Sage Core Reserves ETF","Financial","Exchange Traded Fund","USA",,1252
+1640,"TOK","iShares MSCI Kokusai ETF","Financial","Exchange Traded Fund","USA",,1249
+1641,"FLM","First Trust Global Eng and Const ETF","Financial","Exchange Traded Fund","USA",,1244
+1642,"AGF","DB Agriculture Long ETN","Financial","Exchange Traded Fund","USA",,1238
+1643,"HSCZ","iShares Currency Hdgd MSCI EAFE SmCp ETF","Financial","Exchange Traded Fund","USA",,1214
+1644,"LEAD","Reality Shares Divcon Leaders Div ETF","Financial","Exchange Traded Fund","USA",,1211
+1645,"RINF","ProShares Inflation Expectations","Financial","Exchange Traded Fund","USA",,1206
+1646,"ORG","The Organics ETF","Financial","Exchange Traded Fund","USA",,1189
+1647,"LRGE","ClearBridge Large Cap Growth ESG ETF","Financial","Exchange Traded Fund","USA",,1185
+1648,"DYB","WisdomTree Dynamic Bearish US Equity ETF","Financial","Exchange Traded Fund","USA",,1176
+1649,"JPLS","JPMorgan Long/Short ETF","Financial","Exchange Traded Fund","USA",,1169
+1650,"AFTY","CSOP FTSE China A50 ETF","Financial","Exchange Traded Fund","USA",,1144
+1651,"RWW","Oppenheimer S&P Financials Revenue ETF","Financial","Exchange Traded Fund","USA",,1130
+1652,"ULE","ProShares Ultra Euro","Financial","Exchange Traded Fund","USA",,1125
+1653,"EWSC","Invesco S&P SmallCap 600 Equal Wt ETF","Financial","Exchange Traded Fund","USA",,1123
+1654,"ACSI","American Customer Satisfaction ETF","Financial","Exchange Traded Fund","USA",,1121
+1655,"DALI","First Trust Dorsey Wright DALI 1 ETF","Financial","Exchange Traded Fund","USA",,1118
+1656,"LRET","UBS ETRACS MonPay 2xLvg MSCI US REIT ETN","Financial","Exchange Traded Fund","USA",,1112
+1657,"UBR","ProShares Ultra MSCI Brazil Capped","Financial","Exchange Traded Fund","USA",,1097
+1658,"USVM","USAA MSCI USA Sm Cp Val Mom Blnd ETF","Financial","Exchange Traded Fund","USA",,1096
+1659,"MMTM","SPDR S&P 1500 Momentum Tilt ETF","Financial","Exchange Traded Fund","USA",,1062
+1660,"BIBL","Inspire 100 ETF","Financial","Exchange Traded Fund","USA",,1058
+1661,"OASI","O'Shares FTSE Asia Pacific Qual Div ETF","Financial","Exchange Traded Fund","USA",,1043
+1662,"MLPG","UBS ETRACS Alerian Natural Gas MLP ETN","Financial","Exchange Traded Fund","USA",,1040
+1663,"NUSA","NuShares EY 1-5 Year US Aggt Bd ETF","Financial","Exchange Traded Fund","USA",,1040
+1664,"FCA","First Trust China AlphaDEX ETF","Financial","Exchange Traded Fund","USA",,1035
+1665,"JPMF","JPMorgan Managed Futures Strategy ETF","Financial","Exchange Traded Fund","USA",,1028
+1666,"LVHE","Legg Mason Emerg Mkts Low Vol Hi Div ETF","Financial","Exchange Traded Fund","USA",,1006
+1667,"IDHD","Invesco S&P Intl Dev Hi Div Low Vol ETF","Financial","Exchange Traded Fund","USA",,1001
+1668,"ZDEU","SPDR Solactive Germany ETF","Financial","Exchange Traded Fund","USA",,1001
+1669,"UCHF","Citigroup ETNs lnkd VS Dly 4X Lng CHFUSD","Financial","Exchange Traded Fund","USA",,1001
+1670,"SCIX","Global X Scientific Beta Asia ex-JPN ETF","Financial","Exchange Traded Fund","USA",,1000
+1671,"HOML","UBS ETRACS M Rst 2xLvg ISE Excly Hbs ETN","Financial","Exchange Traded Fund","USA",,1000
+1672,"NUEM","NuShares ESG Emerging Markets Equity ETF","Financial","Exchange Traded Fund","USA",,994
+1673,"JHDG","WisdomTree Japan Hedged Qual Div Gr ETF","Financial","Exchange Traded Fund","USA",,991
+1674,"MAGA","Point Bridge GOP Stock Tracker ETF","Financial","Exchange Traded Fund","USA",,975
+1675,"HDG","ProShares Hedge Replication","Financial","Exchange Traded Fund","USA",,972
+1676,"SDVY","First Trust SMID Cp Rising Div Achv ETF","Financial","Exchange Traded Fund","USA",,948
+1677,"SYG","SPDR MFS Systematic Growth Equity ETF","Financial","Exchange Traded Fund","USA",,937
+1678,"QWLD","SPDR MSCI World StrategicFactors ETF","Financial","Exchange Traded Fund","USA",,929
+1679,"SCIU","Global X Scientific Beta US ETF","Financial","Exchange Traded Fund","USA",,927
+1680,"ESGG","FlexShares STOXX Glbl ESG Impact ETF","Financial","Exchange Traded Fund","USA",,926
+1681,"DOD","ELEMENTS Dogs of Dow DJ HY Sel 10 TR ETN","Financial","Exchange Traded Fund","USA",,926
+1682,"XCEM","Columbia EM Core ex-China ETF","Financial","Exchange Traded Fund","USA",,911
+1683,"FWDI","AdvisorShares Madrona International ETF","Financial","Exchange Traded Fund","USA",,910
+1684,"BUZ","BUZZ US Sentiment Leaders ETF","Financial","Exchange Traded Fund","USA",,908
+1685,"HYGV","FlexShares HY Val-Scrd Bd","Financial","Exchange Traded Fund","USA",,901
+1686,"EEB","Invesco BRIC ETF","Financial","Exchange Traded Fund","USA",,900
+1687,"ICAN","SerenityShares Impact ETF","Financial","Exchange Traded Fund","USA",,900
+1688,"FLIO","Franklin Liberty International Opps ETF","Financial","Exchange Traded Fund","USA",,900
+1689,"RJN","ELEMENTS Rogers Intl Cmdty Energy TR ETN","Financial","Exchange Traded Fund","USA",,884
+1690,"COMG","GraniteShares S&PGSCI CmdtyBrdStrNoK1ETF","Financial","Exchange Traded Fund","USA",,872
+1691,"FDTS","First Trust DevMkts exUS SC AlphaDEXETF","Financial","Exchange Traded Fund","USA",,870
+1692,"SPXN","ProShares S&P 500 ex-Financials","Financial","Exchange Traded Fund","USA",,861
+1693,"GRI","Cohen & Steers Global Realty Majors ETF","Financial","Exchange Traded Fund","USA",,854
+1694,"KORP","American Century Dvrs Corp Bd ETF","Financial","Exchange Traded Fund","USA",,854
+1695,"CHIM","Global X China Materials ETF","Financial","Exchange Traded Fund","USA",,853
+1696,"OEW","Invesco S&P 100 Equal Weight ETF","Financial","Exchange Traded Fund","USA",,852
+1697,"ESGS","Columbia Sustainable US Equity Inc ETF","Financial","Exchange Traded Fund","USA",,847
+1698,"DLBS","iPath US Treasury Long Bond Bear ETN","Financial","Exchange Traded Fund","USA",,834
+1699,"WMCR","Invesco Wilshire Micro-Cap ETF","Financial","Exchange Traded Fund","USA",,813
+1700,"AGGE","IQ Enhanced Core Bond US ETF","Financial","Exchange Traded Fund","USA",,813
+1701,"KARS","KraneShares Eltc Vhl and Ft Mbly Idx ETF","Financial","Exchange Traded Fund","USA",,803
+1702,"DDEZ","WisdomTree Dynamic Ccy Hdgd Eurp Eq ETF","Financial","Exchange Traded Fund","USA",,782
+1703,"FXS","Invesco CurrencyShares Swedish Krona","Financial","Exchange Traded Fund","USA",,780
+1704,"UAE","iShares MSCI UAE ETF","Financial","Exchange Traded Fund","USA",,779
+1705,"QSY","WisdomTree US Quality Sharehld Yld ETF","Financial","Exchange Traded Fund","USA",,776
+1706,"HIPS","GraniteShares HIPS US High Income ETF","Financial","Exchange Traded Fund","USA",,776
+1707,"FTXH","First Trust Nasdaq Pharmaceuticals ETF","Financial","Exchange Traded Fund","USA",,757
+1708,"SIZ","AGFiQ US Market Neutral Size","Financial","Exchange Traded Fund","USA",,752
+1709,"PSCM","Invesco S&P SmallCap Materials ETF","Financial","Exchange Traded Fund","USA",,751
+1710,"IGVT","Xtrackers Barclays Intl Trs Bd Hdg ETF","Financial","Exchange Traded Fund","USA",,744
+1711,"GAA","Cambria Global Asset Allocation ETF","Financial","Exchange Traded Fund","USA",,741
+1712,"MLPY","Morgan Stanley Cushing MLP High Income Index ETN","Financial","Exchange Traded Fund","USA",,734
+1713,"DHVW","Diamond Hill Valuation-Weighted 500 ETF","Financial","Exchange Traded Fund","USA",,724
+1714,"IEHS","iShares Evolved US Healthcare Stp ETF","Financial","Exchange Traded Fund","USA",,724
+1715,"CHNA","Loncar China BioPharma ETF","Financial","Exchange Traded Fund","USA",,720
+1716,"ZGBR","SPDR Solactive United Kingdom ETF","Financial","Exchange Traded Fund","USA",,711
+1717,"ISZE","iShares Edge MSCI Intl Size Factor ETF","Financial","Exchange Traded Fund","USA",,707
+1718,"UTRN","Vesper US Large Cap S-T Rvrsl Stgy ETF","Financial","Exchange Traded Fund","USA",,703
+1719,"HILO","Columbia EM Quality Dividend ETF","Financial","Exchange Traded Fund","USA",,685
+1720,"RXD","ProShares UltraShort Health Care","Financial","Exchange Traded Fund","USA",,684
+1721,"PFFR","InfraCap REIT Preferred ETF","Financial","Exchange Traded Fund","USA",,682
+1722,"SPVU","Invesco S&P 500 Enhanced Value ETF","Financial","Exchange Traded Fund","USA",,680
+1723,"PSR","Invesco Active US Real Estate","Financial","Exchange Traded Fund","USA",,679
+1724,"VALQ","American Century STOXX US Qlty Val ETF","Financial","Exchange Traded Fund","USA",,679
+1725,"FTXD","First Trust Nasdaq Retail ETF","Financial","Exchange Traded Fund","USA",,672
+1726,"RNDV","First Trust US Equity Dividend Sel ETF","Financial","Exchange Traded Fund","USA",,661
+1727,"SMCP","AlphaMark Actively Managed Small Cap ETF","Financial","Exchange Traded Fund","USA",,660
+1728,"ISHG","iShares 1-3 Year International TrsBd ETF","Financial","Exchange Traded Fund","USA",,656
+1729,"PXMV","Invesco Russell MidCap Pure Value ETF","Financial","Exchange Traded Fund","USA",,654
+1730,"EMCB","WisdomTree Emerging Markets Corp Bd ETF","Financial","Exchange Traded Fund","USA",,652
+1731,"FMK","First Trust Mega Cap AlphaDEX ETF","Financial","Exchange Traded Fund","USA",,651
+1732,"DESC","Xtrackers Russell 2000 Cmprhsve Fac ETF","Financial","Exchange Traded Fund","USA",,648
+1733,"XSHD","Invesco S&P SmallCap Hi Div Low Vol ETF","Financial","Exchange Traded Fund","USA",,645
+1734,"PRB","VanEck Vectors Pre-Refunded Muni ETF","Financial","Exchange Traded Fund","USA",,643
+1735,"BMLP","BMO Elkhorn DWA MLP Select ETN","Financial","Exchange Traded Fund","USA",,627
+1736,"FLMX","Franklin FTSE Mexico ETF","Financial","Exchange Traded Fund","USA",,600
+1737,"INDS","Pacer Benchmark Industrial RE SCTR ETF","Financial","Exchange Traded Fund","USA",,594
+1738,"BKC","REX BKCM ETF","Financial","Exchange Traded Fund","USA",,592
+1739,"SMEZ","SPDR EURO STOXX Small Cap ETF","Financial","Exchange Traded Fund","USA",,589
+1740,"PMR","Invesco Dynamic Retail ETF","Financial","Exchange Traded Fund","USA",,588
+1741,"DGBP","Citigroup ETNs lnkd VS Dly 4X Lng USDGBP","Financial","Exchange Traded Fund","USA",,581
+1742,"HEWP","iShares Currency Hedged MSCI Spain ETF","Financial","Exchange Traded Fund","USA",,565
+1743,"ZCAN","SPDR Solactive Canada ETF","Financial","Exchange Traded Fund","USA",,563
+1744,"LLQD","iShares 10+ Year Invmt Grd Corp Bd ETF","Financial","Exchange Traded Fund","USA",,556
+1745,"EUFL","Direxion Dly MSCI EurpFincls Bull 2X ETF","Financial","Exchange Traded Fund","USA",,555
+1746,"DMRM","DeltaShares S&P 400 Managed Risk ETF","Financial","Exchange Traded Fund","USA",,551
+1747,"IBCD","iShares iBonds Mar 2020Tm CorpexFncl ETF","Financial","Exchange Traded Fund","USA",,540
+1748,"SPXE","ProShares S&P 500 ex-Energy","Financial","Exchange Traded Fund","USA",,533
+1749,"DIVO","Amplify YieldShares CWP Div&Opt Inc ETF","Financial","Exchange Traded Fund","USA",,528
+1750,"UXI","ProShares Ultra Industrials","Financial","Exchange Traded Fund","USA",,527
+1751,"IEME","iShares Evolved US Md and Entrtnmnt ETF","Financial","Exchange Traded Fund","USA",,524
+1752,"EFFE","Global X/JPMorgan Efficiente ETF","Financial","Exchange Traded Fund","USA",,523
+1753,"ULBR","VelocityShares Long LIBOR ETN","Financial","Exchange Traded Fund","USA",,517
+1754,"TYBS","Direxion Daily 20+ Year Trs Bear 1X ETF","Financial","Exchange Traded Fund","USA",,500
+1755,"MXDU","Nationwide Max Divers US Cor Eq ETF","Financial","Exchange Traded Fund","USA",,500
+1756,"EQWM","Invesco Russell MidCap Equal Weight ETF","Financial","Exchange Traded Fund","USA",,498
+1757,"ADRU","Invesco BLDRS Europe Select ADR","Financial","Exchange Traded Fund","USA",,496
+1758,"FWDB","AdvisorShares Madrona Global Bond ETF","Financial","Exchange Traded Fund","USA",,491
+1759,"FLLV","Franklin Liberty US Low Volatility ETF","Financial","Exchange Traded Fund","USA",,485
+1760,"EQRR","ProShares Equities for Rising Rates ETF","Financial","Exchange Traded Fund","USA",,475
+1761,"DEMG","Xtrackers FTSE Emerging Cmprhsv Fac ETF","Financial","Exchange Traded Fund","USA",,473
+1762,"WCHN","WisdomTree ICBCCS S&P China 500","Financial","Exchange Traded Fund","USA",,470
+1763,"AXJL","WisdomTree Asia Pacific ex-Japan ETF","Financial","Exchange Traded Fund","USA",,463
+1764,"FWDD","AdvisorShares Madrona Domestic ETF","Financial","Exchange Traded Fund","USA",,460
+1765,"DIVA","AGFiQ Hedged Dividend Income","Financial","Exchange Traded Fund","USA",,460
+1766,"GDVD","Principal Active Global Dividend Inc ETF","Financial","Exchange Traded Fund","USA",,451
+1767,"TETF","ETF Industry Exposure & Financial Ser","Financial","Exchange Traded Fund","USA",,451
+1768,"PJUL","Innovator S&P 500 Power Buffer ETF July","Financial","Exchange Traded Fund","USA",,450
+1769,"DBEZ","Xtrackers MSCI Eurozone Hedged Eq ETF","Financial","Exchange Traded Fund","USA",,441
+1770,"ASET","FlexShares Real Assets Allocation ETF","Financial","Exchange Traded Fund","USA",,434
+1771,"HNDL","Strategy Shares Nasdaq 7 Handl ETF","Financial","Exchange Traded Fund","USA",,432
+1772,"DAG","DB Agriculture Double Long ETN","Financial","Exchange Traded Fund","USA",,430
+1773,"EWEM","Invesco MSCI Emerg Mkts Eql Cntry Wt ETF","Financial","Exchange Traded Fund","USA",,428
+1774,"NLR","VanEck Vectors Uranium+Nuclear Engy ETF","Financial","Exchange Traded Fund","USA",,425
+1775,"RNSC","First Trust Small Cap US Equity Sel ETF","Financial","Exchange Traded Fund","USA",,424
+1776,"DZK","Direxion Daily MSCI Dev Mkts Bull 3X ETF","Financial","Exchange Traded Fund","USA",,418
+1777,"VFLQ","Vanguard US Liquidity Factor ETF","Financial","Exchange Traded Fund","USA",,416
+1778,"HGI","Invesco Zacks Intl Mlt-Asst Inc ETF","Financial","Exchange Traded Fund","USA",,414
+1779,"SCC","ProShares UltraShort Consumer Services","Financial","Exchange Traded Fund","USA",,412
+1780,"FLGR","Franklin FTSE Germany ETF","Financial","Exchange Traded Fund","USA",,410
+1781,"SOVB","Cambria Sovereign Bond ETF","Financial","Exchange Traded Fund","USA",,406
+1782,"UCC","ProShares Ultra Consumer Services","Financial","Exchange Traded Fund","USA",,401
+1783,"DRR","Market Vectors Double Short Euro ETN","Financial","Exchange Traded Fund","USA",,401
+1784,"DWMC","AdvisorShares Dorsey Wright Micro-Cp ETF","Financial","Exchange Traded Fund","USA",,400
+1785,"DBAP","Xtrackers MSCI AP ex Jpn Hdg Eq ETF","Financial","Exchange Traded Fund","USA",,400
+1786,"PILL","Direxion Daily Phrmctcl&MdclBl3XShrsETF","Financial","Exchange Traded Fund","USA",,398
+1787,"PZI","Invesco Zacks Micro Cap ETF","Financial","Exchange Traded Fund","USA",,392
+1788,"DMRS","DeltaShares S&P 600 Managed Risk ETF","Financial","Exchange Traded Fund","USA",,389
+1789,"SCIJ","Global X Scientific Beta Japan ETF","Financial","Exchange Traded Fund","USA",,385
+1790,"SAGG","Direxion Daily Tot Bd Mkt Bear 1X ETF","Financial","Exchange Traded Fund","USA",,385
+1791,"QXGG","QUANTX Risk Managed Growth ETF","Financial","Exchange Traded Fund","USA",,382
+1792,"ESGF","Oppenheimer Global ESG Revenue ETF","Financial","Exchange Traded Fund","USA",,380
+1793,"YCL","ProShares Ultra Yen","Financial","Exchange Traded Fund","USA",,370
+1794,"QLC","FlexShares US Quality Large Cap ETF","Financial","Exchange Traded Fund","USA",,363
+1795,"IFIX","Xtrackers Barclays Intl Corp Bd Hdg ETF","Financial","Exchange Traded Fund","USA",,361
+1796,"LNGR","Global X Longevity Thematic ETF","Financial","Exchange Traded Fund","USA",,359
+1797,"EVX","VanEck Vectors Environmental Svcs ETF","Financial","Exchange Traded Fund","USA",,356
+1798,"BCNA","Reality Shares Nasdaq NexGenEcoyChinaETF","Financial","Exchange Traded Fund","USA",,353
+1799,"FONE","First Trust NASDAQ Smartphone ETF","Financial","Exchange Traded Fund","USA",,346
+1800,"GRNB","VanEck Vectors Green Bond ETF","Financial","Exchange Traded Fund","USA",,333
+1801,"NURE","NuShares Short-Term REIT ETF","Financial","Exchange Traded Fund","USA",,332
+1802,"PAF","Invesco FTSE RAFI Asia Pac ex-Jpn ETF","Financial","Exchange Traded Fund","USA",,328
+1803,"CHEP","AGFiQ US Market Neutral Value","Financial","Exchange Traded Fund","USA",,326
+1804,"GSD","WisdomTree Global SmallCap Dividend ETF","Financial","Exchange Traded Fund","USA",,324
+1805,"HFXJ","IQ 50 Percent Hedged FTSE Japan ETF","Financial","Exchange Traded Fund","USA",,312
+1806,"MOM","AGFiQ US Market Neutral Momentum","Financial","Exchange Traded Fund","USA",,309
+1807,"JPEH","JPMorgan Divers Ret Eurp Ccy Hdgd ETF","Financial","Exchange Traded Fund","USA",,307
+1808,"PSMC","Invesco Conservative Multi-Asst Allc ETF","Financial","Exchange Traded Fund","USA",,302
+1809,"FLAX","Franklin FTSE Asia ex Japan ETF","Financial","Exchange Traded Fund","USA",,302
+1810,"ASHX","Xtrackers MSCI China A Inclusion Eq ETF","Financial","Exchange Traded Fund","USA",,301
+1811,"OILX","UBS ETRACS S&P GSCI Crd OilTtl Rt ETN","Financial","Exchange Traded Fund","USA",,300
+1812,"EFO","ProShares Ultra MSCI EAFE","Financial","Exchange Traded Fund","USA",,300
+1813,"BERN","Bernstein US Research","Financial","Exchange Traded Fund","USA",,300
+1814,"IEDI","iShares Evolved US Disctnry Spndng ETF","Financial","Exchange Traded Fund","USA",,300
+1815,"PRME","First Trust Heitman Glbl Prm Rl Estt ETF","Financial","Exchange Traded Fund","USA",,297
+1816,"IBDD","iShares iBonds Mar 2023 Term Corp ETF","Financial","Exchange Traded Fund","USA",,296
+1817,"DBV","Invesco DB G10 Currency Harvest","Financial","Exchange Traded Fund","USA",,290
+1818,"BCM","iPath Pure Beta Broad Commodity ETN","Financial","Exchange Traded Fund","USA",,280
+1819,"JHMC","JHancock Multifactor Cnsmr Discret ETF","Financial","Exchange Traded Fund","USA",,275
+1820,"FLAU","Franklin FTSE Australia ETF","Financial","Exchange Traded Fund","USA",,270
+1821,"HYXE","iShares iBoxx $ HY exOil&Gas Corp Bd ETF","Financial","Exchange Traded Fund","USA",,264
+1822,"SZO","DB Crude Oil Short ETN","Financial","Exchange Traded Fund","USA",,262
+1823,"ASEA","Global X FTSE Southeast Asia ETF","Financial","Exchange Traded Fund","USA",,260
+1824,"WYDE","ProShares CDS Short North Amer HY Crdt","Financial","Exchange Traded Fund","USA",,251
+1825,"IAUF","iShares Gold Strategy ETF","Financial","Exchange Traded Fund","USA",,250
+1826,"FLBL","Franklin Liberty Senior Loan ETF","Financial","Exchange Traded Fund","USA",,250
+1827,"ESGL","Oppenheimer ESG Revenue ETF","Financial","Exchange Traded Fund","USA",,250
+1828,"FIEG","DB FI Enhanced Global High Yield ETN","Financial","Exchange Traded Fund","USA",,244
+1829,"TBLU","Tortoise Global Water ESG","Financial","Exchange Traded Fund","USA",,243
+1830,"HFXE","IQ 50 Percent Hedged FTSE Europe ETF","Financial","Exchange Traded Fund","USA",,239
+1831,"CNXT","VanEck Vectors ChinaAMC SME-ChiNext ETF","Financial","Exchange Traded Fund","USA",,224
+1832,"AMCA","iShares Russell 1000 Pure US Revenue ETF","Financial","Exchange Traded Fund","USA",,220
+1833,"ONEY","SPDR Russell 1000 Yield Focus ETF","Financial","Exchange Traded Fund","USA",,219
+1834,"INR","Market Vectors Indian Rupee/USD ETN","Financial","Exchange Traded Fund","USA",,216
+1835,"CCOR","Cambria Core Equity ETF","Financial","Exchange Traded Fund","USA",,214
+1836,"BOM","DB Base Metals Double Short ETN","Financial","Exchange Traded Fund","USA",,213
+1837,"DMRI","DeltaShares S&P Intl Managed Risk ETF","Financial","Exchange Traded Fund","USA",,211
+1838,"VSDA","VictoryShares Dividend Accelerator ETF","Financial","Exchange Traded Fund","USA",,205
+1839,"XKST","SPDR Kensho Smart Mobility ETF","Financial","Exchange Traded Fund","USA",,203
+1840,"FLQG","Franklin LibertyQ Global Equity ETF","Financial","Exchange Traded Fund","USA",,200
+1841,"IFRA","iShares US Infrastructure ETF","Financial","Exchange Traded Fund","USA",,200
+1842,"JJT","iPath B Bloomberg Tin Ttl Ret ETN","Financial","Exchange Traded Fund","USA",,200
+1843,"RTL","Pacer Benchmark Retail RE SCTR ETF","Financial","Exchange Traded Fund","USA",,199
+1844,"FLEH","Franklin FTSE Europe Hedged ETF","Financial","Exchange Traded Fund","USA",,198
+1845,"NFTY","First Trust India NIFTY 50 Equal Wtd ETF","Financial","Exchange Traded Fund","USA",,196
+1846,"JMOM","JPMorgan US Momentum Factor ETF","Financial","Exchange Traded Fund","USA",,195
+1847,"EMIH","Xtrackers Em Mkts Bd Intst Rt Hdg ETF","Financial","Exchange Traded Fund","USA",,193
+1848,"FTXR","First Trust Nasdaq Transportation ETF","Financial","Exchange Traded Fund","USA",,185
+1849,"QGTA","IQ Leaders GTAA Tracker ETF","Financial","Exchange Traded Fund","USA",,184
+1850,"OLO","DB Crude Oil Long ETN","Financial","Exchange Traded Fund","USA",,176
+1851,"FLQD","Franklin LibertyQ Global Dividend ETF","Financial","Exchange Traded Fund","USA",,176
+1852,"DBKO","Xtrackers MSCI South Korea Hdg Eq ETF","Financial","Exchange Traded Fund","USA",,175
+1853,"FLRT","AdvisorShares Pacific Asst Enh Fl Rt ETF","Financial","Exchange Traded Fund","USA",,170
+1854,"EQWS","Invesco Russell 2000 Equal Weight ETF","Financial","Exchange Traded Fund","USA",,168
+1855,"RORE","Hartford Multifactor REIT ETF","Financial","Exchange Traded Fund","USA",,159
+1856,"SDYL","UBS ETRACS Mthly Pay 2xLvrgd S&P Div ETN","Financial","Exchange Traded Fund","USA",,154
+1857,"DEUR","Citigroup ETNs lnkd VS Dly 4X Lng USDEUR","Financial","Exchange Traded Fund","USA",,152
+1858,"LVUS","Hartford Multifactor LowVolatil US EqETF","Financial","Exchange Traded Fund","USA",,150
+1859,"SQLV","Legg Mason Small-Cap Quality Value ETF","Financial","Exchange Traded Fund","USA",,150
+1860,"KFYP","KraneShares CICC China Ldrs 100 Ind ETF","Financial","Exchange Traded Fund","USA",,150
+1861,"COW","iPath B Bloomberg Lvstck Ttl Ret ETN","Financial","Exchange Traded Fund","USA",,150
+1862,"YAO","Invesco China All-Cap ETF","Financial","Exchange Traded Fund","USA",,146
+1863,"NUMG","NuShares ESG Mid-Cap Growth ETF","Financial","Exchange Traded Fund","USA",,136
+1864,"OLEM","iPath Pure Beta Crude Oil ETN","Financial","Exchange Traded Fund","USA",,135
+1865,"RPUT","WisdomTree CBOE Rssll 2000 PtWrt StrtETF","Financial","Exchange Traded Fund","USA",,130
+1866,"DWCR","Arrow DWA Country Rotation ETF","Financial","Exchange Traded Fund","USA",,125
+1867,"SMLL","Direxion Daily Small Cap Bull 2X ETF","Financial","Exchange Traded Fund","USA",,119
+1868,"DTUS","iPath US Treasury 2-year Bear ETN","Financial","Exchange Traded Fund","USA",,118
+1869,"JJM","iPath B Bloomberg Indl Mtls Ttl Ret ETN","Financial","Exchange Traded Fund","USA",,115
+1870,"CPI","IQ Real Return ETF","Financial","Exchange Traded Fund","USA",,115
+1871,"UJB","ProShares Ultra High Yield","Financial","Exchange Traded Fund","USA",,114
+1872,"VLU","SPDR S&P 1500 Value Tilt ETF","Financial","Exchange Traded Fund","USA",,114
+1873,"HGSD","WisdomTree Global Hedged SmallCp Div ETF","Financial","Exchange Traded Fund","USA",,112
+1874,"SCID","Global X Scientific Beta Europe ETF","Financial","Exchange Traded Fund","USA",,112
+1875,"INFR","Legg Mason Global Infrastructure ETF","Financial","Exchange Traded Fund","USA",,111
+1876,"SAA","ProShares Ultra SmallCap600","Financial","Exchange Traded Fund","USA",,111
+1877,"CROP","IQ Global Agribusiness Small Cap ETF","Financial","Exchange Traded Fund","USA",,108
+1878,"FLCA","Franklin FTSE Canada ETF","Financial","Exchange Traded Fund","USA",,107
+1879,"JVAL","JPMorgan US Value Factor ETF","Financial","Exchange Traded Fund","USA",,106
+1880,"BSCS","Invesco BulletShares 2028 Corp Bd ETF","Financial","Exchange Traded Fund","USA",,101
+1881,"IECS","iShares Evolved US Consumer Staples ETF","Financial","Exchange Traded Fund","USA",,100
+1882,"IEFN","iShares Evolved US Financials ETF","Financial","Exchange Traded Fund","USA",,100
+1883,"PEXL","Pacer US Export Leaders ETF","Financial","Exchange Traded Fund","USA",,100
+1884,"HONR","InsightShares Patriotic Employers ETF","Financial","Exchange Traded Fund","USA",,100
+1885,"FLQS","Franklin LibertyQ US Small Cap Eq ETF","Financial","Exchange Traded Fund","USA",,100
+1886,"SPVM","Invesco S&P 500 Value With Momentum ETF","Financial","Exchange Traded Fund","USA",,100
+1887,"BJUL","Innovator S&P 500 Buffer ETF July","Financial","Exchange Traded Fund","USA",,100
+1888,"BVAL","Brand Value ETF","Financial","Exchange Traded Fund","USA",,100
+1889,"XMX","WisdomTree Global ex-Mexico Equity ETF","Financial","Exchange Traded Fund","USA",,100
+1890,"BEF","Aberdeen Standard Blmb EgyCmdLDSK1Fr ETF","Financial","Exchange Traded Fund","USA",,100
+1891,"BDCZ","UBS ETRACS Wells Fargo Busn Dev Co ETN","Financial","Exchange Traded Fund","USA",,100
+1892,"NACP","Impact Shares NAACP Minority Empwrmt ETF","Financial","Exchange Traded Fund","USA",,100
+1893,"JMIN","JPMorgan US Minimum Volatility ETF","Financial","Exchange Traded Fund","USA",,100
+1894,"JQUA","JPMorgan US Quality Factor ETF","Financial","Exchange Traded Fund","USA",,100
+1895,"TTAI","TrimTabs All Cap Intl Free-Cash-Flow ETF","Financial","Exchange Traded Fund","USA",,100
+1896,"HEWL","iShares Currency Hedged MSCI Switzrl ETF","Financial","Exchange Traded Fund","USA",,100
+1897,"DDJP","WisdomTree Dynamic Ccy Hdgd Jpn Eq ETF","Financial","Exchange Traded Fund","USA",,98
+1898,"QXTR","QUANTX Risk Mgd Multi-Asst Ttl Ret ETF","Financial","Exchange Traded Fund","USA",,93
+1899,"GLDW","SPDR Long Dollar Gold Trust","Financial","Exchange Traded Fund","USA",,91
+1900,"MBSD","FlexShares Disciplined Duration MBS ETF","Financial","Exchange Traded Fund","USA",,88
+1901,"GRU","ELEMENTS MLCX Grains TR ETN","Financial","Exchange Traded Fund","USA",,86
+1902,"SZK","ProShares UltraShort Consumer Goods","Financial","Exchange Traded Fund","USA",,85
+1903,"JJS","iPath B Bloomberg Softs Ttl Ret ETN","Financial","Exchange Traded Fund","USA",,83
+1904,"EEMO","Invesco S&P Emerging Markets Mom ETF","Financial","Exchange Traded Fund","USA",,79
+1905,"EUDV","ProShares MSCI Europe Dividend Gr ETF","Financial","Exchange Traded Fund","USA",,77
+1906,"VALX","Validea Market Legends ETF","Financial","Exchange Traded Fund","USA",,77
+1907,"ESGW","Columbia Sustainable Global Eq Inc ETF","Financial","Exchange Traded Fund","USA",,76
+1908,"DDBI","Legg Mason Dev ex-US Divers Cor ETF","Financial","Exchange Traded Fund","USA",,74
+1909,"UGBP","Citigroup ETNs lnkd VS Dly 4X Lng GBPUSD","Financial","Exchange Traded Fund","USA",,72
+1910,"DJPY","Citigroup ETNs lnkd VS Dly 4X Lng USDJPY","Financial","Exchange Traded Fund","USA",,70
+1911,"FTAG","First Trust Indxx Global Agriculture ETF","Financial","Exchange Traded Fund","USA",,63
+1912,"UPV","ProShares Ultra FTSE Europe","Financial","Exchange Traded Fund","USA",,63
+1913,"UEUR","Citigroup ETNs lnkd VS Dly 4X Lng EURUSD","Financial","Exchange Traded Fund","USA",,62
+1914,"PPEM","PortfolioPlus Emerging Markets ETF","Financial","Exchange Traded Fund","USA",,62
+1915,"DBS","Invesco DB Silver","Financial","Exchange Traded Fund","USA",,60
+1916,"FXCH","Invesco CurrencyShares Chinese Renminbi","Financial","Exchange Traded Fund","USA",,57
+1917,"KGRN","KraneShares MSCI China Environment ETF","Financial","Exchange Traded Fund","USA",,55
+1918,"EDBI","Legg Mason Emerging Mkts Divers Cor ETF","Financial","Exchange Traded Fund","USA",,54
+1919,"CHII","Global X China Industrials ETF","Financial","Exchange Traded Fund","USA",,50
+1920,"SBM","ProShares Short Basic Materials","Financial","Exchange Traded Fund","USA",,44
+1921,"LDRI","Invesco LadderRite 0-5 Year Corp Bd ETF","Financial","Exchange Traded Fund","USA",,44
+1922,"EVIX","VelocityShares 1x Long VSTOXX Futs ETN","Financial","Exchange Traded Fund","USA",,43
+1923,"WIL","Barclays Women in Leadership ETN","Financial","Exchange Traded Fund","USA",,36
+1924,"RAAX","VanEck Vectors Real Asset Allocation ETF","Financial","Exchange Traded Fund","USA",,30
+1925,"JJN","iPath B Bloomberg Nickel Ttl Ret ETN","Financial","Exchange Traded Fund","USA",,25
+1926,"JJU","iPath B Bloomberg Aluminum Ttl Ret ETN","Financial","Exchange Traded Fund","USA",,25
+1927,"JDIV","JPMorgan US Dividend ETF","Financial","Exchange Traded Fund","USA",,25
+1928,"JHMI","JHancock Multifactor Industrials ETF","Financial","Exchange Traded Fund","USA",,24
+1929,"NUMV","NuShares ESG Mid-Cap Value ETF","Financial","Exchange Traded Fund","USA",,24
+1930,"FLIN","Franklin FTSE India ETF","Financial","Exchange Traded Fund","USA",,23
+1931,"QTUM","Defiance Quantum ETF","Financial","Exchange Traded Fund","USA",,22
+1932,"VQT","Barclays ETN+ S&P VEQTOR","Financial","Exchange Traded Fund","USA",,21
+1933,"PLTM","GraniteShares Platinum Trust","Financial","Exchange Traded Fund","USA",,21
+1934,"BUY","USCF SummerHaven SHPEI ETF","Financial","Exchange Traded Fund","USA",,20
+1935,"HYDD","Direxion Daily High Yield Bear 2X ETF","Financial","Exchange Traded Fund","USA",,20
+1936,"IPOS","Renaissance International IPO ETF","Financial","Exchange Traded Fund","USA",,20
+1937,"WMW","ELEMENTS Morningstar WideMoat Foc TR ETN","Financial","Exchange Traded Fund","USA",,20
+1938,"BCD","Aberdeen Standard Blmb AllCmdLDSK1Fr ETF","Financial","Exchange Traded Fund","USA",,19
+1939,"BFIT","Global X Health & Wellness Thematic ETF","Financial","Exchange Traded Fund","USA",,19
+1940,"LTL","ProShares Ultra Telecommunications","Financial","Exchange Traded Fund","USA",,16
+1941,"UAUD","Citigroup ETNs lnkd VS Dly 4X Lng AUDUSD","Financial","Exchange Traded Fund","USA",,13
+1942,"PRID","InsightShares LGBT Employment Eqty ETF","Financial","Exchange Traded Fund","USA",,13
+1943,"FLQM","Franklin LibertyQ US Mid Cap Eq ETF","Financial","Exchange Traded Fund","USA",,12
+1944,"SCTO","Global X/JPMorgan US Sector Rotat ETF","Financial","Exchange Traded Fund","USA",,12
+1945,"DOGS","Arrow Dogs of the World ETF","Financial","Exchange Traded Fund","USA",,10
+1946,"PXR","Invesco Emerging Markets Infras ETF","Financial","Exchange Traded Fund","USA",,9
+1947,"XKII","SPDR Kensho Intelligent Structures ETF","Financial","Exchange Traded Fund","USA",,9
+1948,"UGE","ProShares Ultra Consumer Goods","Financial","Exchange Traded Fund","USA",,8
+1949,"ACES","ALPS Clean Energy ETF","Financial","Exchange Traded Fund","USA",,6
+1950,"GSC","GS Connect S&P GSCI Enh Commodity TR ETN","Financial","Exchange Traded Fund","USA",,6
+1951,"FUT","ProShares Managed Futures Strategy","Financial","Exchange Traded Fund","USA",,5
+1952,"DBUK","Xtrackers MSCI United Kingdom Hdg EqETF","Financial","Exchange Traded Fund","USA",,5
+1953,"CBON","VanEck Vectors ChinaAMC China Bond ETF","Financial","Exchange Traded Fund","USA",,4
+1954,"SFHY","WisdomTree Fdmtl US S-T HiYld CorpBd","Financial","Exchange Traded Fund","USA",,4
+1955,"XTH","SPDR S&P Technology Hardware ETF","Financial","Exchange Traded Fund","USA",,3
+1956,"EKAR","Innovation Shares NextGen Vhcl andTchETF","Financial","Exchange Traded Fund","USA",,3
+1957,"RJZ","ELEMENTS Rogers Intl Cmdty Metals TR ETN","Financial","Exchange Traded Fund","USA",,3
+1958,"FLHK","Franklin FTSE Hong Kong ETF","Financial","Exchange Traded Fund","USA",,3
+1959,"SCAP","AdvisorShares Cornerstone Small Cap ETF","Financial","Exchange Traded Fund","USA",,2
+1960,"DFND","Reality Shares Divcon Dividend Dfndr ETF","Financial","Exchange Traded Fund","USA",,2
+1961,"SPXB","ProShares S&P 500 Bond ETF","Financial","Exchange Traded Fund","USA",,2
+1962,"XVZ","iPath S&P 500 Dynamic VIX ETN","Financial","Exchange Traded Fund","USA",,2
+1963,"ALTS","ProShares Morningstar Alts Solu","Financial","Exchange Traded Fund","USA",,2
+1964,"ZJPN","SPDR Solactive Japan ETF","Financial","Exchange Traded Fund","USA",,2
+1965,"QDIV","Global X S&P 500 Quality Dividend ETF","Financial","Exchange Traded Fund","USA",,1
+1966,"FUE","ELEMENTS MLCX Biofuels Exch Ser TR ETN","Financial","Exchange Traded Fund","USA",,1
+1967,"WOMN","Impact Shares YWCA Women's Empwrmt ETF","Financial","Exchange Traded Fund","USA",,1
+1968,"HYDB","iShares Edge High Yield Defensive Bd ETF","Financial","Exchange Traded Fund","USA",,1
+1969,"UJPY","Citigroup ETNs lnkd VS Dly 4X Lng JPYUSD","Financial","Exchange Traded Fund","USA",,1
+1970,"EUFX","ProShares Short Euro","Financial","Exchange Traded Fund","USA",,1
+1971,"MLQD","iShares 5-10 Year Invmt Grd Corp Bd ETF","Financial","Exchange Traded Fund","USA",,1
+1972,"MLTI","Credit Suisse X-Links Mlt-Ast Hi Inc ETN","Financial","Exchange Traded Fund","USA",,1
+1973,"GCE","Claymore CEF GS Connect ETN","Financial","Exchange Traded Fund","USA",,1
+1974,"GAZ","iPath Bloomberg Natural Gas SubTR ETN B","Financial","Exchange Traded Fund","USA",,1
+1975,"WBAL","WisdomTree Balanced Income","Financial","Exchange Traded Fund","USA",,1
+1976,"FHK","First Trust Hong Kong AlphaDEX ETF","Financial","Exchange Traded Fund","USA",,1
+1977,"IG","Principal Investment Grd Corp Actv ETF","Financial","Exchange Traded Fund","USA",,1
+1978,"DAUD","Citigroup ETNs lnkd VS Dly 4X Lng USDAUD","Financial","Exchange Traded Fund","USA",,1
+1979,"FLAG","FLAG-Forensic Accounting Long-Short ETF","Financial","Exchange Traded Fund","USA",,0
+1980,"FLAT","iPath US Treasury Flattener ETN","Financial","Exchange Traded Fund","USA",,0
+1981,"FLCO","Franklin Liberty Investment Grd Corp ETF","Financial","Exchange Traded Fund","USA",,0
+1982,"FLEU","Barclays ETN+ FI Enhanced Europe 50 B","Financial","Exchange Traded Fund","USA",,0
+1983,"MCEF","First Trust Municipal CEF Income Opp ETF","Financial","Exchange Traded Fund","USA",,0
+1984,"SLT","Salt truBeta High Exposure ETF","Financial","Exchange Traded Fund","India",,0
+1985,"FAUS","First Trust Australia AlphaDEX ETF","Financial","Exchange Traded Fund","USA",,0
+1986,"UBG","UBS ETRACS CMCI Gold Total Return ETN","Financial","Exchange Traded Fund","USA",,0
+1987,"OVLC","Invesco US Large Cap Optimized Vol ETF","Financial","Exchange Traded Fund","USA",,0
+1988,"HMOP","Hartford Municipal Opportunities ETF","Financial","Exchange Traded Fund","USA",,0
+1989,"FLQH","Franklin LibertyQ Intl Eq Hdgd ETF","Financial","Exchange Traded Fund","USA",,0
+1990,"FLJH","Franklin FTSE Japan Hedged ETF","Financial","Exchange Traded Fund","USA",,0
+1991,"FLMB","Franklin Liberty Muni Bd ETF","Financial","Exchange Traded Fund","USA",,0
+1992,"FLHY","Franklin Liberty High Yield Corp ETF","Financial","Exchange Traded Fund","USA",,0
+1993,"BOS","DB Base Metals Short ETN","Financial","Exchange Traded Fund","USA",,0
+1994,"VGFO","Virtus WMC Global Factor Oppos ETF","Financial","Exchange Traded Fund","USA",,0
+1995,"DEFA","iShares Adaptive Ccy Hdg MSCI EAFE ETF","Financial","Exchange Traded Fund","USA",,0
+1996,"DDP","DB Commodity Short ETN","Financial","Exchange Traded Fund","USA",,0
+1997,"FMDG","Fieldstone Merlin Dynamic Lg Cp Gr ETF","Financial","Exchange Traded Fund","USA",,0
+1998,"VXZB","iPath B S&P 500 VIX Md-Trm Futs ETN","Financial","Exchange Traded Fund","USA",,0
+1999,"CWAI","CWA Income ETF","Financial","Exchange Traded Fund","USA",,0
+2000,"IDIV","Metaurus US Equity Cumulative Divs 2027","Financial","Exchange Traded Fund","USA",,0
+2001,"IDMO","Invesco S&P International Dev Momt ETF","Financial","Exchange Traded Fund","USA",,0
+2002,"PGM","iPath B Bloomberg Platinum Ttl Ret ETN","Financial","Exchange Traded Fund","USA",,0
+2003,"SPMV","Invesco S&P 500 Minimum Variance ETF","Financial","Exchange Traded Fund","USA",,0
+2004,"DFVL","iPath US Treasury 5-year Bull ETN","Financial","Exchange Traded Fund","USA",,0
+2005,"DFVS","iPath US Treasury 5-year Bear ETN","Financial","Exchange Traded Fund","USA",,0
+2006,"PPLN","Cushing 30 MLP ETN","Financial","Exchange Traded Fund","USA",,0
+2007,"PPMC","PortfolioPlus S&P Mid Cap ETF","Financial","Exchange Traded Fund","USA",,0
+2008,"XDIV","Metaurus US Equity Ex-Dividend 2027","Financial","Exchange Traded Fund","USA",,0
+2009,"XINA","SPDR MSCI China A Shares IMI","Financial","Exchange Traded Fund","USA",,0
+2010,"RBIN","Nationwide Risk-Based Intl Eq ETF","Financial","Exchange Traded Fund","USA",,0
+2011,"RBUS","Nationwide Risk-Based US Equity ETF","Financial","Exchange Traded Fund","USA",,0
+2012,"MXDE","Nationwide Max Divrs Emrg Mkts Cr Eq ETF","Financial","Exchange Traded Fund","USA",,0
+2013,"REDV","Oppenheimer Emerg Mkts Ultra Dv Rvne ETF","Financial","Exchange Traded Fund","USA",,0
+2014,"REEM","Oppenheimer Emerging Markets Revenue ETF","Financial","Exchange Traded Fund","USA",,0
+2015,"YLDE","ClearBridge Dividend Strategy ESG ETF","Financial","Exchange Traded Fund","USA",,0
+2016,"MMIT","IQ MacKay Shields Muncpl Intern ETF","Financial","Exchange Traded Fund","USA",,0
+2017,"SPXT","ProShares S&P 500 ex-Technology","Financial","Exchange Traded Fund","USA",,0
+2018,"SPXV","ProShares S&P 500 ex-Health Care","Financial","Exchange Traded Fund","USA",,0
+2019,"LVIN","Hartford Multifactor Lw Vltl Intl Eq ETF","Financial","Exchange Traded Fund","USA",,0
+2020,"PBSM","Invesco PureBeta MSCI USA Small Cap ETF","Financial","Exchange Traded Fund","USA",,0
+2021,"PBTP","Invesco PureBeta 0-5 Yr US TIPS ETF","Financial","Exchange Traded Fund","USA",,0
+2022,"FFIU","Fieldstone UVA Uncons Md-Trm Fxd Inc ETF","Financial","Exchange Traded Fund","USA",,0
+2023,"HYUP","Xtrackers High Beta High Yield Bond ETF","Financial","Exchange Traded Fund","USA",,0
+2024,"BUYN","USCF SummerHaven SHPEN ETF","Financial","Exchange Traded Fund","USA",,0
+2025,"HJPX","iShares Currency Hedged JPX-Nikk 400 ETF","Financial","Exchange Traded Fund","USA",,0
+2026,"IBDH","iShares iBonds Dec 2018 Term Corp ETF","Financial","Exchange Traded Fund","USA",,0
+2027,"EZJ","ProShares Ultra MSCI Japan","Financial","Exchange Traded Fund","USA",,0
+2028,"AXJV","iShares Edge MSCI Min Vol Asia exJpn ETF","Financial","Exchange Traded Fund","USA",,0
+2029,"OCIO","ClearShares OCIO ETF","Financial","Exchange Traded Fund","USA",,0
+2030,"UDBI","Legg Mason US Diversified Core ETF","Financial","Exchange Traded Fund","USA",,0
+2031,"ESGN","Columbia Sustainable Intl Eq Inc ETF","Financial","Exchange Traded Fund","USA",,0
+2032,"ARVR","Tactile Analytics ETF","Financial","Exchange Traded Fund","USA",,0
+2033,"SFIG","WisdomTree Fdmtl US Shrt-Term Corp Bd","Financial","Exchange Traded Fund","USA",,0
+2034,"SFLA","iPath Long Extended S&P 500 TR ETN","Financial","Exchange Traded Fund","USA",,0
+2035,"LQDI","iShares Inflation Hedged Corp Bd ETF","Financial","Exchange Traded Fund","USA",,0
+2036,"HTRB","Hartford Total Return Bond ETF","Financial","Exchange Traded Fund","USA",,0
+2037,"FCAL","First Trust California Muni Hi Inc ETF","Financial","Exchange Traded Fund","USA",,0
+2038,"USV","UBS ETRACS CMCI Silver Total Return ETN","Financial","Exchange Traded Fund","USA",,0
+2039,"HEWI","iShares Currency Hedged MSCI Italy ETF","Financial","Exchange Traded Fund","USA",,0
+2040,"HEWW","iShares Currency Hedged MSCI Mexico ETF","Financial","Exchange Traded Fund","USA",,0
+2041,"OPER","ClearShares Ultra-Short Maturity ETF","Financial","Exchange Traded Fund","USA",,0
+2042,"ARCM","Arrow Reserve Capital Management ETF","Financial","Exchange Traded Fund","USA",,0
+2043,"HEUV","iShares Edge MSCI Min Vol Eurp CcyH ETF","Financial","Exchange Traded Fund","USA",,0
+2044,"EMSH","ProShares Short Term USD Emerg Mkts Bd","Financial","Exchange Traded Fund","USA",,0
+2045,"CNSF","iShares Edge MSCI Mltfct Cnsmr Stpls ETF","Financial","Exchange Traded Fund","USA",,0
+2046,"HAUD","iShares Currency Hedged MSCI Aus ETF","Financial","Exchange Traded Fund","USA",,0
+2047,"TYNS","Direxion Daily 7-10 Yr Trs Bear 1X ETF","Financial","Exchange Traded Fund","USA",,0
+2048,"BDD","DB Base Metals Double Long ETN","Financial","Exchange Traded Fund","USA",,0
+2049,"BDRY","Breakwave Dry Bulk Shipping ETF","Financial","Exchange Traded Fund","USA",,0
+2050,"LSST","Natixis Loomis Sayles Shrt Dur Inc ETF","Financial","Exchange Traded Fund","USA",,0
+2051,"PBDM","Invesco PureBeta FTSE Dev ex-NrthAmr ETF","Financial","Exchange Traded Fund","USA",,0
+2052,"VETS","Pacer Military Times Best Employers ETF","Financial","Exchange Traded Fund","USA",,0
+2053,"QLS","IQ Hedge Long/Short Tracker ETF","Financial","Exchange Traded Fund","USA",,0
+2054,"JHMA","JHancock Multifactor Materials ETF","Financial","Exchange Traded Fund","USA",,0
+2055,"ALD","WisdomTree Asia Local Debt ETF","Financial","Exchange Traded Fund","USA",,0
+2056,"TAGS","Teucrium Agricultural ETF","Financial","Exchange Traded Fund","USA",,0
+2057,"FUD","UBS ETRACS CMCI Food Total Return ETN","Financial","Exchange Traded Fund","USA",,0
+2058,"FTXG","First Trust Nasdaq Food & Beverage ETF","Financial","Exchange Traded Fund","USA",,0
+2059,"DTYL","iPath US Treasury 10-year Bull ETN","Financial","Exchange Traded Fund","USA",,0
+2060,"DTUL","iPath US Treasury 2-year Bull ETN","Financial","Exchange Traded Fund","USA",,0
+2061,"XU","Elkhorn S&P MidCap Utilities","Financial","Exchange Traded Fund","USA",,0
+2062,"ZHOK","SPDR Solactive Hong Kong ETF","Financial","Exchange Traded Fund","USA",,0
+2063,"EEMD","AAM S&P Emerging Markets Hi Div Val ETF","Financial","Exchange Traded Fund","USA",,0
+2064,"JJG","iPath B Bloomberg Grains Ttl Ret ETN","Financial","Exchange Traded Fund","USA",,0
+2065,"JJA","iPath B Bloomberg Agltr Ttl Ret ETN","Financial","Exchange Traded Fund","USA",,0
+2066,"TFIV","Global X TargetIncome 5 ETF","Financial","Exchange Traded Fund","USA",,0
+2067,"JJP","iPath Bloomberg Prec Metals SubTR ETN","Financial","Exchange Traded Fund","USA",,0
+2068,"QVM","Arrow QVM Equity Factor ETF","Financial","Exchange Traded Fund","USA",,0
+2069,"CIL","VictoryShares International Vol Wtd ETF","Financial","Exchange Traded Fund","USA",,0
+2070,"JPMB","JPMorgan USD Emerging Mkts Svr Bd ETF","Financial","Exchange Traded Fund","USA",,0
+2071,"GNRX","VanEck Vectors Generic Drugs ETF","Financial","Exchange Traded Fund","USA",,0
+2072,"GMFL","Invesco Multi-Factor Large Cap ETF","Financial","Exchange Traded Fund","USA",,0
+2073,"RGLB","Oppenheimer Global Revenue ETF","Financial","Exchange Traded Fund","USA",,0
+2074,"RIDV","Oppenheimer Intl Ultra Div Revenue ETF","Financial","Exchange Traded Fund","USA",,0
+2075,"EMAG","VanEck Vectors EM Aggregate Bond ETF","Financial","Exchange Traded Fund","USA",,0
+2076,"EMEM","Virtus Glovista Emerging Markets ETF","Financial","Exchange Traded Fund","USA",,0
+2077,"JPED","JPMorgan Event Driven ETF","Financial","Exchange Traded Fund","USA",,0

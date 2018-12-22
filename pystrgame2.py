@@ -269,10 +269,26 @@ def pnl_fromfile(dt_start, dt_end):
         pnl[code] = w.loc[code, 'weight']
         
     return pnl
- 
+
+
+if False:
+    x, voltarget, vol_wnd, roll_wnd, max_weight = H['pnl'], 0.085, 5, 20, 2.5
+def vol_control(x, voltarget, roll_wnd, max_weight):
+    res = voltarget/(np.log(1+x).rolling(roll_wnd).std()*np.sqrt(252))
+    res.loc[res > max_weight] = max_weight
+    return res
 
 H = pd.concat([pnl_fromfile(dates[i], dates[i+1]) for i in range(len(dates)-1)])
+H['weight_vc'] = vol_control(H['pnl'], 0.085, 20, 2.5)
+H['pnl_vc'] = H['pnl']*H['weight_vc']
+
+
+print(np.log(H.pnl+1).std()*np.sqrt(252))
+print(np.log(H.pnl_vc+1).std()*np.sqrt(252))
 
 print((H.pnl[H.dt>='2008-09-30']+1).prod())
-print((H.pnl[H.dt>'2009-01-01']+1).prod())
+print((H.pnl_vc[H.dt>='2008-09-30']+1).prod())
+
+print((H.pnl_vc[H.dt>'2006-03-01']+1).prod())
+
 H.to_csv('/home/anton/Documents/H.csv')
