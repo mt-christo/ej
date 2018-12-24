@@ -13,10 +13,10 @@ plot(IDX)
 
 
 
-library(RCurl)
-library(XML)
-library(rlist)
-library(rjson)
+#library(RCurl)
+#library(XML)
+#library(rlist)
+#library(rjson)
 
 library(data.table)
 library(quantmod)
