@@ -11,4 +11,15 @@ pet = foreach(x=t$ticker,.errorhandling='pass')%do%{ Sys.sleep(1.1); print(i); i
 save(pet, file='/home/anton/git/ej/pet_yhoo.RData')
 # pet = get(load('/home/anton/git/ej/pet_yhoo.RData'))
 
+pet = foreach(x=pet[-454], .combine=cbind)%do%x
+colnames(pet) = gsub('[.]Adjusted', '', colnames(pet))
 save(pet, file='/home/anton/git/ej/etf_com_hist.RData')
+
+h = get(load('/home/anton/git/ej/etf_com_hist.RData'))
+u = get(load('/home/anton/git/ej/etf_com_universe.RData'))
+D = list(u=u[ticker%in%colnames(h),], h=h[, colnames(h)%in%u$ticker])  # now 'u' and 'h' match
+save(D, file='/home/anton/git/ej/etf_com_DATA.RData')
+
+h=D$h; u=D$u
+
+
