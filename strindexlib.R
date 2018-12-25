@@ -1,7 +1,7 @@
 library(doMC)
 library(data.table)
 library(xts)
-registerDoMC(cores=2)
+registerDoMC(cores=7)
 
 enrich_data = function(fdata_path, hdata_path){
     #u = get(load('uni.RData')); u$dt = as.Date("2018-03-01"); colnames(u)=gsub(' ','_', colnames(u)); save(u, file='uni.RData')
@@ -31,6 +31,18 @@ prorate_universe = function(u, h, d0, d1){
     return(u1)
 }
 
+# u = D$u[,.SD[1,], by=focus]
+pre_screen = function(D, u){
+    u1 = u
+    h1 = D$h[, u1$ticker]
+    return(list(u=u1, h=h1))
+}
+
+get_rebals = function(D, period){
+    f = if(period=='year') apply.yearly else if(period=='quarter') apply.quarterly else if(period=='month') apply.monthly else stop("Unknown period")
+    return(as.Date(index(f(D$h[,1], FUN=length))))
+}    
+
 # u=D$u; h=D$h; d0=as.Date("2018-03-01"); d1s=rebal_dates
 prorate_universe_multiple = function(u, h, d0, d1s){
     return(rbindlist(foreach(d1=d1s)%do%prorate_universe(u, h, d0, d1)))
@@ -48,12 +60,20 @@ screen_mycorr1 = function(lh_in, u_in, params){
     res = colnames(hh)[order(hhcor, decreasing=TRUE)[1:params$N]]
     return(res)
 }
+# lh_in=x$lh; u_in=x$u; params=screen_params
 screen_mycorr2 = function(lh_in, u_in, params){
     hh = na.fill(lh_in, fill=0.0)
     hh = cumsum(hh[,colSums(abs(hh))!=0])
+    uu = u_in[ticker%in%colnames(hh), ]
     time_line = 1:nrow(hh)
     hhcor = foreach(i=1:ncol(hh),.combine=c)%do%cor(time_line, hh[,i])
-    nn = t(combn(colnames(hh)[order(hhcor, decreasing=TRUE)[1:params$UNI]], params$N))
+    if(params$type=='simple')
+        nn = t(combn(colnames(hh)[order(hhcor, decreasing=TRUE)[1:params$UNI]], params$N))
+    else if(params$type=='category'){
+        categ = uu[, unique(get(params$field))][1:params$N]
+        categ = foreach(y=categ)%do%uu[get(params$field)==y, ticker]
+        nn = expand.grid(categ)
+    }
     rnk = foreach(j=1:nrow(nn),.combine=c)%do%cor(time_line, rowSums(hh[,nn[j,]]))
     return(nn[which.max(rnk),])
 }
@@ -66,9 +86,25 @@ volcontrol = function(r, params){
     return(log((exp(r) - 1)*w + 1)[-1,])
 }
 
-# u=D$u; h=D$h; screen_func=screen_mycorr; screen_params=list(N=3); vc_params=list(window=20, level=0.085, max_weight=2.5); weights=array(1/screen_params$N, screen_params$N)
-# u=D$u[1:100,]; h=D$h[,u$ticker]; screen_func=screen_mycorr2; screen_params=list(N=4, UNI=20, window=60); vc_params=list(window=20, level=0.085, max_weight=2.5); weights=array(1/screen_params$N, screen_params$N)
-build_index = function(u, h, rebal_dates, screen_func, screen_params, vc_params, weights){
+if(FALSE){
+    my_tickers = c('ROBOTR','IXP','PNQI','SOXX','IBB','IYH','IHI','PJP','FBT','QQQ','MTUM','SPLV','EWZ','EEM','EFA','ILF','ASHR','FXI','IAU','IEO','PZA','TLT','LQD','EDV')
+    my_niches = unique(D$u[D$u$ticker%in%my_tickers, .(focus, niche, category, region, geography, strategy)])
+    d = D$u[my_niches, on=.(focus, niche, category, region, geography, strategy)]
+    
+    D = get(load('/home/aslepnev/git/ej/etf_com_DATA.RData'))
+    D_in = pre_screen(D, D$u[1:100,]); 
+    D_in = pre_screen(D, D$u[,.SD[1,], by=focus])
+    D_in = pre_screen(D, D$u[,.SD[1:min(nrow(.SD),3),], by=category])
+    screen_func = screen_mycorr2
+    rebal_dates = get_rebals(D, 'month')
+
+#    screen_params=list(N=4, UNI=20, window=20, type='category', field='niche'); vc_params=list(window=20, level=0.085, max_weight=2.5); weights=array(1/screen_params$N, screen_params$N)
+    screen_params=list(N=5, UNI=25, window=40, type='simple', field='niche'); vc_params=list(window=20, level=0.085, max_weight=2.5); weights=array(1/screen_params$N, screen_params$N)
+ #   build_index(pre_screen(D, D$u[,.SD[1:min(nrow(.SD),3),], by=category]), get_rebals(D, 'month'), screen_mycorr2, screen_params, vc_params, weights)
+    build_index(pre_screen(D, d), get_rebals(D, 'month'), screen_mycorr2, screen_params, vc_params, weights)
+}
+build_index = function(D_in, rebal_dates, screen_func, screen_params, vc_params, weights){
+    u = D_in$u; h = D_in$h
     lh = na.fill(diff(log(1+na.locf(h))), 0)
     for(i in 1:ncol(lh))
         lh[abs(lh[,i])>0.5, i] = 0
@@ -88,9 +124,11 @@ build_index = function(u, h, rebal_dates, screen_func, screen_params, vc_params,
         r = xts(log(rowSums(as.matrix(exp(he) - 1)*as.numeric(weights)) + 1), order.by=index(he))
     }
 
-    res = exp(cumsum(volcontrol(h_res, vc_params)))
-    plot(res)
+    res_vc = exp(cumsum(volcontrol(h_res, vc_params)))
+    res = exp(cumsum(h_res))
+    print(paste0('normal: ', round(tail(res, 1),2), ', volcontrolled: ', round(tail(res_vc, 1), 2)))
+#    plot(res, cex=2, cex.main=2)
     
-    return(res)
+#    return(res)
 }
 
