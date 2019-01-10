@@ -2,6 +2,8 @@ library(mnormt)
 library(data.table)
 library(foreach)
 library(xts)
+library(mvtnorm)
+library(corpcor)
 
 FIX_SP_MULT <<- 1.0
 FIX_SP_ADD_BC <<- 4.0
@@ -45,6 +47,40 @@ get_rfr = function(ttm){
     if(ttm==1) 0.01 else if(ttm==2) 0.012 else if(ttm==3) 0.015 else if(ttm==4) 0.018 else if(ttm==5) 0.021 else if(ttm==6) 0.025 else 0.028
 }
 
+CorrectCM = function(CM){
+    n <- dim(var(CM))[1L]
+    E <- eigen(CM)
+    CM1 <- E$vectors %*% tcrossprod(diag(pmax(E$values, 0), n), E$vectors)
+    Balance <- diag(1/sqrt(diag(CM1)))
+    CM2 <- Balance %*% CM1 %*% Balance  
+    return(CM2)
+}
+q = c(-0.1,0.3)
+1-as.numeric(pmvnorm(q, rep(100.0,length(q)), corr=diag(2), maxpts=5000, abseps=0.0001))
+d = rmnorm(mc_paths*3, c(0,0), diag(2))
+x = 0.1+d[,1]; x = ifelse(x > -0.3+d[,2], -0.3+d[,2], x)
+sum(x<0)/length(x)
+
+
+
+# q = rfr - dys - 0.5*sigmas^2 - log(b*0.01)
+integro = function(q, cor_mat, sigmas){
+    as.numeric(pmvnorm(q/sigmas, rep(100.0,length(q)), corr=CorrectCM(cor_mat), maxpts=5000, abseps=0.0001))
+}
+
+ttm=4; barriers=c(100,30,80,95); sigmas=c(0.05,0.06,0.07,0.06,0.05); cor_mat=make.positive.definite(cor(rmnorm(5,varcov=diag(5)+(1-diag(5))*0.4))); rfr = 0.1; dys=0.004*runif(5); coupon=5
+#ttm=4; barriers=c(100,100,100,100); sigmas=c(0.05,0.06,0.07,0.06,0.05); cor_mat=diag(5); rfr = 0; dys=0.0*runif(5); coupon=5
+ps = foreach(i=1:ttm,.combine=c)%do%integro(-(rfr - dys - 0.5*sigmas^2)*i + log(barriers[i]*0.01), cor_mat, sigmas*sqrt(i))
+
+
+coupon*sum(exp(-rfr*(1:ttm)) * (c(0, cumprod((1-ps)[-ttm])*(1:(ttm-1))*ps[-1]) + ps))
+
+#coupon*sum(exp(-rfr*(1:ttm)) * (1-ps))
+
+
+
+wo_calculate(ttm,barriers,sigmas,cor_mat,rfr,dys,coupon)
+             
 wo_calculate = function(ttm, barriers, sigmas, cor_mat, rfr, dys, coupon){
         mc_paths = 300000
     
@@ -52,7 +88,8 @@ wo_calculate = function(ttm, barriers, sigmas, cor_mat, rfr, dys, coupon){
         drfs = rfr - dys - 0.5*sigmas^2
         if(ttm > 1) for(i in 2:ttm) d[[i]] = d[[i]] + d[[i-1]]
         if(length(sigmas) > 1)
-            wo = foreach(y=d)%do%{ x = drfs[1]+sigmas[1]*y[,1]; for(i in 2:ncol(y)) x = ifelse(x >  drfs[i]+sigmas[i]*y[,i],  drfs[i]+sigmas[i]*y[,i], x); x }
+            wo = foreach(j=1:length(d))%do%{ x = j*drfs[1]+sigmas[1]*d[[j]][,1]; for(i in 2:ncol(d[[j]])) x = ifelse(x >  j*drfs[i]+sigmas[i]*d[[j]][,i],  j*drfs[i]+sigmas[i]*d[[j]][,i], x); x }
+#            wo = foreach(y=d)%do%{ x = drfs[1]+sigmas[1]*y[,1]; for(i in 2:ncol(y)) x = ifelse(x >  drfs[i]+sigmas[i]*y[,i],  drfs[i]+sigmas[i]*y[,i], x); x }
         else
             wo = foreach(y=d)%do%{ x = drfs[1]+sigmas[1]*y; x }
         #wo = foreach(y=d)%dopar%{ x = sigmas[1]*y[,1]; for(i in 2:ncol(y)) x = ifelse(x >  sigmas[i]*y[,i],  sigmas[i]*y[,i], x); x }
@@ -65,6 +102,7 @@ wo_calculate = function(ttm, barriers, sigmas, cor_mat, rfr, dys, coupon){
                 r = wo[[i]]
                 idx = exp(r) > barriers[i]*0.01
                 res = c(res, array(i*coupon*exp(-i*rfr),sum(idx)))
+##                res = c(res, array(coupon*exp(-i*rfr),sum(idx)))
             
                 for(j in 1:length(wo))
                     wo[[j]] = wo[[j]][!idx]
@@ -73,6 +111,7 @@ wo_calculate = function(ttm, barriers, sigmas, cor_mat, rfr, dys, coupon){
         res = c(res, array(0,mc_paths - length(res)))
     
 	mean(res)
+##sum(res)/mc_paths
 }
 
 wo_calculator_web = function(params_file, quotes_file){
