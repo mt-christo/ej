@@ -53,4 +53,7 @@ res = foreach(i = 1:ncol(cmb))%dopar%{
     list(basket=cmb[,i], price=wo_calculate_an(TTM, BARRIERS, SIGMAS[cmb[,i]], COR_MAT_ALL[cmb[,i], cmb[,i]], RFR, DIVS[cmb[,i]], COUPON))
 }
 
-prc = foreach(x=res,.combine=c)%do%x$price
+prc = array(0, length(res))
+for(i in 1:length(res)) prc[i] = res[[i]]$price
+
+
