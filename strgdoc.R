@@ -10,11 +10,11 @@ source('/home/aslepnev/git/ej/stropt.R')
 source('/home/aslepnev/git/ej/strfunc.R')
 
 #u$sigma = abs(rnorm(nrow(u))*0.1)  # TODO
-p = get(load('/home/aslepnev/git/ej/uniprc.RData'))
-u = as.data.table(get(load('/home/aslepnev/git/ej/uni.RData')))[1:ncol(p),]
-h = diff(log(xts(p, order.by=as.Date(1:nrow(p)))))[-1,]
-NAMES = u$SecName
+D = get(load('/home/aslepnev/webhub/zacks_data.RData'))
+p = D$p
+u = D$u
 
+gs_auth(token = '/home/aslepnev/git/ej/gdoc_doc.R')
 s = gs_key('1y9KUgukyEvfjAVaDYCHPf1rkFn83q8LWS_0tybz2pIM')
 #hrange = as.data.frame(gs_read(s, 'hist', range='A1:Z1000', col_names=FALSE))
 #NAMES = as.character(hrange[1,])
@@ -22,46 +22,35 @@ s = gs_key('1y9KUgukyEvfjAVaDYCHPf1rkFn83q8LWS_0tybz2pIM')
 #SIGMAS = as.numeric(hrange[3,])
 #quotes = data.table(hrange[-(1:3),])[, lapply(.SD, as.numeric)]
 
-orange = as.data.frame(gs_read(s, 'wo-optimizer', range='A1:E1000', col_names=FALSE))
-SIZE = as.numeric(orange[2,2])
-COUPON = as.numeric(gsub('%','',orange[3,2]))*0.01
-RFR = as.numeric(gsub('%','',orange[4,2]))*0.01
-BARRIERS = as.numeric(orange[-(1:2),5])
+#gs_edit_cells(s, ws = 'wo-optimizer', anchor = "A8", input = u[1:100,1:2], byrow = TRUE, col_names=FALSE)
+rparams = as.data.frame(gs_read(s, 'wo-optimizer', range='A2:B4', col_names=FALSE))
+params = as.list(as.numeric(gsub('%','',rparams[,2])))
+names(params) = gsub(':','',rparams[,1])
+
+SIZE = params[['BASKET SIZE']]
+COUPON = params[['COUPON']]*0.01
+RFR = params[['RFR']]*0.01
+BARRIERS = as.data.frame(gs_read(s, 'wo-optimizer', range='D3:D10', col_names=FALSE))[,1]
 TTM = length(BARRIERS)
 TAIL = 120
 
-UNI = if(orange[3,4] == 'ALL') names(h) else na.omit(orange[-(1:2),4])
-UNI = UNI[UNI%in%NAMES]
+UNI = as.data.table(gs_read(s, 'wo-optimizer', range='B7:D1000', col_names=FALSE))[-1,]
+colnames(UNI) = c('ticker', 'sigma', 'dividend')
+UNI[, ticker:=foreach(x=strsplit(UNI$ticker,' '), .combine=c)%do%x[1]]
+UNI = UNI[UNI%in%u[, ticker]]
 
-h = h[, match(UNI, NAMES)]
+u = u[match(UNI$ticker, u$ticker), ]
+h = diff(log(p[, match(UNI$ticker, colnames(p))]))
 h = tail(h[rowSums(is.na(h)) == 0, ], TAIL)
+SIGMAS = ifelse(is.na(UNI$sigma), foreach(i=1:ncol(h),.combine=c)%do%{ sd(h[,i])*sqrt(252) }, UNI$sigma)
+DIVS = ifelse(is.na(UNI$dividend), 0, UNI$dividend)
+COR_MAT_ALL = cor(h)
 
-pwcorr = pairwise_func(h, cor)[name1!=name2, ] #value:=scale(value, center=TRUE,scale=TRUE)]
-pwcorr$value = pwcorr$value-mean(pwcorr$value); pwcorr$value = pwcorr$value/sd(pwcorr$value)
-pwcov = pairwise_func(h, cov)[name1!=name2, ] #value:=scale(value, center=TRUE,scale=TRUE)]
-pwcov$value = pwcov$value-mean(pwcov$value); pwcov$value = pwcov$value/sd(pwcov$value)
-pwbest = copy(pwcorr); pwbest$value = (sum(BARRIERS==100)*pwcorr$value + sum(BARRIERS<100)*pwcov$value)/length(BARRIERS)
+cmb = combn(1:nrow(u), 3)
 
-best_set = 
-
-
-#res = if(min(BARRIERS)==100 & max(BARRIERS)==100)
-#          lowest_cormats(h, SIZE, 0.05) else highest_sds(h, SIGMAS, SIZE, 0.95)
-
-x = foreach(i=1:length(res))%dopar%{
-    if(i%%10==0) print(i)
-    j = res[[i]]
-    h1 = h[, j, with=FALSE]
-    h1 = h1[rowSums(is.na(h1)) == 0, ]
-    list(cm=cor(h1), cv=cor(h1), r=wo_calculate(TTM, BARRIERS, SIGMAS[j], make.positive.definite(cor(h1)), RFR, DIVS[j], COUPON))
-}
-x1 = x
-
-x = foreach(i=1:length(res), .combine=c)%dopar%{
-    if(i%%10==0) print(i)
-    j = sample(1:ncol(h), SIZE)
-    h1 = h[, j, with=FALSE]
-    h1 = tail(h1[rowSums(is.na(h1)) == 0, ], WND)
-    wo_calculate(TTM, BARRIERS, SIGMAS[j], make.positive.definite(cor(h1)), RFR[j], DIVS[j], COUPON)
+res = foreach(i = 1:ncol(cmb))%dopar%{
+    if(i%%1000==0) print(i)
+    list(basket=cmb[,i], price=wo_calculate_an(TTM, BARRIERS, SIGMAS[cmb[,i]], COR_MAT_ALL[cmb[,i], cmb[,i]], RFR, DIVS[cmb[,i]], COUPON))
 }
 
+prc = foreach(x=res,.combine=c)%do%x$price
