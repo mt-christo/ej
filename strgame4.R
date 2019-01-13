@@ -23,10 +23,18 @@ library(quantmod)
 library(foreach)
 library(stringr)
 
-u = fread('/home/anton/Downloads/zacks.csv')
-i = 1
-p = foreach(x=u$Ticker,.errorhandling='pass')%do%{ Sys.sleep(1.1); print(i); i=i+1; get(getSymbols(x))[,paste0(x,'.Adjusted')] }
-save(p, file='/home/anton/git/ej/zacks_yhoo.RData')
+u = fread('/home/aslepnev/git/ej/zacks.csv')
+colnames(u) = c('name','ticker','mcap')
+#i = 1
+#p = foreach(x=u$Ticker,.errorhandling='pass')%do%{ Sys.sleep(1.1); print(i); i=i+1; get(getSymbols(x))[,paste0(x,'.Adjusted')] }
+#save(p, file='/home/anton/git/ej/zacks_yhoo.RData')
+p = get(load('/home/aslepnev/webhub/zacks_yhoo.RData'))
+p = foreach(x=p[5<foreach(x=p,.combine=c)%do%length(x)],.combine=cbind)%do%x
+colnames(p) = gsub('[.]Adjusted', '', colnames(p))
+#ped = rbindlist(foreach(x=colanmes(pe))%do%as.data.table('dt'=index(
+D = list(u=u[ticker%in%colnames(p),], p=p[,u[ticker%in%colnames(p), ticker]])  # 'u' and 'h' match
+save(D, file='/home/aslepnev/webhub/zacks_data.RData')
+
 
 
 e = fread('/home/anton/Downloads/finviz.csv')[order(Volume, decreasing=TRUE),][1:200,]
@@ -73,6 +81,11 @@ match(t$ticker, u$ticker)
 pet = foreach(x=t$ticker,.errorhandling='pass')%do%{ Sys.sleep(1.1); print(i); i=i+1; get(getSymbols(x))[,paste0(x,'.Adjusted')] }
 save(pet, file='/home/anton/git/ej/pet_yhoo.RData')
 
+pet=foreach(
+
+t = get(load('/home/aslepnev/git/ej/etf_com_universe.RData'))
+pet = get(load('/home/aslepnev/git/ej/etf_com_hist.RData'))
+D = get(load('/home/aslepnev/git/ej/etf_com_DATA.RData'))
 
 
 a = paste(readLines('https://finance.yahoo.com/screener/unsaved/8942a94a-1fe1-422d-9199-6549e327eb0c?offset=0&count=250'),collapse='')
