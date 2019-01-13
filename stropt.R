@@ -55,36 +55,21 @@ CorrectCM = function(CM){
     CM2 <- Balance %*% CM1 %*% Balance  
     return(CM2)
 }
-q = c(-0.1,0.3)
-1-as.numeric(pmvnorm(q, rep(100.0,length(q)), corr=diag(2), maxpts=5000, abseps=0.0001))
-d = rmnorm(mc_paths*3, c(0,0), diag(2))
-x = 0.1+d[,1]; x = ifelse(x > -0.3+d[,2], -0.3+d[,2], x)
-sum(x<0)/length(x)
 
-
-
-# q = rfr - dys - 0.5*sigmas^2 - log(b*0.01)
-integro = function(q, cor_mat, sigmas){
-    as.numeric(pmvnorm(q/sigmas, rep(100.0,length(q)), corr=CorrectCM(cor_mat), maxpts=5000, abseps=0.0001))
+wo_calculate_an = function(ttm, barriers, sigmas, cor_mat, rfr, dys, coupon){
+    integro = function(q_in, cor_mat_in, sigmas_in){
+        as.numeric(pmvnorm(q_in/sigmas_in, rep(100.0,length(q_in)), corr=make.positive.definite(cor_mat_in), maxpts=5000, abseps=0.0001))
+    }
+    
+    ps = foreach(i=1:ttm,.combine=c)%do%integro(-(rfr - dys - 0.5*sigmas^2)*i + log(barriers[i]*0.01), cor_mat, sigmas*sqrt(i))
+    coupon*sum(exp(-rfr*(1:ttm)) * (c(0, cumprod((1-ps)[-ttm])*(1:(ttm-1))*ps[-1]) + ps))
 }
 
-ttm=4; barriers=c(100,30,80,95); sigmas=c(0.05,0.06,0.07,0.06,0.05); cor_mat=make.positive.definite(cor(rmnorm(5,varcov=diag(5)+(1-diag(5))*0.4))); rfr = 0.1; dys=0.004*runif(5); coupon=5
-#ttm=4; barriers=c(100,100,100,100); sigmas=c(0.05,0.06,0.07,0.06,0.05); cor_mat=diag(5); rfr = 0; dys=0.0*runif(5); coupon=5
-ps = foreach(i=1:ttm,.combine=c)%do%integro(-(rfr - dys - 0.5*sigmas^2)*i + log(barriers[i]*0.01), cor_mat, sigmas*sqrt(i))
 
-
-coupon*sum(exp(-rfr*(1:ttm)) * (c(0, cumprod((1-ps)[-ttm])*(1:(ttm-1))*ps[-1]) + ps))
-
-#coupon*sum(exp(-rfr*(1:ttm)) * (1-ps))
-
-
-
-wo_calculate(ttm,barriers,sigmas,cor_mat,rfr,dys,coupon)
-             
 wo_calculate = function(ttm, barriers, sigmas, cor_mat, rfr, dys, coupon){
         mc_paths = 300000
     
-        d = foreach(i=1:ttm)%do%{ rmnorm(mc_paths,array(0,length(sigmas)),cor_mat) }
+        d = foreach(i=1:ttm)%do%{ rmnorm(mc_paths,array(0,length(sigmas)),make.positive.definite(cor_mat)) }
         drfs = rfr - dys - 0.5*sigmas^2
         if(ttm > 1) for(i in 2:ttm) d[[i]] = d[[i]] + d[[i-1]]
         if(length(sigmas) > 1)
