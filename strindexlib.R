@@ -62,45 +62,41 @@ screen_mycorr1 = function(lh_in, u_in, params){
     return(res)
 }
 # lh_in=x$lh; u_in=x$u; params=screen_params
+# params=list(N=5, UNI=20, window=40, type='simple', wtype='weights', field='niche', maxw=0.5); vc_params=list(window=20, level=0.085, max_weight=2.5); weights=array(1/screen_params$N, screen_params$N)
 screen_mycorr2 = function(lh_in, u_in, params){
     hh = na.fill(lh_in, fill=0.0)
     hh = cumsum(hh[,colSums(abs(hh))!=0])
     uu = u_in[ticker%in%colnames(hh), ]
     time_line = 1:nrow(hh)
     hhcor = foreach(i=1:ncol(hh),.combine=c)%do%cor(time_line, hh[,i])
-    if(params$type=='simple')
-        nn = t(combn(colnames(hh)[order(hhcor, decreasing=TRUE)[1:params$UNI]], params$N))
-    else if(params$type=='category'){
-        categ = uu[, unique(get(params$field))][1:params$N]
-        categ = foreach(y=categ)%do%uu[get(params$field)==y, ticker]
-        nn = expand.grid(categ)
-    }
-    
-    rnk = foreach(j=1:nrow(nn),.combine=c)%do%cor(time_line, rowSums(hh[,nn[j,]]))
-    # names=nn[which.max(rnk),]; w=array(1/params$N, params$N)
-    if(params$wtype!='weights')
-        return(list(names=nn[which.max(rnk),], weights=array(1/params$N, params$N)))
-    else{
-        # w=array(1/params$N, params$N)
-        gradus = function(w){
-            -cor(time_line, log(((exp(hh[,names])-1)%*%w) + 1))
-#            -cor(time_line, log(( (exp(hh[,names])-1)*as.numeric(w) ) + 1))
-#            -cor(time_line, exp(hh[,names])%*%w)
-#            -cor(time_line, hh[,names]%*%w)
-        }
-        eq_one = function(w){
-            -abs(1-sum(w))
-        }
+    uni = colnames(hh)[order(hhcor, decreasing=TRUE)[1:params$UNI]]
+
+    my_corr = function(n, w){ return(cor(time_line, log(((exp(hh[, n])-1)%*%w) + 1))) }
+    this_screen = function(uni_in){
+        nn = t(combn(uni_in, params$N))
+        w = array(1/params$N, params$N)
+        rnk = foreach(j=1:nrow(nn),.combine=c)%do%{ my_corr(nn[j,], w) }
         
-        rnks = order(rnk,decreasing=TRUE)[1:100]
-        # i=rnks[1]
-        res = foreach(i=rnks)%do%{
-            names <- nn[i,]
-            cobyla(x0=array(1/params$N, params$N), fn=gradus, lower=array(0,params$N), upper=array(params$maxw,params$N), hin=eq_one)
+        if(params$wtype!='weights')
+            return(list(names=nn[which.max(rnk),], weights=array(1/params$N, params$N)))
+        else{
+            # w=x$par  array(1/params$N, params$N)
+            eq_one = function(w){ -abs(1-sum(w)) }            
+            rnks = order(rnk,decreasing=TRUE)[1:100]
+            # i=rnks[1]
+            res = foreach(i=rnks)%do%{
+                names <- nn[i,]
+                gradus = function(w){ return(-my_corr(names, w)) }
+                res = cobyla(x0=array(1/params$N, params$N), fn=gradus, lower=array(0,params$N), upper=array(params$maxw,params$N), hin=eq_one, control=list(xtol_rel=1e-8, maxeval=5000))
+            }
+            i = which.min(foreach(x=res,.combine=c)%do%x$value)
+            return(list(names=nn[rnks[i],], weights=res[[i]]$par))
         }
-        i = which.min(foreach(x=res,.combine=c)%do%x$value)
-        return(list(names=nn[rnks[i],], weights=res[[i]]$par))
     }
+
+    s1 = this_screen(uni)
+    s2 = this_screen(uni[!uni%in%s1$names])
+    
 }
 
 # r=h_res; params=vc_params
@@ -129,10 +125,11 @@ if(FALSE){
 #    p0 = expand.grid(list(4:6,c(15,17,20,23,25)))
 #    p0 = expand.grid(list(4:6,c(28,30)))
 
-    screen_params=list(N=5, UNI=10, window=40, type='simple', wtype='weights', field='niche', maxw=0.5); vc_params=list(window=20, level=0.085, max_weight=2.5); weights=array(1/screen_params$N, screen_params$N)
+    screen_params=list(N=5, UNI=40, window=40, type='simple', wtype='weights', field='niche', maxw=0.5); vc_params=list(window=20, level=0.085, max_weight=2.5); weights=array(1/screen_params$N, screen_params$N)
     res = build_index(pre_screen(D, d), get_rebals(D, 'month'), screen_mycorr2, screen_params, vc_params, weights)
     h_res = foreach(x=res,.combine=rbind)%do%x$h
     res_vc = exp(cumsum(volcontrol(h_res, list(window=20, level=0.01*8.5, max_weight=2.5))))
+    save(res, file='/home/aslepnev/data/idx2_custom.Rdata')
     plot(res_vc)
 
 
@@ -153,15 +150,16 @@ if(FALSE){
  #   build_index(pre_screen(D, D$u[,.SD[1:min(nrow(.SD),3),], by=category]), get_rebals(D, 'month'), screen_mycorr2, screen_params, vc_params, weights)
 
     ext_h = function(n1, n2, vcp){
-        d = get(load(sprintf('/home/aslepnev/data/idx1_%s_%s.Rdata', n1, n2)))
+#        d = get(load(sprintf('/home/aslepnev/data/idx2_%s_%s.Rdata', n1, n2)))
+        d = get(load('/home/aslepnev/data/idx2_custom.Rdata'))
         h_res = foreach(x=d,.combine=rbind)%do%x$h
         res_vc = exp(cumsum(volcontrol(h_res, list(window=20, level=0.01*vcp, max_weight=2.5))))
-#        res = exp(cumsum(h_res))
-        res_vc
+        res = exp(cumsum(h_res))
+#        res_vc
     }
 
-    hh = foreach(k=4:6,.combine=cbind)%do%ext_h(k,30,8.5)
-    plot(hh)
+    hh = foreach(k=5:6,.combine=cbind)%do%ext_h(k,15,8.5)
+    plot(hh[,2])
     plot(ext_h(8,23))
 
     print(paste0('normal: ', round(tail(res, 1),2), ', volcontrolled: ', round(tail(res_vc, 1), 2)))
