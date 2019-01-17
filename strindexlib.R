@@ -4,6 +4,8 @@ library(xts)
 library(nloptr)
 registerDoMC(cores=7)
 
+COB_CTL <<- list(xtol_rel=1e-8, maxeval=5000)
+
 enrich_data = function(fdata_path, hdata_path){
     #u = get(load('uni.RData')); u$dt = as.Date("2018-03-01"); colnames(u)=gsub(' ','_', colnames(u)); save(u, file='uni.RData')
     #p = get(load('uniprc.RData'))
@@ -62,7 +64,7 @@ screen_mycorr1 = function(lh_in, u_in, params){
     return(res)
 }
 # lh_in=x$lh; u_in=x$u; params=screen_params
-# params=list(N=5, UNI=20, window=40, type='simple', wtype='weights', field='niche', maxw=0.5); vc_params=list(window=20, level=0.085, max_weight=2.5); weights=array(1/screen_params$N, screen_params$N)
+# params=list(N=4, UNI=25, window=40, type='simple', wtype='weights', field='niche', maxw=0.5); vc_params=list(window=20, level=0.085, max_weight=2.5); weights=array(1/screen_params$N, screen_params$N)
 screen_mycorr2 = function(lh_in, u_in, params){
     hh = na.fill(lh_in, fill=0.0)
     hh = cumsum(hh[,colSums(abs(hh))!=0])
@@ -72,31 +74,31 @@ screen_mycorr2 = function(lh_in, u_in, params){
     uni = colnames(hh)[order(hhcor, decreasing=TRUE)[1:params$UNI]]
 
     my_corr = function(n, w){ return(cor(time_line, log(((exp(hh[, n])-1)%*%w) + 1))) }
-    this_screen = function(uni_in){
+    this_screen = function(uni_in){  # uni_in=uni
+        if(params$wtype=='singles') return(list(names=uni_in[1:params$N], weights=array(1/params$N, params$N)))
+
         nn = t(combn(uni_in, params$N))
         w = array(1/params$N, params$N)
         rnk = foreach(j=1:nrow(nn),.combine=c)%do%{ my_corr(nn[j,], w) }
         
-        if(params$wtype!='weights')
-            return(list(names=nn[which.max(rnk),], weights=array(1/params$N, params$N)))
-        else{
-            # w=x$par  array(1/params$N, params$N)
-            eq_one = function(w){ -abs(1-sum(w)) }            
-            rnks = order(rnk,decreasing=TRUE)[1:100]
-            # i=rnks[1]
-            res = foreach(i=rnks)%do%{
-                names <- nn[i,]
-                gradus = function(w){ return(-my_corr(names, w)) }
-                res = cobyla(x0=array(1/params$N, params$N), fn=gradus, lower=array(0,params$N), upper=array(params$maxw,params$N), hin=eq_one, control=list(xtol_rel=1e-8, maxeval=5000))
-            }
-            i = which.min(foreach(x=res,.combine=c)%do%x$value)
-            return(list(names=nn[rnks[i],], weights=res[[i]]$par))
+        if(params$wtype=='equalweight') return(list(names=nn[which.max(rnk),], weights=array(1/params$N, params$N)))
+        # w=x$par  array(1/params$N, params$N)
+        eq_one = function(w){ -abs(1-sum(w)) }            
+        rnks = order(rnk,decreasing=TRUE)[1:min(100,length(rnk))]
+        # i=rnks[1]
+        res = foreach(i=rnks)%do%{
+            names <- nn[i,]
+            gradus = function(w){ return(-my_corr(names, w)) }                
+            res = cobyla(x0=array(1/params$N, params$N), fn=gradus, lower=array(0,params$N), upper=array(params$maxw,params$N), hin=eq_one, control=COB_CTL)
         }
+        i = which.min(foreach(x=res,.combine=c)%do%x$value)
+        return(list(names=nn[rnks[i],], weights=res[[i]]$par))
     }
 
     s1 = this_screen(uni)
-    s2 = this_screen(uni[!uni%in%s1$names])
-    
+#    s2 = this_screen(uni[!uni%in%s1$names])
+#    return(list(names=c(s1$names, s2$names), weights=c(s1$weights, s2$weights)*0.5))
+    return(list(names=s1$names, weights=s1$weights))
 }
 
 # r=h_res; params=vc_params
@@ -125,23 +127,45 @@ if(FALSE){
 #    p0 = expand.grid(list(4:6,c(15,17,20,23,25)))
 #    p0 = expand.grid(list(4:6,c(28,30)))
 
-    screen_params=list(N=5, UNI=40, window=40, type='simple', wtype='weights', field='niche', maxw=0.5); vc_params=list(window=20, level=0.085, max_weight=2.5); weights=array(1/screen_params$N, screen_params$N)
+    screen_params=list(N=6, UNI=25, window=40, type='simple', wtype='weights', field='niche', maxw=0.3); vc_params=list(window=20, level=0.085, max_weight=2.5); weights=array(1/screen_params$N, screen_params$N)
     res = build_index(pre_screen(D, d), get_rebals(D, 'month'), screen_mycorr2, screen_params, vc_params, weights)
+    save(res, file='/home/aslepnev/data/idx2_custom_6_25.Rdata')
+
+
+    save(res, file='/home/aslepnev/data/idx2_custom_4_25.Rdata')
+
+    screen_params=list(N=5, UNI=30, window=40, type='simple', wtype='weights', field='niche', maxw=0.5); vc_params=list(window=20, level=0.085, max_weight=2.5); weights=array(1/screen_params$N, screen_params$N)
+    res = build_index(pre_screen(D, d), get_rebals(D, 'month'), screen_mycorr2, screen_params, vc_params, weights)
+    save(res, file='/home/aslepnev/data/idx2_custom2.Rdata')
+
     h_res = foreach(x=res,.combine=rbind)%do%x$h
     res_vc = exp(cumsum(volcontrol(h_res, list(window=20, level=0.01*8.5, max_weight=2.5))))
-    save(res, file='/home/aslepnev/data/idx2_custom.Rdata')
     plot(res_vc)
+    lines(res_vc)
+
+    res = get(load('/home/aslepnev/data/idx2_custom_4_25.Rdata'))
+    h_res = foreach(x=res,.combine=rbind)%do%x$h
+    res_vc = exp(cumsum(volcontrol(h_res, list(window=20, level=0.01*8.5, max_weight=2.5))))
 
 
-
-
-    p0 = expand.grid(list(5:9,c(15,20,25,28,30)))
+    # 1 - equally weighted
+    # 3 - best eq weitghted, then optimize
+    # 4 - top n highest ranked
+    
+    p0 = expand.grid(list(3:6,22:35))
     for(ii in 1:nrow(p0)){
-        screen_params=list(N=p0[ii,1], UNI=p0[ii,2], window=40, type='simple', wtype='weights', field='niche', maxw=0.5); vc_params=list(window=20, level=0.085, max_weight=2.5); weights=array(1/screen_params$N, screen_params$N)
+        pn = p0[ii,1]
+        screen_params=list(N=pn, UNI=p0[ii,2], window=40, wtype='weights', field='niche', maxw=0.5); vc_params=list(window=20, level=0.085, max_weight=2.5); weights=array(1/screen_params$N, screen_params$N)
         res = build_index(pre_screen(D, d), get_rebals(D, 'month'), screen_mycorr2, screen_params, vc_params, weights)
-        save(res, file=sprintf('/home/aslepnev/data/idx2_%s_%s.Rdata', screen_params$N, screen_params$UNI))
+        save(res, file=sprintf('/home/aslepnev/data/idx3_%s_%s_%s.Rdata', pn, screen_params$UNI, round(maxw,2)))
     }
 
+    p0 = 2:50
+    for(ii in p0){
+        screen_params=list(N=ii, UNI=100, window=40, wtype='singles', field='niche', maxw=0.5); vc_params=list(window=20, level=0.085, max_weight=2.5); weights=array(1/screen_params$N, screen_params$N)
+        res = build_index(pre_screen(D, d), get_rebals(D, 'month'), screen_mycorr2, screen_params, vc_params, weights)
+        save(res, file=sprintf('/home/aslepnev/data/idx4_%s.Rdata', ii))
+    }
 
 
     
@@ -149,18 +173,25 @@ if(FALSE){
     build_index(pre_screen(D, d), get_rebals(D, 'month'), screen_mycorr2, screen_params, vc_params, weights)
  #   build_index(pre_screen(D, D$u[,.SD[1:min(nrow(.SD),3),], by=category]), get_rebals(D, 'month'), screen_mycorr2, screen_params, vc_params, weights)
 
-    ext_h = function(n1, n2, vcp){
-#        d = get(load(sprintf('/home/aslepnev/data/idx2_%s_%s.Rdata', n1, n2)))
-        d = get(load('/home/aslepnev/data/idx2_custom.Rdata'))
+    ext_h = function(filename, vcp){
+        d = get(load(filename))
+#        d = get(load('/home/aslepnev/data/idx2_custom.Rdata'))
         h_res = foreach(x=d,.combine=rbind)%do%x$h
         res_vc = exp(cumsum(volcontrol(h_res, list(window=20, level=0.01*vcp, max_weight=2.5))))
-        res = exp(cumsum(h_res))
-#        res_vc
+#        res = exp(cumsum(h_res))
+        res_vc
     }
 
-    hh = foreach(k=5:6,.combine=cbind)%do%ext_h(k,15,8.5)
-    plot(hh[,2])
-    plot(ext_h(8,23))
+    hh = foreach(k=8:9,.combine=cbind)%do%ext_h(sprintf('/home/aslepnev/data/idx1_%s_%s.Rdata', k, 252),8.5)
+    hh = foreach(filename=Sys.glob('/home/aslepnev/data/idx1_*'),.combine=cbind)%do%ext_h(filename, 8.5)
+    plot(hh)
+    plot(ext_h(Sys.glob('/home/aslepnev/data/idx1_4_*'),8.5))
+    plot(ext_h(Sys.glob('/home/aslepnev/data/idx1_4_*')[5],8.5))
+    plot(ext_h('/home/aslepnev/data/idx1_4_25.Rdata',8.5))
+    lines(ext_h('/home/aslepnev/data/idx1_4_25.Rdata',8.5))
+
+    plot(ext_h('/home/aslepnev/data/idx2_custom_4_25.Rdata',8.5))
+    lines(ext_h('/home/aslepnev/data/idx2_custom_6_25.Rdata',8.5))
 
     print(paste0('normal: ', round(tail(res, 1),2), ', volcontrolled: ', round(tail(res_vc, 1), 2)))
     plot(100*res_vc, cex=2, cex.main=2)

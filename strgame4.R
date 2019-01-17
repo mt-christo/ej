@@ -1,4 +1,7 @@
+setwd('/home/aslepnev/git/ej')
+
 source('strindexlib.R')
+library(quantmod)
 
 D = prep_data(TRUE)
 H = D$h; U = D$u
@@ -86,6 +89,32 @@ pet=foreach(
 t = get(load('/home/aslepnev/git/ej/etf_com_universe.RData'))
 pet = get(load('/home/aslepnev/git/ej/etf_com_hist.RData'))
 D = get(load('/home/aslepnev/git/ej/etf_com_DATA.RData'))
+
+
+
+
+
+
+
+
+u = fread('/home/aslepnev/git/ej2/etf_uni_sacha.csv')
+colnames(u) = c('ticker', 'name', 'mcap', 'mcap_focus2', 'style', 'geo_focus', 'geo_focus2', 'ind_focus', 'mcap_focus', 'ind_group', 'industry')
+u$ticker = as.character(t(as.data.table(strsplit(u$ticker, ' ')))[, 1])
+
+i=1
+h = foreach(x=u$ticker,.errorhandling='pass')%do%{ Sys.sleep(1.1); print(i); i=i+1; get(getSymbols(x))[,paste0(x,'.Adjusted')] }
+save(h, file='/home/aslepnev/webhub/sacha_etf_yhoo_raw.RData')
+h1 = foreach(x=h[5<foreach(x=h,.combine=c)%do%length(x)],.combine=cbind)%do%x
+colnames(h1) = gsub('[.]Adjusted', '', colnames(h1))
+u = u[ticker%in%colnames(h1), ]
+D = list(u=u, h=h1[,u$ticker])  # 'u' and 'h' match
+save(D, file='/home/aslepnev/webhub/sacha_etf_yhoo.RData')
+
+
+
+a=get(load('/home/aslepnev/webhub/sacha_etf_yhoo.RData'))
+
+
 
 
 a = paste(readLines('https://finance.yahoo.com/screener/unsaved/8942a94a-1fe1-422d-9199-6549e327eb0c?offset=0&count=250'),collapse='')
