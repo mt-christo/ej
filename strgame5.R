@@ -1,3 +1,5 @@
+library(devtools)
+# install_github('jennybc/googlesheets')
 library(googlesheets)
 library(dplyr)
 library(data.table)
@@ -36,7 +38,7 @@ TAIL = 120
 
 DICTIONARY = as.data.table(gs_read(s, 'wo-universe', range='A1:F1000', col_names=TRUE))
 UNI = as.data.table(gs_read(s, 'wo-optimizer', range='B8:B1000', col_names=FALSE))[, .(ticker=X1)]
-UNI = DICTIONARY[UNI, on='ticker']
+UNI = DICTIONARY[UNI, on='ticker'][, ':='(ivol=ivol*0.01, div=div*0.01)]
 UNI$ticker = foreach(x=strsplit(UNI$ticker,' '), .combine=c)%do%x[1]
 UNI = UNI[ticker%in%u$ticker, ][, head(.SD, 1), by='ticker']  # u = u[match(UNI$ticker, u$ticker), ]
 
@@ -88,14 +90,16 @@ res = foreach(i = idx2)%dopar%{
 prc = array(0, length(res))
 for(i in 1:length(res)) if(!is.null(res[[i]])) prc[i] = res[[i]]$price
 prc = prc[prc>0]
-
+# save(res, file='/home/aslepnev/webhub/wo_opt1.RData')
 min(prc)
 cheap_i = res[[which.min(prc)]]$basket
-u[cheap_i, ]ticker]
+UNI[cheap_i, ticker]
 SIGMAS[cheap_i]
 COR_MAT_ALL[cheap_i, cheap_i]
 COUPON
 
+cheapest = as.data.table(foreach(i=order(prc)[1:500],.combine=rbind)%do%c(UNI[res[[i]]$basket, ticker], prc[i]))
+gs_edit_cells(s, ws = 'wo-optimizer', anchor = "F3", input = cheapest, byrow = TRUE, col_names=FALSE)
 
 
 
