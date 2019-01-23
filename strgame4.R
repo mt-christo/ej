@@ -117,6 +117,17 @@ a=get(load('/home/aslepnev/webhub/sacha_etf_yhoo.RData'))
 
 
 
+
+
+
+u = fread('/home/aslepnev/git/ej/grish_uni.csv')
+u$ticker = as.character(t(as.data.table(strsplit(u$ticker, ' ')))[, 1])
+
+
+
+a
+
+
 a = paste(readLines('https://finance.yahoo.com/screener/unsaved/8942a94a-1fe1-422d-9199-6549e327eb0c?offset=0&count=250'),collapse='')
 delim = '"></path></svg></label><a href="/quote/'
 tidx = gregexpr(str_replace_all(delim,"(\\W)", "\\\\\\1"), a, perl=T)[[1]]

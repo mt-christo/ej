@@ -37,7 +37,7 @@ TAIL = 120
 UNI = as.data.table(gs_read(s, 'wo-optimizer', range='B7:D1000', col_names=FALSE))[-1,]
 colnames(UNI) = c('ticker', 'sigma', 'dividend')
 UNI[, ticker:=foreach(x=strsplit(UNI$ticker,' '), .combine=c)%do%x[1]]
-UNI = UNI[UNI%in%u[, ticker]]
+UNI = UNI[UNI$ticker%in%u[, ticker]]
 
 u = u[match(UNI$ticker, u$ticker), ]
 h = diff(log(p[, match(UNI$ticker, colnames(p))]))

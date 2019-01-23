@@ -2,6 +2,7 @@ library(doMC)
 library(data.table)
 library(xts)
 library(nloptr)
+library(tseries)
 registerDoMC(cores=7)
 
 COB_CTL <<- list(xtol_rel=1e-8, maxeval=5000)
@@ -35,9 +36,15 @@ prorate_universe = function(u, h, d0, d1){
 }
 
 # u = D$u[,.SD[1,], by=focus]
-pre_screen = function(D, u){
+pre_screen = function(D, u, logret = FALSE){
     u1 = u
     h1 = D$h[, u1$ticker]
+    if(logret){
+        lh = na.fill(diff(log(1+na.locf(h1))), 0)
+        for(i in 1:ncol(lh))
+            lh[abs(lh[,i])>0.5, i] = 0
+        h1 = lh
+    }
     return(list(u=u1, h=h1))
 }
 
@@ -56,6 +63,7 @@ screen_momentum = function(lh_in, u_in, params){
     res = order(colSums(lh_in), decreasing=TRUE)[1:params$N]
     return(u_in[res, ticker])
 }
+
 screen_mycorr1 = function(lh_in, u_in, params){
     hh = na.fill(lh_in, fill=0.0)
     hh = cumsum(hh[,colSums(abs(hh))!=0])
@@ -63,15 +71,15 @@ screen_mycorr1 = function(lh_in, u_in, params){
     res = colnames(hh)[order(hhcor, decreasing=TRUE)[1:params$N]]
     return(res)
 }
+
 # lh_in=x$lh; u_in=x$u; params=screen_params
-# params=list(N=4, UNI=25, window=40, type='simple', wtype='weights', field='niche', maxw=0.5); vc_params=list(window=20, level=0.085, max_weight=2.5); weights=array(1/screen_params$N, screen_params$N)
 screen_mycorr2 = function(lh_in, u_in, params){
     hh = na.fill(lh_in, fill=0.0)
     hh = cumsum(hh[,colSums(abs(hh))!=0])
     uu = u_in[ticker%in%colnames(hh), ]
     time_line = 1:nrow(hh)
     hhcor = foreach(i=1:ncol(hh),.combine=c)%do%cor(time_line, hh[,i])
-    uni = colnames(hh)[order(hhcor, decreasing=TRUE)[1:params$UNI]]
+    uni = colnames(hh)[order(hhcor, decreasing=TRUE)[1:min(params$UNI, nrow(uu))]]
 
     my_corr = function(n, w){ return(cor(time_line, log(((exp(hh[, n])-1)%*%w) + 1))) }
     this_screen = function(uni_in){  # uni_in=uni
@@ -82,6 +90,15 @@ screen_mycorr2 = function(lh_in, u_in, params){
         rnk = foreach(j=1:nrow(nn),.combine=c)%do%{ my_corr(nn[j,], w) }
         
         if(params$wtype=='equalweight') return(list(names=nn[which.max(rnk),], weights=array(1/params$N, params$N)))
+        
+        if(params$wtype=='volweight'){
+            names = nn[which.max(rnk),]
+            hh = hh[, names]
+            sds = foreach(i=1:ncol(hh),.combine=c)%do%sd(hh[,i])
+            weights = order(order(sds))*array(1/params$N, params$N)
+            return(list(names=names, weights=weights/sum(weights)))
+        }
+        
         # w=x$par  array(1/params$N, params$N)
         eq_one = function(w){ -abs(1-sum(w)) }            
         rnks = order(rnk,decreasing=TRUE)[1:min(100,length(rnk))]
@@ -103,10 +120,11 @@ screen_mycorr2 = function(lh_in, u_in, params){
 
 # r=h_res; params=vc_params
 volcontrol = function(r, params){
-    w = sqrt(250)*rollapply(r, params$window, FUN=sd)
+    w = sqrt(250)*rollapplyr(r, params$window, FUN=sd)
     w[,1] = ifelse(is.na(w), 1, params$level/w)
     w[,1] = lag(ifelse(w > params$max_weight, params$max_weight, w), 1)
-    return(log((exp(r) - 1)*w + 1)[-1,])
+    res = log((exp(r) - 1)*w + 1)[-1,]
+    return(res)
 }
 
 if(FALSE){
@@ -114,6 +132,20 @@ if(FALSE){
     my_tickers = c('ROBOTR','IXP','PNQI','SOXX','IBB','IYH','IHI','PJP','FBT','QQQ','MTUM','SPLV','EWZ','EEM','EFA','ILF','ASHR','FXI','IAU','IEO','PZA','TLT','LQD','EDV')
     my_niches = unique(D$u[D$u$ticker%in%my_tickers, .(focus, niche, category, region, geography, strategy)])
     d = D$u[my_niches, on=.(focus, niche, category, region, geography, strategy)]
+
+    D = get(load('/home/aslepnev/webhub/sacha_etf_yhoo.RData'))
+    my_tickers = c('ROBOTR','IXP','PNQI','SOXX','IBB','IYH','IHI','PJP','FBT','QQQ','MTUM','SPLV','EWZ','EEM','EFA','ILF','ASHR','FXI','IAU','IEO','PZA','TLT','LQD','EDV')
+    my_niches = unique(D$u[D$u$ticker%in%my_tickers, .(mcap_focus2, style, geo_focus, geo_focus2, ind_focus, mcap_focus, ind_group, industry)])
+    d = D$u[my_niches, on=.(mcap_focus2, style, geo_focus, geo_focus2, ind_focus, mcap_focus, ind_group, industry)]
+
+    d1 = D$u[order(mcap, decreasing=TRUE),][geo_focus=='European Region',][1:15,]
+    d2 = D$u[order(mcap, decreasing=TRUE),][geo_focus2=='Emerging Market',][1:30,]
+    d3 = D$u[order(mcap, decreasing=TRUE),][ind_focus=='Technology',][1:30,]
+    d4 = D$u[order(mcap, decreasing=TRUE),][ind_focus=='Health Care',][1:30,]
+    d5 = D$u[order(mcap, decreasing=TRUE),][ind_focus=='Financial',][1:20,]
+
+    D$u[, .N, by=ind_focus][order(N, decreasing=TRUE),]
+    colnames(d)
     
 #    D_in = pre_screen(D, D$u[1:100,]); 
 #    D_in = pre_screen(D, D$u[,.SD[1,], by=focus])
@@ -127,9 +159,15 @@ if(FALSE){
 #    p0 = expand.grid(list(4:6,c(15,17,20,23,25)))
 #    p0 = expand.grid(list(4:6,c(28,30)))
 
-    screen_params=list(N=6, UNI=25, window=40, type='simple', wtype='weights', field='niche', maxw=0.3); vc_params=list(window=20, level=0.085, max_weight=2.5); weights=array(1/screen_params$N, screen_params$N)
-    res = build_index(pre_screen(D, d), get_rebals(D, 'month'), screen_mycorr2, screen_params, vc_params, weights)
-    save(res, file='/home/aslepnev/data/idx2_custom_6_25.Rdata')
+    dd = list(d1, d2, d3, d4, d5)  
+    for(i in 1:length(dd)){
+        screen_params=list(N=4, UNI=nrow(dd[[i]]), window=40, wtype='equalweight'); weights=array(1/screen_params$N, screen_params$N)
+        res = build_index(pre_screen(D, dd[[i]]), get_rebals(D, 'month'), screen_mycorr2, screen_params, weights)
+        save(res, file=paste0('/home/aslepnev/data/idx4_custom_',i,'.Rdata'))  # 3 for equalweight, 4 for vol-weight
+    }
+    hh = tail(pre_screen(D, dd[[2]], TRUE)$h, 252)
+    sds = foreach(i=1:ncol(hh),.combine=c)%do%{ sd(hh[!is.na(hh[,i]),i])*sqrt(252) }
+    sort(sds)
 
 
     save(res, file='/home/aslepnev/data/idx2_custom_4_25.Rdata')
@@ -152,7 +190,7 @@ if(FALSE){
     # 3 - best eq weitghted, then optimize
     # 4 - top n highest ranked
     
-    p0 = expand.grid(list(3:6,22:35))
+    p0 = expand.grid(list(4,22:35))
     for(ii in 1:nrow(p0)){
         pn = p0[ii,1]
         screen_params=list(N=pn, UNI=p0[ii,2], window=40, wtype='weights', field='niche', maxw=0.5); vc_params=list(window=20, level=0.085, max_weight=2.5); weights=array(1/screen_params$N, screen_params$N)
@@ -167,29 +205,37 @@ if(FALSE){
         save(res, file=sprintf('/home/aslepnev/data/idx4_%s.Rdata', ii))
     }
 
-
+    screen_params=list(N=4, UNI=25 window=40, wtype='simple', field='niche', maxw=0.5); vc_params=list(window=20, level=0.085, max_weight=2.5); weights=array(1/screen_params$N, screen_params$N)
+    res = build_index(pre_screen(D, d), get_rebals(D, 'month'), screen_mycorr2, screen_params, vc_params, weights)
+    save(res, file=sprintf('/home/aslepnev/data/idx4_%s.Rdata', ii))
     
-    screen_params=list(N=5, UNI=25, window=40, type='simple', field='niche'); vc_params=list(window=20, level=0.085, max_weight=2.5); weights=array(1/screen_params$N, screen_params$N)
-    build_index(pre_screen(D, d), get_rebals(D, 'month'), screen_mycorr2, screen_params, vc_params, weights)
  #   build_index(pre_screen(D, D$u[,.SD[1:min(nrow(.SD),3),], by=category]), get_rebals(D, 'month'), screen_mycorr2, screen_params, vc_params, weights)
 
-    ext_h = function(filename, vcp){
+    # filename='/home/aslepnev/data/idx0_custom_4_25.Rdata'; vcp=8.5
+    # filename='/home/aslepnev/data/idx1_4_25.Rdata'; vcp=10
+    ext_h = function(filename, vcp, start_dt = '1900-01-01'){
         d = get(load(filename))
-#        d = get(load('/home/aslepnev/data/idx2_custom.Rdata'))
-        h_res = foreach(x=d,.combine=rbind)%do%x$h
-        res_vc = exp(cumsum(volcontrol(h_res, list(window=20, level=0.01*vcp, max_weight=2.5))))
-#        res = exp(cumsum(h_res))
-        res_vc
+        res = foreach(x=d,.combine=rbind)%do%x$h
+        print(paste0('Simple vol: ', sd(tail(res,250))*sqrt(252)))
+#        res = volcontrol(res, list(window=20, level=0.01*vcp, max_weight=2.5))
+#        print(paste0('VC vol: ', sd(res)*sqrt(252)))
+#        print(paste0('VC ret: ', tail(exp(cumsum(res)),1)))        
+        res = exp(cumsum(res[index(res)>start_dt]))
+        print(paste0('Simple ret: ', tail(res,1)))
+        res
     }
 
     hh = foreach(k=8:9,.combine=cbind)%do%ext_h(sprintf('/home/aslepnev/data/idx1_%s_%s.Rdata', k, 252),8.5)
-    hh = foreach(filename=Sys.glob('/home/aslepnev/data/idx1_*'),.combine=cbind)%do%ext_h(filename, 8.5)
+    hh = foreach(filename=Sys.glob('/home/aslepnev/data/idx3_custom*'),.combine=cbind)%do%ext_h(filename, 8.5)
     plot(hh)
     plot(ext_h(Sys.glob('/home/aslepnev/data/idx1_4_*'),8.5))
     plot(ext_h(Sys.glob('/home/aslepnev/data/idx1_4_*')[5],8.5))
     plot(ext_h('/home/aslepnev/data/idx1_4_25.Rdata',8.5))
-    lines(ext_h('/home/aslepnev/data/idx1_4_25.Rdata',8.5))
+    a = ext_h('/home/aslepnev/data/idx0_custom_4_25.Rdata',8.5)
 
+    hh = foreach(filename=Sys.glob('/home/aslepnev/data/idx4_custom*'),.combine=cbind)%do%ext_h(filename, 8.5, '2009-04-01')
+    plot(hh)
+    
     plot(ext_h('/home/aslepnev/data/idx2_custom_4_25.Rdata',8.5))
     lines(ext_h('/home/aslepnev/data/idx2_custom_6_25.Rdata',8.5))
 
@@ -200,7 +246,8 @@ if(FALSE){
 }
 
 # D_in=pre_screen(D, d); rebal_dates=get_rebals(D, 'month'); screen_func=screen_mycorr2; 
-build_index = function(D_in, rebal_dates, screen_func, screen_params, vc_params, weights){
+# D_in=pre_screen(D, dd[[i]]); rebal_dates=get_rebals(D, 'month'); screen_func=screen_mycorr2; 
+build_index = function(D_in, rebal_dates, screen_func, screen_params, weights){
     u = D_in$u; h = D_in$h
     lh = na.fill(diff(log(1+na.locf(h))), 0)
     for(i in 1:ncol(lh))
