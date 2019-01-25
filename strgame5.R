@@ -16,8 +16,13 @@ D = get(load('/home/aslepnev/webhub/zacks_data.RData'))
 p = D$p
 u = D$u
 
-gs_auth(token = '/home/aslepnev/git/ej/gdoc_doc.R')
-s = gs_key('1y9KUgukyEvfjAVaDYCHPf1rkFn83q8LWS_0tybz2pIM')
+refresh_s = function() {
+    gs_auth(token = '/home/aslepnev/git/ej/gdoc_doc.R')
+    return(gs_key('1y9KUgukyEvfjAVaDYCHPf1rkFn83q8LWS_0tybz2pIM'))
+}
+
+s = refresh_s()
+
 #hrange = as.data.frame(gs_read(s, 'hist', range='A1:Z1000', col_names=FALSE))
 #NAMES = as.character(hrange[1,])
 #DIVS = as.numeric(hrange[2,])
@@ -32,8 +37,8 @@ names(params) = gsub(':','',rparams[,1])
 SIZE = params[['BASKET SIZE']]
 COUPON = params[['COUPON']]*0.01
 RFR = params[['RFR']]*0.01
-BARRIERS = as.data.frame(gs_read(s, 'wo-optimizer', range='E3:E10', col_names=FALSE))[,1]
-TTM = length(BARRIERS)
+BARRIERS = as.matrix(as.data.frame(gs_read(s, 'wo-optimizer', range='E3:I20', col_names=FALSE)))
+TTM = ncol(BARRIERS)
 TAIL = 120
 
 DICTIONARY = as.data.table(gs_read(s, 'wo-universe', range='A1:F1000', col_names=TRUE))
@@ -75,22 +80,39 @@ SIGMAS = ifelse(is.na(UNI$ivol), foreach(i=1:ncol(h),.combine=c)%do%{ sd(h[,i])*
 DIVS = ifelse(is.na(UNI$div), 0, UNI$div)
 COR_MAT_ALL = cor(h)
 
-cmb = combn(1:nrow(UNI), 4)
+cmb = combn(1:nrow(UNI), SIZE)
 idx = 1:ncol(cmb)
 all_tickers = UNI[, ticker]; idx = c(); for(i in 1:ncol(cmb)) if(sum(etf_tickers%in%all_tickers[cmb[,i]])>0) idx[length(idx)+1] = i
 #all_gics = UNI[, gics_code]; idx2 = c(); for(i in idx) if(length(unique(all_gics[cmb[,i]]))>=4) idx2[length(idx2)+1] = i
 all_gics = UNI[, gics_code]; idx2 = c(); for(i in idx) if(sum(is.na(all_gics[cmb[,i]]))==0 && length(unique(all_gics[cmb[,i]]))>=4) idx2[length(idx2)+1] = i
 
-# res2 = res
-res = foreach(i = idx2)%dopar%{
-    if(i%%1000==0) print(i)
-    list(basket=cmb[,i], price=wo_calculate_an(TTM, BARRIERS, SIGMAS[cmb[,i]], COR_MAT_ALL[cmb[,i], cmb[,i]], RFR, DIVS[cmb[,i]], COUPON))
+for(bi in 1:nrow(BARRIERS)){
+    barriers_in = as.numeric(BARRIERS[bi, ])
+    res = foreach(i = idx2)%dopar%{
+        if(i%%1000==0) print(i)
+        list(basket=cmb[,i], price=wo_calculate_an(TTM, barriers_in, SIGMAS[cmb[,i]], COR_MAT_ALL[cmb[,i], cmb[,i]], RFR, DIVS[cmb[,i]], COUPON))
+    }
+
+    prc = array(0, length(res))
+    for(i in 1:length(res)) if(!is.null(res[[i]])) prc[i] = res[[i]]$price
+    prc = prc[prc > 0]
+    b_sign = paste(barriers_in, collapse='-')
+    save(res, file=paste0('/home/aslepnev/webhub/wo_opt_', b_sign, '.RData'))
+
+    s = refresh_s()
+    tryCatch({gs_ws_delete(s, ws=b_sign)}, error=function(e) {})
+    s = refresh_s()
+    gs_ws_new(s, ws_title=b_sign, row_extent=500, col_extent=25)
+    s = refresh_s()
+    cheapest = as.data.table(foreach(i=order(prc)[1:500],.combine=rbind)%do%c(UNI[res[[i]]$basket, ticker], prc[i]))
+    gs_edit_cells(s, ws=b_sign, anchor = "A1", input = cheapest, byrow = TRUE, col_names=FALSE)
 }
 
 prc = array(0, length(res))
 for(i in 1:length(res)) if(!is.null(res[[i]])) prc[i] = res[[i]]$price
 prc = prc[prc>0]
-# save(res, file='/home/aslepnev/webhub/wo_opt1.RData')
+save(res, file='/home/aslepnev/webhub/wo_opt1.RData')
+
 min(prc)
 cheap_i = res[[which.min(prc)]]$basket
 UNI[cheap_i, ticker]
