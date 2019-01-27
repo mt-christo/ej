@@ -36,6 +36,7 @@ prorate_universe = function(u, h, d0, d1){
 }
 
 # u = D$u[,.SD[1,], by=focus]
+# D=D_STOCKS; u = d_stocks
 pre_screen = function(D, u, logret = FALSE){
     u1 = u
     h1 = D$h[, u1$ticker]
@@ -58,6 +59,16 @@ prorate_universe_multiple = function(u, h, d0, d1s){
     return(rbindlist(foreach(d1=d1s)%do%prorate_universe(u, h, d0, d1)))
 }
 
+# lh_in=lh_in['etfs']; u_in=u1_in['etfs']; pick_count=params$N
+pridex_screen_prep = function(lh_in, u_in, pick_count){
+    hh = cumsum(lh_in[,colSums(abs(lh_in))!=0])
+    uu = u_in[ticker%in%colnames(hh), ]
+    time_line = 1:nrow(hh)
+    hhcor = foreach(i=1:ncol(hh),.combine=c)%do%cor(time_line, hh[,i])
+    uni = colnames(hh)[order(hhcor, decreasing=TRUE)[1:min(pick_count, nrow(uu))]]
+    return(list(uni=uni, hh=hh, hhcor=hhcor, time_line=time_line))
+}
+
 # lh_in=x$lh; u_in=x$u; params=screen_params
 screen_momentum = function(lh_in, u_in, params){
     res = order(colSums(lh_in), decreasing=TRUE)[1:params$N]
@@ -72,16 +83,30 @@ screen_mycorr1 = function(lh_in, u_in, params){
     return(res)
 }
 
-# lh_in=x$lh; u_in=x$u; params=screen_params
-screen_mycorr2 = function(lh_in, u_in, params){
-    hh = na.fill(lh_in, fill=0.0)
-    hh = cumsum(hh[,colSums(abs(hh))!=0])
-    uu = u_in[ticker%in%colnames(hh), ]
-    time_line = 1:nrow(hh)
-    hhcor = foreach(i=1:ncol(hh),.combine=c)%do%cor(time_line, hh[,i])
-    uni = colnames(hh)[order(hhcor, decreasing=TRUE)[1:min(params$UNI, nrow(uu))]]
+best_pridex_metric = function(prep_in, params){
+    nn = t(combn(prep_in$uni, params$N))  # all N-baskets from universe
+    w = array(1/params$N, params$N)  # equal weights
+    rnk = foreach(j=1:nrow(nn),.combine=c)%do%{ cor(prep_in$time_line, log(((exp(prep_in$hh[, nn[j,]])-1)%*%w) + 1)) }  # calc metric for every basket
+    return(list(names=nn[which.max(rnk),], weights=w))  # return basket with max metric
+}
 
-    my_corr = function(n, w){ return(cor(time_line, log(((exp(hh[, n])-1)%*%w) + 1))) }
+# lh_in=x$lh; u_in=x$u; params=screen_params
+screen_pridex_equalweight = function(lh_in, u_in, params){
+    prep = pridex_screen_prep(lh_in, u_in, params$N)  # precal data
+    return(best_pridex_metric(prep, params))
+}
+
+# lh_in=x$lh; u_in=x$u; params=screen_params
+screen_pridex_coctail = function(lh_in, u_in, params){
+    prep1 = pridex_screen_prep(lh_in[['etfs']], u_in[['etfs']], params$N)
+    prep2 = pridex_screen_prep(lh_in[['stocks']], u_in[['stocks']], params$N)
+
+    b1 = best_pridex_metric(prep1, params)
+    b2 = best_pridex_metric(prep2, params)
+
+    sd(diff(prep1$hh[, b1$names]%*%b1$weights)[-1])*sqrt(252)
+    sd(diff(prep2$hh[, b2$names]%*%b2$weights)[-1])*sqrt(252)
+    
     this_screen = function(uni_in){  # uni_in=uni
         if(params$wtype=='singles') return(list(names=uni_in[1:params$N], weights=array(1/params$N, params$N)))
 
@@ -128,15 +153,16 @@ volcontrol = function(r, params){
 }
 
 if(FALSE){
-    D = get(load('/home/aslepnev/git/ej/etf_com_DATA.RData'))
+    D_STOCKS = get(load('/home/aslepnev/webhub/zacks_data.RData'))
+    d_stocks = head(D_STOCKS$u, 500)  # 500 biggest companies
+    
+    D_ETF = get(load('/home/aslepnev/webhub/sacha_etf_yhoo.RData'))
     my_tickers = c('ROBOTR','IXP','PNQI','SOXX','IBB','IYH','IHI','PJP','FBT','QQQ','MTUM','SPLV','EWZ','EEM','EFA','ILF','ASHR','FXI','IAU','IEO','PZA','TLT','LQD','EDV')
-    my_niches = unique(D$u[D$u$ticker%in%my_tickers, .(focus, niche, category, region, geography, strategy)])
-    d = D$u[my_niches, on=.(focus, niche, category, region, geography, strategy)]
-
-    D = get(load('/home/aslepnev/webhub/sacha_etf_yhoo.RData'))
-    my_tickers = c('ROBOTR','IXP','PNQI','SOXX','IBB','IYH','IHI','PJP','FBT','QQQ','MTUM','SPLV','EWZ','EEM','EFA','ILF','ASHR','FXI','IAU','IEO','PZA','TLT','LQD','EDV')
-    my_niches = unique(D$u[D$u$ticker%in%my_tickers, .(mcap_focus2, style, geo_focus, geo_focus2, ind_focus, mcap_focus, ind_group, industry)])
-    d = D$u[my_niches, on=.(mcap_focus2, style, geo_focus, geo_focus2, ind_focus, mcap_focus, ind_group, industry)]
+    my_niches = unique(D_ETF$u[ticker%in%my_tickers, .(mcap_focus2, style, geo_focus, geo_focus2, ind_focus, mcap_focus, ind_group, industry)])
+    d_etf = D_ETF$u[my_niches, on=.(mcap_focus2, style, geo_focus, geo_focus2, ind_focus, mcap_focus, ind_group, industry)]
+    D_ETF$h = D_ETF$h[index(D_ETF$h)%in%index(D_STOCKS$h)]
+    D_STOCKS$h = D_STOCKS$h[index(D_STOCKS$h)%in%index(D_ETF$h)]
+    
 
     d1 = D$u[order(mcap, decreasing=TRUE),][geo_focus=='European Region',][1:15,]
     d2 = D$u[order(mcap, decreasing=TRUE),][geo_focus2=='Emerging Market',][1:30,]
@@ -144,8 +170,6 @@ if(FALSE){
     d4 = D$u[order(mcap, decreasing=TRUE),][ind_focus=='Health Care',][1:30,]
     d5 = D$u[order(mcap, decreasing=TRUE),][ind_focus=='Financial',][1:20,]
 
-    D$u[, .N, by=ind_focus][order(N, decreasing=TRUE),]
-    colnames(d)
     
 #    D_in = pre_screen(D, D$u[1:100,]); 
 #    D_in = pre_screen(D, D$u[,.SD[1,], by=focus])
@@ -170,10 +194,8 @@ if(FALSE){
     sort(sds)
 
 
-    save(res, file='/home/aslepnev/data/idx2_custom_4_25.Rdata')
-
-    screen_params=list(N=5, UNI=30, window=40, type='simple', wtype='weights', field='niche', maxw=0.5); vc_params=list(window=20, level=0.085, max_weight=2.5); weights=array(1/screen_params$N, screen_params$N)
-    res = build_index(pre_screen(D, d), get_rebals(D, 'month'), screen_mycorr2, screen_params, vc_params, weights)
+    screen_params=list(N=5, UNI=30, window=40)
+    res = build_index(list(etfs=pre_screen(D_ETF, d_etf), stocks=pre_screen(D_STOCKS, d_stocks)), get_rebals(D_ETF, 'month'), screen_pridex_coctail, screen_params)
     save(res, file='/home/aslepnev/data/idx2_custom2.Rdata')
 
     h_res = foreach(x=res,.combine=rbind)%do%x$h
@@ -247,19 +269,27 @@ if(FALSE){
 
 # D_in=pre_screen(D, d); rebal_dates=get_rebals(D, 'month'); screen_func=screen_mycorr2; 
 # D_in=pre_screen(D, dd[[i]]); rebal_dates=get_rebals(D, 'month'); screen_func=screen_mycorr2; 
-build_index = function(D_in, rebal_dates, screen_func, screen_params, weights){
-    u = D_in$u; h = D_in$h
-    lh = na.fill(diff(log(1+na.locf(h))), 0)
-    for(i in 1:ncol(lh))
-        lh[abs(lh[,i])>0.5, i] = 0
+# D_in=list(etfs=pre_screen(D_ETF, d_etf), stocks=pre_screen(D_STOCKS, d_stocks)); rebal_dates=get_rebals(D_ETF, 'month'); screen_func=screen_pridex_coctail
+build_index = function(D_in, rebal_dates, screen_func, screen_params){
+    lh = list()
+    for(i in names(D_in)){
+        lh[[i]] = na.fill(diff(log(1+na.locf(D_in[[i]]$h))), 0)
+        for(j in 1:ncol(lh[[i]]))
+            lh[[i]][abs(lh[[i]][,j])>0.5, j] = 0
+    }
     
-    rebal_idx = match(rebal_dates[rebal_dates>='2008-09-30'], index(lh))
-    calc_pieces = foreach(i=1:(length(rebal_idx)-1))%do%
-        list(dt = index(lh)[rebal_idx[i]],
-             lh = lh[(rebal_idx[i]-screen_params$window):rebal_idx[i], ],
-             lh_next = lh[(rebal_idx[i]+1):rebal_idx[i+1], ],
-#             u = u[dt==rebal_dates[i],])
-             u = u)
+    rebal_idx = match(rebal_dates[rebal_dates>='2008-09-30'], index(lh[[1]]))  # indices of history in all elements iof lh are expected the same!
+    calc_pieces = foreach(i=1:(length(rebal_idx)-1))%do%{
+        s = list(); s_next = list(); s_u = list()
+        for(j in names(lh)){
+            s[[j]] = lh[[j]][(rebal_idx[i]-screen_params$window):rebal_idx[i], ]
+            s_next[[j]] = lh[[j]][(rebal_idx[i]+1):rebal_idx[i+1], ]
+            s_u[[j]] = D_in[[j]]$u
+        
+        }
+        list(dt = index(lh[[1]])[rebal_idx[i]], lh=s, lh_next=s_next, u=s_u)
+             
+    }
 
     # x = calc_pieces[[100]]
     h_res = foreach(x=calc_pieces)%dopar%{
