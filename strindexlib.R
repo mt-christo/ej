@@ -1,5 +1,6 @@
 library(doMC)
 library(data.table)
+library(foreach)
 library(xts)
 library(nloptr)
 library(tseries)
@@ -183,7 +184,10 @@ if(FALSE){
     screen_params = list(window=40, voltarget=0.3, minw=0.02, maxw=0.8, etfs=list(N=3, UNI=20, window=40), stocks=list(UNI=10, window=40))
     res = build_index(list(etfs=pre_screen(D_ETF, d_etf), stocks=pre_screen(D_STOCKS, d_stocks)), get_rebals(D_ETF, 'month'), screen_pridex_voltarget, screen_params)
     save(res, file='/home/aslepnev/data/idx5_custom1.Rdata')
-    r = exp(cumsum(foreach(x=res,.combine=rbind)%do%x$h))
+    r = foreach(x=res,.combine=rbind)%do%x$h; print(sd(tail(r,120))*sqrt(252))
+    perf = exp(cumsum(r))
+    
+    plot(exp(cumsum(foreach(x=get(load('/home/aslepnev/data/idx5_custom1.Rdata')),.combine=rbind)%do%x$h)))
 
     h_res = foreach(x=res,.combine=rbind)%do%x$h
     res_vc = exp(cumsum(volcontrol(h_res, list(window=20, level=0.01*8.5, max_weight=2.5))))
