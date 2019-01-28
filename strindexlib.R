@@ -77,9 +77,9 @@ pridex_metric = function(time_line, h, w){
     return(cor(time_line, log(((exp(h)-1)%*%w) + 1)))
 }
 
-basket_vol = function(h, w){
-    return(sd(log(((exp(h)-1)%*%w) + 1))*sqrt(252)) 
-}
+basket_ret = function(h, w) return( xts(log(((exp(h)-1)%*%w) + 1), order.by=index(h)) )
+
+basket_vol = function(h, w) return( sd(basket_ret(h, w))*sqrt(252) )
 
 # lh_in=lh_in['etfs']; u_in=u1_in['etfs']; pick_count=params$N
 pridex_screen_prep = function(lh_in, u_in, pick_count){
@@ -112,8 +112,8 @@ screen_pridex_equalweight = function(lh_in, u_in, params, lh_key='main'){
 screen_pridex_voltarget = function(lh_in, u_in, params){
     e = screen_pridex_equalweight(lh_in, u_in, params, 'etfs')
     prep = pridex_screen_prep(lh_in[['stocks']], u_in[['stocks']], params[['stocks']]$UNI)
-    perf <- cbind(prep$perf_uni, e$prep$perf_uni[, e$names])
-    r <- cbind(prep$r_uni, e$prep$r_uni[, e$names])
+    perf <- cbind(prep$perf_uni, e$prep$perf_uni[, e$names]); colnames(perf) = 1:ncol(perf)
+    r <- cbind(prep$r_uni, e$prep$r_uni[, e$names]); colnames(r) = 1:ncol(r)
 
     # w = array(1/n, n)
     # w = res$par
@@ -123,7 +123,8 @@ screen_pridex_voltarget = function(lh_in, u_in, params){
     n = ncol(perf)
     res = cobyla(x0=array(1/n, n), fn=gradus, lower=array(params$minw, n), upper=array(params$maxw, n), hin=function(w){ -abs(1-sum(w)) }, control=COB_CTL)
 
-    return(list(names=names(r), weights=res$par))
+    return(list(stocks = list(names=prep$uni, weights=res$par[1:ncol(prep$r_uni)]),
+                etfs = list(names=e$names, weights=res$par[-(1:ncol(prep$r_uni))])))
 }
 
 # r=h_res; params=vc_params
@@ -182,6 +183,7 @@ if(FALSE){
     screen_params = list(window=40, voltarget=0.3, minw=0.02, maxw=0.8, etfs=list(N=3, UNI=20, window=40), stocks=list(UNI=10, window=40))
     res = build_index(list(etfs=pre_screen(D_ETF, d_etf), stocks=pre_screen(D_STOCKS, d_stocks)), get_rebals(D_ETF, 'month'), screen_pridex_voltarget, screen_params)
     save(res, file='/home/aslepnev/data/idx5_custom1.Rdata')
+    r = exp(cumsum(foreach(x=res,.combine=rbind)%do%x$h))
 
     h_res = foreach(x=res,.combine=rbind)%do%x$h
     res_vc = exp(cumsum(volcontrol(h_res, list(window=20, level=0.01*8.5, max_weight=2.5))))
@@ -270,7 +272,6 @@ build_index = function(D_in, rebal_dates, screen_func, screen_params){
     
     rebal_idx = match(rebal_dates[rebal_dates>='2008-09-30'], index(lh[[1]]))  # indices of history in all elements iof lh are expected the same!
     calc_pieces = foreach(i=1:(length(rebal_idx) - 1))%do%{
-        print(i)
         s = list(); s_next = list(); s_u = list()
         for(j in names(lh)){
             s[[j]] = lh[[j]][(rebal_idx[i] - screen_params$window):rebal_idx[i], ]
@@ -283,10 +284,12 @@ build_index = function(D_in, rebal_dates, screen_func, screen_params){
 
     # x = calc_pieces[[100]]
     h_res = foreach(x=calc_pieces)%dopar%{
-        print(paste(screen_params$N, screen_params$UNI, x$dt, sep=', '))
+#        print(paste(screen_params$N, screen_params$UNI, x$dt, sep=', '))
+        print(x$dt)
         basket = screen_func(x$lh, x$u, screen_params)
-        he = x$lh_next[, basket$names]
-        r = xts(log((exp(he) - 1)%*%(basket$weights) + 1), order.by=index(he))
+        h = foreach(i=names(basket),.combine=cbind)%do%x$lh_next[[i]][, basket[[i]]$names]
+        w = foreach(i=names(basket),.combine=c)%do%basket[[i]]$weights
+        r = basket_ret(h, w) 
         list(h=r, basket=basket, dt=x$dt)
     }
 
