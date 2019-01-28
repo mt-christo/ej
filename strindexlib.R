@@ -179,7 +179,7 @@ if(FALSE){
     sort(sds)
 
 
-    screen_params = list(voltarget=0.3, minw=0.02, maxw=0.8, etfs=list(N=3, UNI=20, window=40), stocks=list(UNI=10, window=40))
+    screen_params = list(window=40, voltarget=0.3, minw=0.02, maxw=0.8, etfs=list(N=3, UNI=20, window=40), stocks=list(UNI=10, window=40))
     res = build_index(list(etfs=pre_screen(D_ETF, d_etf), stocks=pre_screen(D_STOCKS, d_stocks)), get_rebals(D_ETF, 'month'), screen_pridex_voltarget, screen_params)
     save(res, file='/home/aslepnev/data/idx5_custom1.Rdata')
 
@@ -255,7 +255,7 @@ if(FALSE){
 
 # D_in=pre_screen(D, d); rebal_dates=get_rebals(D, 'month'); screen_func=screen_mycorr2; 
 # D_in=pre_screen(D, dd[[i]]); rebal_dates=get_rebals(D, 'month'); screen_func=screen_mycorr2; 
-# D_in=list(etfs=pre_screen(D_ETF, d_etf), stocks=pre_screen(D_STOCKS, d_stocks)); rebal_dates=get_rebals(D_ETF, 'month'); screen_func=screen_pridex_equalweight
+# D_in=list(etfs=pre_screen(D_ETF, d_etf), stocks=pre_screen(D_STOCKS, d_stocks)); rebal_dates=get_rebals(D_ETF, 'month'); screen_func=screen_pridex_voltarget
 build_index = function(D_in, rebal_dates, screen_func, screen_params){
     lh = list()
     for(i in names(D_in)){
@@ -270,6 +270,7 @@ build_index = function(D_in, rebal_dates, screen_func, screen_params){
     
     rebal_idx = match(rebal_dates[rebal_dates>='2008-09-30'], index(lh[[1]]))  # indices of history in all elements iof lh are expected the same!
     calc_pieces = foreach(i=1:(length(rebal_idx) - 1))%do%{
+        print(i)
         s = list(); s_next = list(); s_u = list()
         for(j in names(lh)){
             s[[j]] = lh[[j]][(rebal_idx[i] - screen_params$window):rebal_idx[i], ]
