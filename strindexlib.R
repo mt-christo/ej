@@ -100,26 +100,30 @@ pridex_rank_baskets = function(prep_in, bsize){
 }
 
 # lh_in=x$lh; u_in=x$u; params=screen_params
-screen_pridex_equalweight = function(lh_in, u_in, params){
-    prep = pridex_screen_prep(lh_in[['main']], u_in[['main']], params[['main']]$UNI)  # precal data
-    baskets = pridex_rank_baskets(prep, params[['main']]$N)
-    return(list(names=baskets[1, ], weights=array(1/params[['main']]$N, params[['main']]$N)))
+screen_pridex_equalweight = function(lh_in, u_in, params, lh_key='main'){
+    prep = pridex_screen_prep(lh_in[[lh_key]], u_in[[lh_key]], params[[lh_key]]$UNI)  # precal data
+    n = params[[lh_key]]$N
+    baskets = pridex_rank_baskets(prep, n)
+    return(list(names=baskets[1, ], weights=array(1/n, n), prep=prep))
 }
 
 # lh_in=x$lh; u_in=x$u; params=screen_params
-# lh_in=x$lh; u_in=x$u; params=list(voltarget=0.3, etfs=list(N=3, UNI=20, window=40), stocks=list(UNI=10, window=40, maxw=0.8))
+# lh_in=x$lh; u_in=x$u; params=list(voltarget=0.3, minw=0.02, maxw=0.8, etfs=list(N=3, UNI=20, window=40), stocks=list(UNI=10, window=40))
 screen_pridex_voltarget = function(lh_in, u_in, params){
-#    prep1 = pridex_screen_prep(lh_in[['etfs']], u_in[['etfs']], params[['etfs']]$UNI)
+    e = screen_pridex_equalweight(lh_in, u_in, params, 'etfs')
     prep = pridex_screen_prep(lh_in[['stocks']], u_in[['stocks']], params[['stocks']]$UNI)
+    perf <- cbind(prep$perf_uni, e$prep$perf_uni[, e$names])
+    r <- cbind(prep$r_uni, e$prep$r_uni[, e$names])
 
     # w = array(1/n, n)
+    # w = res$par
     gradus = function(w){
-        return(abs(params$voltarget - basket_vol(prep$r_uni, w)) + abs(1 - pridex_metric(prep$time_line, prep$perf_uni, w)))
+        return(abs(params$voltarget - basket_vol(r, w)) + abs(1 - pridex_metric(prep$time_line, perf, w)))
     }
-    n = length(prep$uni)
-    res = cobyla(x0=array(1/n, n), fn=gradus, lower=array(0,n), upper=array(params[['stocks']]$maxw, n), hin=function(w){ -abs(1-sum(w)) }, control=COB_CTL)
+    n = ncol(perf)
+    res = cobyla(x0=array(1/n, n), fn=gradus, lower=array(params$minw, n), upper=array(params$maxw, n), hin=function(w){ -abs(1-sum(w)) }, control=COB_CTL)
 
-    return(list(names=prep$uni, weights=res$par))
+    return(list(names=names(r), weights=res$par))
 }
 
 # r=h_res; params=vc_params
@@ -133,9 +137,11 @@ volcontrol = function(r, params){
 
 if(FALSE){
     D_STOCKS = get(load('/home/aslepnev/webhub/zacks_data.RData'))
+    ##### D_STOCKS$h = D_STOCKS$h[-3013]; save(D_STOCKS, file='/home/aslepnev/webhub/zacks_data.RData')
     d_stocks = head(D_STOCKS$u, 500)  # 500 biggest companies
     
     D_ETF = get(load('/home/aslepnev/webhub/sacha_etf_yhoo.RData'))
+    ##### D_ETF$h = D_ETF$h[-2007]; save(D_ETF, file='/home/aslepnev/webhub/sacha_etf_yhoo.RData')
     my_tickers = c('ROBOTR','IXP','PNQI','SOXX','IBB','IYH','IHI','PJP','FBT','QQQ','MTUM','SPLV','EWZ','EEM','EFA','ILF','ASHR','FXI','IAU','IEO','PZA','TLT','LQD','EDV')
     my_niches = unique(D_ETF$u[ticker%in%my_tickers, .(mcap_focus2, style, geo_focus, geo_focus2, ind_focus, mcap_focus, ind_group, industry)])
     d_etf = D_ETF$u[my_niches, on=.(mcap_focus2, style, geo_focus, geo_focus2, ind_focus, mcap_focus, ind_group, industry)]
@@ -173,9 +179,9 @@ if(FALSE){
     sort(sds)
 
 
-    screen_params=list(N=3, UNI=20, window=40)
-    res = build_index(list(etfs=pre_screen(D_ETF, d_etf), stocks=pre_screen(D_STOCKS, d_stocks)), get_rebals(D_ETF, 'month'), screen_pridex_coctail, screen_params)
-    save(res, file='/home/aslepnev/data/idx2_custom2.Rdata')
+    screen_params = list(voltarget=0.3, minw=0.02, maxw=0.8, etfs=list(N=3, UNI=20, window=40), stocks=list(UNI=10, window=40))
+    res = build_index(list(etfs=pre_screen(D_ETF, d_etf), stocks=pre_screen(D_STOCKS, d_stocks)), get_rebals(D_ETF, 'month'), screen_pridex_voltarget, screen_params)
+    save(res, file='/home/aslepnev/data/idx5_custom1.Rdata')
 
     h_res = foreach(x=res,.combine=rbind)%do%x$h
     res_vc = exp(cumsum(volcontrol(h_res, list(window=20, level=0.01*8.5, max_weight=2.5))))
@@ -190,6 +196,7 @@ if(FALSE){
     # 1 - equally weighted
     # 3 - best eq weitghted, then optimize
     # 4 - top n highest ranked
+    # 5 - coctail
     
     p0 = expand.grid(list(4,22:35))
     for(ii in 1:nrow(p0)){
@@ -256,18 +263,21 @@ build_index = function(D_in, rebal_dates, screen_func, screen_params){
         for(j in 1:ncol(lh[[i]]))
             lh[[i]][abs(lh[[i]][,j])>0.5, j] = 0
     }
+
+    for(i in 1:length(lh))
+        for(j in 1:length(lh))
+            lh[[i]] = lh[[i]][index(lh[[i]])%in%index(lh[[j]])]
     
     rebal_idx = match(rebal_dates[rebal_dates>='2008-09-30'], index(lh[[1]]))  # indices of history in all elements iof lh are expected the same!
-    calc_pieces = foreach(i=1:(length(rebal_idx)-1))%do%{
+    calc_pieces = foreach(i=1:(length(rebal_idx) - 1))%do%{
         s = list(); s_next = list(); s_u = list()
         for(j in names(lh)){
-            s[[j]] = lh[[j]][(rebal_idx[i]-screen_params$window):rebal_idx[i], ]
+            s[[j]] = lh[[j]][(rebal_idx[i] - screen_params$window):rebal_idx[i], ]
             s_next[[j]] = lh[[j]][(rebal_idx[i]+1):rebal_idx[i+1], ]
             s_u[[j]] = D_in[[j]]$u
         
         }
         list(dt = index(lh[[1]])[rebal_idx[i]], lh=s, lh_next=s_next, u=s_u)
-             
     }
 
     # x = calc_pieces[[100]]
