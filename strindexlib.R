@@ -59,16 +59,6 @@ prorate_universe_multiple = function(u, h, d0, d1s){
     return(rbindlist(foreach(d1=d1s)%do%prorate_universe(u, h, d0, d1)))
 }
 
-# lh_in=lh_in['etfs']; u_in=u1_in['etfs']; pick_count=params$N
-pridex_screen_prep = function(lh_in, u_in, pick_count){
-    hh = cumsum(lh_in[,colSums(abs(lh_in))!=0])
-    uu = u_in[ticker%in%colnames(hh), ]
-    time_line = 1:nrow(hh)
-    hhcor = foreach(i=1:ncol(hh),.combine=c)%do%cor(time_line, hh[,i])
-    uni = colnames(hh)[order(hhcor, decreasing=TRUE)[1:min(pick_count, nrow(uu))]]
-    return(list(uni=uni, hh=hh, hhcor=hhcor, time_line=time_line))
-}
-
 # lh_in=x$lh; u_in=x$u; params=screen_params
 screen_momentum = function(lh_in, u_in, params){
     res = order(colSums(lh_in), decreasing=TRUE)[1:params$N]
@@ -83,64 +73,53 @@ screen_mycorr1 = function(lh_in, u_in, params){
     return(res)
 }
 
-best_pridex_metric = function(prep_in, params){
-    nn = t(combn(prep_in$uni, params$N))  # all N-baskets from universe
-    w = array(1/params$N, params$N)  # equal weights
-    rnk = foreach(j=1:nrow(nn),.combine=c)%do%{ cor(prep_in$time_line, log(((exp(prep_in$hh[, nn[j,]])-1)%*%w) + 1)) }  # calc metric for every basket
-    return(list(names=nn[which.max(rnk),], weights=w))  # return basket with max metric
+pridex_metric = function(time_line, h, w){
+    return(cor(time_line, log(((exp(h)-1)%*%w) + 1)))
+}
+
+basket_vol = function(h, w){
+    return(sd(log(((exp(h)-1)%*%w) + 1))*sqrt(252)) 
+}
+
+# lh_in=lh_in['etfs']; u_in=u1_in['etfs']; pick_count=params$N
+pridex_screen_prep = function(lh_in, u_in, pick_count){
+    r = lh_in[,colSums(abs(lh_in))!=0]
+    perf = cumsum(r)
+    uu = u_in[ticker%in%colnames(perf), ]
+    time_line = 1:nrow(perf)
+    metr = foreach(i=1:ncol(perf),.combine=c)%do%cor(time_line, perf[,i])
+    uni = colnames(perf)[order(metr, decreasing=TRUE)[1:min(pick_count, nrow(uu))]]
+    return(list(uni=uni, r=r, perf=perf, r_uni=r[, uni], perf_uni=perf[, uni], metr=metr, time_line=time_line))
+}
+
+pridex_rank_baskets = function(prep_in, bsize){
+    nn = t(combn(prep_in$uni, bsize))  # all N-baskets from universe
+    w = array(1/bsize, bsize)  # equal weights
+    rnk = foreach(j=1:nrow(nn),.combine=c)%do%pridex_metric(prep_in$time_line, prep_in$perf_uni[, nn[j, ]], w)  # calc metric for every basket
+    return(nn[order(rnk, decreasing=TRUE), ])  # return baskets in the highest-to-lowest metric
 }
 
 # lh_in=x$lh; u_in=x$u; params=screen_params
 screen_pridex_equalweight = function(lh_in, u_in, params){
-    prep = pridex_screen_prep(lh_in, u_in, params$N)  # precal data
-    return(best_pridex_metric(prep, params))
+    prep = pridex_screen_prep(lh_in[['main']], u_in[['main']], params[['main']]$UNI)  # precal data
+    baskets = pridex_rank_baskets(prep, params[['main']]$N)
+    return(list(names=baskets[1, ], weights=array(1/params[['main']]$N, params[['main']]$N)))
 }
 
 # lh_in=x$lh; u_in=x$u; params=screen_params
-screen_pridex_coctail = function(lh_in, u_in, params){
-    prep1 = pridex_screen_prep(lh_in[['etfs']], u_in[['etfs']], params$N)
-    prep2 = pridex_screen_prep(lh_in[['stocks']], u_in[['stocks']], params$N)
+# lh_in=x$lh; u_in=x$u; params=list(voltarget=0.3, etfs=list(N=3, UNI=20, window=40), stocks=list(UNI=10, window=40, maxw=0.8))
+screen_pridex_voltarget = function(lh_in, u_in, params){
+#    prep1 = pridex_screen_prep(lh_in[['etfs']], u_in[['etfs']], params[['etfs']]$UNI)
+    prep = pridex_screen_prep(lh_in[['stocks']], u_in[['stocks']], params[['stocks']]$UNI)
 
-    b1 = best_pridex_metric(prep1, params)
-    b2 = best_pridex_metric(prep2, params)
-
-    sd(diff(prep1$hh[, b1$names]%*%b1$weights)[-1])*sqrt(252)
-    sd(diff(prep2$hh[, b2$names]%*%b2$weights)[-1])*sqrt(252)
-    
-    this_screen = function(uni_in){  # uni_in=uni
-        if(params$wtype=='singles') return(list(names=uni_in[1:params$N], weights=array(1/params$N, params$N)))
-
-        nn = t(combn(uni_in, params$N))
-        w = array(1/params$N, params$N)
-        rnk = foreach(j=1:nrow(nn),.combine=c)%do%{ my_corr(nn[j,], w) }
-        
-        if(params$wtype=='equalweight') return(list(names=nn[which.max(rnk),], weights=array(1/params$N, params$N)))
-        
-        if(params$wtype=='volweight'){
-            names = nn[which.max(rnk),]
-            hh = hh[, names]
-            sds = foreach(i=1:ncol(hh),.combine=c)%do%sd(hh[,i])
-            weights = order(order(sds))*array(1/params$N, params$N)
-            return(list(names=names, weights=weights/sum(weights)))
-        }
-        
-        # w=x$par  array(1/params$N, params$N)
-        eq_one = function(w){ -abs(1-sum(w)) }            
-        rnks = order(rnk,decreasing=TRUE)[1:min(100,length(rnk))]
-        # i=rnks[1]
-        res = foreach(i=rnks)%do%{
-            names <- nn[i,]
-            gradus = function(w){ return(-my_corr(names, w)) }                
-            res = cobyla(x0=array(1/params$N, params$N), fn=gradus, lower=array(0,params$N), upper=array(params$maxw,params$N), hin=eq_one, control=COB_CTL)
-        }
-        i = which.min(foreach(x=res,.combine=c)%do%x$value)
-        return(list(names=nn[rnks[i],], weights=res[[i]]$par))
+    # w = array(1/n, n)
+    gradus = function(w){
+        return(abs(params$voltarget - basket_vol(prep$r_uni, w)) + abs(1 - pridex_metric(prep$time_line, prep$perf_uni, w)))
     }
+    n = length(prep$uni)
+    res = cobyla(x0=array(1/n, n), fn=gradus, lower=array(0,n), upper=array(params[['stocks']]$maxw, n), hin=function(w){ -abs(1-sum(w)) }, control=COB_CTL)
 
-    s1 = this_screen(uni)
-#    s2 = this_screen(uni[!uni%in%s1$names])
-#    return(list(names=c(s1$names, s2$names), weights=c(s1$weights, s2$weights)*0.5))
-    return(list(names=s1$names, weights=s1$weights))
+    return(list(names=prep$uni, weights=res$par))
 }
 
 # r=h_res; params=vc_params
@@ -194,7 +173,7 @@ if(FALSE){
     sort(sds)
 
 
-    screen_params=list(N=5, UNI=30, window=40)
+    screen_params=list(N=3, UNI=20, window=40)
     res = build_index(list(etfs=pre_screen(D_ETF, d_etf), stocks=pre_screen(D_STOCKS, d_stocks)), get_rebals(D_ETF, 'month'), screen_pridex_coctail, screen_params)
     save(res, file='/home/aslepnev/data/idx2_custom2.Rdata')
 
@@ -269,7 +248,7 @@ if(FALSE){
 
 # D_in=pre_screen(D, d); rebal_dates=get_rebals(D, 'month'); screen_func=screen_mycorr2; 
 # D_in=pre_screen(D, dd[[i]]); rebal_dates=get_rebals(D, 'month'); screen_func=screen_mycorr2; 
-# D_in=list(etfs=pre_screen(D_ETF, d_etf), stocks=pre_screen(D_STOCKS, d_stocks)); rebal_dates=get_rebals(D_ETF, 'month'); screen_func=screen_pridex_coctail
+# D_in=list(etfs=pre_screen(D_ETF, d_etf), stocks=pre_screen(D_STOCKS, d_stocks)); rebal_dates=get_rebals(D_ETF, 'month'); screen_func=screen_pridex_equalweight
 build_index = function(D_in, rebal_dates, screen_func, screen_params){
     lh = list()
     for(i in names(D_in)){
