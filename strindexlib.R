@@ -1,3 +1,4 @@
+library(googlesheets)
 library(doMC)
 library(data.table)
 library(foreach)
@@ -7,6 +8,11 @@ library(tseries)
 registerDoMC(cores=7)
 
 COB_CTL <<- list(xtol_rel=1e-8, maxeval=5000)
+
+refresh_s = function() {
+    gs_auth(token = '/home/aslepnev/git/ej/gdoc_doc.R')
+    return(gs_key('1y9KUgukyEvfjAVaDYCHPf1rkFn83q8LWS_0tybz2pIM'))
+}
 
 enrich_data = function(fdata_path, hdata_path){
     #u = get(load('uni.RData')); u$dt = as.Date("2018-03-01"); colnames(u)=gsub(' ','_', colnames(u)); save(u, file='uni.RData')
@@ -83,7 +89,7 @@ basket_ret = function(h, w) return( xts(log(((exp(h)-1)%*%w) + 1), order.by=inde
 basket_vol = function(h, w) return( sd(basket_ret(h, w))*sqrt(252) )
 
 # lh_in=lh_in['etfs']; u_in=u1_in['etfs']; pick_count=params$N
-pridex_screen_prep = function(lh_in, u_in, pick_count){
+pridex_screen_prep = function(lh_in, u_in, pick_count){  # screening by proiex metric TODO refactor to single function
     r = lh_in[,colSums(abs(lh_in))!=0]
     perf = cumsum(r)
     uu = u_in[ticker%in%colnames(perf), ]
@@ -93,6 +99,23 @@ pridex_screen_prep = function(lh_in, u_in, pick_count){
     return(list(uni=uni, r=r, perf=perf, r_uni=r[, uni], perf_uni=perf[, uni], metr=metr, time_line=time_line))
 }
 
+# lh_in=lh_in[['main']]; u_in=u_in[['main']]; pick_count=params[['main']]$UNI; vtarget=params$voltarget; force_us=FALSE
+sigma_screen_prep = function(lh_in, u_in, pick_count, vtarget, force_us){  # screening by volatility
+    u = u_in[colSums(abs(lh_in))!=0, ]
+    if(force_us)
+        u = rbind(u[country!='US', ], u_in[country=='US', ][1:sum(u$country!='US'), ])  # hardcoded enforced 50% US companies!
+    r = lh_in[, u$ticker]
+    perf = cumsum(r)
+    u = u[ticker%in%colnames(perf), ]
+
+    perf_tail = as.numeric(tail(perf, 1))  # perf_tail[match(uni, colnames(perf))]
+    uni = colnames(perf)
+    uni = uni[order(perf_tail, decreasing=TRUE)[1:min(pick_count*2, length(uni))]]
+    sds = foreach(i=uni,.combine=c)%do%(sd(r[,i])*sqrt(252))
+    uni = uni[order(abs(sds - vtarget), decreasing=FALSE)[1:min(pick_count, length(uni))]]
+    return(list(uni=uni, r=r, perf=perf, r_uni=r[, uni], perf_uni=perf[, uni]))
+}
+
 pridex_rank_baskets = function(prep_in, bsize){
     nn = t(combn(prep_in$uni, bsize))  # all N-baskets from universe
     w = array(1/bsize, bsize)  # equal weights
@@ -100,7 +123,7 @@ pridex_rank_baskets = function(prep_in, bsize){
     return(nn[order(rnk, decreasing=TRUE), ])  # return baskets in the highest-to-lowest metric
 }
 
-# lh_in=x$lh; u_in=x$u; params=screen_params
+# lh_in=x$lh; u_in=x$u; params=screen_params; lh_key='main'
 screen_pridex_equalweight = function(lh_in, u_in, params, lh_key='main'){
     prep = pridex_screen_prep(lh_in[[lh_key]], u_in[[lh_key]], params[[lh_key]]$UNI)  # precal data
     n = params[[lh_key]]$N
@@ -108,9 +131,26 @@ screen_pridex_equalweight = function(lh_in, u_in, params, lh_key='main'){
     return(list(names=baskets[1, ], weights=array(1/n, n), prep=prep))
 }
 
-# lh_in=x$lh; u_in=x$u; params=screen_params
+# lh_in=x$lh; u_in=x$u; params = screen_params
 # lh_in=x$lh; u_in=x$u; params=list(voltarget=0.3, minw=0.02, maxw=0.8, etfs=list(N=3, UNI=20, window=40), stocks=list(UNI=10, window=40))
-screen_pridex_voltarget = function(lh_in, u_in, params){
+screen_voltarget = function(lh_in, u_in, params){
+    prep = sigma_screen_prep(lh_in[['main']], u_in[['main']], params[['main']]$UNI, params$voltarget, params$force_us)
+    perf <- prep$perf_uni; colnames(perf) = 1:ncol(perf)
+    r <- prep$r_uni; colnames(r) = 1:ncol(r)
+
+    # w = array(1/n, n)
+    # w = res$par
+    perf_tail = as.numeric(tail(perf,1))
+    gradus = function(w){
+        return(abs(params$voltarget - basket_vol(r, w))*10000 - sum(perf_tail*w))
+    }
+    n = ncol(perf)
+    res = cobyla(x0=array(1/n, n), fn=gradus, lower=array(params$minw, n), upper=array(params$maxw, n), hin=function(w){ -abs(1-sum(w)) }, control=COB_CTL)
+
+    return(list(main = list(names=prep$uni, weights=res$par[1:ncol(prep$r_uni)])))
+}
+
+screen_pridex_voltarget_stocksetfs = function(lh_in, u_in, params){
     e = screen_pridex_equalweight(lh_in, u_in, params, 'etfs')
     prep = pridex_screen_prep(lh_in[['stocks']], u_in[['stocks']], params[['stocks']]$UNI)
     perf <- cbind(prep$perf_uni, e$prep$perf_uni[, e$names]); colnames(perf) = 1:ncol(perf)
@@ -137,6 +177,32 @@ volcontrol = function(r, params){
     return(res)
 }
 
+# screen_params = list(window=40, voltarget=0.4, minw=0.01, maxw=0.3, force_us=FALSE, main=list(UNI=10, window=40)); rebal_freq='quarter'; index_code='SOLVIT'
+gen_file_pack = function(screen_params, rebal_freq, index_code){
+    res = build_index(list(main=pre_screen(D_STOCKS, d_stocks)), rebal_dates=get_rebals(D_STOCKS, rebal_freq), screen_voltarget, screen_params)
+    
+    r = foreach(x=res,.combine=rbind)%do%x$h
+    print(sd(tail(r,120))*sqrt(252))
+
+    baskets = foreach(x=res,.combine=rbind)%do%cbind(data.table(dt=x$dt), t(x$basket$main$names))
+    weights = foreach(x=res,.combine=rbind)%do%cbind(data.table(dt=x$dt), t(round(x$basket$main$weights, 3)))
+    liner = exp(cumsum(foreach(x=res,.combine=rbind)%do%x$h))
+    liner = data.table(dt=index(liner), value=liner)    
+
+    abet = c(LETTERS, paste0(LETTERS[1], LETTERS), paste0(LETTERS[2], LETTERS))
+    tryCatch({gs_ws_delete(refresh_s(), ws=index_code)}, error=function(e) {})
+    gs_ws_new(refresh_s(), ws_title=index_code, row_extent=5000, col_extent=100)
+    gs_edit_cells(refresh_s(), ws=index_code, anchor = "A1", input = liner, byrow = TRUE, col_names=FALSE)
+    gs_edit_cells(refresh_s(), ws=index_code, anchor = "D1", input = baskets, byrow = TRUE, col_names=FALSE)
+    gs_edit_cells(refresh_s(), ws=index_code, anchor = abet(4+ncol(baskets)+1), input = weights, byrow = TRUE, col_names=FALSE)
+
+
+    
+    fwrite(liner, paste0('/home/aslepnev/git/ej/liner_', index_code, '.csv'))
+    fwrite(baskets, paste0('/home/aslepnev/git/ej/baskets_', index_code, '.csv'))
+    fwrite(weights, paste0('/home/aslepnev/git/ej/weights_', index_code, '.csv')
+}
+
 if(FALSE){
     D_STOCKS = get(load('/home/aslepnev/webhub/zacks_data.RData'))
     ##### D_STOCKS$h = D_STOCKS$h[-3013]; save(D_STOCKS, file='/home/aslepnev/webhub/zacks_data.RData')
@@ -156,6 +222,29 @@ if(FALSE){
     d3 = D$u[order(mcap, decreasing=TRUE),][ind_focus=='Technology',][1:30,]
     d4 = D$u[order(mcap, decreasing=TRUE),][ind_focus=='Health Care',][1:30,]
     d5 = D$u[order(mcap, decreasing=TRUE),][ind_focus=='Financial',][1:20,]
+
+
+    
+    D_STOCKS = get(load('/home/aslepnev/webhub/zacks_data.RData'))
+    u = fread('/home/aslepnev/git/ej/grish_uni.csv')
+    u$ticker = as.character(t(as.data.table(strsplit(u$ticker, ' ')))[, 1])
+    D_STOCKS$u = u[D_STOCKS$u, on='ticker'][!is.na(country), ][, head(.SD, 1), by='ticker']
+    d_stocks = D_STOCKS$u  #head(D_STOCKS$u, 100)  # 500 biggest companies
+    d_stocks[, .N, by='country']
+
+    
+    D_STOCKS = get(load('/home/aslepnev/webhub/zacks_data.RData'))
+    u = fread('/home/aslepnev/git/ej/grish_uni.csv')
+    u$ticker = as.character(t(as.data.table(strsplit(u$ticker, ' ')))[, 1])
+    #D_STOCKS$u = u[D_STOCKS$u, on='ticker'][!is.na(country), ][, head(.SD, 1), by='ticker'][gics_code%in%c(45, 50), ]
+    D_STOCKS$u = u[D_STOCKS$u, on='ticker'][!is.na(country), ][, head(.SD, 1), by='ticker']
+    #fwrite(u[country%in%c("KR", "HK", "JP", "TW"), ], file='/home/aslepnev/git/ej/needed_hist.csv')
+    d_stocks = D_STOCKS$u  #head(D_STOCKS$u, 100)  # 500 biggest companies
+    d_stocks[, .N, by='gics_code']
+
+
+    D_STOCKS = get(load('/home/aslepnev/webhub/grish_asia.RData'))
+    d_stocks = D_STOCKS$u  #[1:30, ]
 
     
 #    D_in = pre_screen(D, D$u[1:100,]); 
@@ -181,13 +270,63 @@ if(FALSE){
     sort(sds)
 
 
-    screen_params = list(window=40, voltarget=0.3, minw=0.02, maxw=0.8, etfs=list(N=3, UNI=20, window=40), stocks=list(UNI=10, window=40))
+
+
+
+
+
+    
+    screen_params = list(window=40, voltarget=0.4, minw=0.01, maxw=0.3, force_us=FALSE, main=list(UNI=10, window=40))
+    res = build_index(list(main=pre_screen(D_STOCKS, d_stocks)), rebal_dates=get_rebals(D_STOCKS, 'quarter'), screen_voltarget, screen_params)
+    save(res, file='/home/aslepnev/data/idx6_custom_asia.Rdata')
+    r = foreach(x=res,.combine=rbind)%do%x$h; print(sd(tail(r,120))*sqrt(252))
+    perf = exp(cumsum(r))
+
+    p = res[[41]]$basket$main$names
+    w = res[[41]]$basket$main$weights
+    h = D_STOCKS$h
+    h = h[, p]
+    h = na.fill(diff(log(1+na.locf(h))), 0)
+    for(j in 1:ncol(h))
+        h[abs(h[,j])>0.5, j] = 0
+    h = h[index(res[[41]]$h), ]
+    a = exp(cumsum(basket_ret(h, w)))
+    b = perf[index(perf)>='2018-10-01', ]
+    as.numeric(tail(a,1))/as.numeric(head(a,1))
+    as.numeric(tail(b,1))/as.numeric(head(b,1))
+
+
+    screen_params = list(window=40, voltarget=0.5, minw=0.02, maxw=0.4, main=list(UNI=10, window=40))
+    res = build_index(list(main=pre_screen(D_STOCKS, d_stocks)), rebal_dates=get_rebals(D_STOCKS, 'quarter'), screen_pridex_voltarget, screen_params)
+    baskets = foreach(x=res,.combine=rbind)%do%cbind(data.table(dt=x$dt), t(x$basket$main$names))
+    weights = foreach(x=res,.combine=rbind)%do%cbind(data.table(dt=x$dt), t(round(x$basket$main$weights, 3)))
+    liner = exp(cumsum(foreach(x=res,.combine=rbind)%do%x$h))
+    fwrite(data.table(dt=index(liner), value=liner), '/home/aslepnev/git/ej/liner_SOLCA_10.csv')
+    fwrite(baskets, '/home/aslepnev/git/ej/baskets_SOLCA_10.csv')
+    fwrite(weights, '/home/aslepnev/git/ej/weights_SOLCA_10.csv')
+
+
+
+
+    
+    plot(exp(cumsum(foreach(x=get(load('/home/aslepnev/data/idx5_custom1.Rdata')),.combine=rbind)%do%x$h)))
+
+    
+    screen_params = list(window=40, voltarget=0.3, minw=0.02, maxw=0.8, etfs=list(N=4, UNI=20, window=40), stocks=list(UNI=10, window=40))
     res = build_index(list(etfs=pre_screen(D_ETF, d_etf), stocks=pre_screen(D_STOCKS, d_stocks)), get_rebals(D_ETF, 'month'), screen_pridex_voltarget, screen_params)
-    save(res, file='/home/aslepnev/data/idx5_custom1.Rdata')
+    save(res, file='/home/aslepnev/data/idx5_custom2.Rdata')
+    r = foreach(x=res,.combine=rbind)%do%x$h; print(sd(tail(r,120))*sqrt(252))
+    perf = exp(cumsum(r))
+
+
+    screen_params = list(window=40, voltarget=0.3, minw=0.02, maxw=0.8, etfs=list(N=4, UNI=20, window=40), stocks=list(UNI=10, window=40))
+    res = build_index(list(etfs=pre_screen(D_ETF, d_etf), stocks=pre_screen(D_STOCKS, d_stocks)), get_rebals(D_ETF, 'month'), screen_pridex_voltarget, screen_params)
+    save(res, file='/home/aslepnev/data/idx5_custom2.Rdata')
     r = foreach(x=res,.combine=rbind)%do%x$h; print(sd(tail(r,120))*sqrt(252))
     perf = exp(cumsum(r))
     
-    plot(exp(cumsum(foreach(x=get(load('/home/aslepnev/data/idx5_custom1.Rdata')),.combine=rbind)%do%x$h)))
+    plot(exp(cumsum(foreach(x=get(load('/home/aslepnev/data/idx5_custom2.Rdata')),.combine=rbind)%do%x$h)))
+
 
     h_res = foreach(x=res,.combine=rbind)%do%x$h
     res_vc = exp(cumsum(volcontrol(h_res, list(window=20, level=0.01*8.5, max_weight=2.5))))
@@ -261,7 +400,7 @@ if(FALSE){
 
 # D_in=pre_screen(D, d); rebal_dates=get_rebals(D, 'month'); screen_func=screen_mycorr2; 
 # D_in=pre_screen(D, dd[[i]]); rebal_dates=get_rebals(D, 'month'); screen_func=screen_mycorr2; 
-# D_in=list(etfs=pre_screen(D_ETF, d_etf), stocks=pre_screen(D_STOCKS, d_stocks)); rebal_dates=get_rebals(D_ETF, 'month'); screen_func=screen_pridex_voltarget
+# D_in=list(main=pre_screen(D_STOCKS, d_stocks)); rebal_dates=get_rebals(D_STOCKS, 'month'); screen_func=screen_voltarget
 build_index = function(D_in, rebal_dates, screen_func, screen_params){
     lh = list()
     for(i in names(D_in)){
