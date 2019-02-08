@@ -125,6 +125,29 @@ u$ticker = as.character(t(as.data.table(strsplit(u$ticker, ' ')))[, 1])
 
 
 
+
+
+
+h = fread('/home/aslepnev/git/ej/grish_asia2.csv')
+h = h[2000:nrow(h),]
+for(i in 1:nrow(h)){
+    if(i%%100==0) print(i)
+    x = strsplit(h[i, dt], '/')[[1]]
+    if(as.numeric(x[3]) < 1000) x[3] = as.character(2000+as.numeric(x[3]))
+    h$dt[i] = paste(x[c(3,1,2)], collapse='-')
+}
+for(col in colnames(h)[-1]) {
+    x= as.matrix(h[, col, with=FALSE])
+    x[x=='#N/A N/A'] = NA
+    
+    h[, (col):=as.numeric(x)]
+}
+h1 = xts(h[, -1, with=FALSE], order.by=as.Date(h[,dt]))
+u = fread('/home/aslepnev/git/ej/grish_uni.csv')[ticker%in%colnames(h1),]
+D = list(u=u, h=h1[,u$ticker])  # 'u' and 'h' match
+save(D, file='/home/aslepnev/webhub/grish_asia.RData')
+
+
 a
 
 
