@@ -177,30 +177,48 @@ volcontrol = function(r, params){
     return(res)
 }
 
-# screen_params = list(window=40, voltarget=0.4, minw=0.01, maxw=0.3, force_us=FALSE, main=list(UNI=10, window=40)); rebal_freq='quarter'; index_code='SOLVIT'
-gen_file_pack = function(screen_params, rebal_freq, index_code){
-    res = build_index(list(main=pre_screen(D_STOCKS, d_stocks)), rebal_dates=get_rebals(D_STOCKS, rebal_freq), screen_voltarget, screen_params)
+get_grish_zacks = function(){
+    D_STOCKS = get(load('/home/aslepnev/webhub/zacks_data.RData'))
+    u = fread('/home/aslepnev/git/ej/grish_uni.csv')
+    u$ticker = as.character(t(as.data.table(strsplit(u$ticker, ' ')))[, 1])
+    D_STOCKS$u = u[D_STOCKS$u, on='ticker'][!is.na(country), ][, head(.SD, 1), by='ticker']
+    return(D_STOCKS)
+}
+
+# uni_in = pre_screen(data, data$u[gics_code%in%c(45, 50), ]); screen_params = list(window=40, voltarget=0.3, minw=0.01, maxw=0.3, force_us=FALSE, main=list(UNI=10, window=40)); rebal_freq='quarter'; index_code='SOLVIT'
+# screen_params = list(window=40, voltarget=0.3, minw=0.01, maxw=0.3, force_us=FALSE, main=list(UNI=10, window=40)); rebal_freq='quarter'; index_code='SOLVIT'
+# uni_in = pre_screen(D_STOCKS, d_stocks); screen_params = list(window=40, voltarget=0.4, minw=0.01, maxw=0.3, force_us=FALSE, main=list(UNI=10, window=40)); rebal_freq='quarter'; index_code='SOLCA'; start_date='2013-12-29'
+gen_file_pack = function(uni_in, screen_params, rebal_freq, index_code, start_date){
+    res = build_index(list(main=uni_in), rebal_dates=get_rebals(uni_in, rebal_freq), screen_voltarget, screen_params, start_date)
     
     r = foreach(x=res,.combine=rbind)%do%x$h
     print(sd(tail(r,120))*sqrt(252))
+    perf = exp(cumsum(r)); print(tail(perf, 1))
 
     baskets = foreach(x=res,.combine=rbind)%do%cbind(data.table(dt=x$dt), t(x$basket$main$names))
     weights = foreach(x=res,.combine=rbind)%do%cbind(data.table(dt=x$dt), t(round(x$basket$main$weights, 3)))
     liner = exp(cumsum(foreach(x=res,.combine=rbind)%do%x$h))
     liner = data.table(dt=index(liner), value=liner)    
 
-    abet = c(LETTERS, paste0(LETTERS[1], LETTERS), paste0(LETTERS[2], LETTERS))
-    tryCatch({gs_ws_delete(refresh_s(), ws=index_code)}, error=function(e) {})
-    gs_ws_new(refresh_s(), ws_title=index_code, row_extent=5000, col_extent=100)
-    gs_edit_cells(refresh_s(), ws=index_code, anchor = "A1", input = liner, byrow = TRUE, col_names=FALSE)
-    gs_edit_cells(refresh_s(), ws=index_code, anchor = "D1", input = baskets, byrow = TRUE, col_names=FALSE)
-    gs_edit_cells(refresh_s(), ws=index_code, anchor = abet(4+ncol(baskets)+1), input = weights, byrow = TRUE, col_names=FALSE)
+    #abet = c(LETTERS, paste0(LETTERS[1], LETTERS), paste0(LETTERS[2], LETTERS))
+    #tryCatch({gs_ws_delete(refresh_s(), ws=index_code)}, error=function(e) {})
+    #gs_ws_new(refresh_s(), ws_title=index_code, row_extent=5000, col_extent=100)
+    #gs_edit_cells(refresh_s(), ws=index_code, anchor = "A1", input = liner, byrow = TRUE, col_names=FALSE)
+    #gs_edit_cells(refresh_s(), ws=index_code, anchor = "D1", input = baskets, byrow = TRUE, col_names=FALSE)
+    #gs_edit_cells(refresh_s(), ws=index_code, anchor = paste0(abet[4+ncol(baskets)+1], 1), input = weights, byrow = TRUE, col_names=FALSE)
 
-
-    
     fwrite(liner, paste0('/home/aslepnev/git/ej/liner_', index_code, '.csv'))
     fwrite(baskets, paste0('/home/aslepnev/git/ej/baskets_', index_code, '.csv'))
-    fwrite(weights, paste0('/home/aslepnev/git/ej/weights_', index_code, '.csv')
+    fwrite(weights, paste0('/home/aslepnev/git/ej/weights_', index_code, '.csv'))
+
+    forw_items = list(liner=liner, baskets=baskets, weights=weights)
+    for(item in names(forw_items)){
+        filepath = paste0('/home/aslepnev/git/ej/', item, '_', index_code, '.csv')
+        fwrite(forw_items[[item]], filepath)
+        system(paste0('echo -e "to: antonslepnev@gmail.com \nsubject: ',index_code,' - ', item, '\n"| (cat && uuencode ',filepath, ' ', paste0(item, '_', index_code, '.csv'),') | ssmtp antonslepnev@gmail.com'))
+    }
+
+    
 }
 
 if(FALSE){
@@ -231,20 +249,24 @@ if(FALSE){
     D_STOCKS$u = u[D_STOCKS$u, on='ticker'][!is.na(country), ][, head(.SD, 1), by='ticker']
     d_stocks = D_STOCKS$u  #head(D_STOCKS$u, 100)  # 500 biggest companies
     d_stocks[, .N, by='country']
-
-    
-    D_STOCKS = get(load('/home/aslepnev/webhub/zacks_data.RData'))
-    u = fread('/home/aslepnev/git/ej/grish_uni.csv')
-    u$ticker = as.character(t(as.data.table(strsplit(u$ticker, ' ')))[, 1])
-    #D_STOCKS$u = u[D_STOCKS$u, on='ticker'][!is.na(country), ][, head(.SD, 1), by='ticker'][gics_code%in%c(45, 50), ]
-    D_STOCKS$u = u[D_STOCKS$u, on='ticker'][!is.na(country), ][, head(.SD, 1), by='ticker']
-    #fwrite(u[country%in%c("KR", "HK", "JP", "TW"), ], file='/home/aslepnev/git/ej/needed_hist.csv')
-    d_stocks = D_STOCKS$u  #head(D_STOCKS$u, 100)  # 500 biggest companies
     d_stocks[, .N, by='gics_code']
+
+    pre_screen(D_STOCKS, d_stocks)$h[1,]
+
+    data = get_grish_zacks()
+
+    d_stocks = D_STOCKS$u[gics_code%in%c(45, 50), ]
+    gen_file_pack(pre_screen(data, data$u[gics_code%in%c(45, 50), ]), list(window=40, voltarget=0.3, minw=0.01, maxw=0.3, force_us=FALSE, main=list(UNI=10, window=40)), 'quarter', 'SOLVIT')
 
 
     D_STOCKS = get(load('/home/aslepnev/webhub/grish_asia.RData'))
     d_stocks = D_STOCKS$u  #[1:30, ]
+    uni_in = pre_screen(D_STOCKS, d_stocks)
+    gen_file_pack(D_STOCKS, d_stocks, list(window=40, voltarget=0.4, minw=0.01, maxw=0.3, force_us=FALSE, main=list(UNI=10, window=40)), 'quarter', 'SOLCA')
+
+
+    
+    system(paste0('mutt -a ../pdfs/*.Daily.pdf -s "risk.model.reports for ',date_folders[date_index],' ',email_comment,'" -- aslepnev@crestlineinc.com adidych@crestlineinc.com<<EOF'))
 
     
 #    D_in = pre_screen(D, D$u[1:100,]); 
@@ -274,6 +296,8 @@ if(FALSE){
 
 
 
+
+    
 
     
     screen_params = list(window=40, voltarget=0.4, minw=0.01, maxw=0.3, force_us=FALSE, main=list(UNI=10, window=40))
@@ -401,7 +425,7 @@ if(FALSE){
 # D_in=pre_screen(D, d); rebal_dates=get_rebals(D, 'month'); screen_func=screen_mycorr2; 
 # D_in=pre_screen(D, dd[[i]]); rebal_dates=get_rebals(D, 'month'); screen_func=screen_mycorr2; 
 # D_in=list(main=pre_screen(D_STOCKS, d_stocks)); rebal_dates=get_rebals(D_STOCKS, 'month'); screen_func=screen_voltarget
-build_index = function(D_in, rebal_dates, screen_func, screen_params){
+build_index = function(D_in, rebal_dates, screen_func, screen_params, start_date){
     lh = list()
     for(i in names(D_in)){
         lh[[i]] = na.fill(diff(log(1+na.locf(D_in[[i]]$h))), 0)
@@ -413,7 +437,7 @@ build_index = function(D_in, rebal_dates, screen_func, screen_params){
         for(j in 1:length(lh))
             lh[[i]] = lh[[i]][index(lh[[i]])%in%index(lh[[j]])]
     
-    rebal_idx = match(rebal_dates[rebal_dates>='2008-09-30'], index(lh[[1]]))  # indices of history in all elements iof lh are expected the same!
+    rebal_idx = match(rebal_dates[rebal_dates>=start_date], index(lh[[1]]))  # indices of history in all elements iof lh are expected the same!
     calc_pieces = foreach(i=1:(length(rebal_idx) - 1))%do%{
         s = list(); s_next = list(); s_u = list()
         for(j in names(lh)){
