@@ -141,8 +141,9 @@ screen_voltarget = function(lh_in, u_in, params){
     # w = array(1/n, n)
     # w = res$par
     perf_tail = as.numeric(tail(perf,1))
+    vol_weight = params$volw
     gradus = function(w){
-        return(abs(params$voltarget - basket_vol(r, w))*10000 - sum(perf_tail*w))
+        return(abs(params$voltarget - basket_vol(r, w))*vol_weight - sum(perf_tail*w))
     }
     n = ncol(perf)
     res = cobyla(x0=array(1/n, n), fn=gradus, lower=array(params$minw, n), upper=array(params$maxw, n), hin=function(w){ -abs(1-sum(w)) }, control=COB_CTL)
@@ -183,6 +184,13 @@ get_grish_zacks = function(){
     u$ticker = as.character(t(as.data.table(strsplit(u$ticker, ' ')))[, 1])
     D_STOCKS$u = u[D_STOCKS$u, on='ticker'][!is.na(country), ][, head(.SD, 1), by='ticker']
     return(D_STOCKS)
+}
+
+# data=round(cor(liners), 2); data_name='gics_correlations'; subject='GICS sector index correlations'; eaddress='antonslepnev@gmail.com'
+send_attach = function(data, data_name, subject, eaddress){
+    filepath = paste0('/tmp/', data_name, '.csv')
+    fwrite(data, filepath)
+    system(paste0('echo -e "to: ', eaddress, ' \nsubject: ', subject, '\n"| (cat && uuencode ', filepath, ' ', paste0(data_name, '.csv'), ') | ssmtp ', eaddress))
 }
 
 # uni_in = pre_screen(data, data$u[gics_code%in%c(45, 50), ]); screen_params = list(window=40, voltarget=0.3, minw=0.01, maxw=0.3, force_us=FALSE, main=list(UNI=10, window=40)); rebal_freq='quarter'; index_code='SOLVIT'
@@ -266,7 +274,35 @@ if(FALSE){
 
 
     
-    system(paste0('mutt -a ../pdfs/*.Daily.pdf -s "risk.model.reports for ',date_folders[date_index],' ',email_comment,'" -- aslepnev@crestlineinc.com adidych@crestlineinc.com<<EOF'))
+    
+    data = get_grish_zacks()
+    #gen_file_pack(, list(window=40, voltarget=0.3, minw=0.01, maxw=0.3, force_us=FALSE, main=list(UNI=10, window=40)), 'quarter', 'SOLVIT')
+
+    gics_dict = data.table(t(matrix(c('energy',10,
+                                      'materials',15,
+                                      'industrials',20,
+                                      'discret',25,
+                                      'staples',30,
+                                      'health',35,
+                                      'finance',40,
+                                      'IT',45,
+                                      'telecom',50,
+                                      'utilities',55,
+                                      'estate',60),2))); colnames(gics_dict) = c('name', 'code')
+    gics_codes = data$u[!is.na(gics_code), unique(gics_code)]
+    gics_idcs = foreach(g=gics_dict$code)%do%{
+        uni_in = pre_screen(data, data$u[gics_code == g, ])
+        screen_params = list(window=40, voltarget=0.3, minw=0.01, maxw=0.3, force_us=FALSE, volw=as.numeric(g), main=list(UNI=10, window=40))
+        build_index(list(main=uni_in), rebal_dates=get_rebals(uni_in, 'quarter'), screen_voltarget, screen_params, '2012-01-01')
+    }
+    liners = foreach(y=gics_idcs,.combine=cbind)%do%{ foreach(x=y,.combine=rbind)%do%x$h }
+    names(liners) = gics_dict$name
+    cor1d = round(cor(liners)*100, 0)
+    foreach(i=1:ncol(liners),.combine=c)%do%(sd(tail(liners[,i], 120))*sqrt(252)*100)
+
+    send_data = data.table(round(cor(liners), 2)); data=cbind(colnames(data), data)
+    send_attach(send_data, 'gics_correlations', 'GICS sector index correlations', 'antonslepnev@gmail.com')    
+    
 
     
 #    D_in = pre_screen(D, D$u[1:100,]); 
