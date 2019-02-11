@@ -1,3 +1,4 @@
+library(ellipse)
 library(googlesheets)
 library(doMC)
 library(data.table)
@@ -141,9 +142,8 @@ screen_voltarget = function(lh_in, u_in, params){
     # w = array(1/n, n)
     # w = res$par
     perf_tail = as.numeric(tail(perf,1))
-    vol_weight = params$volw
     gradus = function(w){
-        return(abs(params$voltarget - basket_vol(r, w))*vol_weight - sum(perf_tail*w))
+        return(abs(params$voltarget - basket_vol(r, w))*10000 - sum(perf_tail*w))
     }
     n = ncol(perf)
     res = cobyla(x0=array(1/n, n), fn=gradus, lower=array(params$minw, n), upper=array(params$maxw, n), hin=function(w){ -abs(1-sum(w)) }, control=COB_CTL)
@@ -292,12 +292,23 @@ if(FALSE){
     gics_codes = data$u[!is.na(gics_code), unique(gics_code)]
     gics_idcs = foreach(g=gics_dict$code)%do%{
         uni_in = pre_screen(data, data$u[gics_code == g, ])
-        screen_params = list(window=40, voltarget=0.3, minw=0.01, maxw=0.3, force_us=FALSE, volw=as.numeric(g), main=list(UNI=10, window=40))
+        screen_params = list(window=40, voltarget=0.3, minw=0.01, maxw=0.3, force_us=FALSE, main=list(UNI=10, window=40))
         build_index(list(main=uni_in), rebal_dates=get_rebals(uni_in, 'quarter'), screen_voltarget, screen_params, '2012-01-01')
     }
     liners = foreach(y=gics_idcs,.combine=cbind)%do%{ foreach(x=y,.combine=rbind)%do%x$h }
     names(liners) = gics_dict$name
-    cor1d = round(cor(liners)*100, 0)
+    comat = round(cor(liners)*100, 0)
+    pwcom = data.table(melt(comat))[, head(.SD, 1), by='value'][order(value), ][Var1!=Var2, ][, .(pair=paste(Var1, Var2), value)]
+    plot(pwcom$value)
+    
+
+
+    heatmap(comat, Colv=NA, Rowv=NA, scale='column')
+    comat = cor(liners)
+    plotcorr(comat, col=colorRampPalette(brewer.pal(5, 'Spectral'))(100)[comat*150+10], mar=c(1,1,1,1))
+    +  geom_tile(aes(fill=value)) + geom_text(aes(label=value) + scale_fill_gradient(low='white', high='red'))
+
+    
     foreach(i=1:ncol(liners),.combine=c)%do%(sd(tail(liners[,i], 120))*sqrt(252)*100)
 
     send_data = data.table(round(cor(liners), 2)); data=cbind(colnames(data), data)
