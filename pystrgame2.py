@@ -18,12 +18,12 @@ COV_WND = 5
 WND_SHORT, WND_LONG = 63, 126
 MIN_STD, MAX_STD, STD_STEP_UP, STD_STEP_DOWN, OPT_ATTEMPTS = 0.05, 0.075, 0.025, 0.01, 10
 
-f0 = pd.read_excel('/home/anton/git/ej/smidai_hist.xlsx', 'Sheet4')
-s0 = pd.read_excel('/home/anton/git/ej/smidai_hist.xlsx', 'Sheet5')
-h0 = pd.read_excel('/home/anton/git/ej/smidai_hist.xlsx', 'Sheet1')
-#f0 = pd.read_excel('/home/aslepnev/git/ej/smidai_hist.xlsx', 'Sheet4').set_index('SubID')
-#s0 = pd.read_excel('/home/aslepnev/git/ej/smidai_hist.xlsx', 'Sheet5').set_index('SubID')
-#h0 = pd.read_excel('/home/aslepnev/git/ej/smidai_hist.xlsx', 'Sheet1')
+#f0 = pd.read_excel('/home/anton/git/ej/smidai_hist.xlsx', 'Sheet4')
+#s0 = pd.read_excel('/home/anton/git/ej/smidai_hist.xlsx', 'Sheet5')
+#h0 = pd.read_excel('/home/anton/git/ej/smidai_hist.xlsx', 'Sheet1')
+f0 = pd.read_excel('/home/aslepnev/git/ej/smidai_hist.xlsx', 'Sheet4').set_index('SubID')
+s0 = pd.read_excel('/home/aslepnev/git/ej/smidai_hist.xlsx', 'Sheet5').set_index('SubID')
+h0 = pd.read_excel('/home/aslepnev/git/ej/smidai_hist.xlsx', 'Sheet1')
 
 h0['Dates'] = pd.to_datetime(h0['Dates'])
 h0.columns = [x.replace(' Index', '').replace(' US Equity', '').replace(' INDEX', '') for x in h0.columns]
@@ -90,7 +90,7 @@ def get_optimal_weights(h1_in, h5_in, wlim, relax_type):
     def tweak_weights(y):
         return [x*(1-random.random()*0.000099) for x in y]
     def initial_guess():
-        return flatten_weights([(random.random()*wlime[i]) for i in range(n)])
+        return flatten_weights(wlime/np.sum(wlime))
     def align_result(x):
         return [x[eidx.index(i)] if i in eidx else 0 for i in range(len(wlim))]
 
@@ -157,7 +157,7 @@ def get_optimal_subbasket(data):
             'hist': data['hist'].multiply(weights).sum(axis=1) if w1 else data['hist']}
     
 if False:
-    subbaskets, h1, h5, dt = f0, h0r1, h0r5, '2012-06-01'  # assuming that Date is index in returns dataframes
+    subbaskets, h1, h5, dt = f0, h0r1, h0r5, '2008-05-30'  # assuming that Date is index in returns dataframes
 #    sub_id = 1    
 #    h1, h5 = h1_short, h5_short
 #    negtotret(weights)
@@ -244,7 +244,7 @@ if False:
     dates = dates.assign(month=dates.date.dt.month, year=dates.date.dt.year).groupby(['year', 'month']).agg({'date': 'min'}).reset_index()['date']
     dates = list(dates[3:(len(dates)-2)])
 #    dt = dates[0]
-dt = pd.to_datetime('2012-08-01')
+dt = pd.to_datetime('2008-05-23')
 #    dt_start = dates[0]
 #    dt_end = dates[1]
 #    dates = [x for x in dates if x>=pd.to_datetime('2012-05-01')]
@@ -292,3 +292,15 @@ print((H.pnl_vc[H.dt>='2008-09-30']+1).prod())
 print((H.pnl_vc[H.dt>'2006-03-01']+1).prod())
 
 H.to_csv('/home/anton/Documents/H.csv')
+
+
+
+
+h = returns_5d
+h = h.assign(idx=range(len(h)))
+idx1, idx2, idx3 = h.loc['2007-12-21', 'idx'], h.loc['2008-02-22', 'idx'], h.loc['2008-05-23', 'idx']
+h = h.reset_index().set_index('idx').loc[idx1:idx3, ['ROBOTR', 'IXP', 'SOXX', 'US0003M']]
+w = [0.388, 0.505, 0.007, 0.1]
+print(np.sqrt(h.multiply(w).cov().sum().sum()*252/5))
+
+
