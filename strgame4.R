@@ -45,7 +45,7 @@ pe = foreach(x=e$Ticker,.errorhandling='pass')%do%{ Sys.sleep(1.1); print(i); i=
 save(pe, file='/home/anton/git/ej/etf_yhoo.RData')
 
 
-p = get(load('/home/anton/git/ej/zacks_yhoo.RData'))
+p = get(load('/home/aslepnev/webhub/zacks_yhoo.RData'))
 
 e = fread('/home/anton/Downloads/finviz.csv')[order(Volume, decreasing=TRUE),][1:200, dt:=as.Date('2018-12-17')][,-1]
 colnames(e) = c('ticker','name','sector','industry','country','mcap','volume','dt')
@@ -146,6 +146,26 @@ h1 = xts(h[, -1, with=FALSE], order.by=as.Date(h[,dt]))
 u = fread('/home/aslepnev/git/ej/grish_uni.csv')[ticker%in%colnames(h1),]
 D = list(u=u, h=h1[,u$ticker])  # 'u' and 'h' match
 save(D, file='/home/aslepnev/webhub/grish_asia.RData')
+
+
+
+
+#library(xlsx)
+library(data.table)
+library(foreach)
+library(quantmod)
+u = read.xlsx('/home/aslepnev/git/ej/grish_uni_2011.xlsx', '2018')
+u = data.table(as.matrix(u))
+u$ticker = as.character(t(as.data.table(strsplit(u$ticker, ' ')))[, 1])
+save(u, file="/home/aslepnev/webhub/grish_uni_2018.RData")
+u = get(load("/home/aslepnev/webhub/grish_uni_2018.RData"))
+p = get(load("/home/aslepnev/webhub/zacks_data.RData"))
+sum(u$ticker%in%colnames(p$h))
+sum(!u$ticker%in%colnames(p$h))
+i=1; grishe = foreach(x=u$ticker,.errorhandling='pass')%do%{ Sys.sleep(1.1); print(i); i=i+1; get(getSymbols(x))[,paste0(x,'.Adjusted')] }
+
+h1 = foreach(x=grishe[5<foreach(x=grishe,.combine=c)%do%length(x)],.combine=cbind)%do%x
+
 
 
 a

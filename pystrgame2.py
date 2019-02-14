@@ -300,7 +300,7 @@ h = returns_5d
 h = h.assign(idx=range(len(h)))
 idx1, idx2, idx3 = h.loc['2007-12-21', 'idx'], h.loc['2008-02-22', 'idx'], h.loc['2008-05-23', 'idx']
 h = h.reset_index().set_index('idx').loc[idx1:idx3, ['ROBOTR', 'IXP', 'SOXX', 'US0003M']]
-w = [0.388, 0.505, 0.007, 0.1]
-print(np.sqrt(h.multiply(w).cov().sum().sum()*252/5))
+w111 = [0.388, 0.505, 0.007, 0.1]
+print(np.sqrt(h.multiply(w111).cov().sum().sum()*252/5))
 
 

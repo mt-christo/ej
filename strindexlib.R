@@ -43,17 +43,42 @@ prorate_universe = function(u, h, d0, d1){
     return(u1)
 }
 
+h_to_log = function(h_in){
+    lh = na.fill(diff(log(1 + na.locf(h_in))), 0)
+    for(i in 1:ncol(lh))
+        lh[abs(lh[,i])>0.5, i] = 0
+    return(lh)
+}
+
+etf_segment = function(u_in, segname, topn=1000000){
+    geo_focus_asia = c('Japan', 'Asian Pacific Region', 'China', 'Asian Pacific Region ex Japan', 'Greater China', 'South Korea', 'Taiwan', 'Hong Kong', 'Greater China,Hong Kong', 'India', 'Indonesia', 'Singapore', 'Malaysia', 'Thailand')
+    geo_focus_west = c('United States', 'California', 'European Region', 'New York', 'Pennsylvania', 'Minnesota', 'Canada', 'New Jersey', 'Ohio', 'Eurozone', 'Virginia', 'Massachusetts', 'Oregon', 'Missouri', 'North American Region', 'Michigan', 'Germany', 'Maryland', 'United Kingdom', 'Australia', 'European Region,Australia', 'Global,United States', 'Spain', 'Kentucky', 'Arizona', 'Switzerland', 'North Carolina', 'Hawaii', 'Colorado', 'France', 'Singapore')
+    geo_focus_deveuro = c('Eurozone', 'Germany', 'United Kingdom', 'Spain', 'Switzerland', 'France')
+    geo_focus_global = c('International', 'Global')
+    
+    res = if(segname=='Asia') u_in[geo_focus%in%geo_focus_asia | geo_focus2%in%c('Emerging Asia', 'Asia'), ] else
+      if(segname=='West') u_in[geo_focus%in%geo_focus_west | geo_focus2%in%c('North America', 'Developed Europe'), ] else
+      if(segname=='Developed Europe') u_in[(geo_focus=='European Region' & geo_focus2=='Developed Market') | geo_focus%in%geo_focus_deveuro, ] else
+      if(segname=='Global') u_in[geo_focus%in%geo_focus_global | geo_focus2=='Global', ] else
+      if(segname%in%u_in$ind_focus) u_in[ind_focus==segname, ]
+
+    return(res[order(mcap, decreasing=TRUE), ][1:min(nrow(res), topn), ])
+}
+
 # u = D$u[,.SD[1,], by=focus]
 # D=D_STOCKS; u = d_stocks
-pre_screen = function(D, u, logret = FALSE){
+pre_screen = function(D_in, u, smart = FALSE){
     u1 = u
-    h1 = D$h[, u1$ticker]
-    if(logret){
-        lh = na.fill(diff(log(1+na.locf(h1))), 0)
-        for(i in 1:ncol(lh))
-            lh[abs(lh[,i])>0.5, i] = 0
-        h1 = lh
+    h1 = D_in$h[, u1$ticker]
+    if(smart){
+        h1 = h_to_log(h1)
+        res = list(u=u1, h=h1)
+        for(x in c("cov60", "cov125", "cov250"))
+            res[[x]] = D_in[[x]][u1$ticker, u1$ticker]
+        
+        return(res)
     }
+    
     return(list(u=u1, h=h1))
 }
 
@@ -88,6 +113,8 @@ pridex_metric = function(time_line, h, w){
 basket_ret = function(h, w) return( xts(log(((exp(h)-1)%*%w) + 1), order.by=index(h)) )
 
 basket_vol = function(h, w) return( sd(basket_ret(h, w))*sqrt(252) )
+
+basket_perf = function(h, w) return( exp(cumsum(basket_ret(h, w))) )
 
 # lh_in=lh_in['etfs']; u_in=u1_in['etfs']; pick_count=params$N
 pridex_screen_prep = function(lh_in, u_in, pick_count){  # screening by proiex metric TODO refactor to single function
@@ -227,246 +254,6 @@ gen_file_pack = function(uni_in, screen_params, rebal_freq, index_code, start_da
     }
 
     
-}
-
-if(FALSE){
-    D_STOCKS = get(load('/home/aslepnev/webhub/zacks_data.RData'))
-    ##### D_STOCKS$h = D_STOCKS$h[-3013]; save(D_STOCKS, file='/home/aslepnev/webhub/zacks_data.RData')
-    d_stocks = head(D_STOCKS$u, 500)  # 500 biggest companies
-    
-    D_ETF = get(load('/home/aslepnev/webhub/sacha_etf_yhoo.RData'))
-    ##### D_ETF$h = D_ETF$h[-2007]; save(D_ETF, file='/home/aslepnev/webhub/sacha_etf_yhoo.RData')
-    my_tickers = c('ROBOTR','IXP','PNQI','SOXX','IBB','IYH','IHI','PJP','FBT','QQQ','MTUM','SPLV','EWZ','EEM','EFA','ILF','ASHR','FXI','IAU','IEO','PZA','TLT','LQD','EDV')
-    my_niches = unique(D_ETF$u[ticker%in%my_tickers, .(mcap_focus2, style, geo_focus, geo_focus2, ind_focus, mcap_focus, ind_group, industry)])
-    d_etf = D_ETF$u[my_niches, on=.(mcap_focus2, style, geo_focus, geo_focus2, ind_focus, mcap_focus, ind_group, industry)]
-    D_ETF$h = D_ETF$h[index(D_ETF$h)%in%index(D_STOCKS$h)]
-    D_STOCKS$h = D_STOCKS$h[index(D_STOCKS$h)%in%index(D_ETF$h)]
-    
-
-    d1 = D$u[order(mcap, decreasing=TRUE),][geo_focus=='European Region',][1:15,]
-    d2 = D$u[order(mcap, decreasing=TRUE),][geo_focus2=='Emerging Market',][1:30,]
-    d3 = D$u[order(mcap, decreasing=TRUE),][ind_focus=='Technology',][1:30,]
-    d4 = D$u[order(mcap, decreasing=TRUE),][ind_focus=='Health Care',][1:30,]
-    d5 = D$u[order(mcap, decreasing=TRUE),][ind_focus=='Financial',][1:20,]
-
-
-    
-    D_STOCKS = get(load('/home/aslepnev/webhub/zacks_data.RData'))
-    u = fread('/home/aslepnev/git/ej/grish_uni.csv')
-    u$ticker = as.character(t(as.data.table(strsplit(u$ticker, ' ')))[, 1])
-    D_STOCKS$u = u[D_STOCKS$u, on='ticker'][!is.na(country), ][, head(.SD, 1), by='ticker']
-    d_stocks = D_STOCKS$u  #head(D_STOCKS$u, 100)  # 500 biggest companies
-    d_stocks[, .N, by='country']
-    d_stocks[, .N, by='gics_code']
-
-    pre_screen(D_STOCKS, d_stocks)$h[1,]
-
-    data = get_grish_zacks()
-
-    d_stocks = D_STOCKS$u[gics_code%in%c(45, 50), ]
-    gen_file_pack(pre_screen(data, data$u[gics_code%in%c(45, 50), ]), list(window=40, voltarget=0.3, minw=0.01, maxw=0.3, force_us=FALSE, main=list(UNI=10, window=40)), 'quarter', 'SOLVIT')
-
-
-    D_STOCKS = get(load('/home/aslepnev/webhub/grish_asia.RData'))
-    d_stocks = D_STOCKS$u  #[1:30, ]
-    uni_in = pre_screen(D_STOCKS, d_stocks)
-    gen_file_pack(D_STOCKS, d_stocks, list(window=40, voltarget=0.4, minw=0.01, maxw=0.3, force_us=FALSE, main=list(UNI=10, window=40)), 'quarter', 'SOLCA')
-
-
-    
-    
-    data = get_grish_zacks()
-    #gen_file_pack(, list(window=40, voltarget=0.3, minw=0.01, maxw=0.3, force_us=FALSE, main=list(UNI=10, window=40)), 'quarter', 'SOLVIT')
-
-    gics_dict = data.table(t(matrix(c('energy',10,
-                                      'materials',15,
-                                      'industrials',20,
-                                      'discret',25,
-                                      'staples',30,
-                                      'health',35,
-                                      'finance',40,
-                                      'IT',45,
-                                      'telecom',50,
-                                      'utilities',55,
-                                      'estate',60),2))); colnames(gics_dict) = c('name', 'code')
-    gics_codes = data$u[!is.na(gics_code), unique(gics_code)]
-    gics_idcs = foreach(g=gics_dict$code)%do%{
-        uni_in = pre_screen(data, data$u[gics_code == g, ])
-        screen_params = list(window=40, voltarget=0.3, minw=0.01, maxw=0.3, force_us=FALSE, main=list(UNI=10, window=40))
-        build_index(list(main=uni_in), rebal_dates=get_rebals(uni_in, 'quarter'), screen_voltarget, screen_params, '2012-01-01')
-    }
-    liners = foreach(y=gics_idcs,.combine=cbind)%do%{ foreach(x=y,.combine=rbind)%do%x$h }
-    names(liners) = gics_dict$name
-    comat = round(cor(liners)*100, 0)
-    pwcom = data.table(melt(comat))[, head(.SD, 1), by='value'][order(value), ][Var1!=Var2, ][, .(pair=paste(Var1, Var2), value)]
-    plot(pwcom$value)
-    
-
-
-    heatmap(comat, Colv=NA, Rowv=NA, scale='column')
-    comat = cor(liners)
-    plotcorr(comat, col=colorRampPalette(brewer.pal(5, 'Spectral'))(100)[comat*150+10], mar=c(1,1,1,1))
-    +  geom_tile(aes(fill=value)) + geom_text(aes(label=value) + scale_fill_gradient(low='white', high='red'))
-
-    
-    foreach(i=1:ncol(liners),.combine=c)%do%(sd(tail(liners[,i], 120))*sqrt(252)*100)
-
-    send_data = data.table(round(cor(liners), 2)); data=cbind(colnames(data), data)
-    send_attach(send_data, 'gics_correlations', 'GICS sector index correlations', 'antonslepnev@gmail.com')    
-    
-
-    
-#    D_in = pre_screen(D, D$u[1:100,]); 
-#    D_in = pre_screen(D, D$u[,.SD[1,], by=focus])
-#    D_in = pre_screen(D, D$u[,.SD[1:min(nrow(.SD),3),], by=category])
-#    D_in = pre_screen(D, d)
-#    screen_func = screen_mycorr2
-#    rebal_dates = get_rebals(D, 'month')
-
-#    screen_params=list(N=4, UNI=20, window=20, type='category', field='niche'); vc_params=list(window=20, level=0.085, max_weight=2.5); weights=array(1/screen_params$N, screen_params$N)
-
-#    p0 = expand.grid(list(4:6,c(15,17,20,23,25)))
-#    p0 = expand.grid(list(4:6,c(28,30)))
-
-    dd = list(d1, d2, d3, d4, d5)  
-    for(i in 1:length(dd)){
-        screen_params=list(N=4, UNI=nrow(dd[[i]]), window=40, wtype='equalweight'); weights=array(1/screen_params$N, screen_params$N)
-        res = build_index(pre_screen(D, dd[[i]]), get_rebals(D, 'month'), screen_mycorr2, screen_params, weights)
-        save(res, file=paste0('/home/aslepnev/data/idx4_custom_',i,'.Rdata'))  # 3 for equalweight, 4 for vol-weight
-    }
-    hh = tail(pre_screen(D, dd[[2]], TRUE)$h, 252)
-    sds = foreach(i=1:ncol(hh),.combine=c)%do%{ sd(hh[!is.na(hh[,i]),i])*sqrt(252) }
-    sort(sds)
-
-
-
-
-
-
-
-    
-
-    
-    screen_params = list(window=40, voltarget=0.4, minw=0.01, maxw=0.3, force_us=FALSE, main=list(UNI=10, window=40))
-    res = build_index(list(main=pre_screen(D_STOCKS, d_stocks)), rebal_dates=get_rebals(D_STOCKS, 'quarter'), screen_voltarget, screen_params)
-    save(res, file='/home/aslepnev/data/idx6_custom_asia.Rdata')
-    r = foreach(x=res,.combine=rbind)%do%x$h; print(sd(tail(r,120))*sqrt(252))
-    perf = exp(cumsum(r))
-
-    p = res[[41]]$basket$main$names
-    w = res[[41]]$basket$main$weights
-    h = D_STOCKS$h
-    h = h[, p]
-    h = na.fill(diff(log(1+na.locf(h))), 0)
-    for(j in 1:ncol(h))
-        h[abs(h[,j])>0.5, j] = 0
-    h = h[index(res[[41]]$h), ]
-    a = exp(cumsum(basket_ret(h, w)))
-    b = perf[index(perf)>='2018-10-01', ]
-    as.numeric(tail(a,1))/as.numeric(head(a,1))
-    as.numeric(tail(b,1))/as.numeric(head(b,1))
-
-
-    screen_params = list(window=40, voltarget=0.5, minw=0.02, maxw=0.4, main=list(UNI=10, window=40))
-    res = build_index(list(main=pre_screen(D_STOCKS, d_stocks)), rebal_dates=get_rebals(D_STOCKS, 'quarter'), screen_pridex_voltarget, screen_params)
-    baskets = foreach(x=res,.combine=rbind)%do%cbind(data.table(dt=x$dt), t(x$basket$main$names))
-    weights = foreach(x=res,.combine=rbind)%do%cbind(data.table(dt=x$dt), t(round(x$basket$main$weights, 3)))
-    liner = exp(cumsum(foreach(x=res,.combine=rbind)%do%x$h))
-    fwrite(data.table(dt=index(liner), value=liner), '/home/aslepnev/git/ej/liner_SOLCA_10.csv')
-    fwrite(baskets, '/home/aslepnev/git/ej/baskets_SOLCA_10.csv')
-    fwrite(weights, '/home/aslepnev/git/ej/weights_SOLCA_10.csv')
-
-
-
-
-    
-    plot(exp(cumsum(foreach(x=get(load('/home/aslepnev/data/idx5_custom1.Rdata')),.combine=rbind)%do%x$h)))
-
-    
-    screen_params = list(window=40, voltarget=0.3, minw=0.02, maxw=0.8, etfs=list(N=4, UNI=20, window=40), stocks=list(UNI=10, window=40))
-    res = build_index(list(etfs=pre_screen(D_ETF, d_etf), stocks=pre_screen(D_STOCKS, d_stocks)), get_rebals(D_ETF, 'month'), screen_pridex_voltarget, screen_params)
-    save(res, file='/home/aslepnev/data/idx5_custom2.Rdata')
-    r = foreach(x=res,.combine=rbind)%do%x$h; print(sd(tail(r,120))*sqrt(252))
-    perf = exp(cumsum(r))
-
-
-    screen_params = list(window=40, voltarget=0.3, minw=0.02, maxw=0.8, etfs=list(N=4, UNI=20, window=40), stocks=list(UNI=10, window=40))
-    res = build_index(list(etfs=pre_screen(D_ETF, d_etf), stocks=pre_screen(D_STOCKS, d_stocks)), get_rebals(D_ETF, 'month'), screen_pridex_voltarget, screen_params)
-    save(res, file='/home/aslepnev/data/idx5_custom2.Rdata')
-    r = foreach(x=res,.combine=rbind)%do%x$h; print(sd(tail(r,120))*sqrt(252))
-    perf = exp(cumsum(r))
-    
-    plot(exp(cumsum(foreach(x=get(load('/home/aslepnev/data/idx5_custom2.Rdata')),.combine=rbind)%do%x$h)))
-
-
-    h_res = foreach(x=res,.combine=rbind)%do%x$h
-    res_vc = exp(cumsum(volcontrol(h_res, list(window=20, level=0.01*8.5, max_weight=2.5))))
-    plot(res_vc)
-    lines(res_vc)
-
-    res = get(load('/home/aslepnev/data/idx2_custom_4_25.Rdata'))
-    h_res = foreach(x=res,.combine=rbind)%do%x$h
-    res_vc = exp(cumsum(volcontrol(h_res, list(window=20, level=0.01*8.5, max_weight=2.5))))
-
-
-    # 1 - equally weighted
-    # 3 - best eq weitghted, then optimize
-    # 4 - top n highest ranked
-    # 5 - coctail
-    
-    p0 = expand.grid(list(4,22:35))
-    for(ii in 1:nrow(p0)){
-        pn = p0[ii,1]
-        screen_params=list(N=pn, UNI=p0[ii,2], window=40, wtype='weights', field='niche', maxw=0.5); vc_params=list(window=20, level=0.085, max_weight=2.5); weights=array(1/screen_params$N, screen_params$N)
-        res = build_index(pre_screen(D, d), get_rebals(D, 'month'), screen_mycorr2, screen_params, vc_params, weights)
-        save(res, file=sprintf('/home/aslepnev/data/idx3_%s_%s_%s.Rdata', pn, screen_params$UNI, round(maxw,2)))
-    }
-
-    p0 = 2:50
-    for(ii in p0){
-        screen_params=list(N=ii, UNI=100, window=40, wtype='singles', field='niche', maxw=0.5); vc_params=list(window=20, level=0.085, max_weight=2.5); weights=array(1/screen_params$N, screen_params$N)
-        res = build_index(pre_screen(D, d), get_rebals(D, 'month'), screen_mycorr2, screen_params, vc_params, weights)
-        save(res, file=sprintf('/home/aslepnev/data/idx4_%s.Rdata', ii))
-    }
-
-    screen_params=list(N=4, UNI=25 window=40, wtype='simple', field='niche', maxw=0.5); vc_params=list(window=20, level=0.085, max_weight=2.5); weights=array(1/screen_params$N, screen_params$N)
-    res = build_index(pre_screen(D, d), get_rebals(D, 'month'), screen_mycorr2, screen_params, vc_params, weights)
-    save(res, file=sprintf('/home/aslepnev/data/idx4_%s.Rdata', ii))
-    
- #   build_index(pre_screen(D, D$u[,.SD[1:min(nrow(.SD),3),], by=category]), get_rebals(D, 'month'), screen_mycorr2, screen_params, vc_params, weights)
-
-    # filename='/home/aslepnev/data/idx0_custom_4_25.Rdata'; vcp=8.5
-    # filename='/home/aslepnev/data/idx1_4_25.Rdata'; vcp=10
-    ext_h = function(filename, vcp, start_dt = '1900-01-01'){
-        d = get(load(filename))
-        res = foreach(x=d,.combine=rbind)%do%x$h
-        print(paste0('Simple vol: ', sd(tail(res,250))*sqrt(252)))
-#        res = volcontrol(res, list(window=20, level=0.01*vcp, max_weight=2.5))
-#        print(paste0('VC vol: ', sd(res)*sqrt(252)))
-#        print(paste0('VC ret: ', tail(exp(cumsum(res)),1)))        
-        res = exp(cumsum(res[index(res)>start_dt]))
-        print(paste0('Simple ret: ', tail(res,1)))
-        res
-    }
-
-    hh = foreach(k=8:9,.combine=cbind)%do%ext_h(sprintf('/home/aslepnev/data/idx1_%s_%s.Rdata', k, 252),8.5)
-    hh = foreach(filename=Sys.glob('/home/aslepnev/data/idx3_custom*'),.combine=cbind)%do%ext_h(filename, 8.5)
-    plot(hh)
-    plot(ext_h(Sys.glob('/home/aslepnev/data/idx1_4_*'),8.5))
-    plot(ext_h(Sys.glob('/home/aslepnev/data/idx1_4_*')[5],8.5))
-    plot(ext_h('/home/aslepnev/data/idx1_4_25.Rdata',8.5))
-    a = ext_h('/home/aslepnev/data/idx0_custom_4_25.Rdata',8.5)
-
-    hh = foreach(filename=Sys.glob('/home/aslepnev/data/idx4_custom*'),.combine=cbind)%do%ext_h(filename, 8.5, '2009-04-01')
-    plot(hh)
-    
-    plot(ext_h('/home/aslepnev/data/idx2_custom_4_25.Rdata',8.5))
-    lines(ext_h('/home/aslepnev/data/idx2_custom_6_25.Rdata',8.5))
-
-    print(paste0('normal: ', round(tail(res, 1),2), ', volcontrolled: ', round(tail(res_vc, 1), 2)))
-    plot(100*res_vc, cex=2, cex.main=2)
-    
-
 }
 
 # D_in=pre_screen(D, d); rebal_dates=get_rebals(D, 'month'); screen_func=screen_mycorr2; 
