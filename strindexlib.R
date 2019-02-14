@@ -1,3 +1,5 @@
+library(ggplot2)
+library(mailR)
 library(ellipse)
 library(googlesheets)
 library(doMC)
@@ -80,14 +82,14 @@ stock_segment = function(u_in, segname, topn=1000000){
 
 # u = D$u[,.SD[1,], by=focus]
 # D=D_STOCKS; u = d_stocks
+# D_in=ds; u=stock_segment(ds_in$u, segstock, n_stock); smart=TRUE
 pre_screen = function(D_in, u, smart = FALSE){
     u1 = u
     h1 = D_in$h[, u1$ticker]
     if(smart){
         h1 = h_to_log(h1)
-        res = list(u=u1, h=h1)
-        for(x in c("cov60", "cov125", "cov250"))
-            res[[x]] = D_in[[x]][u1$ticker, u1$ticker]
+        rng = as.numeric(t(foreach(i=1:ncol(h1),.combine=cbind)%do%sum(abs(range(apply.yearly(h1[,i], sum))) < 0.6)))
+        res = list(u=u1[rng==2, ], h=h1[, rng==2])
         
         return(res)
     }
@@ -158,8 +160,9 @@ baskets_vol_range = function(d_in, n_in, volparams){
     for(j in 1:nrow(nn))
         sds[j] = w %*% comat[nn[j, ], nn[j, ]] %*% w 
     sds = sqrt(250)*sqrt(sds)
-    baskets = nn[which(sds>=volparams$min & sds<=volparams$max), ]
-    return(baskets)
+    baskets = nn[sds>=volparams$min & sds<=volparams$max, ]
+    sds = sds[sds>=volparams$min & sds<=volparams$max]
+    return(list(baskets=baskets, sds=sds))
 }
 
 # h_in = d$h; wmin=0.1; wmax=0.6; do_optimize=TRUE
@@ -270,19 +273,21 @@ volcontrol = function(r, params){
     return(res)
 }
 
-# ds_in=get(load('/home/aslepnev/webhub/grish_iter0.RData')); de_in=get(load('/home/aslepnev/webhub/sacha_etf_yhoo.RData')); segetf='Health Care'; n_etfs=15; segstock='Health Care'; n_stock=75; vt=0.3
-index_vt_pridex_segment = function(de_in, ds_in, segetf, n_etfs, segstock, n_stock, vt){
-    d_etf = pre_screen(de_in, etf_segment(de_in$u, segetf, n_etfs), smart=TRUE)
-    d_stock = pre_screen(ds_in, stock_segment(ds_in$u, segstock, n_stock), smart=TRUE)
-    
-    b_etf = best_pridex_basket(baskets_vol_range(d_etf, 3, volparams=list(wnd=500, min=vt-0.15, max=vt)), d_etf$h)
-    b_stock = best_pridex_basket(baskets_vol_range(d_stock, 3, volparams=list(wnd=500, min=vt, max=vt+0.2)), d_stock$h)
+# ds_in=ds; de_in=de; segetf='Health Care'; n_etfs_uni=15; n_etfs=3; segstock='Health Care'; n_stock_uni=60; n_stock=2; vt=0.4
+# ds_in=ds; de_in=de; segetf='Asia'; n_etfs=15; segstock='Asia'; n_stock=65; vt=0.3
+index_vt_pridex_segment = function(de_in, ds_in, segetf, n_etfs_uni, n_etfs, segstock, n_stock_uni, n_stock, vt){
+    d_etf = pre_screen(de_in, etf_segment(de_in$u, segetf, n_etfs_uni), smart=TRUE)
+    d_stock = pre_screen(ds_in, stock_segment(ds_in$u, segstock, n_stock_uni)[!ticker%in%d_etf$ticker, ], smart=TRUE)
 
+    b_etf = best_pridex_basket(baskets_vol_range(d_etf, n_etfs, volparams=list(wnd=250, min=vt-0.2, max=vt+0.2))$baskets, d_etf$h)
+    b_stock = baskets_vol_range(d_stock, n_stock, volparams=list(wnd=250, min=vt-0.1, max=vt+0.2))
+    b_stock = list(basket=b_stock$baskets[which.min(abs(vt - b_stock$sds)), ], weights=array(1/n_stock, n_stock))
+    
     hcom = xts_cbind_idx(d_etf$h[, b_etf$basket], d_stock$h[, b_stock$basket])
-    wcom = c(b_etf$weights, b_stock$weights)/sum(b_etf$weights+b_stock$weights)
-    wcom = optim_sigma(tail(hcom, 500), list(target=vt, wmin=0.1, wmax=0.6))
-    print(paste('Volatility:', basket_vol(tail(hcom, 500), wcom), 'Performance:', tail(basket_perf(tail(hcom, 500), wcom), 1)))
-    return(list(basket=colnames(hcom), weights=wcom))
+    wcom = c(b_etf$weights, b_stock$weights)/(sum(b_etf$weights) + sum(b_stock$weights))
+    wcom = optim_sigma(tail(hcom, 500), list(target=vt, wmin=0.12, wmax=0.6))
+    print(paste('Volatility:', basket_vol(tail(hcom, 250), wcom), 'Performance:', tail(basket_perf(hcom, wcom), 1)))
+    return(list(basket=colnames(hcom), weights=wcom, perf=basket_perf(hcom, wcom)))
 }
 
 get_grish_zacks = function(){
@@ -293,11 +298,25 @@ get_grish_zacks = function(){
     return(D_STOCKS)
 }
 
+send_attach_to_email = function(filepath, filename, subject, eaddress){
+    system(paste0('echo -e "to: ', eaddress, ' \nsubject: ', subject, '\n"| (cat && uuencode ', filepath, ' ', filename, ') | ssmtp ', eaddress))
+}
+
 # data=round(cor(liners), 2); data_name='gics_correlations'; subject='GICS sector index correlations'; eaddress='antonslepnev@gmail.com'
-send_attach = function(data, data_name, subject, eaddress){
+send_csv_to_email = function(data, data_name, subject, eaddress){
     filepath = paste0('/tmp/', data_name, '.csv')
     fwrite(data, filepath)
-    system(paste0('echo -e "to: ', eaddress, ' \nsubject: ', subject, '\n"| (cat && uuencode ', filepath, ' ', paste0(data_name, '.csv'), ') | ssmtp ', eaddress))
+    send_attach_to_email(filepath, paste0(data_name, '.csv'), subject, eaddress)
+}
+
+send_xts_plot_and_csv_to_email = function(my_chart, my_tab, subject, eaddress){
+    chart_path = paste0(tempfile(),'.png')
+    png(chart_path)
+    print(plot(my_chart))
+    dev.off()
+    csv_path = paste0(tempfile(),'.csv')
+    fwrite(my_tab, csv_path)
+    send.mail(from = 'novoxservice@gmail.com', to = eaddress, subject=subject, body = subject, encoding = "utf-8", smtp = list(host.name = "smtp.gmail.com", port = 465, user.name="novoxservice@gmail.com", passwd="Crestline_5", ssl=TRUE), authenticate = TRUE, send = TRUE , attach.files = c(chart_path, csv_path), html = TRUE, inline = TRUE )
 }
 
 # uni_in = pre_screen(data, data$u[gics_code%in%c(45, 50), ]); screen_params = list(window=40, voltarget=0.3, minw=0.01, maxw=0.3, force_us=FALSE, main=list(UNI=10, window=40)); rebal_freq='quarter'; index_code='SOLVIT'

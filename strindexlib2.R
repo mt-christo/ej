@@ -311,24 +311,18 @@ source('/home/aslepnev/git/ej/strindexlib.R')
 
 ds = get(load('/home/aslepnev/webhub/grish_iter0.RData'))
 de = get(load('/home/aslepnev/webhub/sacha_etf_yhoo.RData'))
-index_vt_pridex_segment(de, ds, 'Health Care', 15, 'Health Care', 75, 0.3)
-index_vt_pridex_segment(de, ds, 'Asia', 15, 'Asia', 75, 0.3)
+
+p1 = index_vt_pridex_segment(de, ds, 'Health Care', 15, 3, 'Health Care', 60, 2, 0.4)
+
+p1 = index_vt_pridex_segment(de, ds, 'Asia', 20, 3, 'Asia', 50, 2, 0.4)
+basket = rbind(de$u[, .(ticker, name)], ds$u[!ticker%in%de$u, .(ticker, name)])[data.table(ticker=p1$basket, weight=p1$weights), on='ticker']
+send_xts_plot_and_csv_to_email(p1$perf, basket, 'Please see chart attacheeeed', 'aslepnev@novo-x.info')
 
 
 
+send_xts_plot_to_email(1:10, 'chart.png', 'Please see chart attacheeeed', 'aslepnev@novo-x.info')
 
-stock_segment = function(u_in, segname, topn=1000000){
-    country_asia = c("CHINA", "INDIA", "SINGAPORE", "INDONESIA", "PHILIPPINES", "THAILAND", "BERMUDA", "HONG KONG", "BANGLADESH", "MALAYSIA", "VIETNAM")
-    country_west = c("UNITED STATES", "SWITZERLAND", "FRANCE", "GERMANY", "IRELAND", "AUSTRALIA", "CANADA", "BRITAIN", "NORWAY", "NETHERLANDS", "SPAIN", "SWEDEN", "LUXEMBOURG", "ITALY", "ISRAEL", "AUSTRIA", "BELGIUM", "DENMARK", "POLAND", "NEW ZEALAND")
-    country_deveuro = c("SWITZERLAND", "FRANCE", "GERMANY", "IRELAND", "BRITAIN", "NORWAY", "NETHERLANDS", "SPAIN", "SWEDEN", "LUXEMBOURG", "ITALY", "AUSTRIA", "BELGIUM", "DENMARK")
-    
-    res = if(segname=='Asia') u_in[country_name%in%country_asia, ] else
-      if(segname=='West') u_in[country_name%in%country_west, ] else
-      if(segname=='Developed Europe') u_in[country_name%in%country_deveuro, ] else
-      if(segname%in%u_in$sector) u_in[sector==segname, ]
-
-    return(res[order(mcap, decreasing=FALSE), ][1:min(nrow(res), topn), ])
-}
+foreach(i=1:ncol(h),.combine=c)%do%{ sqrt(250)*sd(h[,i]) }
 
 
 
