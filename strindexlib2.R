@@ -235,8 +235,6 @@
     plot(100*res_vc, cex=2, cex.main=2)
 
 
-ds = get(load('/home/aslepnev/webhub/grish_iter0.RData'))
-de = get(load('/home/aslepnev/webhub/sacha_etf_yhoo.RData'))
 
 e = pre_screen(de, de$u[)
 
@@ -310,32 +308,74 @@ u_in = de$u
 
 
 source('/home/aslepnev/git/ej/strindexlib.R')
-d = pre_screen(de, etf_segment(de$u, 'Health Care', 15), smart=TRUE)
 
-# d_in=d; n_in=3; volparams=list(wnd=500, min=0.2, max=0.3)
-baskets_vol_range = function(d_in, n_in, volparams){
-    nn = t(combn(d_in$u$ticker, n))
-    h = tail(d_in$h, volparams$wnd)
-    w = array(1/n, n)
-    comat = cov(h)
-    sds = sqrt(250)*sqrt(foreach(j=1:nrow(nn),.combine=c)%do%{ w %*% comat[nn[j, ], nn[j, ]] %*% w })
-    uni = nn[which(sds>=volparams$min & sds<=volparams$max), ]
+ds = get(load('/home/aslepnev/webhub/grish_iter0.RData'))
+de = get(load('/home/aslepnev/webhub/sacha_etf_yhoo.RData'))
+index_vt_pridex_segment(de, ds, 'Health Care', 15, 'Health Care', 75, 0.3)
+index_vt_pridex_segment(de, ds, 'Asia', 15, 'Asia', 75, 0.3)
+
+
+
+
+stock_segment = function(u_in, segname, topn=1000000){
+    country_asia = c("CHINA", "INDIA", "SINGAPORE", "INDONESIA", "PHILIPPINES", "THAILAND", "BERMUDA", "HONG KONG", "BANGLADESH", "MALAYSIA", "VIETNAM")
+    country_west = c("UNITED STATES", "SWITZERLAND", "FRANCE", "GERMANY", "IRELAND", "AUSTRALIA", "CANADA", "BRITAIN", "NORWAY", "NETHERLANDS", "SPAIN", "SWEDEN", "LUXEMBOURG", "ITALY", "ISRAEL", "AUSTRIA", "BELGIUM", "DENMARK", "POLAND", "NEW ZEALAND")
+    country_deveuro = c("SWITZERLAND", "FRANCE", "GERMANY", "IRELAND", "BRITAIN", "NORWAY", "NETHERLANDS", "SPAIN", "SWEDEN", "LUXEMBOURG", "ITALY", "AUSTRIA", "BELGIUM", "DENMARK")
+    
+    res = if(segname=='Asia') u_in[country_name%in%country_asia, ] else
+      if(segname=='West') u_in[country_name%in%country_west, ] else
+      if(segname=='Developed Europe') u_in[country_name%in%country_deveuro, ] else
+      if(segname%in%u_in$sector) u_in[sector==segname, ]
+
+    return(res[order(mcap, decreasing=FALSE), ][1:min(nrow(res), topn), ])
 }
 
 
-n = 3
 
-nn[which.min(abs(sds-0.3)), ]
+d_etf = pre_screen(de, etf_segment(de$u, 'Health Care', 15), smart=TRUE)
+d_stock = pre_screen(ds, ds$u[sector=='Health Care', ][1:75, ], smart=TRUE)
 
-basket = c("XBI","ETAHX","MJ")
-basket=c(1,2,5)
-basket_vol(h[, basket], w)
+b_etf = best_pridex_basket(baskets_vol_range(d_etf, 3, volparams=list(wnd=500, min=0.2, max=0.3)), d_etf$h)
+b_stock = best_pridex_basket(baskets_vol_range(d_stock, 3, volparams=list(wnd=500, min=0.4, max=0.5)), d_stock$h)
+
+hcom = xts_cbind_idx(d_etf$h[, b_etf$basket], d_stock$h[, b_stock$basket])
+wcom = c(b_etf$weights, b_stock$weights)/sum(b_etf$weights+b_stock$weights)
+wcom = optim_sigma(tail(hcom, 500), list(target=0.4, wmin=0.1, wmax=0.6))
+
+basket_vol(tail(hcom, 500), wcom)
+basket_perf(tail(hcom, 500), wcom)
+
+
+basket_ret = function(h, w) return( xts(log(((exp(h)-1)%*%w) + 1), order.by=index(h)) )
+basket_vol = function(h, w) return( sd(basket_ret(h, w))*sqrt(252) )
 
 
 
-d$u[ticker%in%basket,]
-basket_vol(h[, c("XBI","ETAHX","MJ")], w)
-basket_perf(d$h[, c("XBI","ETAHX","MJ")], w)
+
+
+
+
+
+
+
+
+asia        
+west 
+deveuro 
+
+
+
+ [1] "UNITED STATES" "CHINA"         "SWITZERLAND"   "FRANCE"       
+ [5] "GERMANY"       "IRELAND"       "AUSTRALIA"     "INDIA"        
+ [9] "CANADA"        "BRITAIN"       "NORWAY"        "NETHERLANDS"  
+[13] "SPAIN"         "SAUDI ARABIA"  "SINGAPORE"     "PERU"         
+[17] "SWEDEN"        "LUXEMBOURG"    "ITALY"         "RUSSIA"       
+[21] "SOUTH AFRICA"  "ISRAEL"        "INDONESIA"     "PHILIPPINES"  
+[25] "AUSTRIA"       "UAE"           "ARGENTINA"     "CURACAO"      
+[29] "THAILAND"      "BERMUDA"       "BELGIUM"       "HONG KONG"    
+[33] "DENMARK"       "BRAZIL"        "COLOMBIA"      "QATAR"        
+[37] "POLAND"        "BANGLADESH"    "MALAYSIA"      "NEW ZEALAND"  
+[41] "CHILE"         "ROMANIA"       "PUERTO RICO"   "VIETNAM"      
 
 
 geo_focus    N

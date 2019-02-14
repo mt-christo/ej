@@ -65,6 +65,19 @@ etf_segment = function(u_in, segname, topn=1000000){
     return(res[order(mcap, decreasing=TRUE), ][1:min(nrow(res), topn), ])
 }
 
+stock_segment = function(u_in, segname, topn=1000000){
+    country_asia = c("CHINA", "INDIA", "SINGAPORE", "INDONESIA", "PHILIPPINES", "THAILAND", "BERMUDA", "HONG KONG", "BANGLADESH", "MALAYSIA", "VIETNAM")
+    country_west = c("UNITED STATES", "SWITZERLAND", "FRANCE", "GERMANY", "IRELAND", "AUSTRALIA", "CANADA", "BRITAIN", "NORWAY", "NETHERLANDS", "SPAIN", "SWEDEN", "LUXEMBOURG", "ITALY", "ISRAEL", "AUSTRIA", "BELGIUM", "DENMARK", "POLAND", "NEW ZEALAND")
+    country_deveuro = c("SWITZERLAND", "FRANCE", "GERMANY", "IRELAND", "BRITAIN", "NORWAY", "NETHERLANDS", "SPAIN", "SWEDEN", "LUXEMBOURG", "ITALY", "AUSTRIA", "BELGIUM", "DENMARK")
+    
+    res = if(segname=='Asia') u_in[country_name%in%country_asia, ] else
+      if(segname=='West') u_in[country_name%in%country_west, ] else
+      if(segname=='Developed Europe') u_in[country_name%in%country_deveuro, ] else
+      if(segname%in%u_in$sector) u_in[sector==segname, ]
+
+    return(res[order(mcap, decreasing=TRUE), ][1:min(nrow(res), topn), ])
+}
+
 # u = D$u[,.SD[1,], by=focus]
 # D=D_STOCKS; u = d_stocks
 pre_screen = function(D_in, u, smart = FALSE){
@@ -106,15 +119,67 @@ screen_mycorr1 = function(lh_in, u_in, params){
     return(res)
 }
 
-pridex_metric = function(time_line, h, w){
-    return(cor(time_line, log(((exp(h)-1)%*%w) + 1)))
+pridex_metric = function(time_line, perf_in, w){  # perf_in is already EXPONENTIAL!!!!!
+    return(cor(time_line, log(((perf_in-1)%*%w) + 1)))
 }
 
-basket_ret = function(h, w) return( xts(log(((exp(h)-1)%*%w) + 1), order.by=index(h)) )
+optim_pridex_metric = function(time_line, perf_in, w, wcaps_low, wcaps_high){
+    gradus = function(x){
+        return(-pridex_metric(time_line, perf_in, x))
+    }
+    res = cobyla(x0=w, fn=gradus, lower=wcaps_low, upper=wcaps_high, hin=function(w){ -abs(1-sum(w)) }, control=COB_CTL)
 
-basket_vol = function(h, w) return( sd(basket_ret(h, w))*sqrt(252) )
+    return(list(weights=res$par, metric=-res$value))
+}
 
-basket_perf = function(h, w) return( exp(cumsum(basket_ret(h, w))) )
+optim_sigma = function(h_in, volparams){
+    comat = cov(h_in)
+    n = ncol(h_in)
+    gradus = function(x) return(abs(volparams$target - sqrt(252)*sqrt(x %*% comat %*% x)))
+    res = cobyla(x0=array(1/n, n), fn=gradus, lower=array(volparams$wmin, n), upper=array(volparams$wmax, n), hin=function(w){ -abs(1-sum(w)) }, control=COB_CTL)
+    return(res$par)
+}
+
+xts_cbind_idx = function(x, y) return(cbind(x[index(x)%in%index(y), ], y[index(y)%in%index(x), ]))
+
+basket_ret = function(h_in, w_in) return( xts(log(((exp(h_in)-1)%*%w_in) + 1), order.by=index(h_in)) )
+
+basket_vol = function(h_in, w_in) return( sd(basket_ret(h_in, w_in))*sqrt(252) )
+
+basket_perf = function(h_in, w_in) return( exp(cumsum(basket_ret(h_in, w_in))) )
+
+# d_in=d; n_in=5; volparams=list(wnd=500, min=0.2, max=0.3)
+baskets_vol_range = function(d_in, n_in, volparams){
+    nn = t(combn(d_in$u$ticker, n_in))
+    h = tail(d_in$h, volparams$wnd)
+    w = array(1/n_in, n_in)
+    comat = cov(h)
+    sds = array(0, nrow(nn))
+    for(j in 1:nrow(nn))
+        sds[j] = w %*% comat[nn[j, ], nn[j, ]] %*% w 
+    sds = sqrt(250)*sqrt(sds)
+    baskets = nn[which(sds>=volparams$min & sds<=volparams$max), ]
+    return(baskets)
+}
+
+# h_in = d$h; wmin=0.1; wmax=0.6; do_optimize=TRUE
+# baskets=baskets_vol_range(d_etf, 3, volparams=list(wnd=500, min=0.2, max=0.3)); h_in=d_stock$h
+best_pridex_basket = function(baskets, h_in, wmin=0, wmax=0, do_optimize=FALSE){  # h_in is supposed to be already time-constrained!
+    n = ncol(baskets)
+    w = array(1/n, n)  # equal weights
+    perf = exp(cumsum(h_in))
+    time_line = 1:nrow(perf)
+    if(do_optimize){
+        rnk = foreach(j=1:nrow(baskets))%do%optim_pridex_metric(time_line, perf[, baskets[j, ]], w, array(wmin, n), array(wmax, n))
+        best_idx = which.max(unlist(lapply(rnk, '[[', 'metric')))
+        res = list(basket=baskets[best_idx, ], weights=rnk[[best_idx]]$weights)
+    } else {
+        rnk = foreach(j=1:nrow(baskets))%do%pridex_metric(time_line, perf[, baskets[j, ]], w)
+        best_idx = which.max(unlist(rnk))
+        res = list(basket=baskets[best_idx, ], weights=w)
+    }
+    return(res)
+}
 
 # lh_in=lh_in['etfs']; u_in=u1_in['etfs']; pick_count=params$N
 pridex_screen_prep = function(lh_in, u_in, pick_count){  # screening by proiex metric TODO refactor to single function
@@ -203,6 +268,21 @@ volcontrol = function(r, params){
     w[,1] = lag(ifelse(w > params$max_weight, params$max_weight, w), 1)
     res = log((exp(r) - 1)*w + 1)[-1,]
     return(res)
+}
+
+# ds_in=get(load('/home/aslepnev/webhub/grish_iter0.RData')); de_in=get(load('/home/aslepnev/webhub/sacha_etf_yhoo.RData')); segetf='Health Care'; n_etfs=15; segstock='Health Care'; n_stock=75; vt=0.3
+index_vt_pridex_segment = function(de_in, ds_in, segetf, n_etfs, segstock, n_stock, vt){
+    d_etf = pre_screen(de_in, etf_segment(de_in$u, segetf, n_etfs), smart=TRUE)
+    d_stock = pre_screen(ds_in, stock_segment(ds_in$u, segstock, n_stock), smart=TRUE)
+    
+    b_etf = best_pridex_basket(baskets_vol_range(d_etf, 3, volparams=list(wnd=500, min=vt-0.15, max=vt)), d_etf$h)
+    b_stock = best_pridex_basket(baskets_vol_range(d_stock, 3, volparams=list(wnd=500, min=vt, max=vt+0.2)), d_stock$h)
+
+    hcom = xts_cbind_idx(d_etf$h[, b_etf$basket], d_stock$h[, b_stock$basket])
+    wcom = c(b_etf$weights, b_stock$weights)/sum(b_etf$weights+b_stock$weights)
+    wcom = optim_sigma(tail(hcom, 500), list(target=vt, wmin=0.1, wmax=0.6))
+    print(paste('Volatility:', basket_vol(tail(hcom, 500), wcom), 'Performance:', tail(basket_perf(tail(hcom, 500), wcom), 1)))
+    return(list(basket=colnames(hcom), weights=wcom))
 }
 
 get_grish_zacks = function(){
