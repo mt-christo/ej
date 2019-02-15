@@ -315,10 +315,14 @@ de = get(load('/home/aslepnev/webhub/sacha_etf_yhoo.RData'))
 
 p1 = index_vt_pridex_segment(pre_screen(de, etf_segment(de$u, 'Asia', 15), smart=TRUE),
                              pre_screen(ds, ds$u, smart=TRUE), 3, 2, 0.4, 0.15, 0.6)
-basket = rbind(de$u[, .(ticker, name)], ds$u[!ticker%in%de$u, .(ticker, name)])[data.table(ticker=p1$basket, weight=p1$weights), on='ticker']
-send_xts_plot_and_csv_to_email(p1$perf, basket, 'Please see chart attacheeeed', 'aslepnev@novo-x.info')
+basket = rbind(de$u[, .(ticker, name, sectype='ETF')], ds$u[!ticker%in%de$u, .(ticker, name, sectype='Stock')])[data.table(ticker=p1$basket, weight=p1$weights), on='ticker']
+basket[, weight:=fracperc(weight, 2)]
+colnames(basket) = c('Ticker', 'Name', 'Security Type', 'Weight')
+send_files_to_email(c(save_data_as_pdf(basket, 'basket.pdf'),
+                      save_data_as_chart(p1$perf, paste0('Basket performance \n1 year vol: ', fracperc(p1$vol250, 0)), 'chart.png')),
+                    'Asia index', 'aslepnev@novo-x.info')
 
-
+p1$perf
 
 send_xts_plot_to_email(1:10, 'chart.png', 'Please see chart attacheeeed', 'aslepnev@novo-x.info')
 

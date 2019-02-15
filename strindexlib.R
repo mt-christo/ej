@@ -1,3 +1,4 @@
+library(gridExtra)
 library(ggplot2)
 library(mailR)
 library(ellipse)
@@ -150,6 +151,8 @@ basket_ret = function(h_in, w_in) return( xts(log(((exp(h_in)-1)%*%w_in) + 1), o
 basket_vol = function(h_in, w_in) return( sd(basket_ret(h_in, w_in))*sqrt(252) )
 
 basket_perf = function(h_in, w_in) return( exp(cumsum(basket_ret(h_in, w_in))) )
+
+fracperc = function(x, n) return( paste0(as.character(round(x*100, n)), '%') )
 
 # d_in=d_stock1; n_in=2; volparams=list(wnd=500, min=0.2, max=0.3)
 baskets_vol_range = function(d_in, n_in, volparams){
@@ -304,7 +307,7 @@ index_vt_pridex_segment = function(d_etf, d_stock, n_etfs, n_stock, vt, wmin, wm
     wcom = c(b_etf$weights, b_stock$weights)/(sum(b_etf$weights) + sum(b_stock$weights))
     wcom = optim_sigma(tail(hcom, 500), list(target=vt, wmin=wmin, wmax=wmax))
     print(paste('Volatility:', basket_vol(tail(hcom, 250), wcom), 'Performance:', tail(basket_perf(hcom, wcom), 1)))
-    return(list(basket=c(b_etf$basket, b_stock$basket), weights=wcom, perf=basket_perf(hcom, wcom)))
+    return(list(basket=c(b_etf$basket, b_stock$basket), weights=wcom, perf=basket_perf(hcom, wcom), vol250=basket_vol(tail(hcom, 250), wcom), vol500=basket_vol(tail(hcom, 500), wcom)))
 }
 
 get_grish_zacks = function(){
@@ -315,9 +318,9 @@ get_grish_zacks = function(){
     return(D_STOCKS)
 }
 
-send_attach_to_email = function(filepath, filename, subject, eaddress){
-    system(paste0('echo -e "to: ', eaddress, ' \nsubject: ', subject, '\n"| (cat && uuencode ', filepath, ' ', filename, ') | ssmtp ', eaddress))
-}
+#send_attach_to_email = function(filepath, filename, subject, eaddress){
+#    system(paste0('echo -e "to: ', eaddress, ' \nsubject: ', subject, '\n"| (cat && uuencode ', filepath, ' ', filename, ') | ssmtp ', eaddress))
+#}
 
 # data=round(cor(liners), 2); data_name='gics_correlations'; subject='GICS sector index correlations'; eaddress='antonslepnev@gmail.com'
 send_csv_to_email = function(data, data_name, subject, eaddress){
@@ -326,14 +329,27 @@ send_csv_to_email = function(data, data_name, subject, eaddress){
     send_attach_to_email(filepath, paste0(data_name, '.csv'), subject, eaddress)
 }
 
-send_xts_plot_and_csv_to_email = function(my_chart, my_tab, subject, eaddress){
-    chart_path = paste0(tempfile(),'.png')
-    png(chart_path)
-    print(plot(my_chart))
-    dev.off()
-    csv_path = paste0(tempfile(),'.csv')
-    fwrite(my_tab, csv_path)
-    send.mail(from = 'novoxservice@gmail.com', to = eaddress, subject=subject, body = subject, encoding = "utf-8", smtp = list(host.name = "smtp.gmail.com", port = 465, user.name="novoxservice@gmail.com", passwd="Crestline_5", ssl=TRUE), authenticate = TRUE, send = TRUE , attach.files = c(chart_path, csv_path), html = TRUE, inline = TRUE )
+# tab=basket; filename='basket.pdf'
+save_data_as_pdf = function(tab, filename){
+    filepath = paste0('/home/aslepnev/webhub/', filename)
+    pdf(filepath); grid.table(tab, rows=NULL); dev.off()
+    return(filepath)
+}
+
+save_data_as_csv = function(tab, filename){
+    filepath = paste0('/home/aslepnev/webhub/', filename)
+    fwrite(tab)
+    return(filepath)
+}
+
+save_data_as_chart = function(my_chart, chart_title, filename){
+    filepath = paste0('/home/aslepnev/webhub/', filename)
+    png(filepath); print(plot(my_chart, main=chart_title)); dev.off()
+    return(filepath)
+}
+
+send_files_to_email = function(filepaths, subject, eaddress){
+    send.mail(from = 'novoxservice@gmail.com', to = eaddress, subject=subject, body = subject, encoding = "utf-8", smtp = list(host.name = "smtp.gmail.com", port = 465, user.name="novoxservice@gmail.com", passwd="Crestline_5", ssl=TRUE), authenticate = TRUE, send = TRUE , attach.files = c(filepaths), html = TRUE, inline = TRUE )
 }
 
 # uni_in = pre_screen(data, data$u[gics_code%in%c(45, 50), ]); screen_params = list(window=40, voltarget=0.3, minw=0.01, maxw=0.3, force_us=FALSE, main=list(UNI=10, window=40)); rebal_freq='quarter'; index_code='SOLVIT'
