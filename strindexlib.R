@@ -88,8 +88,9 @@ pre_screen = function(D_in, u, smart = FALSE){
     h1 = D_in$h[, u1$ticker]
     if(smart){
         h1 = h_to_log(h1)
-        rng = as.numeric(t(foreach(i=1:ncol(h1),.combine=cbind)%do%sum(abs(range(apply.yearly(h1[,i], sum))) < 0.6)))
-        res = list(u=u1[rng==2, ], h=h1[, rng==2])
+#        rng = as.numeric(t(foreach(i=1:ncol(h1),.combine=cbind)%do%sum(abs(range(apply.yearly(h1[,i], sum))) < 0.6)))
+#        res = list(u=u1[rng==2, ], h=h1[, rng==2])
+        res = list(u=u1, h=h1)
         
         return(res)
     }
@@ -150,19 +151,30 @@ basket_vol = function(h_in, w_in) return( sd(basket_ret(h_in, w_in))*sqrt(252) )
 
 basket_perf = function(h_in, w_in) return( exp(cumsum(basket_ret(h_in, w_in))) )
 
-# d_in=d; n_in=5; volparams=list(wnd=500, min=0.2, max=0.3)
+# d_in=d_stock1; n_in=2; volparams=list(wnd=500, min=0.2, max=0.3)
 baskets_vol_range = function(d_in, n_in, volparams){
-    nn = t(combn(d_in$u$ticker, n_in))
+    nn = t(combn(1:nrow(d_in$u), n_in))
+    mcap_nn = nn
+    ticker_nn = nn
+    for(i in 1:ncol(nn)){
+        mcap_nn[, i] = d_in$u$mcap[nn[, i]]
+        ticker_nn[, i] = d_in$u$ticker[nn[, i]]
+    }
+    
+#    nn = t(combn(d_in$u$ticker, n_in))
     h = tail(d_in$h, volparams$wnd)
     w = array(1/n_in, n_in)
     comat = cov(h)
     sds = array(0, nrow(nn))
-    for(j in 1:nrow(nn))
-        sds[j] = w %*% comat[nn[j, ], nn[j, ]] %*% w 
+    mcaps = array(0, nrow(nn))
+    for(j in 1:nrow(nn)){
+        sds[j] = w %*% comat[nn[j, ], nn[j, ]] %*% w
+        mcaps[j] = min(mcap_nn[j, ])
+    }
     sds = sqrt(250)*sqrt(sds)
-    baskets = nn[sds>=volparams$min & sds<=volparams$max, ]
+    baskets = ticker_nn[sds>=volparams$min & sds<=volparams$max, ]
     sds = sds[sds>=volparams$min & sds<=volparams$max]
-    return(list(baskets=baskets, sds=sds))
+    return(list(baskets=baskets, sds=sds, mcaps=mcaps))
 }
 
 # h_in = d$h; wmin=0.1; wmax=0.6; do_optimize=TRUE
@@ -275,19 +287,24 @@ volcontrol = function(r, params){
 
 # ds_in=ds; de_in=de; segetf='Health Care'; n_etfs_uni=15; n_etfs=3; segstock='Health Care'; n_stock_uni=60; n_stock=2; vt=0.4
 # ds_in=ds; de_in=de; segetf='Asia'; n_etfs=15; segstock='Asia'; n_stock=65; vt=0.3
-index_vt_pridex_segment = function(de_in, ds_in, segetf, n_etfs_uni, n_etfs, segstock, n_stock_uni, n_stock, vt){
-    d_etf = pre_screen(de_in, etf_segment(de_in$u, segetf, n_etfs_uni), smart=TRUE)
-    d_stock = pre_screen(ds_in, stock_segment(ds_in$u, segstock, n_stock_uni)[!ticker%in%d_etf$ticker, ], smart=TRUE)
+# d_etf=pre_screen(de, etf_segment(de$u, 'Asia', 15), smart=TRUE); d_stock=pre_screen(ds, ds$u, smart=TRUE); n_etfs=3; n_stock=2; vt=0.4; wmin=0.15; wmax=0.6
+index_vt_pridex_segment = function(d_etf, d_stock, n_etfs, n_stock, vt, wmin, wmax){
+    d_stock1 = d_stock
+    d_stock1$u = d_stock1$u[!ticker%in%d_etf$u$ticker, ]
+    d_stock1$h = d_stock1$h[, !d_stock$u$ticker%in%d_etf$u$ticker]  # In case some stocks are ETFs at the same time - we want to avoid duplicates
 
-    b_etf = best_pridex_basket(baskets_vol_range(d_etf, n_etfs, volparams=list(wnd=250, min=vt-0.2, max=vt+0.2))$baskets, d_etf$h)
-    b_stock = baskets_vol_range(d_stock, n_stock, volparams=list(wnd=250, min=vt-0.1, max=vt+0.2))
-    b_stock = list(basket=b_stock$baskets[which.min(abs(vt - b_stock$sds)), ], weights=array(1/n_stock, n_stock))
+    b_etf = best_pridex_basket(baskets_vol_range(d_etf, n_etfs, volparams=list(wnd=250, min=vt-0.2, max=vt+0.2))$baskets, d_etf$h)  # Basket with highest Pridex metric within this Volatility range
+    b_stock = baskets_vol_range(d_stock1, n_stock, volparams=list(wnd=250, min=vt-0.1, max=vt+0.2))  # All baskets within Volatility range witn Volatility and Lowest Market cap info
+
+    closest_baskets = order(abs(vt - b_stock$sds))[1:min(length(b_stock$sds), 10)]  # 10 baskets with vol closest to target
+    best_basket = b_stock$baskets[closest_baskets[which.max(b_stock$mcaps[closest_baskets])], ]  # Basket with highest Low Market Cap
+    b_stock = list(basket=best_basket, weights=array(1/n_stock, n_stock))
     
-    hcom = xts_cbind_idx(d_etf$h[, b_etf$basket], d_stock$h[, b_stock$basket])
+    hcom = xts_cbind_idx(d_etf$h[, b_etf$basket], d_stock1$h[, b_stock$basket])
     wcom = c(b_etf$weights, b_stock$weights)/(sum(b_etf$weights) + sum(b_stock$weights))
-    wcom = optim_sigma(tail(hcom, 500), list(target=vt, wmin=0.12, wmax=0.6))
+    wcom = optim_sigma(tail(hcom, 500), list(target=vt, wmin=wmin, wmax=wmax))
     print(paste('Volatility:', basket_vol(tail(hcom, 250), wcom), 'Performance:', tail(basket_perf(hcom, wcom), 1)))
-    return(list(basket=colnames(hcom), weights=wcom, perf=basket_perf(hcom, wcom)))
+    return(list(basket=c(b_etf$basket, b_stock$basket), weights=wcom, perf=basket_perf(hcom, wcom)))
 }
 
 get_grish_zacks = function(){

@@ -309,18 +309,20 @@ u_in = de$u
 
 source('/home/aslepnev/git/ej/strindexlib.R')
 
-ds = get(load('/home/aslepnev/webhub/grish_iter0.RData'))
+#ds = get(load('/home/aslepnev/webhub/grish_iter0.RData'))
+ds = get(load('/home/aslepnev/webhub/grish_asia.RData'))
 de = get(load('/home/aslepnev/webhub/sacha_etf_yhoo.RData'))
 
-p1 = index_vt_pridex_segment(de, ds, 'Health Care', 15, 3, 'Health Care', 60, 2, 0.4)
-
-p1 = index_vt_pridex_segment(de, ds, 'Asia', 20, 3, 'Asia', 50, 2, 0.4)
+p1 = index_vt_pridex_segment(pre_screen(de, etf_segment(de$u, 'Asia', 15), smart=TRUE),
+                             pre_screen(ds, ds$u, smart=TRUE), 3, 2, 0.4, 0.15, 0.6)
 basket = rbind(de$u[, .(ticker, name)], ds$u[!ticker%in%de$u, .(ticker, name)])[data.table(ticker=p1$basket, weight=p1$weights), on='ticker']
 send_xts_plot_and_csv_to_email(p1$perf, basket, 'Please see chart attacheeeed', 'aslepnev@novo-x.info')
 
 
 
 send_xts_plot_to_email(1:10, 'chart.png', 'Please see chart attacheeeed', 'aslepnev@novo-x.info')
+
+h = pre_screen(ds, ds$u, smart=TRUE)$h
 
 foreach(i=1:ncol(h),.combine=c)%do%{ sqrt(250)*sd(h[,i]) }
 
