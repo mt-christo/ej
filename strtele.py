@@ -30,7 +30,7 @@ import pickle
 import json
 #import gspread
 import httplib2
-import apiclient.discovery
+#import apiclient.discovery
 from oauth2client.service_account import ServiceAccountCredentials
 import matplotlib
 matplotlib.use('Agg')
@@ -45,6 +45,11 @@ import matplotlib.pyplot as plt
 
 # Define a few command handlers. These usually take the two arguments bot and
 # update. Error handlers also receive the raised TelegramError object in error.
+
+BASKETS_PATH = '/home/aslepnev/git/ej/strbaskets.pickle'
+U_PATH = '/home/aslepnev/webhub/grish_iter0_adapted_u.csv'
+H_PATH = '/home/aslepnev/webhub/grish_iter0_adapted_h.csv'
+
 
 def toGridRange(sheet, cellsRange):
     sheetId = sheet['sheets'][0]['properties']['sheetId']
@@ -66,54 +71,89 @@ def toGridRange(sheet, cellsRange):
         cellsRange["endRowIndex"] = int(endCell)
         cellsRange["sheetId"] = sheetId
     return cellsRange
-    
+
+
 def start(bot, update):
     """Send a message when the command /start is issued."""
     update.message.reply_text('Hi!')
 
+    
 def help(bot, update):
     """Send a message when the command /help is issued."""
     update.message.reply_text('Help!')
 
+
+def match_tickers(tickers):
+    return [U[U.ticker.str.startswith(x.upper())].ticker.iloc[0]
+            for x in tickers]
+    
+    
 def save_basket(text):
-    bname = text.split(' ')[0]
-    bsecs = text.split(' ')[1:]
-    b = {'is_locked': False, 'desc': '', 'tickers': [ses[ses.CODE.str.startswith(x.upper())].CODE.iloc[0] for x in bsecs]}
-    baskets = pickle.load(open('/home/aslepnev/git/ej/strbaskets.pickle', 'rb'))
-    baskets[bname] = b 
-    with open('/home/aslepnev/git/ej/strbaskets.pickle', 'wb') as tmp:
-        pickle.dump(baskets, tmp, protocol=pickle.HIGHEST_PROTOCOL)
+    baskets = get_all_baskets()
+    baskets[bname] = {'name': text.split(' ')[0],
+                      'desc': '',
+                      'tickers': match_tickers(text.split(' ')[1:])}
+    save_all_baskets(baskets)
     return 'Basket '+bname+' saved'
 
-def get_baskets():
-    b = pickle.load(open('/home/aslepnev/git/ej/strbaskets.pickle', 'rb'))
-    keys = [x if b[x]['is_locked'] else '' for x in b.keys()] + [x if not b[x]['is_locked'] else '' for x in b.keys()]
-    keys = list(filter(None,keys))
-    return '\n'.join([x+':\n'+(b[x]['desc']+'\n' if b[x]['desc']!='' else '')+'* '+'\n* '.join(b[x]['tickers'])+'\n' for x in keys])
+
+# basket = dict{ name, desc, tickers[] }
+def get_all_baskets():
+    b = pickle.load(open(BASKETS_PATH, 'rb'))
+    return b
+
+
+def save_all_baskets(baskets):
+    with open(BASKETS_PATH, 'wb') as tmp:
+        pickle.dump(baskets, tmp, protocol=pickle.HIGHEST_PROTOCOL)
+    return 'Baskets saved'
+
+
+def print_baskets(baskets):
+    return '\n'.join([x + ':\n' +
+                      (b[x]['desc'] + '\n' if b[x]['desc'] != '' else '') +
+                      '* ' + '\n* '.join(b[x]['tickers']) + '\n'
+                      for x in baskets])
+
 
 def delete_basket(text):
-    bname = text.split(' ')[0]
-    baskets = pickle.load(open('/home/aslepnev/git/ej/strbaskets.pickle', 'rb'))
-    res = ''
-    if not baskets[bname]['is_locked']:
-        del baskets[bname]
-        res = 'Basket '+bname+' deleted'
-    else:
-        res = 'Cannot delete basket ' + bname
-    with open('/home/aslepnev/git/ej/strbaskets.pickle', 'wb') as tmp:
-        pickle.dump(baskets, tmp, protocol=pickle.HIGHEST_PROTOCOL)
-    return res
-        
+    baskets = get_all_baskets()
+    del baskets[text.split(' ')[0]]
+    save_all_baskets(baskets)
+    return 'Basket ' + bname + ' deleted'
+
+
 def my_who(text):
-    res = ses[ses.CODE.str.startswith(text.upper())]
+    res = U[U.ticker.str.startswith(text.upper())]
     if len(res) > 0:
-        return '\n'.join(res.apply(lambda x: str(x.CODE)+'\n('+str(x.NAME)+')\nmcap: '+str(x.MCAP)+'\n', axis=1))
+        return '\n'.join(res.apply(lambda x: str(x.CODE) + '\n(' +
+                                   str(x.NAME) + ')\nmcap: ' +
+                                   str(x.MCAP) + '\n', axis=1))
     else:
         return 'No matching securities'
 
-def plot_basket(bname):
+
+# bname, tail_days = 'fin1', 250
+def plot_basket_bunch(bname, tail_days):
+    b = get_all_baskets()[bname]
+    h = H.loc[:, b['tickers']]
+    h1 = 100*(np.exp(h.tail(tail_days).cumsum()) - 1).rolling(3).mean()
+    
+    matplotlib.style.use('ggplot')
+    
+    p = h.plot(kind='line', x='date', y='val', linewidth=4, title=bname+' basket performance, %', legend=False, color='green', antialiased=True)
+    f = p.get_figure()
+    filename = 'plot.png'
+    f.savefig(filename)
+    plt.close()   
+#    client.send_file('coinsight_bot','plot.png')
+    return filename
+    
+    
+def plot_basket_single(bname):
     t = pickle.load(open('/home/aslepnev/git/ej/strbaskets.pickle', 'rb'))[bname]
     h = hist[hist.ticker.isin(t['tickers'])].groupby('dt').agg({'val': 'mean'}).reset_index()
+#    h1 = (np.exp(h) - 1).mean(axis=1)
     
     h['date'] = pd.to_datetime(h.dt)
     h.val = (h.val.cumsum().rolling(20).mean()+1)*100
@@ -134,6 +174,7 @@ def calc_wo(basket,params):
     pd.DataFrame({'param':['coupon','strikes'], 'value':params}).to_csv(params_fn)
     hist[hist.ticker.isin(basket['tickers'])].to_csv(quotes_fn)
     return np.asarray(ro.r('wo_calculator_web("'+params_fn+'","'+quotes_fn+'")'))[0]
+
 
 def report_wo(val, bname, basket, params):
     t = ses[ses.CODE.isin(basket['tickers'])]
@@ -211,6 +252,7 @@ def report_wo(val, bname, basket, params):
 
     return 'https://docs.google.com/spreadsheets/d/' + spreadsheet['spreadsheetId']
 
+
 def reply_wo(text):
     items = text.split(' ')
     bname = items[0]
@@ -221,7 +263,11 @@ def reply_wo(text):
     if len(items) > 3:
         res = res + ['Please see product card on Google Drive: ' + report_wo(val, bname, basket, params)]
     return res
+
+
+def smart_recognize(x):
     
+
     
 def my_response(bot, update):
     """Echo the user message."""
@@ -273,15 +319,16 @@ def error(bot, update, error):
 
 
 def main():
-    ses = pd.read_csv('secs.csv', sep=';')
-    ses.CODE = ses.CODE.apply(lambda x: ' '.join(x.replace('   ',' ').replace('  ',' ').split(' ')[:2]))
-    ses.MCAP = ses.MCAP.apply(lambda x: '{:,.0f} MM'.format(x/1000000))
-    ses.loc[ses.MCAP == 'nan MM', 'MCAP'] = 'No Data'
+    U = pd.read_csv(U_PATH, sep=',')
+    H = pd.read_csv(H_PATH, sep=',')
+    H = H.rename(columns={H.columns[0]: 'dt'})
+    H['dt'] = pd.to_datetime(H['dt'])
+    H = H.set_index(H['dt'])
 
-    hist = pd.read_csv('~/git/ej/hist_sm.csv')[['dt','ticker','val']]
-    hist.ticker = hist.ticker.str.replace('.Equity','').str.replace('.',' ')
+#    hist = pd.read_csv('~/git/ej/hist_sm.csv')[['dt','ticker','val']]
+#    hist.ticker = hist.ticker.str.replace('.Equity','').str.replace('.',' ')
 
-    ro.r('source("~/git/ej/stropt.R")')
+    ro.r('source("/home/aslepnev/git/ej/novo_quant_func.R")')
  
     """Start the bot."""
     # Create the EventHandler and pass it your bot's token.
