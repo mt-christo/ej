@@ -1,7 +1,7 @@
 library(gridExtra)
 library(ggplot2)
 library(mailR)
-library(ellipse)
+#library(ellipse)
 library(googlesheets)
 library(doMC)
 library(data.table)
@@ -9,7 +9,7 @@ library(foreach)
 library(xts)
 library(nloptr)
 library(tseries)
-registerDoMC(cores=7)
+registerDoMC(cores=5)
 
 COB_CTL <<- list(xtol_rel=1e-8, maxeval=5000)
 
@@ -435,3 +435,58 @@ build_index = function(D_in, rebal_dates, screen_func, screen_params, start_date
     return(h_res)
 }
 
+# u_in=x$u[['main']]; dt_in=x$dt
+prorate_uni = function(u_in, dt_in){
+    n = 10
+    dt1 = u_in[dt <= dt_in, max(dt)]
+    dt2 = u_in[dt >= dt_in, min(dt)]
+    u1 = u_in[dt == dt1, .(ticker, mcap1=mcap)]
+    u2 = u_in[dt == dt2, .(ticker, mcap2=mcap)]
+    res = u2[u1, on='ticker'][, mcap:=(as.numeric(dt_in - dt1)*mcap2 + as.numeric(dt2 - dt_in)*mcap1)/as.numeric(dt2 - dt1)]
+    return(list(main=list(names=res[order(mcap, decreasing=TRUE), ][1:n, ]$ticker, weights=array(1/n, n))))
+}
+
+# D_in=list(main=D); rebal_dates=get_rebals(D, 'quarter'); screen_func=screen_voltarget; start_date='2012-12-31'
+# screen_params = list(window=40)
+build_index_prorate = function(D_in, rebal_dates, screen_func, screen_params, start_date){
+    lh = list()
+    for(i in names(D_in)){
+        lh[[i]] = na.fill(diff(log(1+na.locf(D_in[[i]]$h))), 0)
+        for(j in 1:ncol(lh[[i]]))
+            lh[[i]][abs(lh[[i]][,j])>0.5, j] = 0
+    }
+
+    for(i in 1:length(lh))
+        for(j in 1:length(lh))
+            lh[[i]] = lh[[i]][index(lh[[i]])%in%index(lh[[j]])]
+    
+    rebal_idx = match(rebal_dates[rebal_dates>=start_date], index(lh[[1]]))  # indices of history in all elements of lh are expected the same!
+    calc_pieces = foreach(i=1:(length(rebal_idx) - 1))%do%{
+        s = list(); s_next = list(); s_u = list()
+        for(j in names(lh)){
+            s[[j]] = lh[[j]][(rebal_idx[i] - screen_params$window):rebal_idx[i], ]
+            s_next[[j]] = lh[[j]][(rebal_idx[i]+1):rebal_idx[i+1], ]
+            s_u[[j]] = D_in[[j]]$u        
+        }
+        list(dt = index(lh[[1]])[rebal_idx[i]], lh=s, lh_next=s_next, u=s_u)
+    }
+
+    # x = calc_pieces[[10]]
+    h_res = foreach(x=calc_pieces)%dopar%{
+#        print(paste(screen_params$N, screen_params$UNI, x$dt, sep=', '))
+        print(x$dt)
+        basket = screen_func(x$u[['main']], x$dt)
+        h = foreach(i=names(basket),.combine=cbind)%do%x$lh_next[[i]][, basket[[i]]$names]
+        w = foreach(i=names(basket),.combine=c)%do%basket[[i]]$weights
+        r = basket_ret(h, w) 
+        list(h=r, basket=basket, dt=x$dt)
+    }
+
+    
+#    res_vc = exp(cumsum(volcontrol(h_res, vc_params)))
+#    res = exp(cumsum(h_res))
+#    print(paste0('normal: ', round(tail(res, 1),2), ', volcontrolled: ', round(tail(res_vc, 1), 2)))
+#    plot(res, cex=2, cex.main=2)
+    
+    return(h_res)
+}

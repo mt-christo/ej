@@ -154,7 +154,7 @@ save(D, file='/home/aslepnev/webhub/grish_asia.RData')
 library(data.table)
 library(foreach)
 library(quantmod)
-u = read.xlsx('/home/aslepnev/git/ej/grish_uni_2011.xlsx', '2018')
+#u = read.xlsx('/home/aslepnev/git/ej/grish_uni_2011.xlsx', '2018')
 u = data.table(as.matrix(u))
 u$ticker = as.character(t(as.data.table(strsplit(u$ticker, ' ')))[, 1])
 save(u, file="/home/aslepnev/webhub/grish_uni_2018.RData")
@@ -165,6 +165,75 @@ sum(!u$ticker%in%colnames(p$h))
 i=1; grishe = foreach(x=u$ticker,.errorhandling='pass')%do%{ Sys.sleep(1.1); print(i); i=i+1; get(getSymbols(x))[,paste0(x,'.Adjusted')] }
 
 h1 = foreach(x=grishe[5<foreach(x=grishe,.combine=c)%do%length(x)],.combine=cbind)%do%x
+
+
+
+
+
+
+
+
+#p = get(load("/home/aslepnev/webhub/zacks_data.RData"))
+u = foreach(y = 2009:2018, .combine=rbind)%do%{
+    u = fread(paste0('/home/aslepnev/git/ej/grish_uni_2011_', y, '.csv'))
+    u$dt = as.Date(paste(y,12,31,sep='-'))
+    u$ticker = as.character(t(as.data.table(strsplit(gsub('/', '', u$ticker), ' ')))[, 1])
+    u
+}
+utickers = u[, unique(ticker)]
+u$sec_id = (1:length(utickers))[match(u$ticker, utickers)]
+i=1; grishe = foreach(x=utickers,.errorhandling='pass')%do%{ Sys.sleep(1.1); print(i); i=i+1; get(getSymbols(x))[,paste0(x,'.Adjusted')] }
+save(grishe, file='/home/aslepnev/webhub/grish_uni_2011_p.RData')
+mtickers = utickers[sapply(grishe, FUN=length)<5]
+muni = u[ticker%in%mtickers, ][order(mcap, decreasing=TRUE), ][, .(ticker, name, country_code)]
+muni[, .N, by='country_code']
+
+utickers2 == muni[, unique(ticker)]
+i=1; grishe2 = foreach(x=utickers2,.errorhandling='pass')%do%{ Sys.sleep(1.1); print(i); i=i+1; get(getSymbols(x))[,paste0(x,'.Adjusted')] }
+save(muni, file='/home/aslepnev/webhub/muni.RData')
+
+muni = muni[,head(.SD, 1), by=c('ticker','country_code')]
+#muni[country_code=='CH' & nchar(ticker)==3, ticker:=paste0('0', ticker, '.HK')]
+#muni[country_code=='CH' & nchar(ticker)==4, ticker:=paste0(ticker, '.HK')]
+#muni[country_code=='CH' & nchar(ticker)>4, ticker:=paste0(ticker, '.SS')]
+#muni[country_code=='JN', ticker:=paste0(ticker, '.T')]
+#muni[country_code=='SZ', ticker:=paste0(ticker, '.VX')]
+#muni[country_code=='BZ', ticker:=paste0(ticker, '.SA')]
+#muni[country_code=='FI', ticker:=paste0(ticker, '.HE')]
+#muni[country_code=='IT', ticker:=paste0(ticker, '.MI')]
+#muni[country_code=='GE', ticker:=paste0(ticker, '.DE')]
+#muni[country_code=='NE', ticker:=paste0(ticker, '.AS')]
+#muni[country_code=='HK' & nchar(ticker)==3, ticker:=paste0('0', ticker, '.HK')]
+#muni[country_code=='HK' & nchar(ticker)==4, ticker:=paste0(ticker, '.HK')]
+#muni[country_code=='HK' & nchar(ticker)==1, ticker:=paste0('000', ticker, '.HK')]
+#muni[country_code=='HK' & nchar(ticker)==2, ticker:=paste0('00', ticker, '.HK')]
+#muni[country_code=='GB', ticker:=paste0(ticker, '.L')]
+#muni[country_code=='SK' & nchar(ticker)==6, ticker:=paste0(ticker, '.KS')]
+#muni[country_code=='SK' & nchar(ticker)==5, ticker:=paste0('0', ticker, '.KS')]
+#muni[country_code=='SK' & nchar(ticker)==3, ticker:=paste0('000', ticker, '.KS')]
+#muni[country_code=='SK' & nchar(ticker)==4, ticker:=paste0('00', ticker, '.KS')]
+#muni[country_code=='SW', ticker:=paste0(ticker, '.ST')]
+#muni[country_code=='SP', ticker:=paste0(ticker, '.MC')]
+#muni[country_code=='TA', ticker:=paste0(ticker, '.TW')]
+#muni[grep('.HK.SS', ticker), ticker:=gsub('.HK.SS', '.HK', ticker)]
+
+fwrite(muni[,head(.SD, 1), by=c('ticker','country_code')], file='/home/aslepnev/webhub/muni.csv')
+
+
+
+
+currencies = as.matrix(c('CH', 'HKD',
+                         'HK', 'HKD',
+                         '', '',
+                         '', '',
+                         '', '',
+                         '', '',
+                         '', '',
+                         '', '',
+                         ))
+
+
+
 
 
 
@@ -263,3 +332,14 @@ h1 = exp(cumsum(log(1 + rowSums(h1)/ncol(h1))))
 plot(h1)
 
 
+u1 = u[sector=='Information Technology' & dt>='2012-01-01' & country_code=='US', ][order(mcap, decreasing=TRUE), ][, head(.SD, 30), by='dt']
+u1[name=='SAMSUNG ELECTRONICS CO LTD', ticker:='005930.KS']
+which(utickers=='005930')
+grishe[[76]] = get(getSymbols('005930.KS'))[,paste0('005930.KS','.Adjusted')]
+p1 = foreach(x=grishe[sapply(grishe, FUN=length)>5],.combine=cbind)%do%x
+colnames(p1) = foreach(x=grishe[sapply(grishe, FUN=length)>5],.combine=c)%do%colnames(x)[1]
+colnames(p1) = gsub('[.]Adjusted', '', colnames(p1))
+u1 = u1[ticker%in%colnames(p1), ]
+p1 = p1[, u1$ticker]
+D = list(u=u1, h=p1)  # 'u' and 'h' match
+save(D, file='/home/aslepnev/git/ej/it_top10_uni.RData')

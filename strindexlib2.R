@@ -309,8 +309,8 @@ u_in = de$u
 
 source('/home/aslepnev/git/ej/strindexlib.R')
 
-#ds = get(load('/home/aslepnev/webhub/grish_iter0.RData'))
-ds = get(load('/home/aslepnev/webhub/grish_asia.RData'))
+ds = get(load('/home/aslepnev/webhub/grish_iter0.RData'))
+#ds = get(load('/home/aslepnev/webhub/grish_asia.RData'))
 de = get(load('/home/aslepnev/webhub/sacha_etf_yhoo.RData'))
 
 p1 = index_vt_pridex_segment(pre_screen(de, etf_segment(de$u, 'Asia', 15), smart=TRUE),
@@ -326,7 +326,16 @@ p1$perf
 
 send_xts_plot_to_email(1:10, 'chart.png', 'Please see chart attacheeeed', 'aslepnev@novo-x.info')
 
-h = pre_screen(ds, ds$u, smart=TRUE)$h
+h = pre_screen(ds, stock_segmment(ds$u, 'Information Technology', 100), smart=TRUE)$h
+
+u=stock_segment(ds$u, 'Information Technology', 100)
+
+
+res = build_index(list(main=), rebal_dates=get_rebals(uni_in, rebal_freq), screen_voltarget, screen_params, start_date)
+
+
+
+
 
 foreach(i=1:ncol(h),.combine=c)%do%{ sqrt(250)*sd(h[,i]) }
 
@@ -352,7 +361,17 @@ basket_vol = function(h, w) return( sd(basket_ret(h, w))*sqrt(252) )
 
 
 
+DD = get(load('/home/aslepnev/git/ej/it_top10_uni.RData'))
+res = build_index_prorate(list(main=DD), get_rebals(DD, 'quarter'), prorate_uni, list(window=40), '2012-12-31')
+r = foreach(x=res,.combine=rbind)%do%x$h; print(sd(tail(r,120))*sqrt(252))
+perf = exp(cumsum(r))
+tail(perf, 1)
 
+h_res = foreach(x=res,.combine=rbind)%do%x$h
+excess_return = 0#.045
+res_vc = exp(cumsum(-excess_return/252 + volcontrol(h_res, list(window=20, level=0.01*14, max_weight=1.5))))
+print(tail(res_vc, 1))
+print(sd(tail(diff(log(res_vc)),250))*sqrt(252))
 
 
 

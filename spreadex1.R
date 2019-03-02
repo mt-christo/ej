@@ -5,14 +5,23 @@ spread_wnd_web = function(){
     # GET = get(load('/home/aslepnev/webhub/last_GET_spread_wnd_web.RData'))
     comdty = GET$comdty
     spread_months = GET$spread_months
-    dt_start = GET$dt_start
-    dt_end = GET$dt_end
-    dt_center = GET$dt_center
-    dts_hist = unlist(GET[grep('dt_hist', names(GET))])
     
-    res = get_spread_wnd(comdty, spread_months, dt_start, dt_end, dt_center)
+    dt_start_bunch = GET$dt_start_bunch
+    dt_end_bunch = GET$dt_end_bunch
+    dt_start_results = GET$dt_start_results
+    dt_end_results = GET$dt_end_results
+    years = as.numeric(strsplit(GET$years, '-')[[1]])
     
-    qres = res[, .(.N,
+    wnd_bunch = as.Date(GET$dt_end_bunch)-as.Date(GET$dt_start_bunch)
+    wnd_results = as.Date(GET$dt_end_results)-as.Date(GET$dt_start_results)
+    
+    h_bunch = get_spread_hist(comdty, spread_months, GET$dt_start_bunch, wnd_bunch)
+    h_results = get_spread_hist(comdty, spread_months, GET$dt_start_results, wnd_results)
+
+    ma = get_spread_ma_wnd(h_bunch, GET$dt_start_bunch, wnd_bunch)[year%in%years, ]
+    results = get_spread_results(h_results, GET$dt_start_results, wnd_results)[year%in%years, ]
+
+    qres = ma[, .(.N,
 #                   q15 = quantile(spread, 0.15, na.rm=TRUE),
                    q5 = quantile(spread, 0.5, na.rm=TRUE),
 #                   q85 = quantile(spread, 0.85, na.rm=TRUE),
@@ -22,16 +31,7 @@ spread_wnd_web = function(){
                    t107 = sum(ma10chg7>0)/.N,
                    nt107 = sum(ma10chg7<0)/.N),
                by='zero_date']
-#
-#    zero_dates = unique(res$zero_date)
-#    h = rbindlist(foreach(dt_hist=dts_hist)%do%{
-#        dt = max(zero_dates[month(zero_dates)==month(dt_hist) & day(zero_dates)==day(dt_hist)])
-#        h_breaks = seq(res[, min(spread_ctd)], res[, max(spread_ctd)], len=10)
-#        h = hist(res[zero_date == dt, spread_ctd], plot=FALSE, breaks=h_breaks)
-#        h = as.data.table(h[c('mids', 'density')])[, date:=dt]
-#    })
     
-    
-    web_datatable(list('res'=res, 'qres'=qres))
+    web_datatable(list('ma'=ma, 'qres'=qres, 'results'=results))
 }
 

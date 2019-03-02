@@ -1,24 +1,14 @@
 library(devtools)
 # install_github('jennybc/googlesheets')
-library(googlesheets)
-library(dplyr)
-library(data.table)
-library(xts)
-library(corpcor)
-library(doMC)
-registerDoMC(cores=7)
 
 source('/home/aslepnev/git/ej/stropt.R')
 source('/home/aslepnev/git/ej/strfunc.R')
 
-#u$sigma = abs(rnorm(nrow(u))*0.1)  # TODO
-D = get(load('/home/aslepnev/webhub/zacks_data.RData'))
 p = D$p
 u = D$u
+s = refresh_gs_auth()
 
-refresh_s = function() {
-    gs_auth(token = '/home/aslepnev/git/ej/gdoc_doc.R')
-    return(gs_key('1y9KUgukyEvfjAVaDYCHPf1rkFn83q8LWS_0tybz2pIM'))
+load_wo_optimizer_params_gdoc = function(g_token){
 }
 
 s = refresh_s()
