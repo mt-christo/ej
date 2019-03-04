@@ -279,9 +279,11 @@ screen_pridex_voltarget_stocksetfs = function(lh_in, u_in, params){
                 etfs = list(names=e$names, weights=res$par[-(1:ncol(prep$r_uni))])))
 }
 
-# r=h_res; params=vc_params
+# r=h_res; params=list(window=20, maxvolwindow=10, level=0.01*14, max_weight=1.5); params=vc_params; 
 volcontrol = function(r, params){
     w = sqrt(250)*rollapplyr(r, params$window, FUN=sd)
+    if('maxvolwindow'%in%names(params))
+        w = rollapplyr(w, params$maxvolwindow, FUN=function(x){ max(x) })
     w[,1] = ifelse(is.na(w), 1, params$level/w)
     w[,1] = lag(ifelse(w > params$max_weight, params$max_weight, w), 1)
     res = log((exp(r) - 1)*w + 1)[-1,]
@@ -338,7 +340,7 @@ save_data_as_pdf = function(tab, filename){
 
 save_data_as_csv = function(tab, filename){
     filepath = paste0('/home/aslepnev/webhub/', filename)
-    fwrite(tab)
+    fwrite(tab, file=filepath)
     return(filepath)
 }
 
@@ -349,7 +351,7 @@ save_data_as_chart = function(my_chart, chart_title, filename){
 }
 
 send_files_to_email = function(filepaths, subject, eaddress){
-    send.mail(from = 'novoxservice@gmail.com', to = eaddress, subject=subject, body = subject, encoding = "utf-8", smtp = list(host.name = "smtp.gmail.com", port = 465, user.name="novoxservice@gmail.com", passwd="Crestline_5", ssl=TRUE), authenticate = TRUE, send = TRUE , attach.files = c(filepaths), html = TRUE, inline = TRUE )
+    send.mail(from = 'novoxservice@gmail.com', to = eaddress, subject=subject, body = subject, encoding = "utf-8", smtp = list(host.name = "smtp.gmail.com", port = 465, user.name="novoxservice@gmail.com", passwd=readChar('/home/aslepnev/webhub/xservice', nchars=20), ssl=TRUE), authenticate = TRUE, send = TRUE , attach.files = c(filepaths), html = TRUE, inline = TRUE )
 }
 
 # uni_in = pre_screen(data, data$u[gics_code%in%c(45, 50), ]); screen_params = list(window=40, voltarget=0.3, minw=0.01, maxw=0.3, force_us=FALSE, main=list(UNI=10, window=40)); rebal_freq='quarter'; index_code='SOLVIT'

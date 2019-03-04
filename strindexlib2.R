@@ -361,6 +361,7 @@ basket_vol = function(h, w) return( sd(basket_ret(h, w))*sqrt(252) )
 
 
 
+source('/home/aslepnev/git/ej/strindexlib.R')
 DD = get(load('/home/aslepnev/git/ej/it_top10_uni.RData'))
 res = build_index_prorate(list(main=DD), get_rebals(DD, 'quarter'), prorate_uni, list(window=40), '2012-12-31')
 r = foreach(x=res,.combine=rbind)%do%x$h; print(sd(tail(r,120))*sqrt(252))
@@ -368,10 +369,14 @@ perf = exp(cumsum(r))
 tail(perf, 1)
 
 h_res = foreach(x=res,.combine=rbind)%do%x$h
-excess_return = 0#.045
-res_vc = exp(cumsum(-excess_return/252 + volcontrol(h_res, list(window=20, level=0.01*14, max_weight=1.5))))
+excess_return = 0.025
+res_vc = exp(cumsum(-excess_return/252 + volcontrol(h_res, list(window=20, maxvolwindow=10, level=0.01*14, max_weight=1.5))))
 print(tail(res_vc, 1))
 print(sd(tail(diff(log(res_vc)),250))*sqrt(252))
+
+send_files_to_email(c(save_data_as_csv(foreach(x=res,.combine=rbind)%do%cbind(data.table(dt=x$dt), t(x$basket$main$names)), 'top10it.csv'),
+                      save_data_as_chart(res_vc, 'Top 10 IT companies, quarterly', 'top10it.png')),
+                    'Top 10 IT index', 'slepnev@yandex.ru')
 
 
 
