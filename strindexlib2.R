@@ -362,21 +362,40 @@ basket_vol = function(h, w) return( sd(basket_ret(h, w))*sqrt(252) )
 
 
 source('/home/aslepnev/git/ej/strindexlib.R')
-DD = get(load('/home/aslepnev/git/ej/it_top10_uni.RData'))
+DD = get(load('/home/aslepnev/git/ej/it_top10_uni.RData'))  # DD$h = DD$h[, unique(DD$u$ticker)]; save(DD, file='/home/aslepnev/git/ej/it_top10_uni.RData')
 res = build_index_prorate(list(main=DD), get_rebals(DD, 'quarter'), prorate_uni, list(window=40), '2012-12-31')
 r = foreach(x=res,.combine=rbind)%do%x$h; print(sd(tail(r,120))*sqrt(252))
 perf = exp(cumsum(r))
 tail(perf, 1)
 
 h_res = foreach(x=res,.combine=rbind)%do%x$h
-excess_return = 0.025
-res_vc = exp(cumsum(-excess_return/252 + volcontrol(h_res, list(window=20, maxvolwindow=10, level=0.01*14, max_weight=1.5))))
-print(tail(res_vc, 1))
+rfr = 0.02/252
+excess_return = 0.035/252
+res_vc = exp(cumsum(-excess_return + volcontrol(-rfr + h_res, list(window=20, maxvolwindow=10, level=0.01*14, max_weight=1.5))))
+#res_vc = exp(cumsum(-excess_return + volcontrol(-rfr + h_res, list(window=20, level=0.01*14, max_weight=1.75))))
+#res_vc = exp(cumsum(-excess_return + volcontrol(-rfr + h_res, list(window=20, avgvolwindow=10, level=0.01*14, max_weight=1.5))))
+
+calc_env = list(uni_filename = '/home/aslepnev/git/ej/it_top10_uni.RData',
+                screen_func = prorate_uni,
+                screen_window = 40,
+                index_start = '2012-12-31',
+                vc_window = 20,
+                vc_level = 0.14,
+                vc_max_weight = 1.5,
+                vc_type = 'max 10',
+                vc_rfr = 0.02,
+                index_excess = 0.035)
+
+                
+
+print(index_report(build_index_prorate(list(main=DD), get_rebals(DD, 'quarter'), prorate_uni, list(window=40), '2012-12-31'),
+                   list(window=20, maxvolwindow=10, level=0.01*14, max_weight=1.5, rfr=0.02, excess=0.035))$endPerf)
+           
 print(sd(tail(diff(log(res_vc)),250))*sqrt(252))
 
 send_files_to_email(c(save_data_as_csv(foreach(x=res,.combine=rbind)%do%cbind(data.table(dt=x$dt), t(x$basket$main$names)), 'top10it.csv'),
                       save_data_as_chart(res_vc, 'Top 10 IT companies, quarterly', 'top10it.png')),
-                    'Top 10 IT index', 'slepnev@yandex.ru')
+                    'Top 10 IT index', 'aslepnev@novo-x.info')
 
 
 

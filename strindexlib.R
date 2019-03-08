@@ -279,15 +279,50 @@ screen_pridex_voltarget_stocksetfs = function(lh_in, u_in, params){
                 etfs = list(names=e$names, weights=res$par[-(1:ncol(prep$r_uni))])))
 }
 
-# r=h_res; params=list(window=20, maxvolwindow=10, level=0.01*14, max_weight=1.5); params=vc_params; 
+# params=list(window=20, maxvolwindow=10, level=0.01*14, max_weight=1.5); params=vc_params; 
+# params = vc_params
 volcontrol = function(r, params){
     w = sqrt(250)*rollapplyr(r, params$window, FUN=sd)
     if('maxvolwindow'%in%names(params))
-        w = rollapplyr(w, params$maxvolwindow, FUN=function(x){ max(x) })
+        w = rollapplyr(w, params$maxvolwindow, FUN=function(x){ max(x) }) else
+    if('avgvolwindow'%in%names(params))
+        w = rollapplyr(w, params$avgvolwindow, FUN=function(x){ mean(x) })
     w[,1] = ifelse(is.na(w), 1, params$level/w)
     w[,1] = lag(ifelse(w > params$max_weight, params$max_weight, w), 1)
     res = log((exp(r) - 1)*w + 1)[-1,]
     return(res)
+}
+
+volcontrol_excess = function(r, params){
+    rfr = params$rfr/252
+    excess = params$excess/252
+    return( -excess + volcontrol(-rfr + r, params) )
+}
+
+# index_data = build_index_prorate(list(main=DD), get_rebals(DD, 'quarter'), prorate_uni, list(window=40), '2012-12-31'); vc_params = list(window=20, maxvolwindow=10, level=0.01*14, max_weight=1.5, rfr=0.02, excess=0.035)
+index_report = function(index_data, vc_params){
+    baskets = foreach(x=index_data, .combine=rbind)%do%cbind(data.table(dt=x$dt), t(x$basket$main$names))    
+    r = foreach(x=index_data, .combine=rbind)%do%x$h
+    if(length(vc_params)>0)
+        r = volcontrol_excess(r, vc_params)
+    perf = exp(cumsum(r))
+    vty = sd(tail(r, 250))*sqrt(252)
+    res = list(perf=perf, endPerf=tail(perf, 1), volatility=vty, baskets=baskets)
+    return(res)
+}
+
+calc_env = list(uni_filename = '/home/aslepnev/git/ej/it_top10_uni.RData',
+                screen_func = prorate_uni,
+                screen_window = 40,
+                index_start = '2012-12-31',
+                vc_window = 20,
+                vc_level = 0.14,
+                vc_max_weight = 1.5,
+                vc_type = 'max 10',
+                vc_rfr = 0.02,
+                index_excess = 0.035)
+process_index_request = function(calc_env){
+    
 }
 
 # ds_in=ds; de_in=de; segetf='Health Care'; n_etfs_uni=15; n_etfs=3; segstock='Health Care'; n_stock_uni=60; n_stock=2; vt=0.4
@@ -437,19 +472,28 @@ build_index = function(D_in, rebal_dates, screen_func, screen_params, start_date
     return(h_res)
 }
 
-# u_in=x$u[['main']]; dt_in=x$dt
-prorate_uni = function(u_in, dt_in){
+# u_in=x$u[['main']]; dt_in=x$dt; lh_in=x$lh[['main']]
+prorate_uni = function(u_in, dt_in, lh_in){
     n = 10
     dt1 = u_in[dt <= dt_in, max(dt)]
     dt2 = u_in[dt >= dt_in, min(dt)]
+    r = rowSums(t(lh_in))
+    rets = data.table(ticker=names(r), r)
     u1 = u_in[dt == dt1, .(ticker, mcap1=mcap)]
     u2 = u_in[dt == dt2, .(ticker, mcap2=mcap)]
-    res = u2[u1, on='ticker'][, mcap:=(as.numeric(dt_in - dt1)*mcap2 + as.numeric(dt2 - dt_in)*mcap1)/as.numeric(dt2 - dt1)]
-    return(list(main=list(names=res[order(mcap, decreasing=TRUE), ][1:n, ]$ticker, weights=array(1/n, n))))
+    res = rets[u2[u1, on='ticker'], on='ticker'][, mcap:=(as.numeric(dt_in - dt1)*mcap2 + as.numeric(dt2 - dt_in)*mcap1)/as.numeric(dt2 - dt1)]
+    resnorm = function(x) { y = x[!is.na(x)]; (x - min(y))/(max(y) - min(y)) }
+#    res = u2[u1, on='ticker'][, mcap:=(as.numeric(dt_in - dt1)*mcap2 + as.numeric(dt2 - dt_in)*mcap1)/as.numeric(dt2 - dt1)]
+    mres = resnorm(res$mcap) + 0.5*resnorm(res$r)
+    res = res[order(mres, decreasing=TRUE), ][1:n, ]
+#    w = res$r - min(res$r)
+#    w = w/sum(w)
+    w = array(1/n, n)
+    return(list(main=list(names=res$ticker, weights=w)))
 }
 
 # D_in=list(main=D); rebal_dates=get_rebals(D, 'quarter'); screen_func=screen_voltarget; start_date='2012-12-31'
-# screen_params = list(window=40)
+# D_in=list(main=DD); rebal_dates=get_rebals(DD, 'quarter'); screen_func=prorate_uni; start_date='2012-12-31'; screen_params = list(window=40)
 build_index_prorate = function(D_in, rebal_dates, screen_func, screen_params, start_date){
     lh = list()
     for(i in names(D_in)){
@@ -477,7 +521,7 @@ build_index_prorate = function(D_in, rebal_dates, screen_func, screen_params, st
     h_res = foreach(x=calc_pieces)%dopar%{
 #        print(paste(screen_params$N, screen_params$UNI, x$dt, sep=', '))
         print(x$dt)
-        basket = screen_func(x$u[['main']], x$dt)
+        basket = screen_func(x$u[['main']], x$dt, x$lh[['main']])
         h = foreach(i=names(basket),.combine=cbind)%do%x$lh_next[[i]][, basket[[i]]$names]
         w = foreach(i=names(basket),.combine=c)%do%basket[[i]]$weights
         r = basket_ret(h, w) 
