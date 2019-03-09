@@ -12,6 +12,7 @@ library(tseries)
 library(hash)
 registerDoMC(cores=5)
 
+R_STATE_DATA_MASK = '/home/aslepnev/webhub/strtelestate_current_name.RData'
 COB_CTL <<- list(xtol_rel=1e-8, maxeval=5000)
 UNI_FILENAMES <<- hash()
 UNI_FILENAMES['it10'] = '/home/aslepnev/git/ej/it_top10_uni.RData'
@@ -344,6 +345,16 @@ process_index_request = function(env){
     u = get(load(UNI_FILENAMES[[params$uni_name]]))
     res = build_index_prorate(list(main=u), get_rebals(u, 'quarter'), get(params$screen_params$func), params$screen_params, params$index_start)
     return( index_report() )
+}
+
+
+index_report_to_python = function(filename){
+    tab = fread(filename)
+    params = list()
+    for(i in 1:nrow(tab)) params[tab[i, 1]] = tab[i, 2]
+    irep = process_index_request(params)
+    for(i in names(irep))
+        fwrite(to_datatable(irep[[i]], file=gsub(R_STATE_DATA_MASK, 'current_name', paste0('current_', item))
 }
 
 # ds_in=ds; de_in=de; segetf='Health Care'; n_etfs_uni=15; n_etfs=3; segstock='Health Care'; n_stock_uni=60; n_stock=2; vt=0.4
