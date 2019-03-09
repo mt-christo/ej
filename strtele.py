@@ -36,6 +36,9 @@ import matplotlib
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 
+from git.ej.novo_tele_state import init_state, state_path, save_state, get_state, update_current_state
+
+
 # Enable logging
 #logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
 #                    level=logging.INFO)
@@ -46,6 +49,9 @@ import matplotlib.pyplot as plt
 # Define a few command handlers. These usually take the two arguments bot and
 # update. Error handlers also receive the raised TelegramError object in error.
 
+STATE_PATH = '/home/aslepnev/webhub/strtelestate_current.pickle'
+R_STATE_PATH = '/home/aslepnev/webhub/strtelestate_current.csv'
+R_STATE_DATA_MASK = '/home/aslepnev/webhub/strtelestate_current_name.RData'
 BASKETS_PATH = '/home/aslepnev/git/ej/strbaskets.pickle'
 U_PATH = '/home/aslepnev/webhub/grish_iter0_adapted_u.csv'
 H_PATH = '/home/aslepnev/webhub/grish_iter0_adapted_h.csv'
@@ -266,7 +272,11 @@ def reply_wo(text):
 
 
 def smart_recognize(x):
-    
+    ustate = get_state()
+    if ustate['type'] == 'index':
+        if x == 'perf':
+            
+            
 
     
 def my_response(bot, update):
