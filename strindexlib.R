@@ -9,9 +9,12 @@ library(foreach)
 library(xts)
 library(nloptr)
 library(tseries)
+library(hash)
 registerDoMC(cores=5)
 
 COB_CTL <<- list(xtol_rel=1e-8, maxeval=5000)
+UNI_FILENAMES <<- hash()
+UNI_FILENAMES['it10'] = '/home/aslepnev/git/ej/it_top10_uni.RData'
 
 refresh_s = function() {
     gs_auth(token = '/home/aslepnev/git/ej/gdoc_doc.R')
@@ -311,9 +314,24 @@ index_report = function(index_data, vc_params){
     return(res)
 }
 
-calc_env = list(uni_filename = '/home/aslepnev/git/ej/it_top10_uni.RData',
-                screen_func = prorate_uni,
-                screen_window = 40,
+calc_env_split = function(env){
+    prefixes = c('screen_', 'vc_')
+    for(prefix in prefixes){
+        x = paste0(prefix, 'params')
+        y = env[startsWith(names(env), prefix)]
+        names(y) = gsub(prefix, '', names(y))
+        do.call('<-', list(x, y))
+    }
+    res = list(screen_params=screen_params, vc_params=vc_params)
+    res = c(res, env[!foreach(x=prefixes, .combine='|')%do%startsWith(names(env), x)])
+    
+    return(res)
+}
+
+
+env = list(uni_name = 'it10',
+                screen_func = 'prorate_uni',
+                screen_price_window = 40,
                 index_start = '2012-12-31',
                 vc_window = 20,
                 vc_level = 0.14,
@@ -321,8 +339,11 @@ calc_env = list(uni_filename = '/home/aslepnev/git/ej/it_top10_uni.RData',
                 vc_type = 'max 10',
                 vc_rfr = 0.02,
                 index_excess = 0.035)
-process_index_request = function(calc_env){
-    
+process_index_request = function(env){
+    params = calc_env_split(env)
+    u = get(load(UNI_FILENAMES[[params$uni_name]]))
+    res = build_index_prorate(list(main=u), get_rebals(u, 'quarter'), get(params$screen_params$func), params$screen_params, params$index_start)
+    return( index_report() )
 }
 
 # ds_in=ds; de_in=de; segetf='Health Care'; n_etfs_uni=15; n_etfs=3; segstock='Health Care'; n_stock_uni=60; n_stock=2; vt=0.4
@@ -510,7 +531,7 @@ build_index_prorate = function(D_in, rebal_dates, screen_func, screen_params, st
     calc_pieces = foreach(i=1:(length(rebal_idx) - 1))%do%{
         s = list(); s_next = list(); s_u = list()
         for(j in names(lh)){
-            s[[j]] = lh[[j]][(rebal_idx[i] - screen_params$window):rebal_idx[i], ]
+            s[[j]] = lh[[j]][(rebal_idx[i] - screen_params$price_window):rebal_idx[i], ]
             s_next[[j]] = lh[[j]][(rebal_idx[i]+1):rebal_idx[i+1], ]
             s_u[[j]] = D_in[[j]]$u        
         }
