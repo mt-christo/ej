@@ -41,10 +41,21 @@ def save_state_csv(state_data, state_name):
 def get_rdata_from_mask(item):
     return pd.read_csv(R_STATE_DATA_MASK.replace('current_name', 'current_' + item))
     
-    
+
+if False:
+    state_data = {'uni_name': 'it10',
+                  'screen_func': 'screen_mixed_top',
+                  'screen_price_window': 40,
+                  'index_start': '2012-12-31',
+                  'vc_window': 20,
+                  'vc_level': 0.14,
+                  'vc_max_weight': 1.5,
+                  'vc_type': 'max 10',
+                  'vc_rfr': 0.02,
+                  'index_excess': 0.035}
 def run_current_r():
     state_data = get_state()
-    save_current_csv(state_data, R_STATE_PATH)
+    save_state_csv(state_data, R_STATE_PATH)
     items = []
     if state_data['type'] == 'index':
         ro.r('index_report_to_python("'+R_STATE_PATH+'")')
