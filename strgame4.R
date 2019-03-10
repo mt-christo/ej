@@ -340,6 +340,6 @@ p1 = foreach(x=grishe[sapply(grishe, FUN=length)>5],.combine=cbind)%do%x
 colnames(p1) = foreach(x=grishe[sapply(grishe, FUN=length)>5],.combine=c)%do%colnames(x)[1]
 colnames(p1) = gsub('[.]Adjusted', '', colnames(p1))
 u1 = u1[ticker%in%colnames(p1), ]
-p1 = p1[, u1$ticker]
+p1 = p1[, unique(u1$ticker)]
 D = list(u=u1, h=p1)  # 'u' and 'h' match
 save(D, file='/home/aslepnev/git/ej/it_top10_uni.RData')
