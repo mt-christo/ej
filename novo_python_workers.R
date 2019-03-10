@@ -21,7 +21,8 @@ calc_env_split = function(env){
 
 # filename = '/home/aslepnev/webhub/strtelestate_current.csv'
 index_report_to_python = function(filename){
-    irep = process_index_request(calc_env_split(calc_env_from_csv(filename)))
+    params = calc_env_split(calc_env_from_csv(filename))
+    irep = process_index_request(params)
     for(i in names(irep))
-        fwrite(to_datatable(irep[[i]], file=gsub(R_STATE_DATA_MASK, 'current_name', paste0('current_', item))
+        fwrite(as.data.table(irep[[i]]), file=gsub('current_name', paste0('current_', i), R_STATE_DATA_MASK))
 }

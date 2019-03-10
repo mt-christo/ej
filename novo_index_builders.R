@@ -47,6 +47,7 @@ build_index = function(D_in, rebal_dates, screen_func, screen_params, start_date
 
 # D_in=list(main=D); rebal_dates=get_rebals(D, 'quarter'); screen_func=screen_voltarget; start_date='2012-12-31'
 # D_in=list(main=DD); rebal_dates=get_rebals(DD, 'quarter'); screen_func=prorate_uni; start_date='2012-12-31'; screen_params = list(window=40)
+# D_in=list(main=u); rebal_dates=get_rebals(u, 'quarter'); screen_func=get(params$screen_params$func); screen_params=params$screen_params; start_date=params$index_start
 build_index_prorate = function(D_in, rebal_dates, screen_func, screen_params, start_date){
     lh = list()
     for(i in names(D_in)){
@@ -60,10 +61,11 @@ build_index_prorate = function(D_in, rebal_dates, screen_func, screen_params, st
             lh[[i]] = lh[[i]][index(lh[[i]])%in%index(lh[[j]])]
     
     rebal_idx = match(rebal_dates[rebal_dates>=start_date], index(lh[[1]]))  # indices of history in all elements of lh are expected the same!
+    price_window = as.numeric(screen_params$price_window)
     calc_pieces = foreach(i=1:(length(rebal_idx) - 1))%do%{
         s = list(); s_next = list(); s_u = list()
         for(j in names(lh)){
-            s[[j]] = lh[[j]][(rebal_idx[i] - screen_params$price_window):rebal_idx[i], ]
+            s[[j]] = lh[[j]][(rebal_idx[i] - price_window):rebal_idx[i], ]
             s_next[[j]] = lh[[j]][(rebal_idx[i]+1):rebal_idx[i+1], ]
             s_u[[j]] = D_in[[j]]$u        
         }

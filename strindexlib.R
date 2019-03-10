@@ -5,7 +5,7 @@ library(nloptr)
 
 library(gridExtra)
 library(ggplot2)
-library(mailR)
+#library(mailR)
 library(googlesheets)
 
 library(hash)
@@ -16,8 +16,27 @@ library(xts)
 library(tseries)
 registerDoMC(cores=5)
 
-R_STATE_DATA_MASK = '/home/aslepnev/webhub/strtelestate_current_name.RData'
+R_STATE_DATA_MASK = '/home/aslepnev/webhub/strtelestate_current_name.csv'
 COB_CTL <<- list(xtol_rel=1e-8, maxeval=5000)
 UNI_FILENAMES <<- hash()
 UNI_FILENAMES['it10'] = '/home/aslepnev/git/ej/it_top10_uni.RData'
+
+#source('/home/aslepnev/git/ej/novo_all_libraries.R')
+#source('/home/aslepnev/git/ej/novo_data_preload.R')
+#source('/home/aslepnev/git/ej/novo_data_generate_uni.R')
+
+source('/home/aslepnev/git/ej/novo_google_func.R')
+source('/home/aslepnev/git/ej/novo_google_wo_optimizer.R')
+
+source('/home/aslepnev/git/ej/novo_basic_quant_func.R')
+source('/home/aslepnev/git/ej/novo_quant_func.R')
+source('/home/aslepnev/git/ej/novo_advanced_quant_func.R')
+
+source('/home/aslepnev/git/ej/novo_uni_func.R')
+source('/home/aslepnev/git/ej/novo_output_lib.R')
+source('/home/aslepnev/git/ej/novo_product_reports.R')
+source('/home/aslepnev/git/ej/novo_index_builders.R')
+source('/home/aslepnev/git/ej/novo_screen_functions.R')
+source('/home/aslepnev/git/ej/novo_python_workers.R')
+
 

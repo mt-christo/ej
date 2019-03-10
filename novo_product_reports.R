@@ -90,21 +90,22 @@ gen_file_pack = function(uni_in, screen_params, rebal_freq, index_code, start_da
 }
 
 # index_data = build_index_prorate(list(main=DD), get_rebals(DD, 'quarter'), prorate_uni, list(window=40), '2012-12-31'); vc_params = list(window=20, maxvolwindow=10, level=0.01*14, max_weight=1.5, rfr=0.02, excess=0.035)
-index_report = function(index_data, vc_params){
-    baskets = foreach(x=index_data, .combine=rbind)%do%cbind(data.table(dt=x$dt), t(x$basket$main$names))    
+index_report = function(index_data, params){
+    baskets = foreach(x=index_data, .combine=rbind)%do%cbind(data.table(dt=x$dt), t(x$basket$main$names))
+    names(baskets) = c('dt', paste('position', 1:(ncol(baskets)-1)))
     r = foreach(x=index_data, .combine=rbind)%do%x$h
     if(length(vc_params)>0)
-        r = volcontrol_excess(r, vc_params)
+        r = volcontrol_excess(r, params$vc_params, params$index_excess)
     perf = exp(cumsum(r))
     vty = sd(tail(r, 250))*sqrt(252)
-    res = list(perf=perf, endPerf=tail(perf, 1), volatility=vty, baskets=baskets)
+    res = list(perf=perf, endPerf=as.numeric(tail(perf, 1)), volatility=vty, baskets=baskets)
     return(res)
 }
 
-process_index_request = function(env){
-    params = calc_env_split(env)
+process_index_request = function(params){
     u = get(load(UNI_FILENAMES[[params$uni_name]]))
-    res = build_index_prorate(list(main=u), get_rebals(u, 'quarter'), get(params$screen_params$func), params$screen_params, params$index_start)
-    return( index_report() )
+    index_data = build_index_prorate(list(main=u), get_rebals(u, 'quarter'), get(params$screen_params$func), params$screen_params, params$index_start)
+    res = index_report(index_data, params)
+    return(res)
 }
 
