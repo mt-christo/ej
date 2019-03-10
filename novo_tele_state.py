@@ -1,4 +1,5 @@
 import pickle
+import pandas as pd
 
 
 def init_state(state_type):
@@ -34,8 +35,8 @@ def update_current_state(field_name, field_value):
     return state_data
 
 
-def save_state_csv(state_data, state_name):
-    pd.DataFrame(state_data.items()).to_csv(state_name)
+def save_state_csv(state_data, filename):
+    pd.DataFrame(state_data.items()).to_csv(filename)
     
 
 def get_rdata_from_mask(item):
@@ -43,7 +44,8 @@ def get_rdata_from_mask(item):
     
 
 if False:
-    state_data = {'uni_name': 'it10',
+    state_data = {'type': 'index',
+                  'uni_name': 'it10',                  
                   'screen_func': 'screen_mixed_top',
                   'screen_price_window': 40,
                   'index_start': '2012-12-31',
@@ -55,11 +57,12 @@ if False:
                   'index_excess': 0.035}
 def run_current_r():
     state_data = get_state()
-    save_state_csv(state_data, R_STATE_PATH)
+    state_file = R_STATE_PATH + str(random.randint(10000,99999))
+    save_state_csv(state_data, state_file)
     items = []
     if state_data['type'] == 'index':
-        ro.r('index_report_to_python("'+R_STATE_PATH+'")')
-        items = ['perf', 'perfEnd', 'sigma120']
+        ro.r('index_report_to_python("' + state_file + '")')
+        items = ['perf', 'endPerf', 'volatility', 'baskets']
 
     res = {}
     for item in items:
