@@ -14,18 +14,34 @@ def init_state(state_type):
     return res
 
 
-def state_path(state_data, state_name):
-    return STATE_PATH.replace('state_current', 'state_' + state_name)
+def global_state_path():
+    return '/home/aslepnev/webhub/strtelestate_current.pickle'
 
 
-def save_state(state_data, state_name):
+def global_r_state_path():
+    return '/home/aslepnev/webhub/strtelestate_current.csv'
+
+
+def global_r_state_data_mask():
+    return '/home/aslepnev/webhub/strtelestate_current_name.csv'
+
+
+def state_path(state_data, state_name=''):
+    res = global_state_path()
+    if state_name != '':
+        res = res.replace('state_current', 'state_' + state_name)
+        
+    return res
+
+
+def save_state(state_data, state_name=''):
     with open(state_path(state_data, state_name), 'wb') as tmp:
         pickle.dump(state_data, tmp, protocol=pickle.HIGHEST_PROTOCOL)
 
 
 def get_state(state_name=''):
     return pickle.load(open(state_path(state_name) if state_name != ''
-                            else STATE_PATH), 'rb')
+                            else global_state_path(), 'rb'))
 
 
 def update_current_state(field_name, field_value):

@@ -1,3 +1,11 @@
+import novo_tele_state
+from novo_tele_state import init_state, state_path, save_state, get_state
+from novo_tele_state import update_current_state, save_state_csv, run_current_r
+
+BASKETS_PATH = '/home/aslepnev/git/ej/strbaskets.pickle'
+U_PATH = '/home/aslepnev/webhub/grish_iter0_adapted_u.csv'
+H_PATH = '/home/aslepnev/webhub/grish_iter0_adapted_h.csv'
+
 def start(bot, update):
     """Send a message when the command /start is issued."""
     update.message.reply_text('Hi!')
@@ -8,10 +16,13 @@ def help(bot, update):
     update.message.reply_text('Help!')
 
 
-def smart_recognize(x):
+def smart_result(x):
     ustate = get_state()
     if ustate['type'] == 'index':
         if x == 'perf':
+            res = run_current_r()
+            return res['perf']
+            
 
 
 def my_response(bot, update):

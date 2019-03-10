@@ -37,14 +37,8 @@ import matplotlib
 matplotlib.use('Agg')
 
 #from git.ej.novo_tele_state import init_state, state_path, save_state, get_state, update_current_state, save_state_csv
-from novo_tele_state import init_state, state_path, save_state, get_state, update_current_state, save_state_csv
+from novo_tele_bot import start, help, error, my_response
 
-STATE_PATH = '/home/aslepnev/webhub/strtelestate_current.pickle'
-R_STATE_PATH = '/home/aslepnev/webhub/strtelestate_current.csv'
-R_STATE_DATA_MASK = '/home/aslepnev/webhub/strtelestate_current_name.csv'
-BASKETS_PATH = '/home/aslepnev/git/ej/strbaskets.pickle'
-U_PATH = '/home/aslepnev/webhub/grish_iter0_adapted_u.csv'
-H_PATH = '/home/aslepnev/webhub/grish_iter0_adapted_h.csv'
 
 
 def main():
