@@ -42,11 +42,11 @@ from novo_tele_bot import start, help, error, my_response
 
 
 def main():
-    U = pd.read_csv(U_PATH, sep=',')
-    H = pd.read_csv(H_PATH, sep=',')
-    H = H.rename(columns={H.columns[0]: 'dt'})
-    H['dt'] = pd.to_datetime(H['dt'])
-    H = H.set_index(H['dt'])
+#    U = pd.read_csv(U_PATH, sep=',')
+#    H = pd.read_csv(H_PATH, sep=',')
+#    H = H.rename(columns={H.columns[0]: 'dt'})
+#    H['dt'] = pd.to_datetime(H['dt'])
+#    H = H.set_index(H['dt'])
 
     ro.r('source("/home/aslepnev/git/ej/strindexlib.R")')
  
