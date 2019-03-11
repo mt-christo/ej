@@ -89,14 +89,15 @@ gen_file_pack = function(uni_in, screen_params, rebal_freq, index_code, start_da
     
 }
 
-# index_data = build_index_prorate(list(main=DD), get_rebals(DD, 'quarter'), prorate_uni, list(window=40), '2012-12-31'); vc_params = list(window=20, maxvolwindow=10, level=0.01*14, max_weight=1.5, rfr=0.02, excess=0.035)
+# index_data = build_index_prorate(list(main=DD), get_rebals(DD, 'quarter'), screen_mixed_top, list(price_window=40), '2012-12-31'); params = list(index_excess=0.035, vc_params=list(window=20, type='max 10', level=0.14, max_weight=1.5, rfr=0.02))
 index_report = function(index_data, params){
     baskets = foreach(x=index_data, .combine=rbind)%do%cbind(data.table(dt=x$dt), t(x$basket$main$names))
     names(baskets) = c('dt', paste('position', 1:(ncol(baskets)-1)))
     r = foreach(x=index_data, .combine=rbind)%do%x$h
-    if(length(vc_params)>0)
+    if('vc_params'%in%names(params))
         r = volcontrol_excess(r, params$vc_params, params$index_excess)
-    perf = exp(cumsum(r))
+    perf = lag(exp(cumsum(r)), 1)
+    perf[1, 1] = 1
     vty = sd(tail(r, 250))*sqrt(252)
     res = list(perf=perf, endPerf=as.numeric(tail(perf, 1)), volatility=vty, baskets=baskets)
     return(res)

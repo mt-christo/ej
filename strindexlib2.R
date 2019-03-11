@@ -360,6 +360,9 @@ basket_vol = function(h, w) return( sd(basket_ret(h, w))*sqrt(252) )
 
 
 
+u = DD$u
+DD$u = DD$u[!ticker%in%c('V', 'MA'), ]
+
 
 source('/home/aslepnev/git/ej/strindexlib.R')
 DD = get(load('/home/aslepnev/git/ej/it_top10_uni.RData'))  # DD$h = DD$h[, unique(DD$u$ticker)]; save(DD, file='/home/aslepnev/git/ej/it_top10_uni.RData')
@@ -389,14 +392,21 @@ calc_env = list(uni_filename = '/home/aslepnev/git/ej/it_top10_uni.RData',
                 
 
 print(index_report(build_index_prorate(list(main=DD), get_rebals(DD, 'quarter'), prorate_uni, list(window=40), '2012-12-31'),
-                   list(window=20, maxvolwindow=10, level=0.01*14, max_weight=1.5, rfr=0.02, excess=0.035))$endPerf)
+                   )$endPerf)
            
 print(sd(tail(diff(log(res_vc)),250))*sqrt(252))
 
-send_files_to_email(c(save_data_as_csv(foreach(x=res,.combine=rbind)%do%cbind(data.table(dt=x$dt), t(x$basket$main$names)), 'top10it.csv'),
-                      save_data_as_chart(res_vc, 'Top 10 IT companies, quarterly', 'top10it.png')),
+
+idx = index_report(build_index_prorate(list(main=DD), get_rebals(DD, 'quarter'), screen_mixed_top, list(price_window=40), '2012-12-31'),
+                   list(index_excess=0.035, vc_params=list(window=20, type='max 10', level=0.14, max_weight=1.5, rfr=0.02)))
+
+send_files_to_email(c(save_data_as_csv(idx$baskets, 'top10it_baskets.csv'),
+                      save_data_as_csv(idx$perf, 'top10it_perf.csv'),
+                      save_data_as_chart(idx$perf, 'Top 10 IT companies, quarterly', 'top10it.png')),
                     'Top 10 IT index', 'aslepnev@novo-x.info')
 
+send_files_to_email(c(save_data_as_csv(DD$u, 'universe.csv')),
+                    'Top 10 IT index', 'aslepnev@novo-x.info')
 
 
 

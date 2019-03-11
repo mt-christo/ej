@@ -1,4 +1,4 @@
-# params=list(window=20, maxvolwindow=10, level=0.01*14, max_weight=1.5); params=vc_params; 
+# params=list(window=20, type='max 10', level=0.01*14, max_weight=1.5)
 # params = vc_params
 volcontrol = function(r, params){
     w = sqrt(250)*rollapplyr(r, as.numeric(params$window), FUN=sd)
@@ -12,7 +12,8 @@ volcontrol = function(r, params){
     
     w[,1] = ifelse(is.na(w), 1, params_level/w)
     w[,1] = lag(ifelse(w > max_weight, max_weight, w), 1)
-    res = log((exp(r) - 1)*w + 1)[-1,]
+    w[1, 1] = 0
+    res = log((exp(r) - 1)*w + 1)
     return(res)
 }
 
