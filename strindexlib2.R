@@ -309,9 +309,9 @@ u_in = de$u
 
 source('/home/aslepnev/git/ej/strindexlib.R')
 
-ds = get(load('/home/aslepnev/webhub/grish_iter0.RData'))
+ds <<- get(load('/home/aslepnev/webhub/grish_iter0.RData'))
 #ds = get(load('/home/aslepnev/webhub/grish_asia.RData'))
-de = get(load('/home/aslepnev/webhub/sacha_etf_yhoo.RData'))
+de <<- get(load('/home/aslepnev/webhub/sacha_etf_yhoo.RData'))
 
 p1 = index_vt_pridex_segment(pre_screen(de, etf_segment(de$u, 'Asia', 15), smart=TRUE),
                              pre_screen(ds, ds$u, smart=TRUE), 3, 2, 0.4, 0.15, 0.6)
@@ -321,6 +321,49 @@ colnames(basket) = c('Ticker', 'Name', 'Security Type', 'Weight')
 send_files_to_email(c(save_data_as_pdf(basket, 'basket.pdf'),
                       save_data_as_chart(p1$perf, paste0('Basket performance \n1 year vol: ', fracperc(p1$vol250, 0)), 'chart.png')),
                     'Asia index', 'aslepnev@novo-x.info')
+
+
+
+p1 = index_vt_pridex_segment(pre_screen(de, etf_segment(de$u, 'Technology', 15), smart=TRUE),
+                             pre_screen(ds, stock_segment(ds$u, 'Information Technology', 20), smart=TRUE), 3, 2, 0.4, 0.15, 0.6)
+basket = rbind(de$u[, .(ticker, name, sectype='ETF')], ds$u[!ticker%in%de$u, .(ticker, name, sectype='Stock')])[data.table(ticker=p1$basket, weight=p1$weights), on='ticker']
+basket[, weight:=fracperc(weight, 2)]
+colnames(basket) = c('Ticker', 'Name', 'Security Type', 'Weight')
+end_files_to_email(c(save_data_as_pdf(basket, 'basket.pdf'),
+                      save_data_as_chart(p1$perf, paste0('Basket performance \n1 year vol: ', fracperc(p1$vol250, 0)), 'chart.png')),
+                    'Asia index', 'aslepnev@novo-x.info')
+
+> ds$u[,unique(sector)]
+ [1] "Information Technology" "Consumer Discretionary" "Communication Services"
+ [4] "Financials"             "Health Care"            "Energy"                
+ [7] "#N/A N/A"               "Consumer Staples"       "Industrials"           
+[10] "Materials"              "Utilities"              "Real Estate"           
+> de$u[,unique(ind_focus)]
+ [1] "N.A."                   "Communications"         "Technology"            
+ [4] "Health Care"            "Real Estate"            "Financial"             
+ [7] "Energy"                 "Consumer Discretionary" "Industrials"           
+[10] "Consumer Staples"       "Utilities"              "Thematic"              
+[13] "Materials"             
+
+
+library(mailR)
+
+# etf_focus='Technology'; stock_focus='Information Technology'; wo_params = list(etf_count=3, stock_count=2, vt=0.4, minw=0.15, maxw=0.6)
+send_vol_basket = function(etf_focus, stock_focus, wo_params){
+    p1 = index_vt_pridex_segment(pre_screen(de, etf_segment(de$u, etf_focus, 25), smart=TRUE),
+                                 pre_screen(ds, stock_segment(ds$u, stock_focus, 40), smart=TRUE), wo_params$etf_count, wo_params$stock_count, wo_params$vt, wo_params$minw, wo_params$maxw)
+    basket = rbind(de$u[, .(ticker, name, sectype='ETF')], ds$u[!ticker%in%de$u, .(ticker, name, sectype='Stock')])[data.table(ticker=p1$basket, weight=p1$weights), on='ticker']
+    basket[, weight:=fracperc(weight, 2)]
+    colnames(basket) = c('Ticker', 'Name', 'Security Type', 'Weight')
+    send_files_to_email(c(save_data_as_pdf(basket, 'basket.pdf'),
+                         save_data_as_chart(p1$perf, paste0('Basket performance \n1 year vol: ', fracperc(p1$vol250, 0)), 'chart.png')),
+                       paste(etf_focus, stock_focus), 'aslepnev@novo-x.info')
+}
+
+send_vol_basket('Technology', 'Information Technology', list(etf_count=2, stock_count=3, vt=0.4, minw=0.15, maxw=0.6))
+send_vol_basket('Health Care', 'Health Care', list(etf_count=2, stock_count=3, vt=0.4, minw=0.15, maxw=0.6))
+
+
 
 p1$perf
 

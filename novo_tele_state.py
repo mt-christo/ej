@@ -56,8 +56,33 @@ def save_state_csv(state_data, filename):
     
 
 def get_rdata_from_mask(item):
-    return pd.read_csv(R_STATE_DATA_MASK.replace('current_name', 'current_' + item))
-    
+    return pd.read_csv(global_r_state_data_mask().replace('current_name', 'current_' + item))
+
+
+def index_param_dict():
+    res = [['uni_name', 'universe', 'Universe name'],
+           ['screen_func','screen','Screening method'],
+           ['screen_price_window', 'price window', 'Screening Frame'],
+           ['index_start', 'start', 'Index start date'],
+           ['vc_window', 'vc window', 'Volcontrol window'],
+           ['vc_level', 'vt', 'Volatility target'],
+           ['vc_max_weight', 'max exp', 'Voltarget max exposure'],
+           ['vc_type', 'vc type', 'max 10'],
+           ['vc_rfr', 'rfr', 'Cash rate'],
+           ['index_excess', 'excess', 'Excess Rate']]
+    res = pd.DataFrame(res)
+    res.columns = ['field', 'code', 'title']
+    res = res.set_index('code')
+    return res
+
+
+def index_param_display():
+    s = get_state()
+    res = 'Current inputs:'
+    if s['type'] == 'index':
+        param_dict = index_param_dict().set_index('field')
+        res = '\n'.join([param_dict.loc[x, 'title'] + ': ' + str(s[x]) for x in s if x in param_dict.index])
+
 
 if False:
     state_data = {'type': 'index',
@@ -73,14 +98,15 @@ if False:
                   'index_excess': 0.035}
 def run_current_r():
     state_data = get_state()
-    state_file = R_STATE_PATH + str(random.randint(10000,99999))
+    state_file = global_r_state_path() + str(random.randint(10000,99999))
     save_state_csv(state_data, state_file)
     items = []
+    res = {}
     if state_data['type'] == 'index':
         ro.r('index_report_to_python("' + state_file + '")')
         items = ['perf', 'endPerf', 'volatility', 'baskets']
+        res['index_start'] = state_data['index_start']
 
-    res = {}
     for item in items:
         res[item] = get_rdata_from_mask(item)
 
