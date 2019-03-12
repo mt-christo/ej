@@ -1,3 +1,8 @@
+uni_skip_tickers = function(uni_in, skip_list){
+    return( list(u=uni_in$u[!ticker%in%skip_list, ], h=uni_in$h[, !colnames(uni_in$h)%in%skip_list]) )
+    
+}
+
 enrich_data = function(fdata_path, hdata_path){
     #u = get(load('uni.RData')); u$dt = as.Date("2018-03-01"); colnames(u)=gsub(' ','_', colnames(u)); save(u, file='uni.RData')
     #p = get(load('uniprc.RData'))

@@ -3,11 +3,15 @@ library(foreach)
 library(data.table)
 #library(RCurl)
 library(lubridate)
+library(doMC)
+registerDoMC(cores=5)
+
 homedir = 'aslepnev' #; homedir = 'anton'
 
-setwd(paste0('/home/', homedir, '/git/ej/ContractsCSV'))
+setwd(paste0('/home/', homedir, '/webhub/ContractsCSV'))
 #setwd('/home/aslepnev/git/ej/ContractsCSV')
 comms = fread('../Commodities.csv')
+comms1 = comms[Code%in%c('FC','LC','LH','C','S','SM','ZL','LB','DL','CL','RB','HO','NG','ZV','ZC','KE','MW','KC'),][, head(.SD, 1), by='Name']
 mon = data.table('num'=1:12, 'month'=c('F','G','H','J','K','M','N','Q','U','V','X','Z'))
 
 if(FALSE){
@@ -23,17 +27,23 @@ if(FALSE){
         d
     })
     data0$Date=as.Date(data0$Date)
-    save(data0, file='cme_contracts_data.RData')
+    save(data0, file='../cme_contracts_data.RData')
 }
 
-data0=get(load('cme_contracts_data.RData'))
+data0=get(load('../cme_contracts_data.RData'))
 #contracts = mon[unique(data0[, .(commodity, month, year)]), on='month'][order(year, num), ][, id:=1:.N][, idloc:=1:nrow(.SD), by='commodity'][, num:=NULL]
 #data = contracts[, .(commodity, month, year, id, idloc)][data0, on=.(commodity, month, year)]
 
 # comdtys=c('Feeder Cattle', 'Lean Hog'); lags=1:2; min_year=1990
-# comdtys=c('Feeder Cattle', 'Lean Hog'); lags=2:3; min_year=1990
-build_nplets = function(comdtys, data0, lags, min_year){
+# comdtys=c('Feeder Cattle', 'Lean Hog'); lags=2:3; min_year=1990; skip_pairs=list('Lean Hog'='K'); skip_triplets=list('Henry Hub Natural Gas'=c('2018', 'Z'))
+# comdtys=c('Henry Hub Natural Gas')
+build_nplets = function(comdtys, data0, lags, min_year, skip_pairs, skip_triplets){
     data = data0[commodity%in%comdtys & year>=min_year, ]
+
+    # weird stuff
+    data = data[!foreach(n=names(skip_pairs), .combine='&')%do%(commodity==n & month==skip_pairs[[n]]), ]
+    data = data[!foreach(n=names(skip_triplets), .combine='&')%do%(commodity==n & month==skip_triplets[[n]][2] & year==skip_triplets[[n]][1]), ]
+    
     contracts = mon[unique(data[, .(commodity, month, year)]), on='month']
     contracts = contracts[order(year, num), ][, id:=1:.N][, idloc:=1:nrow(.SD), by='commodity'][, expiry:=as.Date(ISOdate(year,num,15))][, num:=NULL]
     data = contracts[, .(commodity, month, year, expiry, id, idloc)][data, on=.(commodity, month, year)]
@@ -61,6 +71,27 @@ calc_spreads = function(nplets, weights){
     res = res[, .(commodity, date, months, year, expiry, spread)]
     return(res)
 }
+
+# comdtys=comms1; weights = list(c(1,-1), c(1,-2,1), c(1,-3,3,-1), c(1,-1,-1,1)); group_postfix = c('Calendar', 'Butterflies (3 leg)', 'Butterflies (4 leg)', 'Condor'); skip_pairs=list('Lean Hog'='K')
+spread_sacha_set0 = function(comdtys, data0, weights, group_postfix, min_year, skip_pairs, skip_triplets){
+    res = rbindlist(foreach(wi = 1:length(weights))%dopar%{
+        w = weights[[wi]]
+        print(w)
+        d = build_nplets(unique(comdtys$Name), data0, 1:(length(w)-1), 2000, skip_pairs, skip_triplets)[, tail(.SD, 1), by=c('commodity', 'month0')]
+        d$sid = (wi-1)*2000 + 1:nrow(d)
+        rbindlist(foreach(i=1:length(w))%do%{
+            exp_col = paste0('expiry', i-1)
+            month_col = paste0('month', i-1)
+            x = d[, .(sid, commodity, weight=w[i], month=get(month_col), expiry0, expiry=get(exp_col))]
+            x = x[, lag:=year(expiry)-year(expiry0)][, ':='(expiry=NULL, expiry0=NULL)][, group:=paste(commodity, group_postfix[wi])]
+            x = comdtys[x, on=.(Name=commodity)]
+            x[, .(sid, group, ticker=Code, month, lag, weight, group2=Name)]
+        })
+    })
+}
+
+y2 = spread_sacha_set0(comms1, data0, list(c(1,-1), c(1,-2,1), c(1,-3,3,-1), c(1,-1,-1,1)), c('Calendar', 'Butterflies (3 leg)', 'Butterflies (4 leg)', 'Condor'), 2015, list('Lean Hog'='K'), list('Henry Hub Natural Gas'=c('2018', 'Z')))
+fwrite(y2, file='../contracts_template.csv')
 
 # comms
 # comdtys=c('Feeder Cattle', 'Lean Hog'); lags=1:2; min_year=1990

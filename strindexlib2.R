@@ -409,6 +409,7 @@ DD$u = DD$u[!ticker%in%c('V', 'MA'), ]
 
 source('/home/aslepnev/git/ej/strindexlib.R')
 DD = get(load('/home/aslepnev/git/ej/it_top10_uni.RData'))  # DD$h = DD$h[, unique(DD$u$ticker)]; save(DD, file='/home/aslepnev/git/ej/it_top10_uni.RData')
+#x = fread('/home/aslepnev/webhub/libor3m.csv'); libors = as.xts(as.numeric(x$libor3m), order.by=as.Date(x$date)); 
 res = build_index_prorate(list(main=DD), get_rebals(DD, 'quarter'), prorate_uni, list(window=40), '2012-12-31')
 r = foreach(x=res,.combine=rbind)%do%x$h; print(sd(tail(r,120))*sqrt(252))
 perf = exp(cumsum(r))
@@ -422,7 +423,7 @@ res_vc = exp(cumsum(-excess_return + volcontrol(-rfr + h_res, list(window=20, ma
 #res_vc = exp(cumsum(-excess_return + volcontrol(-rfr + h_res, list(window=20, avgvolwindow=10, level=0.01*14, max_weight=1.5))))
 
 calc_env = list(uni_filename = '/home/aslepnev/git/ej/it_top10_uni.RData',
-                screen_func = prorate_uni,
+                screen_func = screen_mixed_top,
                 screen_window = 40,
                 index_start = '2012-12-31',
                 vc_window = 20,
@@ -430,18 +431,25 @@ calc_env = list(uni_filename = '/home/aslepnev/git/ej/it_top10_uni.RData',
                 vc_max_weight = 1.5,
                 vc_type = 'max 10',
                 vc_rfr = 0.02,
-                index_excess = 0.035)
+                vc_excess_type = 'rate-related excess',
+                vc_excess = 0.0)
+#                vc_excess = 0.035)
 
                 
+library(mailR)
+source('/home/aslepnev/git/ej/strindexlib.R')
+DD = get(load('/home/aslepnev/git/ej/it_top10_uni.RData'))
 
-print(index_report(build_index_prorate(list(main=DD), get_rebals(DD, 'quarter'), prorate_uni, list(window=40), '2012-12-31'),
-                   )$endPerf)
-           
-print(sd(tail(diff(log(res_vc)),250))*sqrt(252))
+index_data = build_index_prorate(list(main=uni_skip_tickers(DD, c('V', 'MA'))), get_rebals(DD, 'quarter'), screen_mixed_top, list(price_window=40), '2012-12-31')
+params = list(vc_params=list(window=20, type='max 10', excess_type = 'rate-related excess', excess=2.65, level=0.14, max_weight=1.5, rfr=0.02))
+libors = DD$libor
 
-
-idx = index_report(build_index_prorate(list(main=DD), get_rebals(DD, 'quarter'), screen_mixed_top, list(price_window=40), '2012-12-31'),
-                   list(index_excess=0.035, vc_params=list(window=20, type='max 10', level=0.14, max_weight=1.5, rfr=0.02)))
+idx = index_report(build_index_prorate(list(main=uni_skip_tickers(DD, c('V', 'MA'))), get_rebals(DD, 'quarter'), screen_mixed_top, list(price_window=40), '2012-12-31'),
+#                   list(vc_params=list(window=20, type='max 10', excess_type = 'rate-related excess', excess=2.65, level=0.14, max_weight=1.5, rfr=0.02)),
+                   list(vc_params=list(window=20, type='max 10', excess_type = 'rate-related excess', excess=1, level=0.14, max_weight=1.5, rfr=0.02)),
+                   DD$libor)
+#                   list(vc_params=list(window=20, type='max 10', excess_type = 'simple excess', excess=0.035, level=0.14, max_weight=1.5, rfr=0.02)))
+tail(idx$perf, 1)
 
 send_files_to_email(c(save_data_as_csv(idx$baskets, 'top10it_baskets.csv'),
                       save_data_as_csv(idx$perf, 'top10it_perf.csv'),
