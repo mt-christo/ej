@@ -1,6 +1,6 @@
 # ds_in=ds; de_in=de; segetf='Health Care'; n_etfs_uni=15; n_etfs=3; segstock='Health Care'; n_stock_uni=60; n_stock=2; vt=0.4
 # ds_in=ds; de_in=de; segetf='Asia'; n_etfs=15; segstock='Asia'; n_stock=65; vt=0.3
-# d_etf=pre_screen(de, etf_segment(de$u, 'Asia', 15), smart=TRUE); d_stock=pre_screen(ds, ds$u, smart=TRUE); n_etfs=3; n_stock=2; vt=0.4; wmin=0.15; wmax=0.6
+# d_etf=pre_screen(de, etf_segment(de$u, 'Asia', 15), smart=TRUE); d_stock=pre_screen(ds, stock_segment(ds$u, 'Asia', 15), smart=TRUE); n_etfs=3; n_stock=3; vt=0.4; wmin=0.15; wmax=0.6
 index_vt_pridex_segment = function(d_etf, d_stock, n_etfs, n_stock, vt, wmin, wmax){
     d_stock1 = d_stock
     d_stock1$u = d_stock1$u[!ticker%in%d_etf$u$ticker, ]
@@ -16,8 +16,8 @@ index_vt_pridex_segment = function(d_etf, d_stock, n_etfs, n_stock, vt, wmin, wm
     hcom = xts_cbind_idx(d_etf$h[, b_etf$basket], d_stock1$h[, b_stock$basket])
     wcom = c(b_etf$weights, b_stock$weights)/(sum(b_etf$weights) + sum(b_stock$weights))
     wcom = optim_sigma(tail(hcom, 500), list(target=vt, wmin=wmin, wmax=wmax))
-    print(paste('Volatility:', basket_vol(tail(hcom, 250), wcom), 'Performance:', tail(basket_perf(hcom, wcom), 1)))
-    return(list(basket=c(b_etf$basket, b_stock$basket), weights=wcom, perf=basket_perf(hcom, wcom), vol250=basket_vol(tail(hcom, 250), wcom), vol500=basket_vol(tail(hcom, 500), wcom)))
+    print(paste('Volatility:', basket_vol(tail(hcom, 120), wcom), 'Performance:', tail(basket_perf(hcom, wcom), 1)))
+    return(list(basket=c(b_etf$basket, b_stock$basket), weights=wcom, perf=basket_perf(hcom, wcom), vol250=basket_vol(tail(hcom, 250), wcom), vol120=basket_vol(tail(hcom, 120), wcom)))
 }
 
 send_csv_to_email = function(data, data_name, subject, eaddress){
@@ -103,10 +103,30 @@ index_report = function(index_data, params, libors){
     return(res)
 }
 
-process_index_request = function(params){
-    u = get(load(UNI_FILENAMES[[params$uni_name]]))
+process_index_straight_request = function(params){
+    u = uni_from_params(params)
     index_data = build_index_prorate(list(main=u), get_rebals(u, 'quarter'), get(params$screen_params$func), params$screen_params, params$index_start)
     res = index_report(index_data, params)
     return(res)
 }
 
+process_index_stocks_etfs_request = function(params){
+    for(name in c('n_etfs', 'n_stocks', 'vt', 'min_weight', 'max_weight'))
+        params[[name]] = as.numeric(params[[name]])
+    for(name in c('etf_count', 'stock_count'))
+        params$uni_params[[name]] = as.numeric(params$uni_params[[name]])
+    u = uni_from_params(params$uni_params)
+
+    p1 = index_vt_pridex_segment(u$etfs, u$stocks, params$n_etfs, params$n_stocks, params$vt, params$min_weight, params$max_weight)
+    basket = rbind(de$u[, .(ticker, name, sectype='ETF')],
+                   ds$u[!ticker%in%de$u, .(ticker, name, sectype='Stock')])[data.table(ticker=p1$basket, weight=p1$weights), on='ticker']
+    basket[, weight:=fracperc(weight, 2)]
+    colnames(basket) = c('Ticker', 'Name', 'Security Type', 'Weight')
+#    send_files_to_email(c(save_data_as_pdf(basket, 'basket.pdf'),
+#                          save_data_as_chart(p1$perf, paste0('Basket performance \n1 year vol: ', fracperc(p1$vol250, 0)), 'chart.png')),
+#                        'Asia index', 'aslepnev@novo-x.info')
+    p1[['endPerf']] = as.numeric(tail(p1$perf, 1))
+    p1[['basket']] = basket
+    
+    return(p1)
+}

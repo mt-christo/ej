@@ -309,12 +309,12 @@ u_in = de$u
 
 source('/home/aslepnev/git/ej/strindexlib.R')
 
-ds <<- get(load('/home/aslepnev/webhub/grish_iter0.RData'))
-#ds = get(load('/home/aslepnev/webhub/grish_asia.RData'))
-de <<- get(load('/home/aslepnev/webhub/sacha_etf_yhoo.RData'))
+#ds <<- get(load('/home/aslepnev/webhub/grish_iter0.RData'))
+ds = get(load('/home/aslepnev/webhub/grish_asia.RData'))
+de = get(load('/home/aslepnev/webhub/sacha_etf_yhoo.RData'))
 
-p1 = index_vt_pridex_segment(pre_screen(de, etf_segment(de$u, 'Asia', 15), smart=TRUE),
-                             pre_screen(ds, ds$u, smart=TRUE), 3, 2, 0.4, 0.15, 0.6)
+p1 = index_vt_pridex_segment(pre_screen(de, etf_segment(de$u, 'Asia', 10), smart=TRUE),
+                             pre_screen(ds, stock_segment(ds$u, 'Asia', 10), smart=TRUE), 2, 3, 0.3, 0.1, 0.6)
 basket = rbind(de$u[, .(ticker, name, sectype='ETF')], ds$u[!ticker%in%de$u, .(ticker, name, sectype='Stock')])[data.table(ticker=p1$basket, weight=p1$weights), on='ticker']
 basket[, weight:=fracperc(weight, 2)]
 colnames(basket) = c('Ticker', 'Name', 'Security Type', 'Weight')
@@ -445,8 +445,8 @@ params = list(vc_params=list(window=20, type='max 10', excess_type = 'rate-relat
 libors = DD$libor
 
 idx = index_report(build_index_prorate(list(main=uni_skip_tickers(DD, c('V', 'MA'))), get_rebals(DD, 'quarter'), screen_mixed_top, list(price_window=40), '2012-12-31'),
-#                   list(vc_params=list(window=20, type='max 10', excess_type = 'rate-related excess', excess=2.65, level=0.14, max_weight=1.5, rfr=0.02)),
-                   list(vc_params=list(window=20, type='max 10', excess_type = 'rate-related excess', excess=1, level=0.14, max_weight=1.5, rfr=0.02)),
+#                   list(vc_params=list(window=20, type='max 10', excess_type = 'simple excess', excess=0.035, level=0.14, max_weight=1.5, rfr=0.02)),
+                   list(vc_params=list(window=20, type='max 10', excess_type = 'rate-related excess', excess=2.65, level=0.14, max_weight=1.5, rfr=0.02)),
                    DD$libor)
 #                   list(vc_params=list(window=20, type='max 10', excess_type = 'simple excess', excess=0.035, level=0.14, max_weight=1.5, rfr=0.02)))
 tail(idx$perf, 1)
@@ -467,6 +467,12 @@ asia
 west 
 deveuro 
 
+
+#u1 = get(load('/home/aslepnev/webhub/grish_iter0.RData'))$u
+#u1 = u1[, .(country_code=max(country_code)), by='country_name']
+ds = get(load('/home/aslepnev/webhub/grish_asia.RData'));  # save(ds, file='/home/aslepnev/webhub/grish_asia.RData')
+u1 = data.table(country_name=c("KOREA", "HONG KONG", "JAPAN", "TAIWAN"), country_code=c("KR", "HK", "JP", "TW"))
+ds$u = u1[ds$u, on=.(country_code==country)]
 
 
  [1] "UNITED STATES" "CHINA"         "SWITZERLAND"   "FRANCE"       

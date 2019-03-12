@@ -18,8 +18,6 @@ registerDoMC(cores=5)
 
 R_STATE_DATA_MASK = '/home/aslepnev/webhub/strtelestate_current_name.csv'
 COB_CTL <<- list(xtol_rel=1e-8, maxeval=5000)
-UNI_FILENAMES <<- hash()
-UNI_FILENAMES['it10'] = '/home/aslepnev/git/ej/it_top10_uni.RData'
 
 #source('/home/aslepnev/git/ej/novo_all_libraries.R')
 #source('/home/aslepnev/git/ej/novo_data_preload.R')

@@ -86,6 +86,7 @@ def index_param_display():
 
 if False:
     state_data = {'type': 'index',
+                  'uni_type': 'straight',
                   'uni_name': 'it10',                  
                   'screen_func': 'screen_mixed_top',
                   'screen_price_window': 40,
@@ -96,16 +97,33 @@ if False:
                   'vc_type': 'max 10',
                   'vc_rfr': 0.02,
                   'index_excess': 0.035}
+    state_data = {'type': 'index',
+                  'uni_type': 'stocks and etfs',
+                  'uni_name': 'asia',
+                  'uni_etf_count': 15,
+                  'uni_stock_count': 30,
+                  'n_stocks': 3,
+                  'n_etfs': 2,
+                  'vt': 0.3,
+                  'min_weight': 0.15,
+                  'max_weight': 0.6}
+    save_state(state_data)
+    state_file = global_r_state_path()
+    save_state_csv(state_data, state_file)
+    
 def run_current_r():
     state_data = get_state()
     state_file = global_r_state_path() + str(random.randint(10000,99999))
     save_state_csv(state_data, state_file)
     items = []
     res = {}
-    if state_data['type'] == 'index':
+    if state_data['type'] == 'index' and state_data['uni_type'] == 'straight':
         ro.r('index_report_to_python("' + state_file + '")')
         items = ['perf', 'endPerf', 'volatility', 'baskets']
         res['index_start'] = state_data['index_start']
+    elif state_data['uni_type'] == 'stocks and etfs':
+        ro.r('index_report_to_python("' + state_file + '")')
+        items = ['perf', 'endPerf', 'vol120', 'vol250', 'basket']
 
     for item in items:
         res[item] = get_rdata_from_mask(item)

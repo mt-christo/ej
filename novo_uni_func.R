@@ -3,6 +3,19 @@ uni_skip_tickers = function(uni_in, skip_list){
     
 }
 
+uni_from_params = function(uni_params){
+    if(uni_params$name == 'it10')
+        res = get(load('/home/aslepnev/git/ej/it_top10_uni.RData'))
+    else if(uni_params$name=='asia' && uni_params$type=='stocks and etfs'){
+        ds = get(load('/home/aslepnev/webhub/grish_asia.RData'))
+        de = get(load('/home/aslepnev/webhub/sacha_etf_yhoo.RData'))
+        res = list(etfs = pre_screen(de, etf_segment(de$u, 'Asia', uni_params$etf_count), smart=TRUE),
+                   stocks = pre_screen(ds, stock_segment(ds$u, 'Asia', uni_params$stock_count), smart=TRUE))
+    }
+
+    return(res)
+}
+
 enrich_data = function(fdata_path, hdata_path){
     #u = get(load('uni.RData')); u$dt = as.Date("2018-03-01"); colnames(u)=gsub(' ','_', colnames(u)); save(u, file='uni.RData')
     #p = get(load('uniprc.RData'))
@@ -47,7 +60,7 @@ etf_segment = function(u_in, segname, topn=1000000){
 }
 
 stock_segment = function(u_in, segname, topn=1000000){
-    country_asia = c("CHINA", "INDIA", "SINGAPORE", "INDONESIA", "PHILIPPINES", "THAILAND", "BERMUDA", "HONG KONG", "BANGLADESH", "MALAYSIA", "VIETNAM")
+    country_asia = c("CHINA", "INDIA", "SINGAPORE", "INDONESIA", "PHILIPPINES", "THAILAND", "BERMUDA", "HONG KONG", "BANGLADESH", "MALAYSIA", "VIETNAM", "KOREA", "JAPAN", "TAIWAN")
     country_west = c("UNITED STATES", "SWITZERLAND", "FRANCE", "GERMANY", "IRELAND", "AUSTRALIA", "CANADA", "BRITAIN", "NORWAY", "NETHERLANDS", "SPAIN", "SWEDEN", "LUXEMBOURG", "ITALY", "ISRAEL", "AUSTRIA", "BELGIUM", "DENMARK", "POLAND", "NEW ZEALAND")
     country_deveuro = c("SWITZERLAND", "FRANCE", "GERMANY", "IRELAND", "BRITAIN", "NORWAY", "NETHERLANDS", "SPAIN", "SWEDEN", "LUXEMBOURG", "ITALY", "AUSTRIA", "BELGIUM", "DENMARK")
     
