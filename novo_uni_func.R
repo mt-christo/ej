@@ -1,6 +1,14 @@
 uni_skip_tickers = function(uni_in, skip_list){
     return( list(u=uni_in$u[!ticker%in%skip_list, ], h=uni_in$h[, !colnames(uni_in$h)%in%skip_list]) )
-    
+}
+
+uni_skip_countries = function(uni_in, skip_list){
+    ok_list = uni_in$u[!country_name%in%skip_list & !country_code%in%skip_list, ticker]
+    return( list(u=uni_in$u[ticker%in%ok_list, ], h=uni_in$h[, colnames(uni_in$h)%in%ok_list]) )
+}
+
+uni_skip_countries_tickers = function(uni_in, countries_skip_list, tickers_skip_list, is_like=TRUE){
+    return( uni_skip_countries(uni_skip_tickers(uni_in, tickers_skip_list), countries_skip_list) )
 }
 
 uni_from_params = function(uni_params){

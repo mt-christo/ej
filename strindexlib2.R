@@ -313,14 +313,27 @@ source('/home/aslepnev/git/ej/strindexlib.R')
 ds = get(load('/home/aslepnev/webhub/grish_asia.RData'))
 de = get(load('/home/aslepnev/webhub/sacha_etf_yhoo.RData'))
 
-p1 = index_vt_pridex_segment(pre_screen(de, etf_segment(de$u, 'Asia', 10), smart=TRUE),
-                             pre_screen(ds, stock_segment(ds$u, 'Asia', 10), smart=TRUE), 2, 3, 0.3, 0.1, 0.6)
+p1 = index_vt_pridex_segment_similar(pre_screen(de, etf_segment(de$u, 'Asia', 20), smart=TRUE),
+                                     uni_skip_countries(pre_screen(ds, stock_segment(ds$u, 'Asia', 20), smart=TRUE), c('KR')), 3, 3, 0.30, 0.15, 0.3)
 basket = rbind(de$u[, .(ticker, name, sectype='ETF')], ds$u[!ticker%in%de$u, .(ticker, name, sectype='Stock')])[data.table(ticker=p1$basket, weight=p1$weights), on='ticker']
 basket[, weight:=fracperc(weight, 2)]
 colnames(basket) = c('Ticker', 'Name', 'Security Type', 'Weight')
 send_files_to_email(c(save_data_as_pdf(basket, 'basket.pdf'),
-                      save_data_as_chart(p1$perf, paste0('Basket performance \n1 year vol: ', fracperc(p1$vol250, 0)), 'chart.png')),
+                     save_data_as_csv(basket, 'basket.csv'),
+                     save_data_as_chart(p1$perf, paste0('Basket performance \n6m vol: ', fracperc(p1$vol120, 0)), 'chart.png')),
                     'Asia index', 'aslepnev@novo-x.info')
+
+pre_screen(de, etf_segment(de$u, 'Asia', 20), smart=TRUE)$u[1:20, ticker]
+
+uh = xts_cbind_idx(pre_screen(de, etf_segment(de$u, 'Asia', 20), smart=TRUE)$h, uni_skip_countries(pre_screen(ds, stock_segment(ds$u, 'Asia', 20), smart=TRUE), c('KR'))$h)
+uh = xts_cbind_idx(pre_screen(de, etf_segment(de$u, 'Asia', 200), smart=TRUE)$h, uni_skip_countries(pre_screen(ds, stock_segment(ds$u, 'Asia', 200), smart=TRUE), c('KR'))$h)
+
+p1$basket[6] = '27 HK Equity'
+
+
+stocks = c('2454 TT', '388 HK', '27 HK')
+
+basket_vol(tail(uh[, p1$basket], 90), p1$weights)
 
 
 
@@ -329,8 +342,9 @@ p1 = index_vt_pridex_segment(pre_screen(de, etf_segment(de$u, 'Technology', 15),
 basket = rbind(de$u[, .(ticker, name, sectype='ETF')], ds$u[!ticker%in%de$u, .(ticker, name, sectype='Stock')])[data.table(ticker=p1$basket, weight=p1$weights), on='ticker']
 basket[, weight:=fracperc(weight, 2)]
 colnames(basket) = c('Ticker', 'Name', 'Security Type', 'Weight')
-end_files_to_email(c(save_data_as_pdf(basket, 'basket.pdf'),
-                      save_data_as_chart(p1$perf, paste0('Basket performance \n1 year vol: ', fracperc(p1$vol250, 0)), 'chart.png')),
+send_files_to_email(c(save_data_as_pdf(basket, 'basket.pdf'),
+                     save_data_as_csv(basket, 'basket.csv'),
+                     save_data_as_chart(p1$perf, paste0('Basket performance \n1 year vol: ', fracperc(p1$vol250, 0)), 'chart.png')),
                     'Asia index', 'aslepnev@novo-x.info')
 
 > ds$u[,unique(sector)]

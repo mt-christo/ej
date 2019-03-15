@@ -1,23 +1,58 @@
 # ds_in=ds; de_in=de; segetf='Health Care'; n_etfs_uni=15; n_etfs=3; segstock='Health Care'; n_stock_uni=60; n_stock=2; vt=0.4
 # ds_in=ds; de_in=de; segetf='Asia'; n_etfs=15; segstock='Asia'; n_stock=65; vt=0.3
-# d_etf=pre_screen(de, etf_segment(de$u, 'Asia', 15), smart=TRUE); d_stock=pre_screen(ds, stock_segment(ds$u, 'Asia', 15), smart=TRUE); n_etfs=3; n_stock=3; vt=0.4; wmin=0.15; wmax=0.6
+# d_etf=pre_screen(de, etf_segment(de$u, 'Asia', 15), smart=TRUE); d_stock=pre_screen(ds, stock_segment(ds$u, 'Asia', 15), smart=TRUE); n_etfs=3; n_stock=3; vt=0.3; wmin=0.15; wmax=0.6
 index_vt_pridex_segment = function(d_etf, d_stock, n_etfs, n_stock, vt, wmin, wmax){
     d_stock1 = d_stock
     d_stock1$u = d_stock1$u[!ticker%in%d_etf$u$ticker, ]
     d_stock1$h = d_stock1$h[, !d_stock$u$ticker%in%d_etf$u$ticker]  # In case some stocks are ETFs at the same time - we want to avoid duplicates
 
-    b_etf = best_pridex_basket(baskets_vol_range(d_etf, n_etfs, volparams=list(wnd=250, min=vt-0.2, max=vt+0.2))$baskets, d_etf$h)  # Basket with highest Pridex metric within this Volatility range
+#    b_etf = best_pridex_basket(baskets_vol_range(d_etf, n_etfs, volparams=list(wnd=250, min=vt-0.2, max=vt+0.2))$baskets, d_etf$h)  # Basket with highest Pridex metric within this Volatility range
+    b_etf = baskets_vol_range(d_etf, n_etfs, volparams=list(wnd=250, min=vt-0.2, max=vt+0.2))  # All baskets within Volatility range witn Volatility and Lowest Market cap info
     b_stock = baskets_vol_range(d_stock1, n_stock, volparams=list(wnd=250, min=vt-0.1, max=vt+0.2))  # All baskets within Volatility range witn Volatility and Lowest Market cap info
 
-    closest_baskets = order(abs(vt - b_stock$sds))[1:min(length(b_stock$sds), 10)]  # 10 baskets with vol closest to target
-    best_basket = b_stock$baskets[closest_baskets[which.max(b_stock$mcaps[closest_baskets])], ]  # Basket with highest Low Market Cap
-    b_stock = list(basket=best_basket, weights=array(1/n_stock, n_stock))
+    stock_closest_baskets = order(abs(vt - b_stock$sds))[1:min(length(b_stock$sds), 10)]  # 10 baskets with vol closest to target
+    stock_best_basket = b_stock$baskets[stock_closest_baskets[which.max(b_stock$mcaps[stock_closest_baskets])], ]  # Basket with highest Low Market Cap
+    b_stock = list(basket=stock_best_basket, weights=array(1/n_stock, n_stock))
     
+    etf_closest_baskets = order(abs(vt - b_etf$sds))[1:min(length(b_etf$sds), 10)]  # 10 baskets with vol closest to target
+    etf_best_basket = b_etf$baskets[etf_closest_baskets[which.max(b_etf$mcaps[etf_closest_baskets])], ]  # Basket with highest Low Market Cap
+    b_etf = list(basket=etf_best_basket, weights=array(1/n_etfs, n_etfs))
+
     hcom = xts_cbind_idx(d_etf$h[, b_etf$basket], d_stock1$h[, b_stock$basket])
     wcom = c(b_etf$weights, b_stock$weights)/(sum(b_etf$weights) + sum(b_stock$weights))
     wcom = optim_sigma(tail(hcom, 500), list(target=vt, wmin=wmin, wmax=wmax))
     print(paste('Volatility:', basket_vol(tail(hcom, 120), wcom), 'Performance:', tail(basket_perf(hcom, wcom), 1)))
     return(list(basket=c(b_etf$basket, b_stock$basket), weights=wcom, perf=basket_perf(hcom, wcom), vol250=basket_vol(tail(hcom, 250), wcom), vol120=basket_vol(tail(hcom, 120), wcom)))
+}
+
+# d_etf=pre_screen(de, etf_segment(de$u, 'Asia', 10), smart=TRUE); d_stock=uni_skip_countries(pre_screen(ds, stock_segment(ds$u, 'Asia', 10), smart=TRUE), c('KR')); n_etfs=2; n_stock=4; vt=0.30; wmin=0.1; wmax=0.3
+index_vt_pridex_segment_similar = function(d_etf, d_stock, n_etfs, n_stock, vt, wmin, wmax){
+    d_stock1 = d_stock
+    d_stock1$u = d_stock1$u[!ticker%in%d_etf$u$ticker, ]
+    d_stock1$h = d_stock1$h[, !d_stock$u$ticker%in%d_etf$u$ticker]  # In case some stocks are ETFs at the same time - we want to avoid duplicates
+    d_all = list()
+    d_all$h = cbind(d_etf$h, d_stock1$h)
+    colnames(d_all$h) = c(colnames(d_etf$h), colnames(d_stock1$h))
+    
+    b_etf = baskets_vol_range(d_etf, n_etfs, volparams=list(wnd=250, min=vt-0.2, max=vt+0.2))  # All baskets within Volatility range witn Volatility and Lowest Market cap info
+    b_stock = baskets_vol_range(d_stock1, n_stock, volparams=list(wnd=250, min=vt-0.2, max=vt+0.2))  # All baskets within Volatility range witn Volatility and Lowest Market cap info
+
+    stock_best_baskets = b_stock$baskets[order(abs(vt - b_stock$sds))[1:min(length(b_stock$sds), 100)], ]  # 20 baskets with vol closest to target
+    etf_best_baskets = b_etf$baskets[order(abs(vt - b_etf$sds))[1:min(length(b_etf$sds), 100)], ]  # 20 baskets with vol closest to target
+    
+    d_allh = d_all$h[1:max(which(rowSums(is.na(d_all$h))==0)), ]
+    d_allh_tail = tail(d_allh, 120)
+    w_all = array(1/(n_stock+n_etfs), n_stock+n_etfs)
+    max_count = min(nrow(stock_best_baskets), nrow(etf_best_baskets))
+    sds = foreach(i=1:max_count, .combine=c)%do%basket_vol(d_allh_tail[, c(stock_best_baskets[i,], etf_best_baskets[i,])], w_all)
+#    perfs = foreach(i=1:max_count, .combine=c)%do%as.numeric(tail(basket_perf(d_allh[, c(stock_best_baskets[i,], etf_best_baskets[i,])], w_all), 1))
+    
+    best_i = which.min(abs(vt - sds))
+    best_basket = c(stock_best_baskets[best_i,], etf_best_baskets[best_i,])
+    hcom = d_allh[, best_basket]
+    wcom = optim_sigma(tail(hcom, 500), list(target=vt, wmin=wmin, wmax=wmax))
+    print(paste('Volatility:', basket_vol(tail(hcom, 120), wcom), 'Performance:', tail(basket_perf(hcom, wcom), 1)))
+    return(list(basket=best_basket, weights=wcom, perf=basket_perf(hcom, wcom), vol250=basket_vol(tail(hcom, 250), wcom), vol120=basket_vol(tail(hcom, 120), wcom)))
 }
 
 send_csv_to_email = function(data, data_name, subject, eaddress){

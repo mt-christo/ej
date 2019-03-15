@@ -25,8 +25,9 @@ optim_pridex_metric = function(time_line, perf_in, w, wcaps_low, wcaps_high){
     return(list(weights=res$par, metric=-res$value))
 }
 
+# h_in=tail(hcom, 500); volparams=list(target=vt, wmin=wmin, wmax=wmax)
 optim_sigma = function(h_in, volparams){
-    comat = cov(h_in)
+    comat = cov(h_in[rowSums(is.na(h_in))==0, ])
     n = ncol(h_in)
     gradus = function(x) return(abs(volparams$target - sqrt(252)*sqrt(x %*% comat %*% x)))
     res = cobyla(x0=array(1/n, n), fn=gradus, lower=array(volparams$wmin, n), upper=array(volparams$wmax, n), hin=function(w){ -abs(1-sum(w)) }, control=COB_CTL)

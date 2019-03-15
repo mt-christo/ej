@@ -60,28 +60,57 @@ def get_rdata_from_mask(item):
 
 
 def index_param_dict():
-    res = [['uni_name', 'universe', 'Universe name'],
-           ['screen_func','screen','Screening method'],
-           ['screen_price_window', 'price window', 'Screening Frame'],
-           ['index_start', 'start', 'Index start date'],
-           ['vc_window', 'vc window', 'Volcontrol window'],
-           ['vc_level', 'vt', 'Volatility target'],
-           ['vc_max_weight', 'max exp', 'Voltarget max exposure'],
-           ['vc_type', 'vc type', 'max 10'],
-           ['vc_rfr', 'rfr', 'Cash rate'],
-           ['index_excess', 'excess', 'Excess Rate']]
+    res = [['uni_name', 'universe', 'Universe name', ''],
+           ['screen_func','screen','Screen method', ''],
+           ['screen_price_window', 'screen frame', 'Screen Frame', ''],
+           ['index_start', 'start', 'Start date', ''],
+           ['vc_window', 'vc window', 'VC window', ''],
+           ['vc_level', 'vt', 'VC target', '100'],
+           ['vc_max_weight', 'max exp', 'VC max exposure', '100'],
+           ['vc_type', 'vc type', 'VC type', ''],
+           ['vc_rfr', 'rfr', 'Cash rate', '100'],
+           ['index_excess', 'excess', 'Excess Rate', '100']]
     res = pd.DataFrame(res)
-    res.columns = ['field', 'code', 'title']
+    res.columns = ['field', 'code', 'title', 'mult']
     res = res.set_index('code')
     return res
 
 
+# field_code, field_value ='vt', 16
+def update_current_state_by_code(field_code, field_value):
+    param_dict = index_param_dict()
+    update_value = (float(field_value)/100.0) if param_dict.loc[field_code, 'mult'] == '100' else field_value
+    return update_current_state(param_dict.loc[field_code, 'field'], update_value)
+
+
+# value_phrase ='vt 17'
+def update_current_state_with_phrase(value_phrase):
+    param_dict = index_param_dict()
+    res = {}
+    for code in param_dict.index:
+        if value_phrase.startswith(code + ' '):
+            res = update_current_state_by_code(code, value_phrase.replace(code, '').strip())
+
+
+def is_state_update_phrase(value_phrase):
+    param_dict = index_param_dict()
+    for code in param_dict.index:
+        if value_phrase.startswith(code + ' '):
+            return True
+    return False
+            
+            
 def index_param_display():
     s = get_state()
     res = 'Current inputs:'
     if s['type'] == 'index':
-        param_dict = index_param_dict().set_index('field')
-        res = '\n'.join([param_dict.loc[x, 'title'] + ': ' + str(s[x]) for x in s if x in param_dict.index])
+        param_dict = index_param_dict().reset_index().set_index('field')
+        res = '<pre>\n</pre>'.join(['(' + param_dict.loc[x, 'code'] + ') <b>' + param_dict.loc[x, 'title'] +
+                                    '</b>:  ' + (str(s[x]) if param_dict.loc[x, 'mult'] == ''
+                                                 else str(round(float(s[x])*float(param_dict.loc[x, 'mult']), 2))) +
+                                    ('%' if param_dict.loc[x, 'mult'] == '100' else '')
+                                    for x in s if x in param_dict.index])
+    return res
 
 
 if False:

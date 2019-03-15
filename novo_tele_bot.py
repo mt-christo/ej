@@ -30,6 +30,12 @@ def get_csv_for_reply(data, filename):
     
 def smart_result(x):
     ustate = get_state()
+    
+    if is_state_update_phrase(x):
+        update_current_state_with_phrase(x)
+        return {'type': 'html',
+                'data': index_param_display()}
+        
     if ustate['type'] == 'index':
         if x == 'perf':
             res = run_current_r()
@@ -46,6 +52,8 @@ def smart_result(x):
 def typewise_reply(data, update):
     if data['type'] == 'text':
         update.message.reply_text(data['data'])
+    elif data['type'] == 'html':
+        update.message.reply_html(data['data'])
     elif data['type'] == 'csv':
         update.message.reply_document(text=data['text'],
                                       document=get_csv_for_reply(data['data'], data['name']))
@@ -58,7 +66,7 @@ def my_response(bot, update):
     res = ''
     if text == 'help':
         res = 'Commands:'
-        res = res + '\n: list our product types'
+        res = res + '\n: list our <b>product</b> types'
         res = res + '\n*who <text>: list securities starting with <text>'
         res = res + '\n*baskets: list your baskets'
         res = res + '\n*basket <name sec1 sec2 ..>: save basket with members'
@@ -67,6 +75,9 @@ def my_response(bot, update):
         res = res + '\n\nIndicative pricing:'
         res = res + '\n*worstof <name> <n1-n2-...>: worst-of product, basket <name> with strikes n[i]'
         res = res + '\n*basketcall <name> <n1-n2-...>: ATM Call option, basket <name>'
+#        print(index_param_display())
+#        update.message.reply_html('<bold>aaa</bold>aaa')
+#        update.message.reply_text("aaa|aaa \n ------------- \n bbbbbbb|bbbbbbb")
         update.message.reply_text(res)
     else:
         typewise_reply(smart_result(text), update)
