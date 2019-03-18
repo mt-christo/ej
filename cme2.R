@@ -1,8 +1,10 @@
 library(xts)
 library(foreach)
 library(data.table)
+#setDTthreads(1)
 #library(RCurl)
 library(lubridate)
+library(googlesheets)
 library(doMC)
 registerDoMC(cores=5)
 
@@ -30,7 +32,8 @@ if(FALSE){
     save(data0, file='../cme_contracts_data.RData')
 }
 
-data0=get(load('../cme_contracts_data.RData'))
+#data0 = get(load('../cme_contracts_data.RData'))
+data1 = get(load('../cme_contracts_data.RData'))[order(Date), ][, tail(.SD, 750), by=.(commodity, month, year)][year>=2000, ]
 #contracts = mon[unique(data0[, .(commodity, month, year)]), on='month'][order(year, num), ][, id:=1:.N][, idloc:=1:nrow(.SD), by='commodity'][, num:=NULL]
 #data = contracts[, .(commodity, month, year, id, idloc)][data0, on=.(commodity, month, year)]
 
@@ -72,6 +75,24 @@ calc_spreads = function(nplets, weights){
     return(res)
 }
 
+# b = as.data.frame(gs_read(gs_key('1s05m2xyRVXprFHyRVqY9qbEKl6OqXssymVsmvWnrpIk'), 'Spreads', range='A1:G2000', col_names=TRUE))
+calc_spreads2 = function(data1, b){
+    s = comms[b, on=.(Code=Ticker)][, .(id=SpreadID, commodity=Name, lag=YearLag, month=Month, weight=Weight)]
+    d2 = mon[data1, on='month'][, expiry:=as.Date(ISOdate(year,num,15))]
+    s_cnt = s[, .N, by=id]
+    
+    s0 = d2[s[lag==0, ], on=.(commodity, month), allow.cartesian=TRUE][, .(date=Date, id, year, expiry, spread=weight*Close)]
+    s0 = s0[, .(expiry=min(expiry), spread=sum(spread), cnt=.N), by=.(id, date, year)]
+    
+    s1 = d2[s[lag>0, ], on=.(commodity, month), allow.cartesian=TRUE][, .(date=Date, id, year, expiry, spread=weight*Close)]
+    s1 = s1[, .(spread2=sum(spread), cnt2=.N), by=.(id, date, year)]  # We ignore expiry column, because lag>0 means that s0's expiry occurs earlier
+    s1 = s0[s1, on=c('date', 'id', 'year'), nomatch=0][, .(date, id, year, expiry, spread=spread+spread2, cnt=cnt+cnt2)]
+    s2 = rbind(s0[!id %in% s1$id, ], s1)
+    s2 = s_cnt[s2, on='id'][cnt==N, ][, ':='(cnt=NULL, N=NULL)]
+
+    return(s2)
+}
+
 # comdtys=comms1; weights = list(c(1,-1), c(1,-2,1), c(1,-3,3,-1), c(1,-1,-1,1)); group_postfix = c('Calendar', 'Butterflies (3 leg)', 'Butterflies (4 leg)', 'Condor'); skip_pairs=list('Lean Hog'='K')
 spread_sacha_set0 = function(comdtys, data0, weights, group_postfix, min_year, skip_pairs, skip_triplets){
     res = rbindlist(foreach(wi = 1:length(weights))%dopar%{
@@ -89,9 +110,6 @@ spread_sacha_set0 = function(comdtys, data0, weights, group_postfix, min_year, s
         })
     })
 }
-
-y2 = spread_sacha_set0(comms1, data0, list(c(1,-1), c(1,-2,1), c(1,-3,3,-1), c(1,-1,-1,1)), c('Calendar', 'Butterflies (3 leg)', 'Butterflies (4 leg)', 'Condor'), 2015, list('Lean Hog'='K'), list('Henry Hub Natural Gas'=c('2018', 'Z')))
-fwrite(y2, file='../contracts_template.csv')
 
 # comms
 # comdtys=c('Feeder Cattle', 'Lean Hog'); lags=1:2; min_year=1990
@@ -124,16 +142,25 @@ seasonal_metrics = function(comdtys, data0, lags, min_year, weights, curr_date, 
 
 #seasonal_metrics(c('Corn', 'Coffee', 'Chicago SRW Wheat', 'Soybean', 'Soybean Meal'), data0, 1:2, 1985, c(1,-2,1), Sys.Date(), 15, 0.05, 2)
 
-spreads1 = calc_spreads(build_nplets(unique(comms$Name), data0, 1:2, 1985), c(1,-2,1))
-spreads2 = calc_spreads(build_nplets(unique(comms$Name), data0, 2:3, 1985), c(1,-2,1))
-spreads = rbind(spreads1, spreads2)
-save(spreads, file=paste0('/home/', homedir, '/webhub/spreads_hist.RData'))
-
-homedir <<- 'aslepnev' #; homedir = 'anton'
-setwd(paste0('/home/', homedir, '/webhub'))
-spreads = get(load('spreads_hist.RData'))
-
-
+if(FALSE){
+    spreads1 = calc_spreads(build_nplets(unique(comms$Name), data0, 1:2, 1985, list('Lean Hog'='K'), list('Henry Hub Natural Gas'=c('2018', 'Z'))), c(1,-2,1))
+    spreads2 = calc_spreads(build_nplets(unique(comms$Name), data0, 2:3, 1985), c(1,-2,1))
+    spreads = rbind(spreads1, spreads2)
+    save(spreads, file=paste0('/home/', homedir, '/webhub/spreads_hist.RData'))
+    
+    homedir <<- 'aslepnev' #; homedir = 'anton'
+    setwd(paste0('/home/', homedir, '/webhub'))
+    spreads = get(load('spreads_hist.RData'))
+    
+    y2 = spread_sacha_set0(comms1, data0, list(c(1,-1), c(1,-2,1), c(1,-3,3,-1), c(1,-1,-1,1)), c('Calendar', 'Butterflies (3 leg)', 'Butterflies (4 leg)', 'Condor'), 2015, list('Lean Hog'='K'), list('Henry Hub Natural Gas'=c('2018', 'Z')))
+    fwrite(y2, file='../contracts_template.csv')
+    
+    gs_auth(token = '/home/aslepnev/git/ej/gdoc_doc.R')
+    s = gs_key('1s05m2xyRVXprFHyRVqY9qbEKl6OqXssymVsmvWnrpIk')
+    n = as.data.frame(gs_read(s, 'Spreads', range='A1:G2000', col_names=TRUE))
+    a = build_nplets(unique(comms$Name), data0, 1:2, 1985, list('Lean Hog'='K'), list('Henry Hub Natural Gas'=c('2018', 'Z')))
+    save(s2, file=paste0('/home/', homedir, '/webhub/spreads_hist2.RData'))
+}
 
 
 

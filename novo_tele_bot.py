@@ -32,9 +32,11 @@ def smart_result(x):
     ustate = get_state()
     
     if is_state_update_phrase(x):
-        update_current_state_with_phrase(x)
-        return {'type': 'html',
-                'data': index_param_display()}
+        if update_current_state_with_phrase(x) == 'OK':
+            return {'type': 'html',
+                    'data': index_param_display()}
+        else:
+            return {'type': 'text', 'data': 'please check inputs'}
         
     if ustate['type'] == 'index':
         if x == 'perf':

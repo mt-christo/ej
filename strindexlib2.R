@@ -329,6 +329,7 @@ uh = xts_cbind_idx(pre_screen(de, etf_segment(de$u, 'Asia', 20), smart=TRUE)$h, 
 uh = xts_cbind_idx(pre_screen(de, etf_segment(de$u, 'Asia', 200), smart=TRUE)$h, uni_skip_countries(pre_screen(ds, stock_segment(ds$u, 'Asia', 200), smart=TRUE), c('KR'))$h)
 
 p1$basket[6] = '27 HK Equity'
+p1$basket[5] = 'EWJ'
 
 
 stocks = c('2454 TT', '388 HK', '27 HK')

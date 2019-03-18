@@ -3,8 +3,9 @@
 spread_wnd_web = function(){
     save(GET, file='/home/aslepnev/webhub/last_GET_spread_wnd_web.RData')
     # GET = get(load('/home/aslepnev/webhub/last_GET_spread_wnd_web.RData'))
-    comdty = GET$comdty
-    spread_months = GET$spread_months
+#    comdty = GET$comdty
+#    spread_months = GET$spread_months
+    spread_id = GET$spread_id
     
     dt_start_bunch = GET$dt_start_bunch
     dt_end_bunch = GET$dt_end_bunch
@@ -12,11 +13,11 @@ spread_wnd_web = function(){
     dt_end_results = GET$dt_end_results
     years = as.numeric(strsplit(GET$years, '-')[[1]])
     
-    wnd_bunch = as.Date(GET$dt_end_bunch)-as.Date(GET$dt_start_bunch)
-    wnd_results = as.Date(GET$dt_end_results)-as.Date(GET$dt_start_results)
+    wnd_bunch = as.Date(GET$dt_end_bunch) - as.Date(GET$dt_start_bunch)
+    wnd_results = as.Date(GET$dt_end_results) - as.Date(GET$dt_start_results)
     
-    h_bunch = get_spread_hist(comdty, spread_months, GET$dt_start_bunch, wnd_bunch)
-    h_results = get_spread_hist(comdty, spread_months, GET$dt_start_results, wnd_results)
+    h_bunch = get_spread_hist(spread_id, GET$dt_start_bunch, wnd_bunch)
+    h_results = get_spread_hist(spread_id, GET$dt_start_results, wnd_results)
 
     ma = get_spread_ma_wnd(h_bunch, GET$dt_start_bunch, wnd_bunch)[year%in%years, ]
     results = get_spread_results(h_results, GET$dt_start_results, wnd_results)[year%in%years, ]
