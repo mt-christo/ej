@@ -1,7 +1,7 @@
 to_zero_date <- function(date, reldate){
     relres = as.Date(reldate)
     res = as.Date(date)
-    year(res) = year(res) - year(relres) + 1990
+    year(res) = year(res) - year(relres) + 1900
     return(res)    
 }
 
@@ -33,11 +33,30 @@ get_spread_hist <- function(spread_id, dt_start, wnd){
     return(list(hist=s, zero_year=zero_year, zero_start=zero_start))
 }
 
-get_spread_results <- function(h, dt_start, wnd){
-    s = h$hist[zero_date>=h$zero_start & zero_date<=h$zero_start+wnd, ][, !colnames(h$hist)%in%c('commodity','date','months','expiry'), with=FALSE]
-    res = s[, .(max_dd = min(spread - head(spread, 1))
-              , max_pf = max(spread - head(spread, 1))
-              , end_pf = tail(spread, 1) - head(spread, 1)), by='year']
+# h=h_results; dt_start=dt_start_results; wnd=wnd_results
+get_spread_results <- function(h, dt_start, wnd, results_start_luft, results_end_luft){
+    zero_start_2000 = h$zero_start; year(zero_start_2000) = year(zero_start_2000) + 100  # bizdays doesn't wotk with old dates
+    zero_end_2000 = h$zero_start + wnd; year(zero_end_2000) = year(zero_end_2000) + 100
+    
+    zero_start1 = h$zero_start
+    zero_start2 = bizoff(zero_start_2000, results_start_luft, 'mycal')
+    year(zero_start2) = year(zero_start2) - 100
+    zero_start3 = bizoff(zero_start_2000, 2*results_start_luft, 'mycal')
+    year(zero_start3) = year(zero_start3) - 100
+    
+    zero_end1 = bizoff(zero_start_2000 + wnd, -2*results_end_luft, 'mycal')
+    year(zero_end1) = year(zero_end1) - 100
+    zero_end2 = bizoff(zero_start_2000 + wnd, -results_end_luft, 'mycal')
+    year(zero_end2) = year(zero_end2) - 100
+    zero_end3 = h$zero_start + wnd
+    
+    buys = h$hist[zero_date>=zero_start1 & zero_date<=zero_start3, .(buy=mean(spread)), by='year']
+    sells = h$hist[zero_date>=zero_end1 & zero_date<=zero_end3, .(sell=mean(spread)), by='year']
+    s = h$hist[zero_date>=zero_start2 & zero_date<=zero_end2, ][, !colnames(h$hist)%in%c('commodity','date','months','expiry'), with=FALSE]
+    s = sells[buys[s, on='year'], on='year']
+    res = s[, .(max_dd = min(spread - head(buy, 1))
+              , max_pf = max(spread - head(buy, 1))
+              , end_pf = tail(sell, 1) - head(buy, 1)), by='year']
 
     return(res)
 }

@@ -9,7 +9,11 @@ library(xts)
 library(corpcor)
 library(doMC)
 library(mvtnorm)
+library(bizdays)
 registerDoMC(cores=5)
+
+create.calendar(name='mycal', weekdays=c('saturday', 'sunday'))
+bizoff = bizdays::offset
 
 source('/home/aslepnev/git/ej/webfunc.R')
 #source('/home/aslepnev/git/ej/strfunc.R')

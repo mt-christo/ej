@@ -381,22 +381,39 @@ send_vol_basket('Health Care', 'Health Care', list(etf_count=2, stock_count=3, v
 
 
 p1$perf
-
 send_xts_plot_to_email(1:10, 'chart.png', 'Please see chart attacheeeed', 'aslepnev@novo-x.info')
-
 h = pre_screen(ds, stock_segmment(ds$u, 'Information Technology', 100), smart=TRUE)$h
-
 u=stock_segment(ds$u, 'Information Technology', 100)
-
 
 res = build_index(list(main=), rebal_dates=get_rebals(uni_in, rebal_freq), screen_voltarget, screen_params, start_date)
 
-
-
-
-
 foreach(i=1:ncol(h),.combine=c)%do%{ sqrt(250)*sd(h[,i]) }
 
+
+
+
+source('/home/aslepnev/git/ej/strindexlib.R')
+library(dplyr)
+DD = get(load('/home/aslepnev/git/ej/it_top10_uni.RData'))
+libors = DD$libor
+
+x = fread('/home/aslepnev/webhub/Top10_IT_EquityIndex_CSV.csv')
+x = xts(as.numeric(x$GTR), order.by=as.Date(x$Date))
+colnames(x) = 'r'
+x = diff(log(x[index(x)>='2012-12-31', ]/as.numeric(x[index(x)=='2012-12-31'])))[-1]
+r = volcontrol_excess(x, list(window=20, type='max 10', excess_type = 'rate-related excess', excess=2, level=0.13, max_weight=1.5), libors); print(tail(exp(cumsum(r)), 1))
+
+
+x = fread('/home/aslepnev/webhub/smidai_index_solactive.csv')
+x = xts(as.numeric(x$p), order.by=as.Date(x$date))
+colnames(x) = 'r'
+x = x[index(x)<='2019-02-14']
+x3y = diff(log(x[index(x)>='2016-02-14', ]/as.numeric(x[index(x)=='2016-02-11'])))[-1]
+x5y = diff(log(x[index(x)>='2014-02-14', ]/as.numeric(x[index(x)=='2014-02-14'])))[-1]
+
+r = volcontrol_excess(x3y, list(window=20, type='simple', excess_type = 'fixed excess', excess=3.5, level=0.08, max_weight=2.5), libors); print(sqrt(252)*sd(tail(r, 252))); print(tail(exp(cumsum(r)), 1))
+r = volcontrol_excess(x3y, list(window=20, type='max 5', excess_type = 'fixed excess', excess=3.5, level=0.08, max_weight=2.5), libors); print(sqrt(252)*sd(tail(r, 252))); print(tail(exp(cumsum(r)), 1))
+r = volcontrol_excess(x5y, list(window=20, type='max 10', excess_type = 'fixed excess', excess=3.5, level=0.08, max_weight=2.5), libors); print(tail(exp(cumsum(r)), 1))
 
 
 d_etf = pre_screen(de, etf_segment(de$u, 'Health Care', 15), smart=TRUE)

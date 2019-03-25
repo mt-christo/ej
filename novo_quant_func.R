@@ -4,6 +4,8 @@ volcontrol = function(r, vc_params){
     w = sqrt(250)*rollapplyr(r, as.numeric(vc_params$window), FUN=sd)
     if(vc_params$type == 'max 10')
         w = rollapplyr(w, 10, FUN=function(x){ max(x) }) else
+    if(vc_params$type == 'max 5')
+        w = rollapplyr(w, 5, FUN=function(x){ max(x) }) else
     if(vc_params$type == 'avg 10')
         w = rollapplyr(w, 10, FUN=function(x){ mean(x) })
 
