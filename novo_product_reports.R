@@ -26,6 +26,7 @@ index_vt_pridex_segment = function(d_etf, d_stock, n_etfs, n_stock, vt, wmin, wm
 }
 
 # d_etf=pre_screen(de, etf_segment(de$u, 'Asia', 10), smart=TRUE); d_stock=uni_skip_countries(pre_screen(ds, stock_segment(ds$u, 'Asia', 10), smart=TRUE), c('KR')); n_etfs=2; n_stock=4; vt=0.30; wmin=0.1; wmax=0.3
+# d_etf=pre_screen(de, etf_segment(de$u, etf_focus, n_etfs), smart=TRUE); d_stock=pre_screen(ds, stock_segment(ds$u, stock_focus, n_stocks), smart=TRUE); n_etfs=wo_params$etf_count; n_stock=wo_params$stock_count; vt=wo_params$vt; wmin=wo_params$minw; wmax=wo_params$maxw
 index_vt_pridex_segment_similar = function(d_etf, d_stock, n_etfs, n_stock, vt, wmin, wmax){
     d_stock1 = d_stock
     d_stock1$u = d_stock1$u[!ticker%in%d_etf$u$ticker, ]
@@ -34,7 +35,7 @@ index_vt_pridex_segment_similar = function(d_etf, d_stock, n_etfs, n_stock, vt, 
     d_all$h = cbind(d_etf$h, d_stock1$h)
     colnames(d_all$h) = c(colnames(d_etf$h), colnames(d_stock1$h))
     
-    b_etf = baskets_vol_range(d_etf, n_etfs, volparams=list(wnd=250, min=vt-0.2, max=vt+0.2))  # All baskets within Volatility range witn Volatility and Lowest Market cap info
+    b_etf = baskets_vol_range(d_etf, n_etfs, volparams=list(wnd=250, min=vt-0.3, max=vt+0.2))  # All baskets within Volatility range witn Volatility and Lowest Market cap info
     b_stock = baskets_vol_range(d_stock1, n_stock, volparams=list(wnd=250, min=vt-0.2, max=vt+0.2))  # All baskets within Volatility range witn Volatility and Lowest Market cap info
 
     stock_best_baskets = b_stock$baskets[order(abs(vt - b_stock$sds))[1:min(length(b_stock$sds), 100)], ]  # 20 baskets with vol closest to target

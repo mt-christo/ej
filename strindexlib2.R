@@ -364,10 +364,11 @@ send_files_to_email(c(save_data_as_pdf(basket, 'basket.pdf'),
 library(mailR)
 
 # etf_focus='Technology'; stock_focus='Information Technology'; wo_params = list(etf_count=3, stock_count=2, vt=0.4, minw=0.15, maxw=0.6)
-send_vol_basket = function(etf_focus, stock_focus, wo_params){
-    p1 = index_vt_pridex_segment(pre_screen(de, etf_segment(de$u, etf_focus, 25), smart=TRUE),
-                                 pre_screen(ds, stock_segment(ds$u, stock_focus, 40), smart=TRUE), wo_params$etf_count, wo_params$stock_count, wo_params$vt, wo_params$minw, wo_params$maxw)
-    basket = rbind(de$u[, .(ticker, name, sectype='ETF')], ds$u[!ticker%in%de$u, .(ticker, name, sectype='Stock')])[data.table(ticker=p1$basket, weight=p1$weights), on='ticker']
+# etf_focus='Developed Europe'; stock_focus='Developed Europe'; wo_params = list(etf_count=3, stock_count=3, vt=0.3, minw=0.15, maxw=0.6); n_etfs=50; n_stocks=80
+send_vol_basket = function(etf_focus, n_etfs, stock_focus, n_stocks, wo_params){
+    p1 = index_vt_pridex_segment_similar(pre_screen(de, etf_segment(de$u, etf_focus, n_etfs), smart=TRUE),
+                                 pre_screen(ds, stock_segment(ds$u, stock_focus, n_stocks), smart=TRUE), wo_params$etf_count, wo_params$stock_count, wo_params$vt, wo_params$minw, wo_params$maxw)
+    basket = rbind(de$u[, .(ticker, name, sectype='ETF')], ds$u[!ticker%in%de$u$ticker, .(ticker, name, sectype='Stock')])[data.table(ticker=p1$basket, weight=p1$weights), on='ticker']
     basket[, weight:=fracperc(weight, 2)]
     colnames(basket) = c('Ticker', 'Name', 'Security Type', 'Weight')
     send_files_to_email(c(save_data_as_pdf(basket, 'basket.pdf'),
@@ -375,8 +376,11 @@ send_vol_basket = function(etf_focus, stock_focus, wo_params){
                        paste(etf_focus, stock_focus), 'aslepnev@novo-x.info')
 }
 
-send_vol_basket('Technology', 'Information Technology', list(etf_count=2, stock_count=3, vt=0.4, minw=0.15, maxw=0.6))
-send_vol_basket('Health Care', 'Health Care', list(etf_count=2, stock_count=3, vt=0.4, minw=0.15, maxw=0.6))
+ds = get(load('/home/aslepnev/webhub/grish_iter0.RData'))
+de = get(load('/home/aslepnev/webhub/sacha_etf_yhoo.RData'))
+send_vol_basket('Technology', 'Information Technology', list(etf_count=2, stock_count=3, vt=0.4, minw=0.15, maxw=0.4))
+send_vol_basket('Health Care', 'Health Care', list(etf_count=2, stock_count=3, vt=0.4, minw=0.15, maxw=0.4))
+send_vol_basket('Developed Europe', 50, 'Developed Europe', 80, list(etf_count=3, stock_count=3, vt=0.3, minw=0.15, maxw=0.4))
 
 
 
@@ -400,8 +404,10 @@ libors = DD$libor
 x = fread('/home/aslepnev/webhub/Top10_IT_EquityIndex_CSV.csv')
 x = xts(as.numeric(x$GTR), order.by=as.Date(x$Date))
 colnames(x) = 'r'
-x = diff(log(x[index(x)>='2012-12-31', ]/as.numeric(x[index(x)=='2012-12-31'])))[-1]
-r = volcontrol_excess(x, list(window=20, type='max 10', excess_type = 'rate-related excess', excess=2, level=0.13, max_weight=1.5), libors); print(tail(exp(cumsum(r)), 1))
+x = diff(log(x[index(x)>='2012-12-31' & index(x)<='2019-02-04', ]/as.numeric(x[index(x)=='2012-12-31'])))[-1]
+
+r = volcontrol_excess(x, list(window=c(20, 60), type='none', excess_type = 'simple excess', excess=3.5, level=0.14, max_weight=1.75), libors); print(sqrt(252)*sd(tail(r, 252))); print(tail(exp(cumsum(r)), 1))
+r = volcontrol_excess(x, list(window=20, type='none', excess_type = 'simple excess', excess=3.5, level=0.14, max_weight=1.75), libors); print(sqrt(252)*sd(tail(r, 252))); print(tail(exp(cumsum(r)), 1))
 
 
 x = fread('/home/aslepnev/webhub/smidai_index_solactive.csv')
@@ -493,6 +499,22 @@ send_files_to_email(c(save_data_as_csv(DD$u, 'universe.csv')),
 
 
 
+
+source('/home/aslepnev/git/ej/strindexlib.R')
+DD = get(load('/home/aslepnev/git/ej/it_top10_uni.RData'))
+libors = DD$libor
+r1 = build_index_prorate(list(main=uni_skip_tickers(DD, c('V', 'MA'))), get_rebals(DD, 'quarter'), screen_mixed_top, list(price_window=40), '2012-12-31')
+r1 = foreach(x=r1,.combine=rbind)%do%x$h
+r1 = r1[index(r1)>='2012-12-31' & index(r1)<='2019-02-04', ]
+r = volcontrol_excess(r1, list(window=c(20, 60), type='none', excess_type = 'simple excess', excess=3.5, level=0.12, max_weight=1.75), libors); print(sqrt(252)*sd(tail(r, 252))); print(tail(exp(cumsum(r)), 1))
+r = volcontrol_excess(r1, list(window=20, type='none', excess_type = 'simple excess', excess=3.5, level=0.12, max_weight=1.75), libors); print(sqrt(252)*sd(tail(r, 252))); print(tail(exp(cumsum(r)), 1))
+
+
+r2 = fread('/home/aslepnev/webhub/Top10_IT_EquityIndex_CSV.csv')
+r2 = xts(as.numeric(r2$GTR), order.by=as.Date(r2$Date))
+colnames(r2) = 'r'
+r2 = diff(log(r2[index(r2)>='2012-12-31' & index(r2)<='2019-02-04', ]/as.numeric(r2[index(r2)=='2012-12-31'])))[-1]
+r = volcontrol_excess(r2, list(window=c(20, 60), type='none', excess_type = 'simple excess', excess=3.5, level=0.14, max_weight=1.75), libors); print(sqrt(252)*sd(tail(r, 252))); print(tail(exp(cumsum(r)), 1))
 
 
 asia        

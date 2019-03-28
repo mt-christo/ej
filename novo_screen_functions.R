@@ -35,6 +35,7 @@ optim_sigma = function(h_in, volparams){
 }
 
 # d_in=d_stock1; n_in=2; volparams=list(wnd=500, min=0.2, max=0.3)
+# d_in=d_etf; n_in=n_etfs; volparams=list(wnd=250, min=vt-0.3, max=vt+0.1)
 baskets_vol_range = function(d_in, n_in, volparams){
     nn = t(combn(1:nrow(d_in$u), n_in))
     mcap_nn = nn
@@ -50,13 +51,16 @@ baskets_vol_range = function(d_in, n_in, volparams){
     comat = cov(h)
     sds = array(0, nrow(nn))
     mcaps = array(0, nrow(nn))
+    pfs = array(0, nrow(nn))
     for(j in 1:nrow(nn)){
         sds[j] = w %*% comat[nn[j, ], nn[j, ]] %*% w
         mcaps[j] = min(mcap_nn[j, ])
+        pfs[j] = as.numeric(tail(basket_perf(h[, nn[j, ]], w), 1))
     }
     sds = sqrt(250)*sqrt(sds)
     baskets = ticker_nn[sds>=volparams$min & sds<=volparams$max, ]
     sds = sds[sds>=volparams$min & sds<=volparams$max]
+    mcaps = mcaps[sds>=volparams$min & sds<=volparams$max]
     return(list(baskets=baskets, sds=sds, mcaps=mcaps))
 }
 
@@ -171,7 +175,8 @@ screen_mixed_top = function(u_in, dt_in, lh_in){
     res = rets[u2[u1, on='ticker'], on='ticker'][, mcap:=(as.numeric(dt_in - dt1)*mcap2 + as.numeric(dt2 - dt_in)*mcap1)/as.numeric(dt2 - dt1)]
     resnorm = function(x) { y = x[!is.na(x)]; (x - min(y))/(max(y) - min(y)) }
 #    res = u2[u1, on='ticker'][, mcap:=(as.numeric(dt_in - dt1)*mcap2 + as.numeric(dt2 - dt_in)*mcap1)/as.numeric(dt2 - dt1)]
-    mres = resnorm(res$mcap) + 0.5*resnorm(res$r)
+#    mres = resnorm(res$mcap) + 0.5*resnorm(res$r)
+    mres = 0.5*resnorm(res$mcap) + resnorm(res$r)
     res = res[order(mres, decreasing=TRUE), ][1:n, ]
 #    w = res$r - min(res$r)
 #    w = w/sum(w)

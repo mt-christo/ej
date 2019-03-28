@@ -67,6 +67,7 @@ etf_segment = function(u_in, segname, topn=1000000){
     return(res[order(mcap, decreasing=TRUE), ][1:min(nrow(res), topn), ])
 }
 
+# u_in=ds$u; segname=stock_focus; topn=40
 stock_segment = function(u_in, segname, topn=1000000){
     country_asia = c("CHINA", "INDIA", "SINGAPORE", "INDONESIA", "PHILIPPINES", "THAILAND", "BERMUDA", "HONG KONG", "BANGLADESH", "MALAYSIA", "VIETNAM", "KOREA", "JAPAN", "TAIWAN")
     country_west = c("UNITED STATES", "SWITZERLAND", "FRANCE", "GERMANY", "IRELAND", "AUSTRALIA", "CANADA", "BRITAIN", "NORWAY", "NETHERLANDS", "SPAIN", "SWEDEN", "LUXEMBOURG", "ITALY", "ISRAEL", "AUSTRIA", "BELGIUM", "DENMARK", "POLAND", "NEW ZEALAND")
