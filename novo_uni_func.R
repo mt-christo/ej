@@ -52,6 +52,7 @@ prorate_universe = function(u, h, d0, d1){
     return(u1)
 }
 
+# u_in=de$u; segname='United States'; topn=40
 etf_segment = function(u_in, segname, topn=1000000){
     geo_focus_asia = c('Japan', 'Asian Pacific Region', 'China', 'Asian Pacific Region ex Japan', 'Greater China', 'South Korea', 'Taiwan', 'Hong Kong', 'Greater China,Hong Kong', 'India', 'Indonesia', 'Singapore', 'Malaysia', 'Thailand')
     geo_focus_west = c('United States', 'California', 'European Region', 'New York', 'Pennsylvania', 'Minnesota', 'Canada', 'New Jersey', 'Ohio', 'Eurozone', 'Virginia', 'Massachusetts', 'Oregon', 'Missouri', 'North American Region', 'Michigan', 'Germany', 'Maryland', 'United Kingdom', 'Australia', 'European Region,Australia', 'Global,United States', 'Spain', 'Kentucky', 'Arizona', 'Switzerland', 'North Carolina', 'Hawaii', 'Colorado', 'France', 'Singapore')
@@ -62,12 +63,13 @@ etf_segment = function(u_in, segname, topn=1000000){
       if(segname=='West') u_in[geo_focus%in%geo_focus_west | geo_focus2%in%c('North America', 'Developed Europe'), ] else
       if(segname=='Developed Europe') u_in[(geo_focus=='European Region' & geo_focus2=='Developed Market') | geo_focus%in%geo_focus_deveuro, ] else
       if(segname=='Global') u_in[geo_focus%in%geo_focus_global | geo_focus2=='Global', ] else
-      if(segname%in%u_in$ind_focus) u_in[ind_focus==segname, ]
+      if(segname%in%u_in$ind_focus) u_in[ind_focus==segname, ]else
+      if(segname%in%u_in$geo_focus) u_in[geo_focus==segname, ]
 
     return(res[order(mcap, decreasing=TRUE), ][1:min(nrow(res), topn), ])
 }
 
-# u_in=ds$u; segname=stock_focus; topn=40
+# u_in=ds$u; segname='UNITED STATES'; topn=40
 stock_segment = function(u_in, segname, topn=1000000){
     country_asia = c("CHINA", "INDIA", "SINGAPORE", "INDONESIA", "PHILIPPINES", "THAILAND", "BERMUDA", "HONG KONG", "BANGLADESH", "MALAYSIA", "VIETNAM", "KOREA", "JAPAN", "TAIWAN")
     country_west = c("UNITED STATES", "SWITZERLAND", "FRANCE", "GERMANY", "IRELAND", "AUSTRALIA", "CANADA", "BRITAIN", "NORWAY", "NETHERLANDS", "SPAIN", "SWEDEN", "LUXEMBOURG", "ITALY", "ISRAEL", "AUSTRIA", "BELGIUM", "DENMARK", "POLAND", "NEW ZEALAND")
@@ -76,7 +78,8 @@ stock_segment = function(u_in, segname, topn=1000000){
     res = if(segname=='Asia') u_in[country_name%in%country_asia, ] else
       if(segname=='West') u_in[country_name%in%country_west, ] else
       if(segname=='Developed Europe') u_in[country_name%in%country_deveuro, ] else
-      if(segname%in%u_in$sector) u_in[sector==segname, ]
+      if(segname%in%u_in$sector) u_in[sector==segname, ] else
+      if(segname%in%u_in$country_name) u_in[country_name==segname, ]
 
     return(res[order(mcap, decreasing=TRUE), ][1:min(nrow(res), topn), ])
 }
@@ -84,8 +87,9 @@ stock_segment = function(u_in, segname, topn=1000000){
 # u = D$u[,.SD[1,], by=focus]
 # D=D_STOCKS; u = d_stocks
 # D_in=ds; u=stock_segment(ds_in$u, segstock, n_stock); smart=TRUE
+# D_in=list(h=tss); u=uu; smart=TRUE
 pre_screen = function(D_in, u, smart = FALSE){
-    u1 = u
+    u1 = u[ticker%in%colnames(D_in$h), ]
     h1 = D_in$h[, u1$ticker]
     if(smart){
         h1 = h_to_log(h1)
@@ -99,10 +103,17 @@ pre_screen = function(D_in, u, smart = FALSE){
     return(list(u=u1, h=h1))
 }
 
+rebals_func = function(period) return(if(period=='year') apply.yearly else if(period=='quarter') apply.quarterly else if(period=='month') apply.monthly else stop("Unknown period"))
+
 get_rebals = function(D, period){
-    f = if(period=='year') apply.yearly else if(period=='quarter') apply.quarterly else if(period=='month') apply.monthly else stop("Unknown period")
+    f = rebals_func(period)
     return(as.Date(index(f(D$h[,1], FUN=length))))
 }    
+
+get_rebals_h = function(h_in, period){
+    f = rebals_func(period)
+    return(as.Date(index(f(h_in[, 1] , FUN=length))))
+}
 
 # u=D$u; h=D$h; d0=as.Date("2018-03-01"); d1s=rebal_dates
 prorate_universe_multiple = function(u, h, d0, d1s){

@@ -364,6 +364,7 @@ send_files_to_email(c(save_data_as_pdf(basket, 'basket.pdf'),
 library(mailR)
 
 # etf_focus='Technology'; stock_focus='Information Technology'; wo_params = list(etf_count=3, stock_count=2, vt=0.4, minw=0.15, maxw=0.6)
+# etf_focus='Technology'; stock_focus='Information Technology'; wo_params = list(etf_count=3, stock_count=2, vt=0.4, minw=0.15, maxw=0.6)
 # etf_focus='Developed Europe'; stock_focus='Developed Europe'; wo_params = list(etf_count=3, stock_count=3, vt=0.3, minw=0.15, maxw=0.6); n_etfs=50; n_stocks=80
 send_vol_basket = function(etf_focus, n_etfs, stock_focus, n_stocks, wo_params){
     p1 = index_vt_pridex_segment_similar(pre_screen(de, etf_segment(de$u, etf_focus, n_etfs), smart=TRUE),
@@ -376,11 +377,12 @@ send_vol_basket = function(etf_focus, n_etfs, stock_focus, n_stocks, wo_params){
                        paste(etf_focus, stock_focus), 'aslepnev@novo-x.info')
 }
 
-ds = get(load('/home/aslepnev/webhub/grish_iter0.RData'))
+ds = get(load('/home/aslepnev/webhub/grish_2011_undated_uni.RData'))
 de = get(load('/home/aslepnev/webhub/sacha_etf_yhoo.RData'))
-send_vol_basket('Technology', 'Information Technology', list(etf_count=2, stock_count=3, vt=0.4, minw=0.15, maxw=0.4))
-send_vol_basket('Health Care', 'Health Care', list(etf_count=2, stock_count=3, vt=0.4, minw=0.15, maxw=0.4))
-send_vol_basket('Developed Europe', 50, 'Developed Europe', 80, list(etf_count=3, stock_count=3, vt=0.3, minw=0.15, maxw=0.4))
+send_vol_basket('Technology', 20, 'Information Technology', 20, list(etf_count=2, stock_count=3, vt=0.4, minw=0.15, maxw=0.4))
+send_vol_basket('Health Care', 20, 'Health Care', 20, list(etf_count=2, stock_count=3, vt=0.4, minw=0.15, maxw=0.4))
+send_vol_basket('Developed Europe', 20, 'Developed Europe', 20, list(etf_count=3, stock_count=3, vt=0.3, minw=0.15, maxw=0.4))
+send_vol_basket('United States', 20, 'UNITED STATES', 20, list(etf_count=3, stock_count=3, vt=0.3, minw=0.15, maxw=0.4))
 
 
 
@@ -570,3 +572,141 @@ geo_focus    N
 11:              Utilities   11
 12:               Thematic   50
 13:              Materials   13
+
+fxx = get(load('/home/aslepnev/webhub/fxx.RData'))
+
+
+    country_code   country_name    N
+ 1:           US  UNITED STATES 1282 USD
+ 2:           CH          CHINA  484 CNY
+ 3:           JN          JAPAN  323 JPY
+ 4:           GB        BRITAIN  166 GBP
+ 5:           CA         CANADA  115 CAD
+ 6:           IN          INDIA  114 INR
+ 7:           FR         FRANCE  101 EUR
+ 8:           HK      HONG KONG   95 HKD
+ 9:           GE        GERMANY   95 EUR
+10:           SK    SOUTH KOREA   78 
+11:           AU      AUSTRALIA   77
+12:           SZ    SWITZERLAND   63
+13:           BZ         BRAZIL   62
+14:           RU         RUSSIA   48
+15:           IT          ITALY   47
+16:           TA         TAIWAN   47
+17:           IR        IRELAND   43
+18:           SW         SWEDEN   43
+19:           SA   SOUTH AFRICA   41
+20:           MX         MEXICO   40
+21:           NE    NETHERLANDS   37
+22:           SP          SPAIN   37
+23:           MA       MALAYSIA   34
+24:           TH       THAILAND   29
+25:           SI      SINGAPORE   27
+26:           SR   SAUDI ARABIA   26
+27:           ID      INDONESIA   24
+28:           TU         TURKEY   23
+29:           DE        DENMARK   23
+30:           PH    PHILIPPINES   22
+31:           BE        BELGIUM   20
+32:           CL          CHILE   20
+33:           UA            UAE   20
+34:           FI        FINLAND   15
+35:           NO         NORWAY   15
+36:           IS         ISRAEL   14
+37:           PD         POLAND   14
+38:           LX     LUXEMBOURG   13
+39:           QA          QATAR   12
+40:           PE           PERU   11
+41:           CO       COLOMBIA   11
+42:           VZ      VENEZUELA   11
+43:           AS        AUSTRIA   10
+44:           PO       PORTUGAL    9
+45:           BD        BERMUDA    9
+46:           VN        VIETNAM    8
+47:           AR      ARGENTINA    7
+48:           GR         GREECE    7
+49:           NZ    NEW ZEALAND    7
+50:           KU         KUWAIT    4
+51:           EG          EGYPT    4
+52:           UK        UKRAINE    4
+53:           NG        NIGERIA    4
+54:           CZ          CZECH    3
+55:           MO        MOROCCO    3
+56:           JO         JORDAN    3
+57:           U2          MACAU    3
+58:           JE         JERSEY    3
+59:           PK       PAKISTAN    3
+60:           HU        HUNGARY    2
+61:           GS       GUERNSEY    2
+62:           RO        ROMANIA    2
+63:           PN         PANAMA    2
+64:           KZ     KAZAKHSTAN    1
+65:           PP PAPUA N.GUINEA    1
+66:           BW     BANGLADESH    1
+67:           CT        CURACAO    1
+68:           HR        CROATIA    1
+69:           ED        ECUADOR    1
+70:           CC         CYPRUS    1
+71:           KN          KENYA    1
+72:           MB          MALTA    1
+73:           IQ           IRAQ    1
+74:           BJ        BAHRAIN    1
+75:           IO    ISLE OF MAN    1
+76:           PR    PUERTO RICO    1
+
+
+
+DD = get(load('/home/aslepnev/git/ej/it_top10_uni.RData'))
+libors = DD$libor
+shmae = h_to_log(as.xts(fread('/home/aslepnev/webhub/shmaet_stocks.csv')[, Date := as.Date(Date)]))
+# h_in = shmae; rebal_dates=get_rebals_h(h_in, 'quarter'); screen_func=screen_partial_momentum; screen_params=list(window=40, w=0.1); start_date='2016-06-30'
+r = build_index_simple(shmae, get_rebals_h(shmae, 'month'), screen_partial_momentum, list(window=20, w=0.9), '2016-06-30')
+r = foreach(x=r,.combine=rbind)%do%x$h
+rvc = r; rvc = rvc[index(rvc)>='2016-08-25']; print(sqrt(252)*sd(tail(rvc, 252))); print(tail(exp(cumsum(rvc)), 1))
+rvc = volcontrol_excess(r, list(window=20, type='none', excess_type = 'simple excess', excess=0, level=0.08, max_weight=1.25), libors); rvc = rvc[index(rvc)>='2016-08-25']; print(sqrt(252)*sd(tail(rvc, 252))); print(tail(exp(cumsum(rvc)), 1))
+rvc = volcontrol_excess(r, list(window=20, type='none', excess_type = 'rate-related excess', excess=1, level=0.11, max_weight=1.25), libors); rvc = rvc[index(rvc)>='2016-08-25']; print(sqrt(252)*sd(tail(rvc, 252))); print(tail(exp(cumsum(rvc)), 1))
+
+fwrite(exp(rvc), file='/home/aslepnev/webhub/test_shmae_rvc_new.csv')
+y = fread('/home/aslepnev/webhub/shmaet_index.csv')
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-- SMIDAI --
+
+source('/home/aslepnev/git/ej/strindexlib.R')
+libors = get(load('/home/aslepnev/git/ej/it_top10_uni.RData'))$libor
+
+h = fread('/home/aslepnev/webhub/smidai_hist_prices.csv')[, Dates := as.Date(Dates)]
+b = fread('/home/aslepnev/webhub/smidai_hist_baskets.csv')
+f = fread('/home/aslepnev/webhub/smidai_hist_funds.csv')
+
+for(n in colnames(h)[-1]) {
+    h[[n]][h[, n, with=FALSE]=='#N/A N/A'] = NA
+    h[[n]] = as.numeric(h[[n]])
+}
+h = h_to_log(as.xts(h))[, -4]
+colnames(h) = foreach(i=colnames(h),.combine=c)%do%strsplit(i, ' ')[[1]][1]
+h = h[, colnames(h)!='US0003M']
+f = f[!ticker%in%c('US0003M', 'US003M'), ]
+
+r = build_index_simple(h, get_rebals_h(h, 'month'), smidai_style_rebal, screen_params=list(funds=f, baskets=b, window=20), start_date='2006-12-29')
+r = foreach(x=r,.combine=rbind)%do%x$h
+rvc = r; rvc = rvc[index(rvc)>='2007-01-01']; print(sqrt(252)*sd(tail(rvc, 252))); print(tail(exp(cumsum(rvc)), 1))
+rvc = volcontrol_excess(r, list(window=20, type='none', excess_type = 'simple excess', excess=3, level=0.08, max_weight=2.5), libors); rvc = rvc[index(rvc)>='2014-01-01']; print(sqrt(252)*sd(tail(rvc, 252))); print(tail(exp(cumsum(rvc)), 1))
+
+
+
+
+

@@ -91,3 +91,26 @@ build_index_prorate = function(D_in, rebal_dates, screen_func, screen_params, st
     
     return(h_res)
 }
+
+# h_in = shmae; rebal_dates=get_rebals_h(h_in, 'quarter'); screen_func=screen_partial_momentum; screen_params=list(window=40, w=0.1); start_date='2016-06-30'
+# h_in = shmae; rebal_dates=get_rebals_h(h_in, 'month'); screen_func=screen_partial_momentum; screen_params=list(window=20, w=0.0); start_date='2016-06-30'
+# h_in = h; rebal_dates=get_rebals_h(h_in, 'month'); screen_func=smidai_style_rebal; screen_params=list(funds=f, baskets=b, window=20); start_date='2006-12-29'
+build_index_simple = function(h_in, rebal_dates, screen_func, screen_params, start_date){
+    rebal_idx = match(rebal_dates[rebal_dates>=start_date], index(h_in))
+    calc_pieces = foreach(i=1:(length(rebal_idx) - 1))%do%
+        list(dt = index(h_in)[rebal_idx[i]],
+             h = h_in[(rebal_idx[i] - screen_params$window + 1):rebal_idx[i], ],
+             h_next = h_in[(rebal_idx[i]+1):rebal_idx[i+1], ])
+
+    # x = calc_pieces[[8]]
+    h_res = foreach(x=calc_pieces)%dopar%{
+        print(x$dt)
+        basket = screen_func(x$h, screen_params)
+        h = foreach(i=names(basket),.combine=cbind)%do%x$h_next[, basket[[i]]$names]
+        w = foreach(i=names(basket),.combine=c)%do%basket[[i]]$weights
+        r = basket_ret(h, w) 
+        list(h=r, basket=basket, dt=x$dt)
+    }
+    
+    return(h_res)
+}

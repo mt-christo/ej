@@ -175,7 +175,7 @@ h1 = foreach(x=grishe[5<foreach(x=grishe,.combine=c)%do%length(x)],.combine=cbin
 
 #p = get(load("/home/aslepnev/webhub/zacks_data.RData"))
 u = foreach(y = 2009:2018, .combine=rbind)%do%{
-    u = fread(paste0('/home/aslepnev/git/ej/grish_uni_2011_', y, '.csv'))
+    u = fread(paste0('/home/aslepnev/webhub/grish_uni_2011_', y, '.csv'))
     u$dt = as.Date(paste(y,12,31,sep='-'))
     u$ticker = as.character(t(as.data.table(strsplit(gsub('/', '', u$ticker), ' ')))[, 1])
     u
@@ -281,12 +281,35 @@ source('/home/aslepnev/git/ej/strindexlib.R')
 h = fread('/home/aslepnev/webhub/uber_hist1.csv')
 ticker_cols = seq(1,ncol(h)-1,by=2)
 price_cols = seq(2,ncol(h),by=2)
-ts = foreach(i=1:length(price_cols), .combine='merge.xts')%do%{
+ts = foreach(i=1:length(price_cols))%do%{
     if(i%%50==0) print(i)
     x = h[, c(ticker_cols[i], price_cols[i]), with=FALSE]
     colnames(x) = c('date', 'price')
     x = x[!is.na(price) & !is.na(date), ][price!='#N/A N/A' & price!='' & date!='', ]
-    xts(as.numeric(x$price), order.by=as.Date(as.character(x$date), '%m/%d/%Y'))
+    x = xts(as.numeric(x$price), order.by=as.Date(as.character(x$date), '%m/%d/%Y'))
+    colnames(x) = paste0('col_', i)
+    x
 }
-# h[1:10, which(colnames(h)%in%c('6505 TT Equity', 'EXC US Equity')), with=FALSE]
-a = colSums(h_nana)
+
+tss = foreach(i=0:(length(ts)%/%200), .combine='merge.xts')%dopar%{
+    foreach(j=(i*200+1):min(i*200+200, length(ts)), .combine='merge.xts')%do%{ if(j%%50==0) { print(j) }; ts[[j]] }
+}
+col_idx = as.numeric(foreach(x=colnames(tss), .combine=c)%do%strsplit(x,'_')[[1]][2])
+colnames(tss) = colnames(h)[ticker_cols[col_idx]]
+save(tss, file='/home/aslepnev/webhub/uber_hist.RData')  # Original currencies!!
+
+u = foreach(y = 2009:2018, .combine=rbind)%do%{
+    u = fread(paste0('/home/aslepnev/webhub/grish_uni_2011_', y, '.csv'))
+    u$dt = as.Date(paste(y,10,31,sep='-'))
+    u
+}
+undated_u = u[, tail(.SD, 1), by='ticker'][, .(ticker, name, mcap, sector, industry, country_code, country_name)]
+save(undated_u, file='/home/aslepnev/webhub/grish_2011_undated.RData')
+save(u, file='/home/aslepnev/webhub/grish_2011_dated.RData')
+
+uu = undated_u
+d = pre_screen(list(h=tss), undated_u, smart=TRUE)
+save(d, file='/home/aslepnev/webhub/grish_2011_undated_uni.RData')
+
+fxx = tss[, grep(' Curncy', colnames(tss)), with=FALSE]
+save(fxx, file='/home/aslepnev/webhub/fxx.RData')

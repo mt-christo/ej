@@ -4,6 +4,14 @@ screen_momentum = function(lh_in, u_in, params){
     return(u_in[res, ticker])
 }
 
+# h_in=x; screen_params=list(w=0.01)
+screen_partial_momentum = function(h_in, screen_params){
+    w = screen_params$w
+    res = (1 - w) * array(1/ncol(h_in), ncol(h_in)) + w * norm_weights(colSums(h_in))
+    res = res/sum(res)
+    return( list(main = list(names=colnames(h_in), weights=res)) )
+}
+
 screen_mycorr1 = function(lh_in, u_in, params){
     hh = na.fill(lh_in, fill=0.0)
     hh = cumsum(hh[,colSums(abs(hh))!=0])
@@ -184,3 +192,17 @@ screen_mixed_top = function(u_in, dt_in, lh_in){
     return(list(main=list(names=res$ticker, weights=w)))
 }
 
+# h_in=x$h; 
+smidai_style_rebal = function(h_in, screen_params){
+    good_tickers = colnames(h_in)[colSums(h_in)!=0]
+    f1 = screen_params$funds[ticker%in%good_tickers, ]  # Only existing tickers on that date
+    f1 = screen_params$baskets[, .(basket_id=id, basket_weight=weight)][f1, on='basket_id'][, .(ticker, weight=weight*basket_weight)]  # Join Baskets to get basket weights
+    f1 = f1[, .(weight=sum(weight)), by=ticker]  # Aggregate by ticker (tickers may intersect among baskets)
+    good_tickers = good_tickers[good_tickers%in%f1$ticker]
+
+    x = h_in[, good_tickers]
+    w = f1[good_tickers, on='ticker']$weight * ((norm_weights(as.numeric(colSums(x))) * norm_weights(-constituent_vols(x)))^3)
+    w = w/sum(w)
+    
+    return( list(main = list(names=colnames(x), weights=w)) )
+}
