@@ -10,6 +10,7 @@ library(corpcor)
 library(doMC)
 library(mvtnorm)
 library(bizdays)
+library(xtable)
 registerDoMC(cores=5)
 
 create.calendar(name='mycal', weekdays=c('saturday', 'sunday'))

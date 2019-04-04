@@ -673,6 +673,17 @@ y = fread('/home/aslepnev/webhub/shmaet_index.csv')
 
 
 
+write.csv(w, file='/home/aslepnev/webhub/test_shmae_rvc_new1.csv')
+write.csv(colnames(y), file='/home/aslepnev/webhub/test_shmae_rvc_new2.csv')
+
+setwd('/home/aslepnev/webhub/PDFs')
+Sweave('/home/aslepnev/git/ej/novo_latex1.Rnw')
+system('pdflatex novo_latex1.tex')
+
+a
+
+
+
 
 
 
@@ -701,10 +712,11 @@ colnames(h) = foreach(i=colnames(h),.combine=c)%do%strsplit(i, ' ')[[1]][1]
 h = h[, colnames(h)!='US0003M']
 f = f[!ticker%in%c('US0003M', 'US003M'), ]
 
-r = build_index_simple(h, get_rebals_h(h, 'month'), smidai_style_rebal, screen_params=list(funds=f, baskets=b, window=20), start_date='2006-12-29')
-r = foreach(x=r,.combine=rbind)%do%x$h
-rvc = r; rvc = rvc[index(rvc)>='2007-01-01']; print(sqrt(252)*sd(tail(rvc, 252))); print(tail(exp(cumsum(rvc)), 1))
-rvc = volcontrol_excess(r, list(window=20, type='none', excess_type = 'simple excess', excess=3, level=0.08, max_weight=2.5), libors); rvc = rvc[index(rvc)>='2014-01-01']; print(sqrt(252)*sd(tail(rvc, 252))); print(tail(exp(cumsum(rvc)), 1))
+r = build_index_simple(h, get_rebals_h(h, 'month'), smidai_style_rebal, screen_params=list(funds=f, baskets=b, window=125, voltarget=0.05), start_date='2006-12-29')
+r1 = foreach(x=r,.combine=rbind)%do%x$h
+rvc = r1; rvc = rvc[index(rvc)>='2007-01-01']; print(sqrt(252)*sd(tail(rvc, 252))); print(tail(exp(cumsum(rvc)), 1))
+rvc = volcontrol_excess(r1, list(window=20, type='none', excess_type = 'simple excess', excess=3, level=0.08, max_weight=2.5), libors); rvc = rvc[index(rvc)>='2014-01-01']; print(sqrt(252)*sd(tail(rvc, 252))); print(tail(exp(cumsum(rvc)), 1))
+rvc = volcontrol_excess(r1, list(window=20, type='none', excess_type = 'simple excess', excess=3, level=0.08, max_weight=2.5), libors); rvc = rvc[index(rvc)>='2016-01-01']; print(sqrt(252)*sd(tail(rvc, 252))); print(tail(exp(cumsum(rvc)), 1))
 
 
 

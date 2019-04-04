@@ -14,6 +14,7 @@ library(data.table)
 library(foreach)
 library(xts)
 library(tseries)
+library(xtable)
 registerDoMC(cores=5)
 
 R_STATE_DATA_MASK = '/home/aslepnev/webhub/strtelestate_current_name.csv'

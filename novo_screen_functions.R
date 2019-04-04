@@ -200,9 +200,23 @@ smidai_style_rebal = function(h_in, screen_params){
     f1 = f1[, .(weight=sum(weight)), by=ticker]  # Aggregate by ticker (tickers may intersect among baskets)
     good_tickers = good_tickers[good_tickers%in%f1$ticker]
 
-    x = h_in[, good_tickers]
-    w = f1[good_tickers, on='ticker']$weight * ((norm_weights(as.numeric(colSums(x))) * norm_weights(-constituent_vols(x)))^3)
-    w = w/sum(w)
+    y = h_in[, good_tickers]  # Our main history of returns now
+    n = ncol(y)
+
+    comat = cov(y)*252
+    wmax = f1[good_tickers, on='ticker']$weight
+    wmin = array(0, n)
+    wstart = wmax/sum(wmax)
+    wlimit = function(x){ -abs(1-sum(x)) }
+    vt = screen_params$voltarget
+
+    func_sigma = function(x) return( abs(vt - sqrt(x %*% comat %*% x)) )
+    wsigma = cobyla(x0=wstart, fn=func_sigma, lower=wmin, upper=wmax, hin=wlimit, control=COB_CTL)$par
+
+    wlimit2 = function(x) return( round(c(1-sum(x), vt - sqrt(x %*% comat %*% x), -1+sum(x), -vt + sqrt(x %*% comat %*% x)), 4) )
+    gradus = function(x) return( -sum(basket_ret(y, x)) )
+    res = cobyla(x0=wsigma, fn=gradus, lower=wmin, upper=wmax, hin=wlimit2, control=COB_CTL)
+    w = res$par/sum(res$par)
     
-    return( list(main = list(names=colnames(x), weights=w)) )
+    return( list(main = list(names=colnames(y), weights=w)) )
 }
