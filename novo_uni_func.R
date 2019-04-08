@@ -1,3 +1,51 @@
+TAG_FILTERS <<- list()
+TAG_FILTERS[[1]] = list(name='asia', target='etf', filter=list(list(field='geo_focus', value=c('Japan', 'Asian Pacific Region', 'China', 'Asian Pacific Region ex Japan', 'Greater China', 'South Korea', 'Taiwan', 'Hong Kong', 'Greater China,Hong Kong', 'India', 'Indonesia', 'Singapore', 'Malaysia', 'Thailand'))))
+TAG_FILTERS[[2]] = list(name='asia', target='etf', filter=list(list(field='geo_focus2', value=c('Emerging Asia', 'Asia'))))
+TAG_FILTERS[[3]] = list(name='west', target='etf', filter=list(list(field='geo_focus', value=c('United States', 'California', 'European Region', 'New York', 'Pennsylvania', 'Minnesota', 'Canada', 'New Jersey', 'Ohio', 'Eurozone', 'Virginia', 'Massachusetts', 'Oregon', 'Missouri', 'North American Region', 'Michigan', 'Germany', 'Maryland', 'United Kingdom', 'Australia', 'European Region,Australia', 'Global,United States', 'Spain', 'Kentucky', 'Arizona', 'Switzerland', 'North Carolina', 'Hawaii', 'Colorado', 'France', 'Singapore'))))
+TAG_FILTERS[[4]] = list(name='west', target='etf', filter=list(list(field='geo_focus2', value=c('North America', 'Developed Europe'))))
+TAG_FILTERS[[5]] = list(name='europe', target='etf', filter=list(list(field='geo_focus', value=c('European Region')), list(field='geo_focus2', value=c('Developed Market'))))
+TAG_FILTERS[[6]] = list(name='europe', target='etf', filter=list(list(field='geo_focus', value=c('Eurozone', 'Germany', 'United Kingdom', 'Spain', 'Switzerland', 'France'))))
+TAG_FILTERS[[7]] = list(name='europe', target='etf', filter=list(list(field='geo_focus', value=c('International', 'Global'))))
+TAG_FILTERS[[8]] = list(name='global', target='etf', filter=list(list(field='geo_focus2', value=c('Global'))))
+TAG_FILTERS[[9]] = list(name='asia', target='equity', filter=list(list(field='country_name', value=c("CHINA", "INDIA", "SINGAPORE", "INDONESIA", "PHILIPPINES", "THAILAND", "BERMUDA", "HONG KONG", "BANGLADESH", "MALAYSIA", "VIETNAM", "KOREA", "JAPAN", "TAIWAN"))))
+TAG_FILTERS[[10]] = list(name='west', target='equity', filter=list(list(field='country_name', value=c("UNITED STATES", "SWITZERLAND", "FRANCE", "GERMANY", "IRELAND", "AUSTRALIA", "CANADA", "BRITAIN", "NORWAY", "NETHERLANDS", "SPAIN", "SWEDEN", "LUXEMBOURG", "ITALY", "ISRAEL", "AUSTRIA", "BELGIUM", "DENMARK", "POLAND", "NEW ZEALAND"))))
+TAG_FILTERS[[11]] = list(name='europe', target='equity', filter=list(list(field='country_name', value=c("SWITZERLAND", "FRANCE", "GERMANY", "IRELAND", "BRITAIN", "NORWAY", "NETHERLANDS", "SPAIN", "SWEDEN", "LUXEMBOURG", "ITALY", "AUSTRIA", "BELGIUM", "DENMARK"))))
+
+TAG_FILTERS = c(TAG_FILTERS, list(list(name='health', target='etf', filter=list(list(field='ind_focus', value=c('Health Care'))))))
+TAG_FILTERS = c(TAG_FILTERS, list(list(name='tech', target='etf', filter=list(list(field='ind_focus', value=c('Technology'))))))
+TAG_FILTERS = c(TAG_FILTERS, list(list(name='finance', target='etf', filter=list(list(field='ind_focus', value=c('Financial'))))))
+TAG_FILTERS = c(TAG_FILTERS, list(list(name='staples', target='etf', filter=list(list(field='ind_focus', value=c('Consumer Staples'))))))
+TAG_FILTERS = c(TAG_FILTERS, list(list(name='discret', target='etf', filter=list(list(field='ind_focus', value=c('Consumer Discretionary'))))))
+TAG_FILTERS = c(TAG_FILTERS, list(list(name='industry', target='etf', filter=list(list(field='ind_focus', value=c('Industrials'))))))
+
+#    res = if(segname=='Asia') u_in[geo_focus%in%geo_focus_asia | geo_focus2%in%, ] else
+#      if(segname=='West') u_in[geo_focus%in%geo_focus_west | geo_focus2%in%, ] else
+#      if(segname=='Developed Europe') u_in[(geo_focus=='European Region' & geo_focus2=='Developed Market') | geo_focus%in%geo_focus_deveuro, ] else
+#      if(segname=='Global') u_in[geo_focus%in%geo_focus_global | geo_focus2=='Global', ] else
+#      if(segname%in%u_in$ind_focus) u_in[ind_focus==segname, ]else
+#      if(segname%in%u_in$geo_focus) u_in[geo_focus==segname, ]
+#
+#    return(res[order(mcap, decreasing=TRUE), ][1:min(nrow(res), topn), ])
+#    
+#    res = if(segname=='Asia') u_in[country_name%in%country_asia, ] else
+#      if(segname=='West') u_in[country_name%in%country_west, ] else
+#      if(segname=='Developed Europe') u_in[country_name%in%country_deveuro, ] else
+#      if(segname%in%u_in$sector) u_in[sector==segname, ] else
+#      if(segname%in%u_in$country_name) u_in[country_name==segname, ]
+
+is_global_tag = function(ftag){
+    return(ftag%in%(foreach(t=TAG_FILTERS, .combine=c)%do%{ t$name }))
+}
+
+map_tag_filter = function(ftag){
+    res = list()
+    for(t in TAG_FILTERS){ # t=TAG_FILTERS[[1]]
+        if(t$name == ftag)
+            res = c(res, list(t))
+    }
+    return(res)
+}
+
 uni_skip_tickers = function(uni_in, skip_list){
     return( list(u=uni_in$u[!ticker%in%skip_list, ], h=uni_in$h[, !colnames(uni_in$h)%in%skip_list]) )
 }
@@ -11,6 +59,33 @@ uni_skip_countries_tickers = function(uni_in, countries_skip_list, tickers_skip_
     return( uni_skip_countries(uni_skip_tickers(uni_in, tickers_skip_list), countries_skip_list) )
 }
 
+# uni_options = c('equity', 'etf', 'p', 'h', 'libors', 'currency', 'sigma 250', 'sigma 125')
+# uni_options = c('equity', 'etf', 'h', 'libors')
+# filter_tags = list(field_filter=c('asia+europe', 'tech+health'), rank_filter='top 10 mcap')
+# filter_tags = list(field_filter=c('asia+europe'), rank_filter='top 10 mcap')
+# filter_tags = list(field_filter=c('asia'), rank_filter='top 10 mcap')
+# filter_tags = c()
+# TAG_FILTERS[[8]] = list(name='global', target='etf', filter=list(list(field='geo_focus2', value=c('Global'))))
+load_uni = function(uni_options, filter_tags){
+    res = list()
+    
+    for(n in uni_options)
+        res[[n]] = get(load(paste0('/home/aslepnev/webhub/uber_uni_', n, '.RData')))
+
+    tickers = foreach(n=c('etf', 'equity'), .combine=c)%do%{ if(n%in%names(res)) res[[n]]$ticker else c() }
+    tickers = tickers[foreach(n = filter_tags$field_filter, .combine='&')%do%{  # n = filter_tags$field_filter[1]
+        tickers %in% (foreach(m = strsplit(n, '\\+')[[1]], .combine=c)%do%  # m = strsplit(n, '\\+')[[1]][1]
+            unique(foreach(t = map_tag_filter(m), .combine=c)%do%{  # t = map_tag_filter(m)[[1]]
+                targ = res[[t$target]]
+                targ$ticker[foreach(t1 = t$filter, .combine='&')%do%{ targ[[t1$field]]%in%t1$value }]
+            }))
+    }]
+    
+                
+}
+
+
+####
 uni_from_params = function(uni_params){
     if(uni_params$name == 'it10')
         res = get(load('/home/aslepnev/git/ej/it_top10_uni.RData'))
