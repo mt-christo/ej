@@ -326,24 +326,39 @@ f1 = fread('/home/aslepnev/webhub/funds_static.csv')
 f1$sticker = as.character(t(as.data.table(strsplit(f1$TICKER, ' ')))[, 1])
 colnames(f1) = gsub(' ', '_', tolower(colnames(f1)))
 a = get(load('/home/aslepnev/webhub/sacha_etf_yhoo.RData'))
-f2 = a$u[f1, on=.(ticker=sticker)][!is.na(name), .(ticker, name, mcap, assets, fund_group, fund_subgroup, currency, style, type, industry, ind_group, ind_focus, geo_focus, geo_focus2, mcap_focus, mcap_focus2)]
+f2 = a$u[f1, on=.(ticker=sticker)][!is.na(name), .(ticker=i.ticker, name, mcap, assets, fund_group, fund_subgroup, currency, style, type, industry, ind_group, ind_focus, geo_focus, geo_focus2, mcap_focus, mcap_focus2)]
 
 e1 = fread('/home/aslepnev/webhub/equity_data.csv')
-colnames(e1) = c('ticker', 'country_name', 'sector', 'gics_industry', 'gics_industry_group', 'currency', 'region', 'country_name', 'name', 'industry_group', 'industry_subgroup')
+colnames(e1) = c('ticker', 'country_code', 'sector', 'gics_industry', 'gics_industry_group', 'currency', 'region', 'country_name', 'name', 'industry_group', 'industry_subgroup')
 
 tss = get(load('/home/aslepnev/webhub/uber_hist.RData'))
 fxx = get(load('/home/aslepnev/webhub/fxx.RData'))
 D = list(p=tss, h=h_to_log(tss), fxx=fxx, libors=libors, equity=e1, etf=f1)
 
-d = D$p
+
 save(d, file='/home/aslepnev/webhub/uber_uni_p.RData')
-d = D$h
+
 save(d, file='/home/aslepnev/webhub/uber_uni_h.RData')
-d = D$fxx
+
 save(d, file='/home/aslepnev/webhub/uber_uni_currency.RData')
-d = D$libors
+
 save(d, file='/home/aslepnev/webhub/uber_uni_libors.RData')
-d = D$equity
+
 save(e1, file='/home/aslepnev/webhub/uber_uni_equity.RData')
-d = D$etf
+
 save(f2, file='/home/aslepnev/webhub/uber_uni_etf.RData')
+
+
+
+-- bbg progruz
+
+em1 = foreach(f = list.files('/home/aslepnev/webhub/mcaps', full.names=TRUE), .combine=rbind)%dopar%{  # f = list.files('/home/aslepnev/webhub/mcaps', full.names=TRUE)[1]
+    x = fread(f)
+    colnames(x) = c('ticker', 'name', 'pe', 'div', 'peg', 'de', 'pb', 'currency', 'mcap')
+    x[, dt:=as.Date(strsplit(tail(strsplit(f, '/')[[1]], 1), '\\.')[[1]][1], format='%Y%m%d')]
+    x
+}
+save(em1, file='/home/aslepnev/webhub/uber_uni_equity_metrics.RData')
+
+
+

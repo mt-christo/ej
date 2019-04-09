@@ -11,7 +11,10 @@ xts_cbind_idx = function(x, y) {
     return(res)
 }
 
-norm_weights = function(w_in) return( (w_in - min(w_in))/(max(w_in) - min(w_in)) )
+norm_weights = function(x) {
+    y = x[!is.na(x)]
+    return( (x - min(y))/(max(y) - min(y)) )
+}
 
 basket_ret = function(h_in, w_in) return( xts(log(((exp(h_in)-1)%*%w_in) + 1), order.by=index(h_in)) )
 

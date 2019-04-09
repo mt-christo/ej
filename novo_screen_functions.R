@@ -172,24 +172,26 @@ screen_pridex_voltarget_stocksetfs = function(lh_in, u_in, params){
 }
 
 # u_in=x$u[['main']]; dt_in=x$dt; lh_in=x$lh[['main']]
-screen_mixed_top = function(u_in, dt_in, lh_in){
-    n = 10
-    dt1 = u_in[dt <= dt_in, max(dt)]
-    dt2 = u_in[dt >= dt_in, min(dt)]
-    r = rowSums(t(lh_in))
-    rets = data.table(ticker=names(r), r)
-    u1 = u_in[dt == dt1, .(ticker, mcap1=mcap)]
-    u2 = u_in[dt == dt2, .(ticker, mcap2=mcap)]
-    res = rets[u2[u1, on='ticker'], on='ticker'][, mcap:=(as.numeric(dt_in - dt1)*mcap2 + as.numeric(dt2 - dt_in)*mcap1)/as.numeric(dt2 - dt1)]
-    resnorm = function(x) { y = x[!is.na(x)]; (x - min(y))/(max(y) - min(y)) }
-#    res = u2[u1, on='ticker'][, mcap:=(as.numeric(dt_in - dt1)*mcap2 + as.numeric(dt2 - dt_in)*mcap1)/as.numeric(dt2 - dt1)]
-#    mres = resnorm(res$mcap) + 0.5*resnorm(res$r)
-    mres = 0.5*resnorm(res$mcap) + resnorm(res$r)
-    res = res[order(mres, decreasing=TRUE), ][1:n, ]
+# metrics_in=u$equity_metrics; dt_in=as.Date('2016-05-15'); h_in=u[['h']]; screen_params=list(perf_weight=0.5, top_n=10, price_window=20)
+screen_mixed_top = function(metrics_in, h_in, dt_in, screen_params){
+    dt1 = metrics_in[dt <= dt_in, max(dt)]
+    dt2 = metrics_in[dt >= dt_in, min(dt)]
+    u1 = metrics_in[dt == dt1, .(ticker, mcap1=mcap)]
+    u2 = metrics_in[dt == dt2, .(ticker, mcap2=mcap)]
+    
+    r = rowSums(t(h_in))
+    r = data.table(ticker=names(r), r)
+    r = r[u2[u1, on='ticker'], on='ticker'][, mcap:=(as.numeric(dt_in - dt1)*mcap2 + as.numeric(dt2 - dt_in)*mcap1)/as.numeric(dt2 - dt1)]
+    r$mcap = ifelse(!is.na(r$mcap), r$mcap, r$mcap1)
+#    r = r[metrics_in[dt == dt0, .(ticker, mcap)], on='ticker']
+    
+    rtng = 0.5*norm_weights(r$mcap) + norm_weights(r$r)  # the rating
+    tickers = r[order(rtng, decreasing=TRUE), ticker][1:screen_params$top_n]
 #    w = res$r - min(res$r)
 #    w = w/sum(w)
-    w = array(1/n, n)
-    return(list(main=list(names=res$ticker, weights=w)))
+    weights = array(1/screen_params$top_n, screen_params$top_n)
+
+    return(list(main=list(names=tickers, weights=weights)))
 }
 
 # h_in=x$h; 

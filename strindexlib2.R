@@ -722,3 +722,12 @@ rvc = volcontrol_excess(r1, list(window=20, type='none', excess_type = 'simple e
 
 
 
+-- IT10
+source('/home/aslepnev/git/ej/strindexlib.R')
+
+u = load_uni(c('equity', 'equity_metrics', 'h', 'libors'),
+             list(field_filter=c('us', 'tech'), rank_filter=c('top 30 mcap')))
+r = build_index_simpler(u, 'month', screen_mixed_top, screen_params=list(perf_weight=0.5, top_n=10, price_window=20), '2012-12-31')
+r1 = foreach(x=r,.combine=rbind)%do%x$h
+rvc = r1; print(sqrt(252)*sd(tail(rvc, 252))); print(tail(exp(cumsum(rvc)), 1))
+rvc = volcontrol_excess(r1, list(window=20, type='none', excess_type = 'simple excess', excess=3, level=0.14, max_weight=1.5), u$libors); print(sqrt(252)*sd(tail(rvc, 252))); print(tail(exp(cumsum(rvc)), 1))

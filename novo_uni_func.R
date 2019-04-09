@@ -17,6 +17,15 @@ TAG_FILTERS = c(TAG_FILTERS, list(list(name='finance', target='etf', filter=list
 TAG_FILTERS = c(TAG_FILTERS, list(list(name='staples', target='etf', filter=list(list(field='ind_focus', value=c('Consumer Staples'))))))
 TAG_FILTERS = c(TAG_FILTERS, list(list(name='discret', target='etf', filter=list(list(field='ind_focus', value=c('Consumer Discretionary'))))))
 TAG_FILTERS = c(TAG_FILTERS, list(list(name='industry', target='etf', filter=list(list(field='ind_focus', value=c('Industrials'))))))
+TAG_FILTERS = c(TAG_FILTERS, list(list(name='us', target='equity', filter=list(list(field='country_name', value=c('UNITED STATES'))))))
+TAG_FILTERS = c(TAG_FILTERS, list(list(name='tech', target='equity', filter=list(list(field='sector', value=c('Information Technology'))))))
+
+tag_id = 0
+TAG_FILTERS = foreach(t = TAG_FILTERS, .combine=rbind)%do%{
+    tag_id = tag_id+1
+    foreach(f = t$filter, .combine=rbind)%do%{ foreach(v = f$value, .combine=rbind)%do%data.table(id=c(tag_id), name=c(t$name), target=c(t$target), field=c(f$field), value=c(v)) }
+}
+
 
 #    res = if(segname=='Asia') u_in[geo_focus%in%geo_focus_asia | geo_focus2%in%, ] else
 #      if(segname=='West') u_in[geo_focus%in%geo_focus_west | geo_focus2%in%, ] else
@@ -33,19 +42,6 @@ TAG_FILTERS = c(TAG_FILTERS, list(list(name='industry', target='etf', filter=lis
 #      if(segname%in%u_in$sector) u_in[sector==segname, ] else
 #      if(segname%in%u_in$country_name) u_in[country_name==segname, ]
 
-is_global_tag = function(ftag){
-    return(ftag%in%(foreach(t=TAG_FILTERS, .combine=c)%do%{ t$name }))
-}
-
-map_tag_filter = function(ftag){
-    res = list()
-    for(t in TAG_FILTERS){ # t=TAG_FILTERS[[1]]
-        if(t$name == ftag)
-            res = c(res, list(t))
-    }
-    return(res)
-}
-
 uni_skip_tickers = function(uni_in, skip_list){
     return( list(u=uni_in$u[!ticker%in%skip_list, ], h=uni_in$h[, !colnames(uni_in$h)%in%skip_list]) )
 }
@@ -61,122 +57,162 @@ uni_skip_countries_tickers = function(uni_in, countries_skip_list, tickers_skip_
 
 # uni_options = c('equity', 'etf', 'p', 'h', 'libors', 'currency', 'sigma 250', 'sigma 125')
 # uni_options = c('equity', 'etf', 'h', 'libors')
-# filter_tags = list(field_filter=c('asia+europe', 'tech+health'), rank_filter='top 10 mcap')
-# filter_tags = list(field_filter=c('asia+europe'), rank_filter='top 10 mcap')
-# filter_tags = list(field_filter=c('asia'), rank_filter='top 10 mcap')
+# uni_options = c('etf', 'h', 'libors')
+# uni_options = c('equity', 'equity_metrics', 'h', 'libors')
+# filter_tags = list(field_filter=c('asia+europe', 'tech+health'), rank_filter=c('top 10 mcap'))
+# filter_tags = list(field_filter=c('europe'), rank_filter=c('top 10 mcap'))
+# filter_tags = list(field_filter=c('asia'), rank_filter=c('top 10 mcap'))
+# filter_tags = list(field_filter=c('us', 'tech'), rank_filter=c('top 30 mcap'))
 # filter_tags = c()
 # TAG_FILTERS[[8]] = list(name='global', target='etf', filter=list(list(field='geo_focus2', value=c('Global'))))
 load_uni = function(uni_options, filter_tags){
-    res = list()
-    
-    for(n in uni_options)
-        res[[n]] = get(load(paste0('/home/aslepnev/webhub/uber_uni_', n, '.RData')))
+    res = foreach(n = uni_options)%do%get(load(paste0('/home/aslepnev/webhub/uber_uni_', n, '.RData')))
+    names(res) = uni_options
 
-    tickers = foreach(n=c('etf', 'equity'), .combine=c)%do%{ if(n%in%names(res)) res[[n]]$ticker else c() }
+    asset_classes = c('etf', 'equity')
+    ts_datas = c('p', 'h')
+    
+    for(m in ts_datas)  # n = 'h'
+        if(m%in%names(res))
+            for(n in asset_classes){
+                if(n%in%names(res))
+                    res[[n]] = res[[n]][ticker%in%colnames(res[[m]]), ]
+
+                n_metrics = paste0(n, '_metrics')
+                if(n_metrics%in%names(res))
+                    res[[n]] = res[[n]][ticker%in%colnames(res[[m]]), ]
+            }
+            
+            
+    tickers = foreach(n = asset_classes, .combine=c)%do%{ if(n%in%names(res)) unique(res[[n]]$ticker) else c() }  # n = asset_classes[2]
     tickers = tickers[foreach(n = filter_tags$field_filter, .combine='&')%do%{  # n = filter_tags$field_filter[1]
-        tickers %in% (foreach(m = strsplit(n, '\\+')[[1]], .combine=c)%do%  # m = strsplit(n, '\\+')[[1]][1]
-            unique(foreach(t = map_tag_filter(m), .combine=c)%do%{  # t = map_tag_filter(m)[[1]]
-                targ = res[[t$target]]
-                targ$ticker[foreach(t1 = t$filter, .combine='&')%do%{ targ[[t1$field]]%in%t1$value }]
+        tickers %in% (foreach(m = strsplit(n, '\\+')[[1]], .combine=c)%do%  # m = strsplit(n, '\\+')[[1]][2] 
+            unique(foreach(fid = TAG_FILTERS[name==m & target%in%uni_options, unique(id)], .combine=c)%do%{  # fid = TAG_FILTERS[name==m & target%in%uni_options, unique(id)][1]
+                ftr = TAG_FILTERS[id==fid, ]
+                targ = res[[ftr$target[1]]]
+                targ$ticker[foreach(fld = ftr[, unique(field)], .combine='&')%do%{ targ[[ fld ]]%in%( ftr[field==fld, value] ) }]  # fld = ftr[, unique(field)][1]
             }))
     }]
     
+    for(n in asset_classes)  # n = 'equity'
+        if(n%in%names(res)){
+            res[[n]] = res[[n]][ticker%in%tickers, ]
+            
+            n_metrics = paste0(n, '_metrics')
+            if(n_metrics%in%names(res)){
+                res[[n_metrics]] = res[[n_metrics]][ticker%in%tickers, ]
+           
+                for(ftag in filter_tags$rank_filter)  # ftag = filter_tags$rank_filter[1]
+#                    if(startsWith(ftag, 'top ') && endsWith(ftag, ' mcap')){
+                    if(startsWith(ftag, 'top ') && as.logical(max(endsWith(ftag, colnames(res[[n_metrics]]))))){
+                        m = as.numeric(gsub('top', '', gsub('mcap', '', ftag)))
+                        res[[n_metrics]] = res[[n_metrics]][order(mcap), ][, tail(.SD, 1), by=c('dt', 'name')][, tail(.SD, m), by='dt']
+                    }
                 
-}
+                res[[n]] = res[[n]][ticker%in%res[[n_metrics]]$ticker, ]
+            }
+        }
 
-
-####
-uni_from_params = function(uni_params){
-    if(uni_params$name == 'it10')
-        res = get(load('/home/aslepnev/git/ej/it_top10_uni.RData'))
-    else if(uni_params$name=='asia' && uni_params$type=='stocks and etfs'){
-        ds = get(load('/home/aslepnev/webhub/grish_asia.RData'))
-        de = get(load('/home/aslepnev/webhub/sacha_etf_yhoo.RData'))
-        res = list(etfs = pre_screen(de, etf_segment(de$u, 'Asia', uni_params$etf_count), smart=TRUE),
-                   stocks = pre_screen(ds, stock_segment(ds$u, 'Asia', uni_params$stock_count), smart=TRUE))
-    }
+    for(n in ts_datas)  # n = 'h'
+        if(n%in%names(res))
+            res[[n]] = res[[n]][, foreach(m = asset_classes, .combine=c)%do%{ if(m%in%names(res)) res[[m]]$ticker else c() }]
 
     return(res)
 }
 
-enrich_data = function(fdata_path, hdata_path){
-    #u = get(load('uni.RData')); u$dt = as.Date("2018-03-01"); colnames(u)=gsub(' ','_', colnames(u)); save(u, file='uni.RData')
-    #p = get(load('uniprc.RData'))
-    #h = diff(log(na.locf(p)))  # save(h, file='unih.RData')
-    u = as.data.table(get(load('uni.RData'))) 
-    h = get(load('unih.RData'))
-    u = u[1:ncol(h), ]
-    if(filter2){
-        mx = foreach(i=1:ncol(h),.combine=c)%do%{x=h[,i]; max(x[!is.na(x)])}
-        mn = foreach(i=1:ncol(h),.combine=c)%do%{x=h[,i]; min(x[!is.na(x)])}
-        u = u[mn>-0.69 & mx<0.69, ]
-        h = h[, mn>-0.69 & mx<0.69]
-    }
-    h90 = tail(h, 90)
-    u$HSIGMA = foreach(i=1:ncol(h),.combine='c')%do%{ sd(h90[,i])*250/90 }
-    return(list(u=u, h=h))
-}
+
+####
+#uni_from_params = function(uni_params){
+#    if(uni_params$name == 'it10')
+#        res = get(load('/home/aslepnev/git/ej/it_top10_uni.RData'))
+#    else if(uni_params$name=='asia' && uni_params$type=='stocks and etfs'){
+#        ds = get(load('/home/aslepnev/webhub/grish_asia.RData'))
+#        de = get(load('/home/aslepnev/webhub/sacha_etf_yhoo.RData'))
+#        res = list(etfs = pre_screen(de, etf_segment(de$u, 'Asia', uni_params$etf_count), smart=TRUE),
+#                   stocks = pre_screen(ds, stock_segment(ds$u, 'Asia', uni_params$stock_count), smart=TRUE))
+#    }
+#
+#    return(res)
+#}
+
+#enrich_data = function(fdata_path, hdata_path){
+#    #u = get(load('uni.RData')); u$dt = as.Date("2018-03-01"); colnames(u)=gsub(' ','_', colnames(u)); save(u, file='uni.RData')
+#    #p = get(load('uniprc.RData'))
+#    #h = diff(log(na.locf(p)))  # save(h, file='unih.RData')
+#    u = as.data.table(get(load('uni.RData'))) 
+#    h = get(load('unih.RData'))
+#    u = u[1:ncol(h), ]
+#    if(filter2){
+#        mx = foreach(i=1:ncol(h),.combine=c)%do%{x=h[,i]; max(x[!is.na(x)])}
+#        mn = foreach(i=1:ncol(h),.combine=c)%do%{x=h[,i]; min(x[!is.na(x)])}
+#        u = u[mn>-0.69 & mx<0.69, ]
+#        h = h[, mn>-0.69 & mx<0.69]
+#    }
+#    h90 = tail(h, 90)
+#    u$HSIGMA = foreach(i=1:ncol(h),.combine='c')%do%{ sd(h90[,i])*250/90 }
+#    return(list(u=u, h=h))
+#}
 
 # u=D$u; h=D$h; d0=as.Date("2018-12-17"); d1=as.Date('2018-07-01')
 # d0 = as.Date("2018-03-01"); d1=as.Date("2017-07-01")
-prorate_universe = function(u, h, d0, d1){
-    u1 = u[dt==d0, ]
-    u1$dt = d1
-    ret = as.numeric(exp(colSums(h[as.Date(d0:d1), ]))) * if(d0<d1)1 else -1
-    u1$mcap = u[dt==d0, ][['mcap']] * ret
-    return(u1)
-}
+#prorate_universe = function(u, h, d0, d1){
+#    u1 = u[dt==d0, ]
+#    u1$dt = d1
+#    ret = as.numeric(exp(colSums(h[as.Date(d0:d1), ]))) * if(d0<d1)1 else -1
+#    u1$mcap = u[dt==d0, ][['mcap']] * ret
+#    return(u1)
+#}
 
 # u_in=de$u; segname='United States'; topn=40
-etf_segment = function(u_in, segname, topn=1000000){
-    geo_focus_asia = c('Japan', 'Asian Pacific Region', 'China', 'Asian Pacific Region ex Japan', 'Greater China', 'South Korea', 'Taiwan', 'Hong Kong', 'Greater China,Hong Kong', 'India', 'Indonesia', 'Singapore', 'Malaysia', 'Thailand')
-    geo_focus_west = c('United States', 'California', 'European Region', 'New York', 'Pennsylvania', 'Minnesota', 'Canada', 'New Jersey', 'Ohio', 'Eurozone', 'Virginia', 'Massachusetts', 'Oregon', 'Missouri', 'North American Region', 'Michigan', 'Germany', 'Maryland', 'United Kingdom', 'Australia', 'European Region,Australia', 'Global,United States', 'Spain', 'Kentucky', 'Arizona', 'Switzerland', 'North Carolina', 'Hawaii', 'Colorado', 'France', 'Singapore')
-    geo_focus_deveuro = c('Eurozone', 'Germany', 'United Kingdom', 'Spain', 'Switzerland', 'France')
-    geo_focus_global = c('International', 'Global')
-    
-    res = if(segname=='Asia') u_in[geo_focus%in%geo_focus_asia | geo_focus2%in%c('Emerging Asia', 'Asia'), ] else
-      if(segname=='West') u_in[geo_focus%in%geo_focus_west | geo_focus2%in%c('North America', 'Developed Europe'), ] else
-      if(segname=='Developed Europe') u_in[(geo_focus=='European Region' & geo_focus2=='Developed Market') | geo_focus%in%geo_focus_deveuro, ] else
-      if(segname=='Global') u_in[geo_focus%in%geo_focus_global | geo_focus2=='Global', ] else
-      if(segname%in%u_in$ind_focus) u_in[ind_focus==segname, ]else
-      if(segname%in%u_in$geo_focus) u_in[geo_focus==segname, ]
+#etf_segment = function(u_in, segname, topn=1000000){
+#    geo_focus_asia = c('Japan', 'Asian Pacific Region', 'China', 'Asian Pacific Region ex Japan', 'Greater China', 'South Korea', 'Taiwan', 'Hong Kong', 'Greater China,Hong Kong', 'India', 'Indonesia', 'Singapore', 'Malaysia', 'Thailand')
+#    geo_focus_west = c('United States', 'California', 'European Region', 'New York', 'Pennsylvania', 'Minnesota', 'Canada', 'New Jersey', 'Ohio', 'Eurozone', 'Virginia', 'Massachusetts', 'Oregon', 'Missouri', 'North American Region', 'Michigan', 'Germany', 'Maryland', 'United Kingdom', 'Australia', 'European Region,Australia', 'Global,United States', 'Spain', 'Kentucky', 'Arizona', 'Switzerland', 'North Carolina', 'Hawaii', 'Colorado', 'France', 'Singapore')
+#    geo_focus_deveuro = c('Eurozone', 'Germany', 'United Kingdom', 'Spain', 'Switzerland', 'France')
+#    geo_focus_global = c('International', 'Global')
+#    
+#    res = if(segname=='Asia') u_in[geo_focus%in%geo_focus_asia | geo_focus2%in%c('Emerging Asia', 'Asia'), ] else
+#      if(segname=='West') u_in[geo_focus%in%geo_focus_west | geo_focus2%in%c('North America', 'Developed Europe'), ] else
+#      if(segname=='Developed Europe') u_in[(geo_focus=='European Region' & geo_focus2=='Developed Market') | geo_focus%in%geo_focus_deveuro, ] else
+#      if(segname=='Global') u_in[geo_focus%in%geo_focus_global | geo_focus2=='Global', ] else
+#      if(segname%in%u_in$ind_focus) u_in[ind_focus==segname, ]else
+#      if(segname%in%u_in$geo_focus) u_in[geo_focus==segname, ]
+#
+#    return(res[order(mcap, decreasing=TRUE), ][1:min(nrow(res), topn), ])
+#}
 
-    return(res[order(mcap, decreasing=TRUE), ][1:min(nrow(res), topn), ])
-}
-
-# u_in=ds$u; segname='UNITED STATES'; topn=40
-stock_segment = function(u_in, segname, topn=1000000){
-    country_asia = c("CHINA", "INDIA", "SINGAPORE", "INDONESIA", "PHILIPPINES", "THAILAND", "BERMUDA", "HONG KONG", "BANGLADESH", "MALAYSIA", "VIETNAM", "KOREA", "JAPAN", "TAIWAN")
-    country_west = c("UNITED STATES", "SWITZERLAND", "FRANCE", "GERMANY", "IRELAND", "AUSTRALIA", "CANADA", "BRITAIN", "NORWAY", "NETHERLANDS", "SPAIN", "SWEDEN", "LUXEMBOURG", "ITALY", "ISRAEL", "AUSTRIA", "BELGIUM", "DENMARK", "POLAND", "NEW ZEALAND")
-    country_deveuro = c("SWITZERLAND", "FRANCE", "GERMANY", "IRELAND", "BRITAIN", "NORWAY", "NETHERLANDS", "SPAIN", "SWEDEN", "LUXEMBOURG", "ITALY", "AUSTRIA", "BELGIUM", "DENMARK")
-    
-    res = if(segname=='Asia') u_in[country_name%in%country_asia, ] else
-      if(segname=='West') u_in[country_name%in%country_west, ] else
-      if(segname=='Developed Europe') u_in[country_name%in%country_deveuro, ] else
-      if(segname%in%u_in$sector) u_in[sector==segname, ] else
-      if(segname%in%u_in$country_name) u_in[country_name==segname, ]
-
-    return(res[order(mcap, decreasing=TRUE), ][1:min(nrow(res), topn), ])
-}
+## u_in=ds$u; segname='UNITED STATES'; topn=40
+#stock_segment = function(u_in, segname, topn=1000000){
+#    country_asia = c("CHINA", "INDIA", "SINGAPORE", "INDONESIA", "PHILIPPINES", "THAILAND", "BERMUDA", "HONG KONG", "BANGLADESH", "MALAYSIA", "VIETNAM", "KOREA", "JAPAN", "TAIWAN")
+#    country_west = c("UNITED STATES", "SWITZERLAND", "FRANCE", "GERMANY", "IRELAND", "AUSTRALIA", "CANADA", "BRITAIN", "NORWAY", "NETHERLANDS", "SPAIN", "SWEDEN", "LUXEMBOURG", "ITALY", "ISRAEL", "AUSTRIA", "BELGIUM", "DENMARK", "POLAND", "NEW ZEALAND")
+#    country_deveuro = c("SWITZERLAND", "FRANCE", "GERMANY", "IRELAND", "BRITAIN", "NORWAY", "NETHERLANDS", "SPAIN", "SWEDEN", "LUXEMBOURG", "ITALY", "AUSTRIA", "BELGIUM", "DENMARK")
+#    
+#    res = if(segname=='Asia') u_in[country_name%in%country_asia, ] else
+#      if(segname=='West') u_in[country_name%in%country_west, ] else
+#      if(segname=='Developed Europe') u_in[country_name%in%country_deveuro, ] else
+#      if(segname%in%u_in$sector) u_in[sector==segname, ] else
+#      if(segname%in%u_in$country_name) u_in[country_name==segname, ]
+#
+#    return(res[order(mcap, decreasing=TRUE), ][1:min(nrow(res), topn), ])
+#}
 
 # u = D$u[,.SD[1,], by=focus]
 # D=D_STOCKS; u = d_stocks
 # D_in=ds; u=stock_segment(ds_in$u, segstock, n_stock); smart=TRUE
 # D_in=list(h=tss); u=uu; smart=TRUE
-pre_screen = function(D_in, u, smart = FALSE){
-    u1 = u[ticker%in%colnames(D_in$h), ]
-    h1 = D_in$h[, u1$ticker]
-    if(smart){
-        h1 = h_to_log(h1)
-#        rng = as.numeric(t(foreach(i=1:ncol(h1),.combine=cbind)%do%sum(abs(range(apply.yearly(h1[,i], sum))) < 0.6)))
-#        res = list(u=u1[rng==2, ], h=h1[, rng==2])
-        res = list(u=u1, h=h1)
-        
-        return(res)
-    }
-    
-    return(list(u=u1, h=h1))
-}
+#pre_screen = function(D_in, u, smart = FALSE){
+#    u1 = u[ticker%in%colnames(D_in$h), ]
+#    h1 = D_in$h[, u1$ticker]
+#    if(smart){
+#        h1 = h_to_log(h1)
+##        rng = as.numeric(t(foreach(i=1:ncol(h1),.combine=cbind)%do%sum(abs(range(apply.yearly(h1[,i], sum))) < 0.6)))
+##        res = list(u=u1[rng==2, ], h=h1[, rng==2])
+#        res = list(u=u1, h=h1)
+#        
+#        return(res)
+#    }
+#    
+#    return(list(u=u1, h=h1))
+#}
 
 rebals_func = function(period) return(if(period=='year') apply.yearly else if(period=='quarter') apply.quarterly else if(period=='month') apply.monthly else stop("Unknown period"))
 
@@ -191,17 +227,17 @@ get_rebals_h = function(h_in, period){
 }
 
 # u=D$u; h=D$h; d0=as.Date("2018-03-01"); d1s=rebal_dates
-prorate_universe_multiple = function(u, h, d0, d1s){
-    return(rbindlist(foreach(d1=d1s)%do%prorate_universe(u, h, d0, d1)))
-}
+#prorate_universe_multiple = function(u, h, d0, d1s){
+#    return(rbindlist(foreach(d1=d1s)%do%prorate_universe(u, h, d0, d1)))
+#}
 
-get_grish_zacks = function(){
-    D_STOCKS = get(load('/home/aslepnev/webhub/zacks_data.RData'))
-    u = fread('/home/aslepnev/git/ej/grish_uni.csv')
-    u$ticker = as.character(t(as.data.table(strsplit(u$ticker, ' ')))[, 1])
-    D_STOCKS$u = u[D_STOCKS$u, on='ticker'][!is.na(country), ][, head(.SD, 1), by='ticker']
-    return(D_STOCKS)
-}
+#get_grish_zacks = function(){
+#    D_STOCKS = get(load('/home/aslepnev/webhub/zacks_data.RData'))
+#    u = fread('/home/aslepnev/git/ej/grish_uni.csv')
+#    u$ticker = as.character(t(as.data.table(strsplit(u$ticker, ' ')))[, 1])
+#    D_STOCKS$u = u[D_STOCKS$u, on='ticker'][!is.na(country), ][, head(.SD, 1), by='ticker']
+#    return(D_STOCKS)
+#}
 
 uni_hist_sigmas = function(h_in){
     return( sqrt(252) * foreach(i=1:ncol(h_in), .combine=c)%do%sd(h_in[, i]) )
