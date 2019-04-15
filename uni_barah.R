@@ -322,31 +322,40 @@ save(fxx, file='/home/aslepnev/webhub/fxx.RData')
 -- static csv-s
 
 source('/home/aslepnev/git/ej/strindexlib.R')
+
+tss = get(load('/home/aslepnev/webhub/uber_hist.RData'))
+tss = na.locf(tss)
+
+fxx = tss[, grep(' Curncy', colnames(tss)), with=FALSE]
+save(fxx, file='/home/aslepnev/webhub/uber_uni_fxx.RData')
+
 f1 = fread('/home/aslepnev/webhub/funds_static.csv')
-f1$sticker = as.character(t(as.data.table(strsplit(f1$TICKER, ' ')))[, 1])
 colnames(f1) = gsub(' ', '_', tolower(colnames(f1)))
 a = get(load('/home/aslepnev/webhub/sacha_etf_yhoo.RData'))
+f1$sticker = as.character(t(as.data.table(strsplit(f1$ticker, ' ')))[, 1])
 f2 = a$u[f1, on=.(ticker=sticker)][!is.na(name), .(ticker=i.ticker, name, mcap, assets, fund_group, fund_subgroup, currency, style, type, industry, ind_group, ind_focus, geo_focus, geo_focus2, mcap_focus, mcap_focus2)]
+f2 = f2[ticker%in%colnames(tss), ]
+save(f2, file='/home/aslepnev/webhub/uber_uni_etf.RData')
 
 e1 = fread('/home/aslepnev/webhub/equity_data.csv')
 colnames(e1) = c('ticker', 'country_code', 'sector', 'gics_industry', 'gics_industry_group', 'currency', 'region', 'country_name', 'name', 'industry_group', 'industry_subgroup')
-
-tss = get(load('/home/aslepnev/webhub/uber_hist.RData'))
-fxx = get(load('/home/aslepnev/webhub/fxx.RData'))
-D = list(p=tss, h=h_to_log(tss), fxx=fxx, libors=libors, equity=e1, etf=f1)
-
-
-save(d, file='/home/aslepnev/webhub/uber_uni_p.RData')
-
-save(d, file='/home/aslepnev/webhub/uber_uni_h.RData')
-
-save(d, file='/home/aslepnev/webhub/uber_uni_currency.RData')
-
-save(d, file='/home/aslepnev/webhub/uber_uni_libors.RData')
-
+e1 = e1[ticker%in%colnames(tss), ]
 save(e1, file='/home/aslepnev/webhub/uber_uni_equity.RData')
 
-save(f2, file='/home/aslepnev/webhub/uber_uni_etf.RData')
+currs = paste0('USD', toupper(e1$currency), ' Curncy')
+curr_idx = which(currs%in%colnames(tss))
+curr_match = match(e1$ticker[curr_idx], colnames(tss))
+tss[, curr_match] = tss[, curr_match] / tss[, match(currs[curr_idx], colnames(tss))]
+tss = tss[, !grepl(' Curncy', colnames(tss)), with=FALSE]
+save(tss, file='/home/aslepnev/webhub/uber_uni_p.RData')
+
+tsslog = h_to_log(tss)
+save(tsslog, file='/home/aslepnev/webhub/uber_uni_h.RData')
+
+
+
+
+
 
 
 

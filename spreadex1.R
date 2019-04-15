@@ -6,14 +6,15 @@ spread_wnd_mas = function(){
 #    comdty = GET$comdty
 #    spread_months = GET$spread_months
     spread_id = GET$spread_id
+    amnt = if('amount'%in%names(GET)) GET$amount else 1
     
     dt_start_bunch = GET$dt_start_bunch
     dt_end_bunch = GET$dt_end_bunch
     years = as.numeric(strsplit(GET$years, '-')[[1]])
     
     # min_spread=4; max_spread=4.5; ival_dt1='1900-01-01'; ival_dt2='1901-12-31'; results_start_luft=4; results_end_luft=4
-    min_spread = as.numeric(GET$min_spread)
-    max_spread = as.numeric(GET$max_spread)
+    min_spread = if('min_spread'%in%names(GET)) as.numeric(GET$min_spread) else -1000000
+    max_spread = if('max_spread'%in%names(GET)) as.numeric(GET$max_spread) else 1000000
     ival_dt1 = to_zero_date(GET$ival_dt1, GET$ival_dt2)
     ival_dt2 = to_zero_date(GET$ival_dt2, GET$ival_dt2)
     
@@ -21,13 +22,13 @@ spread_wnd_mas = function(){
     h_bunch = get_spread_hist(spread_id, dt_start_bunch, wnd_bunch)
     ma = get_spread_ma_wnd(h_bunch, dt_start_bunch, wnd_bunch)[year%in%years, ]
 
-    years_thresh = ma[!is.na(spread), ][(spread<=min_spread | spread>=max_spread) & (zero_date>=ival_dt1 & zero_date<=ival_dt2), unique(year)]
+    years_thresh = ma[!is.na(spread), ][(spread>=min_spread & spread<=max_spread) & (zero_date>=ival_dt1 & zero_date<=ival_dt2), unique(year)]
     if(length(years_thresh) == 0){
         year(ival_dt1) = year(ival_dt1) + 1
         year(ival_dt2) = year(ival_dt2) + 1
-        years_thresh = ma[!is.na(spread), ][(spread<=min_spread | spread>=max_spread) & (zero_date>=ival_dt1 & zero_date<=ival_dt2), unique(year)]
+        years_thresh = ma[!is.na(spread), ][(spread>=min_spread & spread<=max_spread) & (zero_date>=ival_dt1 & zero_date<=ival_dt2), unique(year)]
     }
-    ma = ma[year%in%years_thresh, ]
+    ma = ma[year%in%years_thresh, ][, spread:=spread*amnt]
    
     qres = ma[, .(.N,
 #                   q15 = quantile(spread, 0.15, na.rm=TRUE),

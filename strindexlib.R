@@ -1,3 +1,4 @@
+library(knitr)
 library(mnormt)
 library(mvtnorm)
 library(corpcor)
@@ -5,6 +6,7 @@ library(nloptr)
 
 library(gridExtra)
 library(ggplot2)
+library(lubridate)
 #library(mailR)
 library(googlesheets)
 

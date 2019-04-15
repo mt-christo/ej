@@ -726,8 +726,15 @@ rvc = volcontrol_excess(r1, list(window=20, type='none', excess_type = 'simple e
 source('/home/aslepnev/git/ej/strindexlib.R')
 
 u = load_uni(c('equity', 'equity_metrics', 'h', 'libors'),
-             list(field_filter=c('us', 'tech'), rank_filter=c('top 30 mcap')))
-r = build_index_simpler(u, 'month', screen_mixed_top, screen_params=list(perf_weight=0.5, top_n=10, price_window=20), '2012-12-31')
+             list(field_filter=c('us', 'tech'), skip_filter=c('no_card'), rank_filter=c('top 30 mcap')))
+r = build_index_simpler(u, 'month', screen_mixed_top, screen_params=list(perf_weight=0.5, top_n=10, price_window=190), '2012-12-31')
+#r = build_index_simpler(u, 'month', screen_mixed_top, screen_params=list(perf_weight=0.5, top_n=10, price_window=40), '2012-12-31')
 r1 = foreach(x=r,.combine=rbind)%do%x$h
+
+
+# libors=u$libors; r_in=r; r1_in=r1; terms_in=c(3, 5); vc_targets=c(0.12, 0.14); vc_types=c('max 10', 'simple');
 rvc = r1; print(sqrt(252)*sd(tail(rvc, 252))); print(tail(exp(cumsum(rvc)), 1))
-rvc = volcontrol_excess(r1, list(window=20, type='none', excess_type = 'simple excess', excess=3, level=0.14, max_weight=1.5), u$libors); print(sqrt(252)*sd(tail(rvc, 252))); print(tail(exp(cumsum(rvc)), 1))
+#rvc = volcontrol_excess(r1, list(window=20, type='none', excess_type = 'simple excess', excess=3.5, level=0.14, max_weight=1.75), u$libors); print(sqrt(252)*sd(tail(rvc, 252))); print(tail(exp(cumsum(rvc)), 1))
+rvc = volcontrol_excess(r1, list(window=20, type='simple', excess_type = 'libor plus', add_rate=1.5, excess=3.5, level=0.14, max_weight=1.75), u$libors); print(sqrt(252)*sd(tail(rvc, 252))); print(tail(exp(cumsum(rvc)), 1))
+
+write.csv(exp(cumsum(rvc)), file='/home/aslepnev/webhub/it10.csv', row.names=index(rvc))

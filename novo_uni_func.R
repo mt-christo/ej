@@ -3,7 +3,7 @@ TAG_FILTERS[[1]] = list(name='asia', target='etf', filter=list(list(field='geo_f
 TAG_FILTERS[[2]] = list(name='asia', target='etf', filter=list(list(field='geo_focus2', value=c('Emerging Asia', 'Asia'))))
 TAG_FILTERS[[3]] = list(name='west', target='etf', filter=list(list(field='geo_focus', value=c('United States', 'California', 'European Region', 'New York', 'Pennsylvania', 'Minnesota', 'Canada', 'New Jersey', 'Ohio', 'Eurozone', 'Virginia', 'Massachusetts', 'Oregon', 'Missouri', 'North American Region', 'Michigan', 'Germany', 'Maryland', 'United Kingdom', 'Australia', 'European Region,Australia', 'Global,United States', 'Spain', 'Kentucky', 'Arizona', 'Switzerland', 'North Carolina', 'Hawaii', 'Colorado', 'France', 'Singapore'))))
 TAG_FILTERS[[4]] = list(name='west', target='etf', filter=list(list(field='geo_focus2', value=c('North America', 'Developed Europe'))))
-TAG_FILTERS[[5]] = list(name='europe', target='etf', filter=list(list(field='geo_focus', value=c('European Region')), list(field='geo_focus2', value=c('Developed Market'))))
+TAG_FILTERS[[5]] = list(name='europe', target='etf', filter=list(list(field='geo_focus', value=c('European Region')), list(field='geo_focus2', type='allow', value=c('Developed Market'))))
 TAG_FILTERS[[6]] = list(name='europe', target='etf', filter=list(list(field='geo_focus', value=c('Eurozone', 'Germany', 'United Kingdom', 'Spain', 'Switzerland', 'France'))))
 TAG_FILTERS[[7]] = list(name='europe', target='etf', filter=list(list(field='geo_focus', value=c('International', 'Global'))))
 TAG_FILTERS[[8]] = list(name='global', target='etf', filter=list(list(field='geo_focus2', value=c('Global'))))
@@ -19,12 +19,15 @@ TAG_FILTERS = c(TAG_FILTERS, list(list(name='discret', target='etf', filter=list
 TAG_FILTERS = c(TAG_FILTERS, list(list(name='industry', target='etf', filter=list(list(field='ind_focus', value=c('Industrials'))))))
 TAG_FILTERS = c(TAG_FILTERS, list(list(name='us', target='equity', filter=list(list(field='country_name', value=c('UNITED STATES'))))))
 TAG_FILTERS = c(TAG_FILTERS, list(list(name='tech', target='equity', filter=list(list(field='sector', value=c('Information Technology'))))))
+TAG_FILTERS = c(TAG_FILTERS, list(list(name='telecom', target='equity', filter=list(list(field='sector', value=c('Communication Services'))))))
+TAG_FILTERS = c(TAG_FILTERS, list(list(name='no_card', target='equity', filter=list(list(field='ticker', value=c('V US Equity', 'MA US Equity'))))))
 
 tag_id = 0
-TAG_FILTERS = foreach(t = TAG_FILTERS, .combine=rbind)%do%{
+TAG_FILTERS = rbindlist(foreach(t = TAG_FILTERS)%do%{
     tag_id = tag_id+1
-    foreach(f = t$filter, .combine=rbind)%do%{ foreach(v = f$value, .combine=rbind)%do%data.table(id=c(tag_id), name=c(t$name), target=c(t$target), field=c(f$field), value=c(v)) }
-}
+    rbindlist(foreach(f = t$filter)%do%rbindlist(foreach(v = f$value)%do%data.table(id=c(tag_id), name=c(t$name), target=c(t$target), field=c(f$field), value=c(v)), fill=TRUE, use.names=TRUE),
+              fill=TRUE, use.names=TRUE)
+}, fill=TRUE, use.names=TRUE)
 
 
 #    res = if(segname=='Asia') u_in[geo_focus%in%geo_focus_asia | geo_focus2%in%, ] else
@@ -62,7 +65,7 @@ uni_skip_countries_tickers = function(uni_in, countries_skip_list, tickers_skip_
 # filter_tags = list(field_filter=c('asia+europe', 'tech+health'), rank_filter=c('top 10 mcap'))
 # filter_tags = list(field_filter=c('europe'), rank_filter=c('top 10 mcap'))
 # filter_tags = list(field_filter=c('asia'), rank_filter=c('top 10 mcap'))
-# filter_tags = list(field_filter=c('us', 'tech'), rank_filter=c('top 30 mcap'))
+# filter_tags = list(field_filter=c('us', 'tech'), skip_filter=c('no_card'), rank_filter=c('top 30 mcap'))
 # filter_tags = c()
 # TAG_FILTERS[[8]] = list(name='global', target='etf', filter=list(list(field='geo_focus2', value=c('Global'))))
 load_uni = function(uni_options, filter_tags){
@@ -85,6 +88,7 @@ load_uni = function(uni_options, filter_tags){
             
             
     tickers = foreach(n = asset_classes, .combine=c)%do%{ if(n%in%names(res)) unique(res[[n]]$ticker) else c() }  # n = asset_classes[2]
+
     tickers = tickers[foreach(n = filter_tags$field_filter, .combine='&')%do%{  # n = filter_tags$field_filter[1]
         tickers %in% (foreach(m = strsplit(n, '\\+')[[1]], .combine=c)%do%  # m = strsplit(n, '\\+')[[1]][2] 
             unique(foreach(fid = TAG_FILTERS[name==m & target%in%uni_options, unique(id)], .combine=c)%do%{  # fid = TAG_FILTERS[name==m & target%in%uni_options, unique(id)][1]
@@ -93,6 +97,16 @@ load_uni = function(uni_options, filter_tags){
                 targ$ticker[foreach(fld = ftr[, unique(field)], .combine='&')%do%{ targ[[ fld ]]%in%( ftr[field==fld, value] ) }]  # fld = ftr[, unique(field)][1]
             }))
     }]
+
+    if('skip_filter'%in%names(filter_tags) && length(filter_tags$skip_filter)>0)
+        tickers = tickers[foreach(n = filter_tags$skip_filter, .combine='&')%do%{  # n = filter_tags$field_filter[1]
+            !tickers %in% (foreach(m = strsplit(n, '\\+')[[1]], .combine=c)%do%  # m = strsplit(n, '\\+')[[1]][1] 
+                unique(foreach(fid = TAG_FILTERS[name==m & target%in%uni_options, unique(id)], .combine=c)%do%{  # fid = TAG_FILTERS[name==m & target%in%uni_options, unique(id)][1]
+                    ftr = TAG_FILTERS[id==fid, ]
+                    targ = res[[ftr$target[1]]]
+                    targ$ticker[foreach(fld = ftr[, unique(field)], .combine='&')%do%{ targ[[ fld ]]%in%( ftr[field==fld, value] ) }]  # fld = ftr[, unique(field)][1]
+                }))
+            }]
     
     for(n in asset_classes)  # n = 'equity'
         if(n%in%names(res)){

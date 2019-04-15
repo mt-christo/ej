@@ -185,7 +185,7 @@ screen_mixed_top = function(metrics_in, h_in, dt_in, screen_params){
     r$mcap = ifelse(!is.na(r$mcap), r$mcap, r$mcap1)
 #    r = r[metrics_in[dt == dt0, .(ticker, mcap)], on='ticker']
     
-    rtng = 0.5*norm_weights(r$mcap) + norm_weights(r$r)  # the rating
+    rtng = norm_weights(r$mcap) + screen_params$perf_weight*norm_weights(r$r)  # the rating
     tickers = r[order(rtng, decreasing=TRUE), ticker][1:screen_params$top_n]
 #    w = res$r - min(res$r)
 #    w = w/sum(w)
