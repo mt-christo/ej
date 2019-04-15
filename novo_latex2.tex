@@ -1,0 +1,117 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% baposter Landscape Poster
+% LaTeX Template
+% Version 1.0 (11/06/13)
+%
+% baposter Class Created by:
+% Brian Amberg (baposter@brian-amberg.de)
+%
+% This template has been downloaded from:
+% http://www.LaTeXTemplates.com
+%
+% License:
+% CC BY-NC-SA 3.0 (http://creativecommons.org/licenses/by-nc-sa/3.0/)
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%----------------------------------------------------------------------------------------
+%	PACKAGES AND OTHER DOCUMENT CONFIGURATIONS
+%----------------------------------------------------------------------------------------
+
+\documentclass[landscape,a4paper,fontscale=1.2,margin=3em]{baposter} % Adjust the font scale/size here
+
+\usepackage{graphicx} % Required for including images
+\graphicspath{{figures/}} % Directory in which figures are stored
+
+\usepackage{amsmath} % For typesetting math
+\usepackage{amssymb} % Adds new symbols to be used in math mode
+
+\usepackage{booktabs} % Top and bottom rules for tables
+\usepackage{enumitem} % Used to reduce itemize/enumerate spacing
+\usepackage{palatino} % Use the Palatino font
+\usepackage[font=small,labelfont=bf]{caption} % Required for specifying captions to tables and figures
+
+\usepackage{multicol}% Required for multiple columns
+\setlength{\columnsep}{1em} % Slightly increase the space between columns
+\setlength{\columnseprule}{0mm} % No horizontal rule between columns
+
+\usepackage{tikz} % Required for flow chart
+\usetikzlibrary{shapes,arrows} % Tikz libraries required for the flow chart in the template
+
+\newcommand{\compresslist}{ % Define a command to reduce spacing within itemize/enumerate environments, this is used right after \begin{itemize} or \begin{enumerate}
+\setlength{\itemsep}{1pt}
+\setlength{\parskip}{0pt}
+\setlength{\parsep}{0pt}
+}
+
+\begin{document}
+
+\begin{poster}
+{
+columns=2,
+headerborder=none, % Adds a border around the header of content boxes
+colspacing=3em, % Column spacing
+bgColorOne=white, % Background color for the gradient on the left side of the poster
+bgColorTwo=white, % Background color for the gradient on the right side of the poster
+borderColor=white, % Border color
+headerColorOne=white, % Background color for the header in the content boxes (left side)
+headerColorTwo=white, % Background color for the header in the content boxes (right side)
+headerFontColor=white, % Text color for the header text in the content boxes
+boxColorOne=white, % Background color of the content boxes
+textborder=none, % Format of the border around content boxes, can be: none, bars, coils, triangles, rectangle, rounded, roundedsmall, roundedright or faded
+eyecatcher=true, % Set to false for ignoring the left logo in the title and move the title left
+headerheight=0.1\textheight, % Height of the header
+headershape=roundedright, % Specify the rounded corner in the content box headers, can be: rectangle, small-rounded, roundedright, roundedleft or rounded
+headerfont=\Large\bf\textsc, % Large, bold and sans serif font in the headers of content boxes
+textfont=\Large,
+%textfont={\setlength{\parindent}{1.5em}}, % Uncomment for paragraph indentation
+linewidth=0pt % Width of the border lines around content boxes
+}
+%----------------------------------------------------------------------------------------
+%	TITLE SECTION 
+%----------------------------------------------------------------------------------------
+%
+{\includegraphics[height=3em]{logo_novo_x.png}} % First university/lab logo on the left
+{\bf\textsc{SLCGIT10\hspace{0.5em}Index}\vspace{0.6em}} % Poster title
+{\textsc{ Index Score Card \hspace{0.3em}-\hspace{0.3em} Excess-return index}} % Author names and institution
+{\includegraphics[height=3em]{logo_novo_x.png}} % Second university/lab logo on the right
+
+\headerbox{Objectives}{name=a1,column=0}{
+\begin{center}
+Index performance metrics are given in the table below:\\[1.3em]
+\begin{tabular}{c | c | c | c | c}
+\toprule
+Term & Return & \vtop{\hbox{\strut Volatility}\hbox{\strut Target}} & VC type & \vtop{\hbox{\strut 1Y Realized}\hbox{\strut Volatility}}\\
+\midrule
+\Sexpr{my_table}
+\bottomrule
+\end{tabular}
+\end{center}
+}
+
+\headerbox{Introduction}{name=a2,column=1,bottomaligned=a1}{
+\begin{center}
+\includegraphics[width=0.8\linewidth]{novo_chart.png}
+\end{center}
+}
+
+\headerbox{Introduction}{name=a4,column=1,below=a2}{\vspace{0.6em}
+\textbf{Current Index basket}: \\ \Sexpr{my_list}
+}
+
+\headerbox{Introduction}{name=a3,column=0,aligned=a4}{\vspace{0.6em}
+  \textbf{SLCGIT10 Index} - long only asset allocation index. \\ \\ \textbf{Index strategy}: Top 30 Technology stocks in United States are ranked by performance metric based on Market Cap and stock performance. \\ Top 10 stocks with highest rank constitute an equally-weighed portfolio for the next month.
+  \\
+  \\ \textbf{Excess Rate}: \Sexpr{exrate_txt}
+  \\ \textbf{Transaction Fee}: \Sexpr{add_rate_txt}
+  \\ \textbf{Max Exposure}: \Sexpr{max_weight_txt}
+}
+
+
+
+
+%----------------------------------------------------------------------------------------
+
+\end{poster}
+
+\end{document}
