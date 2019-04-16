@@ -222,3 +222,29 @@ smidai_style_rebal = function(h_in, screen_params){
     
     return( list(main = list(names=colnames(y), weights=w)) )
 }
+
+# metrics_in=u$equity_metrics; dt_in=as.Date('2016-05-15'); h_in=u[['h']]; screen_params=list(perf_weight=0.5, top_n=10, price_window=20, voltarget=0.2)
+smidai_mixed_rebal = function(metrics_in, h_in, dt_in, screen_params){
+    good_tickers = screen_mixed_top(metrics_in, h_in, dt_in, screen_params)$main$names
+
+    y = h_in[, good_tickers]  # Our main history of returns now
+    n = ncol(y)
+
+    comat = cov(y)*252
+    wmax = array(0.3, n)
+    wmin = array(0, n)
+    wstart = wmax/sum(wmax)
+    wlimit = function(x){ -abs(1-sum(x)) }
+    vt = screen_params$voltarget
+
+    func_sigma = function(x) return( abs(vt - sqrt(x %*% comat %*% x)) )
+    wsigma = cobyla(x0=wstart, fn=func_sigma, lower=wmin, upper=wmax, hin=wlimit, control=COB_CTL)$par
+    # sqrt(wsigma %*% comat %*% wsigma)
+
+    wlimit2 = function(x) return( round(c(1-sum(x), vt - sqrt(x %*% comat %*% x), -1+sum(x), -vt + sqrt(x %*% comat %*% x)), 4) )
+    gradus = function(x) return( -sum(basket_ret(y, x)) )
+    res = cobyla(x0=wsigma, fn=gradus, lower=wmin, upper=wmax, hin=wlimit2, control=COB_CTL)
+    w = res$par/sum(res$par)
+    
+    return( list(main = list(names=colnames(y), weights=w)) )
+}

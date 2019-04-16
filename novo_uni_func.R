@@ -128,8 +128,10 @@ load_uni = function(uni_options, filter_tags){
         }
 
     for(n in ts_datas)  # n = 'h'
-        if(n%in%names(res))
+        if(n%in%names(res)){
             res[[n]] = res[[n]][, foreach(m = asset_classes, .combine=c)%do%{ if(m%in%names(res)) res[[m]]$ticker else c() }]
+            res[[n]] = res[[n]][!wday(index(res[[n]]))%in%c(7,1)]            
+        }
 
     return(res)
 }
