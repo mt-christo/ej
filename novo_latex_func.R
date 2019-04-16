@@ -21,17 +21,15 @@ latex_pm_card = function(r_in, r1_in, terms_in, vc_targets, vc_types, libors){
             foreach(vctype=vc_types)%do%{  # vctype='max 10'
                 vc_tmp = list(window=20, type=vctype, excess_type = 'libor plus', add_rate=add_rate, excess=exrate, level=vt, max_weight=max_weight)
                 x = volcontrol_excess(r1_in, vc_tmp, libors);
-                start_date = tail(index(x), 1)
-                year(start_date) = year(start_date) - t
-                x = x[index(x) >= start_date]
-                if(t==max(terms_in))
-                    my_charts = c(my_charts, list(exp(cumsum(x))))
-                data.table(term = paste0(t, 'Y'),
-                           rv = fracperc(as.numeric(sqrt(252)*sd(tail(x, 252))), 2),
-                           ret_num = as.numeric(tail(exp(cumsum(x)), 1)),
-                           ret = fracperc(as.numeric(tail(exp(cumsum(x)), 1)), 0),
-                           vt = fracperc(vt, 0),
-                           vctype = vctype)
+                start_date = tail(index(x), 1); year(start_date) = year(start_date) - t; x = x[index(x) >= start_date]
+                y = data.table(term = paste0(t, 'Y'),
+                               rv = fracperc(as.numeric(sqrt(252)*sd(tail(x, 252))), 2),
+                               ret_num = as.numeric(tail(exp(cumsum(x)), 1)),
+                               ret = fracperc(as.numeric(tail(exp(cumsum(x)), 1))-1, 0),
+                               vt = fracperc(vt, 0),
+                               vctype = vctype)
+                if(t==max(terms_in)) my_charts[[paste(y[1, .(vt, vctype)], collapse=' / ')]] = 100*(index_perf(x)-1)
+                y
             }
         }
     })
@@ -43,8 +41,33 @@ latex_pm_card = function(r_in, r1_in, terms_in, vc_targets, vc_types, libors){
     add_rate_txt <- paste0(add_rate, '\\%')
     max_weight_txt <- gsub('%', "\\\\%", fracperc(max_weight, 0))
 
-    chart_path = save_data_as_chart(foreach(x=my_charts,.combine=cbind)%do%x, 'Index Performance', 'PDFs/novo_chart.png')
-    knit('/home/aslepnev/webhub/PDFs/novo_latex2.tex', '/home/aslepnev/webhub/PDFs/index_card.tex')
+    x = foreach(x=my_charts,.combine=cbind)%do%to.monthly(x, indexAt='endof')[, 'x.Open']
+    colnames(x) = names(my_charts)
+    x = melt(as.data.table(x), id='index', variable.name='Index', value.name='Price')
+    colnames(x)[1] = 'Date'
+    
+
+    chart_path = '/home/aslepnev/webhub/PDFs/novo_chart.png'
+    png(chart_path, height=400)
+#    print(plot(my_chart, main=chart_title))
+
+#            + theme(legend.position=c(0,1), legend.justification=c(0,1), legend.key = element_rect(fill = NA, color = 'white')) +
+    plot_func = function(x){
+        ggplot(x) + #geom_line(aes(x=Date, y=Price, group=Index, color=Index), size=1) +
+            ggtitle('Parameterized Index performance') + # theme_economist_white() +
+            theme_hc() +
+            scale_colour_hc() +
+            theme(legend.text=element_text(size=12, family='Palatino'), text=element_text(size=15, family='Palatino')) +
+            labs(color='') +
+            xlab('Time') +
+            ylab('Performance, %') +
+            stat_smooth(aes(x=Date, y=Price, group=Index, color=Index), formula=y~splines::ns(x,35), method='gam', se=FALSE, size=2)
+    }
+
+    print(plot_func(x))
+    dev.off()
+    
+    knit('/home/aslepnev/git/ej/novo_latex2.tex', '/home/aslepnev/webhub/PDFs/index_card.tex')
     setwd('/home/aslepnev/webhub/PDFs')
     system('pdflatex index_card.tex')
 

@@ -17,6 +17,10 @@ library(foreach)
 library(xts)
 library(tseries)
 library(xtable)
+library(reshape2)
+library(ggplot2)
+library(ggthemes)
+library(mgcv)
 registerDoMC(cores=15)
 
 R_STATE_DATA_MASK = '/home/aslepnev/webhub/strtelestate_current_name.csv'

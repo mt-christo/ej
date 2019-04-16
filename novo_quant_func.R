@@ -41,6 +41,7 @@ volcontrol_excess = function(r, vc_params, libors){
         print(paste('libor plus', tail(rfr, 1)))
     }
     excess = if (vc_params$excess_type != 'rate-related excess') { print('Simple excess'); as.numeric(vc_params$excess)*0.01/252 } else 0.0
-    return( -excess + volcontrol(r - rfr, vc_params) )
+    res = -excess + volcontrol(r - rfr, vc_params)
+    return(res)
 }
 
