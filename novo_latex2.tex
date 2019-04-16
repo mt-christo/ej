@@ -77,6 +77,7 @@ linewidth=0pt % Width of the border lines around content boxes
 {\includegraphics[height=3em]{logo_novo_x.png}} % Second university/lab logo on the right
 
 \headerbox{Objectives}{name=a1,column=0}{
+\vspace{2em}
 \begin{center}
 Index performance metrics are given in the table below:\\[1.3em]
 \begin{tabular}{c | c | c | c | c}
@@ -90,21 +91,21 @@ Term & Return & \vtop{\hbox{\strut Volatility}\hbox{\strut Target}} & VC type & 
 }
 
 \headerbox{Introduction}{name=a2,column=1,bottomaligned=a1}{
+\vspace{2em}
 \begin{center}
 \includegraphics[width=0.8\linewidth]{novo_chart.png}
 \end{center}
 }
 
 \headerbox{Introduction}{name=a4,column=1,below=a2}{\vspace{0.6em}
-\textbf{Current Index basket}: \\ \Sexpr{my_list}
+  \textbf{Current Index basket}: \\ \Sexpr{my_list}
+  \\ \\ \textbf{Excess Rate}: \Sexpr{exrate_txt}
+  \\ \textbf{Transaction Fee}: \Sexpr{add_rate_txt}
+  \\ \textbf{Max Exposure}: \Sexpr{max_weight_txt}
 }
 
 \headerbox{Introduction}{name=a3,column=0,aligned=a4}{\vspace{0.6em}
   \textbf{SLCGIT10 Index} - long only asset allocation index. \\ \\ \textbf{Index strategy}: Top 30 Technology stocks in United States are ranked by performance metric based on Market Cap and stock performance. \\ Top 10 stocks with highest rank constitute an equally-weighed portfolio for the next month.
-  \\
-  \\ \textbf{Excess Rate}: \Sexpr{exrate_txt}
-  \\ \textbf{Transaction Fee}: \Sexpr{add_rate_txt}
-  \\ \textbf{Max Exposure}: \Sexpr{max_weight_txt}
 }
 
 
