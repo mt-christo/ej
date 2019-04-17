@@ -43,5 +43,6 @@ source('/home/aslepnev/git/ej/novo_product_reports.R')
 source('/home/aslepnev/git/ej/novo_index_builders.R')
 source('/home/aslepnev/git/ej/novo_screen_functions.R')
 source('/home/aslepnev/git/ej/novo_python_workers.R')
+source('/home/aslepnev/git/ej/novo_latex_func.R')
 
 

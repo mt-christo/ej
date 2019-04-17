@@ -135,7 +135,7 @@ index_report = function(index_data, params, libors){
     perf = lag(exp(cumsum(r)), 1)
     perf[1, 1] = 1
     vty = sd(tail(r, 250))*sqrt(252)
-    res = list(perf=perf, endPerf=as.numeric(tail(perf, 1)), volatility=vty, baskets=baskets)
+    res = list(perf=perf, endPerf=as.numeric(tail(perf, 1)), volatility=vty, baskets=baskets, orig_data=index_data)
     return(res)
 }
 
