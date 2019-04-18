@@ -19,11 +19,26 @@ TAG_FILTERS = c(TAG_FILTERS, list(list(name='discret', target='etf', filter=list
 TAG_FILTERS = c(TAG_FILTERS, list(list(name='industry', target='etf', filter=list(list(field='ind_focus', value=c('Industrials'))))))
 
 TAG_FILTERS = c(TAG_FILTERS, list(list(name='us', target='equity', filter=list(list(field='country_name', value=c('UNITED STATES'))))))
+TAG_FILTERS = c(TAG_FILTERS, list(list(name='superdev', target='equity', filter=list(list(field='country_name', value=c('UNITED STATES', 'FRANCE', 'BRITAIN', 'NETHERLANDS', 'GERMANY', 'SWITZERLAND', 'ITALY'))))))
 TAG_FILTERS = c(TAG_FILTERS, list(list(name='tech', target='equity', filter=list(list(field='sector', value=c('Information Technology'))))))
 TAG_FILTERS = c(TAG_FILTERS, list(list(name='telecom', target='equity', filter=list(list(field='sector', value=c('Communication Services'))))))
 TAG_FILTERS = c(TAG_FILTERS, list(list(name='staples', target='equity', filter=list(list(field='sector', value=c('Consumer Staples'))))))
 TAG_FILTERS = c(TAG_FILTERS, list(list(name='discret', target='equity', filter=list(list(field='sector', value=c('Consumer Discretionary'))))))
 TAG_FILTERS = c(TAG_FILTERS, list(list(name='no_card', target='equity', filter=list(list(field='ticker', value=c('V US Equity', 'MA US Equity'))))))
+
+TAG_FILTERS = c(TAG_FILTERS, list(list(name='retail-stap', target='equity', filter=list(list(field='sector', value=c('Consumer Staples')), list(field='industry_group', value=c('Retail'))))))
+TAG_FILTERS = c(TAG_FILTERS, list(list(name='agriculture', target='equity', filter=list(list(field='sector', value=c('Consumer Staples')), list(field='industry_group', value=c('Agriculture'))))))
+TAG_FILTERS = c(TAG_FILTERS, list(list(name='cosmetics', target='equity', filter=list(list(field='sector', value=c('Consumer Staples')), list(field='industry_group', value=c('Cosmetics/Personal Care'))))))
+TAG_FILTERS = c(TAG_FILTERS, list(list(name='beverage', target='equity', filter=list(list(field='sector', value=c('Consumer Staples')), list(field='industry_group', value=c('Beverages'))))))
+TAG_FILTERS = c(TAG_FILTERS, list(list(name='food', target='equity', filter=list(list(field='sector', value=c('Consumer Staples')), list(field='industry_group', value=c('Food'))))))
+TAG_FILTERS = c(TAG_FILTERS, list(list(name='household', target='equity', filter=list(list(field='sector', value=c('Consumer Staples')), list(field='industry_group', value=c('Household Products/Wares'))))))
+
+TAG_FILTERS = c(TAG_FILTERS, list(list(name='internet-discr', target='equity', filter=list(list(field='sector', value=c('Consumer Discretionary')), list(field='industry_group', value=c('Internet'))))))
+TAG_FILTERS = c(TAG_FILTERS, list(list(name='retail-discr', target='equity', filter=list(list(field='sector', value=c('Consumer Discretionary')), list(field='industry_group', value=c('Retail'))))))
+TAG_FILTERS = c(TAG_FILTERS, list(list(name='apparel', target='equity', filter=list(list(field='sector', value=c('Consumer Discretionary')), list(field='industry_group', value=c('Apparel'))))))
+TAG_FILTERS = c(TAG_FILTERS, list(list(name='lodging', target='equity', filter=list(list(field='sector', value=c('Consumer Discretionary')), list(field='industry_group', value=c('Lodging'))))))
+TAG_FILTERS = c(TAG_FILTERS, list(list(name='auto', target='equity', filter=list(list(field='sector', value=c('Consumer Discretionary')), list(field='industry_group', value=c('Auto Manufacturers'))))))
+TAG_FILTERS = c(TAG_FILTERS, list(list(name='leisure', target='equity', filter=list(list(field='sector', value=c('Consumer Discretionary')), list(field='industry_group', value=c('Leisure Time'))))))
 
 tag_id = 0
 TAG_FILTERS = rbindlist(foreach(t = TAG_FILTERS)%do%{

@@ -698,31 +698,34 @@ a
 
 source('/home/aslepnev/git/ej/strindexlib.R')
 libors = get(load('/home/aslepnev/git/ej/it_top10_uni.RData'))$libor
-u = load_uni(c('equity', 'equity_metrics', 'h', 'libors', 'etf'), list())
-h = u$h[, u$etf$ticker]
-u$etf$ticker = as.character(t(as.data.table(strsplit(u$etf$ticker, ' ')))[,1])
-colnames(h) = u$etf$ticker
-f$ticker%in%u$etf$ticker
+#u = load_uni(c('equity', 'equity_metrics', 'h', 'libors', 'etf'), list())
+#h = u$h[, u$etf$ticker]
+#u$etf$ticker = as.character(t(as.data.table(strsplit(u$etf$ticker, ' ')))[,1])
+#colnames(h) = u$etf$ticker
+#f$ticker%in%u$etf$ticker
 
-h = fread('/home/aslepnev/webhub/smidai_hist_prices.csv')[, Dates := as.Date(Dates)]
+#h = fread('/home/aslepnev/webhub/smidai_hist_prices.csv')[, Dates := as.Date(Dates)]
+h = fread('/home/aslepnev/webhub/smidai_etf_hist1.csv')[, Date := as.Date(Date)]
 b = fread('/home/aslepnev/webhub/smidai_hist_baskets.csv')
 f = fread('/home/aslepnev/webhub/smidai_hist_funds.csv')
 
-for(n in colnames(h)[-1]) {
+for(n in colnames(h)[-1]) {  # n=colnames(h)[10]
     h[[n]][h[, n, with=FALSE]=='#N/A N/A'] = NA
     h[[n]] = as.numeric(h[[n]])
 }
-h = h_to_log(as.xts(h))[, -4]
+h = as.xts(h)  #[, -4]
 colnames(h) = foreach(i=colnames(h),.combine=c)%do%strsplit(i, ' ')[[1]][1]
-h = h[, colnames(h)!='US0003M']
-f = f[!ticker%in%c('US0003M', 'US003M'), ]
+h[, 'US0003M'] = cumprod(1+h[, 'US0003M']*0.01/252)
+h = h_to_log(h)
+#f = f[!ticker%in%c('US0003M', 'US003M'), ]
 
-r = build_index_simple(h, get_rebals_h(h, 'month'), smidai_style_rebal, screen_params=list(funds=f, baskets=b, window=125, voltarget=0.075), start_date='2006-12-29')
+#r = build_index_simple(h, get_rebals_h(h, 'month'), smidai_style_rebal, screen_params=list(funds=f, baskets=b, window=125, voltarget=0.05), start_date='2013-12-29')
+r = build_index_simple(h, get_rebals_h(h, 'month'), smidai_style_rebal, screen_params=list(funds=f, baskets=b, window=252, voltarget=0.075), start_date='2013-12-29')
 r1 = foreach(x=r,.combine=rbind)%do%x$h
-rvc = r1; rvc = rvc[index(rvc)>='2007-01-01']; print(sqrt(252)*sd(tail(rvc, 252))); print(tail(exp(cumsum(rvc)), 1))
 
-rvc = volcontrol_excess(r1, list(window=20, type='max 5', excess_type = 'libor plus', add_rate=1, excess=3, level=0.08, max_weight=2.5), libors); rvc = rvc[index(rvc)>='2014-02-04']; print(sqrt(252)*sd(tail(rvc, 252))); print(tail(exp(cumsum(rvc)), 1))
-rvc = volcontrol_excess(r1, list(window=20, type='max 5', excess_type = 'libor plus', add_rate=1, excess=3, level=0.08, max_weight=2.5), libors); rvc = rvc[index(rvc)>='2016-01-01']; print(sqrt(252)*sd(tail(rvc, 252))); print(tail(exp(cumsum(rvc)), 1))
+end_date='2019-02-04'
+rvc = volcontrol_excess(r1, list(window=20, type='max 5', excess_type = 'libor plus', add_rate=1, excess=3, level=0.08, max_weight=2.5, basis=360), libors); rvc = rvc[index(rvc)>='2014-02-04' & index(rvc)<=end_date]; print(sqrt(252)*sd(tail(rvc, 252))); print(tail(exp(cumsum(rvc)), 1))
+rvc = volcontrol_excess(r1, list(window=20, type='max 5', excess_type = 'libor plus', add_rate=1, excess=3, level=0.08, max_weight=2.5, basis=360), libors); rvc = rvc[index(rvc)>='2016-02-04' & index(rvc)<=end_date]; print(sqrt(252)*sd(tail(rvc, 252))); print(tail(exp(cumsum(rvc)), 1))
 
 
 
@@ -732,11 +735,9 @@ rvc = volcontrol_excess(r1, list(window=20, type='max 5', excess_type = 'libor p
 source('/home/aslepnev/git/ej/strindexlib.R')
 
 u = load_uni(c('equity', 'equity_metrics', 'h', 'libors', 'p'),
-             list(field_filter=c('us', 'staples+discret'), skip_filter=c('no_card'), rank_filter=c('top 30 mcap')))
-u = load_uni(c('equity', 'equity_metrics', 'h', 'libors', 'p'),
              list(field_filter=c('us', 'tech'), skip_filter=c('no_card'), rank_filter=c('top 30 mcap')))
-r = build_index_simpler(u, 'month', screen_mixed_top, screen_params=list(perf_weight=0.5, top_n=10, price_window=135), '2012-12-31')  
-# r = build_index_simpler(u, 'month', smidai_mixed_rebal, screen_params=list(perf_weight=0.5, top_n=10, price_window=125, voltarget=0.2), '2012-12-31')  
+r = build_index_simpler(u, 'month', screen_mixed_top, screen_params=list(perf_weight=0.5, top_n=10, price_window=135), '2012-12-29')  
+#r = build_index_simpler(u, 'month', smidai_mixed_rebal, screen_params=list(perf_weight=0.5, top_n=10, price_window=125, voltarget=0.05), '2012-12-31')  
 #r = build_index_simpler(u, 'month', screen_mixed_top, screen_params=list(perf_weight=0.5, top_n=10, price_window=40), '2012-12-31')
 r1 = foreach(x=r,.combine=rbind)%do%x$h
 
@@ -744,8 +745,8 @@ r1 = foreach(x=r,.combine=rbind)%do%x$h
 # libors=u$libors; r_in=r; r1_in=r1; terms_in=c(3, 5); vc_targets=c(0.12, 0.14); vc_types=c('max 10', 'simple');
 #rvc = r1; print(sqrt(252)*sd(tail(rvc, 252))); print(tail(exp(cumsum(rvc)), 1))
 #rvc = volcontrol_excess(r1, list(window=20, type='none', excess_type = 'simple excess', excess=3.5, level=0.14, max_weight=1.75), u$libors); print(sqrt(252)*sd(tail(rvc, 252))); print(tail(exp(cumsum(rvc)), 1))
-dt_start=as.Date('2012-03-01'); dt_end=as.Date('9999-03-01'); 
-rvc = volcontrol_excess(r1, , u$libors);
+dt_start=as.Date('2012-12-29'); dt_end=as.Date('9999-03-01'); 
+rvc = volcontrol_excess(r1, list(window=20, type='none', excess_type='libor plus', add_rate=0.5, excess=2, level=0.05, max_weight=2, basis=360), libors)
 print(sqrt(252)*sd(tail(rvc, 252))); print(tail(exp(cumsum(rvc[index(rvc)>=dt_start & index(rvc)<=dt_end])), 1))
 
 
@@ -767,3 +768,31 @@ a = u$p[,u$equity_metrics[dt=="2017-02-01",][order(mcap,decreasing=TRUE),ticker]
 write.csv(a, file='/home/aslepnev/webhub/it10_backtest.csv', row.names=index(a))
 
 
+-- sectoral
+TAG_FILTERS = c(TAG_FILTERS, list(list(name='retail-stap', target='equity', filter=list(list(field='sector', value=c('Consumer Staples')), list(field='industry_group', value=c('Retail'))))))
+TAG_FILTERS = c(TAG_FILTERS, list(list(name='agriculture', target='equity', filter=list(list(field='sector', value=c('Consumer Staples')), list(field='industry_group', value=c('Agriculture'))))))
+TAG_FILTERS = c(TAG_FILTERS, list(list(name='cosmetics', target='equity', filter=list(list(field='sector', value=c('Consumer Staples')), list(field='industry_group', value=c('Cosmetics/Personal Care'))))))
+TAG_FILTERS = c(TAG_FILTERS, list(list(name='beverage', target='equity', filter=list(list(field='sector', value=c('Consumer Staples')), list(field='industry_group', value=c('Beverages'))))))
+TAG_FILTERS = c(TAG_FILTERS, list(list(name='food', target='equity', filter=list(list(field='sector', value=c('Consumer Staples')), list(field='industry_group', value=c('Food'))))))
+TAG_FILTERS = c(TAG_FILTERS, list(list(name='household', target='equity', filter=list(list(field='sector', value=c('Consumer Staples')), list(field='industry_group', value=c('Household Products/Wares'))))))
+
+TAG_FILTERS = c(TAG_FILTERS, list(list(name='internet-discr', target='equity', filter=list(list(field='sector', value=c('Consumer Discretionary')), list(field='industry_group', value=c('Internet'))))))
+TAG_FILTERS = c(TAG_FILTERS, list(list(name='retail-discr', target='equity', filter=list(list(field='sector', value=c('Consumer Discretionary')), list(field='industry_group', value=c('Retail'))))))
+TAG_FILTERS = c(TAG_FILTERS, list(list(name='apparel', target='equity', filter=list(list(field='sector', value=c('Consumer Discretionary')), list(field='industry_group', value=c('Apparel'))))))
+TAG_FILTERS = c(TAG_FILTERS, list(list(name='lodging', target='equity', filter=list(list(field='sector', value=c('Consumer Discretionary')), list(field='industry_group', value=c('Lodging'))))))
+TAG_FILTERS = c(TAG_FILTERS, list(list(name='auto', target='equity', filter=list(list(field='sector', value=c('Consumer Discretionary')), list(field='industry_group', value=c('Auto Manufacturers'))))))
+TAG_FILTERS = c(TAG_FILTERS, list(list(name='leisure', target='equity', filter=list(list(field='sector', value=c('Consumer Discretionary')), list(field='industry_group', value=c('Leisure Time'))))))
+
+u = load_uni(c('equity', 'equity_metrics', 'h', 'libors', 'p'),
+#             list(field_filter=c('agriculture'), rank_filter=c('top 40 mcap')))
+#             list(field_filter=c('beverage'), rank_filter=c('top 40 mcap')))
+#             list(field_filter=c('leisure'), rank_filter=c('top 40 mcap')))
+             list(field_filter=c('superdev', 'cosmetics+apparel'), rank_filter=c('top 30 mcap')))
+#             list(field_filter=c('agriculture+cosmetics'), rank_filter=c('top 40 mcap')))
+#r = build_index_simpler(u, 'month', screen_mixed_top, screen_params=list(perf_weight=1, top_n=20, price_window=250), '2012-12-29')  
+r = build_index_simpler(u, 'month', smidai_mixed_rebal, screen_params=list(perf_weight=2, top_n=10, price_window=250, voltarget=0.15), '2012-12-31')  
+#r = build_index_simpler(u, 'month', screen_mixed_top, screen_params=list(perf_weight=0.5, top_n=10, price_window=40), '2012-12-31')
+r1 = foreach(x=r,.combine=rbind)%do%x$h
+dt_start=as.Date('2012-12-29'); dt_end=as.Date('9999-03-01'); 
+rvc = volcontrol_excess(r1, list(window=20, type='max 10', excess_type='libor plus', add_rate=1, excess=3, level=0.15, max_weight=2.5, basis=360), libors)
+print(sqrt(252)*sd(tail(rvc, 252))); print(tail(exp(cumsum(rvc[index(rvc)>=dt_start & index(rvc)<=dt_end])), 1))

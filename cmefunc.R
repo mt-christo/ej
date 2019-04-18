@@ -20,8 +20,9 @@ spread_ival_tpdd = function(data, dt_start, dt_end){
 }
 
 # dt_start=GET$dt_start_results; wnd= wnd_results
-get_spread_hist <- function(spread_id, dt_start, wnd){
-    s = Spreads2[id==spread_id, ]
+# dt_start=GET$dt_start_bunch; wnd= wnd_bunch
+get_spread_hist <- function(spread_id, dt_start, wnd, hist_depth){
+    s = Spreads2[id==spread_id & (expiry - date)<=hist_depth & (expiry - date)>=0, ]
 
     zero_year = 1901 + year(dt_start) - year(s[expiry > dt_start, min(expiry)])
     zero_start = as.Date(ISOdate(zero_year, month(dt_start), day(dt_start)))

@@ -212,7 +212,7 @@ smidai_style_rebal = function(h_in, screen_params){
     wlimit = function(x){ -abs(1-sum(x)) }
     vt = screen_params$voltarget
 
-    func_sigma = function(x) return( abs(vt - sqrt(x %*% comat %*% x)) )
+    func_sigma = function(x) return( abs(vt - sqrt(x %*% comat %*% x)) )  # sqrt(wsigma %*% comat %*% wsigma)  # func_sigma(wsigma)
     wsigma = cobyla(x0=wstart, fn=func_sigma, lower=wmin, upper=wmax, hin=wlimit, control=COB_CTL)$par
 
     wlimit2 = function(x) return( round(c(1-sum(x), vt - sqrt(x %*% comat %*% x), -1+sum(x), -vt + sqrt(x %*% comat %*% x)), 4) )

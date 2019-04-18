@@ -4,7 +4,7 @@
 volcontrol = function(r, vc_params){
     if(length(vc_params$window) == 1){
         print('Single window volcontrol')
-    w = sqrt(250)*rollapplyr(r, as.numeric(vc_params$window), FUN=sd)
+    w = sqrt(vc_params$basis)*rollapplyr(r, as.numeric(vc_params$window), FUN=sd)
     if(vc_params$type == 'max 10')
         w = rollapplyr(w, 10, FUN=function(x){ max(x) }) else
     if(vc_params$type == 'max 5')

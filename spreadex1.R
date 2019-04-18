@@ -6,6 +6,7 @@ spread_wnd_mas = function(){
 #    comdty = GET$comdty
 #    spread_months = GET$spread_months
     spread_id = GET$spread_id
+    hist_depth = GET$depth
     amnt = if('amount'%in%names(GET)) GET$amount else 1
     
     dt_start_bunch = GET$dt_start_bunch
@@ -19,7 +20,7 @@ spread_wnd_mas = function(){
     ival_dt2 = to_zero_date(GET$ival_dt2, GET$ival_dt2)
     
     wnd_bunch = as.Date(GET$dt_end_bunch) - as.Date(GET$dt_start_bunch)
-    h_bunch = get_spread_hist(spread_id, dt_start_bunch, wnd_bunch)
+    h_bunch = get_spread_hist(spread_id, dt_start_bunch, wnd_bunch, hist_depth)
     ma = get_spread_ma_wnd(h_bunch, dt_start_bunch, wnd_bunch)[year%in%years, ]
 
     years_thresh = ma[!is.na(spread), ][(spread>=min_spread & spread<=max_spread) & (zero_date>=ival_dt1 & zero_date<=ival_dt2), unique(year)]
@@ -50,6 +51,7 @@ spread_wnd_results = function(){
 #    comdty = GET$comdty
 #    spread_months = GET$spread_months
     spread_id = GET$spread_id
+    hist_depth = GET$depth
     
     results_start_luft = as.numeric(GET$results_start_luft)
     results_end_luft = as.numeric(GET$results_end_luft)
@@ -58,7 +60,7 @@ spread_wnd_results = function(){
     years = as.numeric(strsplit(GET$years, '-')[[1]])
 
     wnd_results = dt_end_results - dt_start_results
-    h_results = get_spread_hist(spread_id, dt_start_results, wnd_results)
+    h_results = get_spread_hist(spread_id, dt_start_results, wnd_results, hist_depth)
     results = get_spread_results(h_results, dt_start_results, wnd_results, results_start_luft, results_end_luft)[year%in%years, ]
     
     web_datatable(list('results'=results))

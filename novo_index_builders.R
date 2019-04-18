@@ -48,7 +48,7 @@ build_index = function(D_in, rebal_dates, screen_func, screen_params, start_date
 # u_in=u; rebal_freq='month'; screen_func=screen_mixed_top; screen_params=list(perf_weight=0.5, top_n=10, price_window=20); start_date='2012-12-31'
 build_index_simpler = function(u_in, rebal_freq, screen_func, screen_params, start_date){
     h_in = u_in$h
-    rebal_dates = get_rebals_h(h_in[index(h_in) >= start_date], 'month')
+    rebal_dates = get_rebals_h(h_in[index(h_in) >= start_date], rebal_freq)
     rebal_idx = match(rebal_dates[rebal_dates >= start_date], index(h_in))
     price_window = as.numeric(screen_params$price_window)
     
