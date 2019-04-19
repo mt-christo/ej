@@ -75,3 +75,59 @@ latex_pm_card = function(r_in, r1_in, terms_in, vc_targets, vc_types, fixed_vc_p
 
     return(pdf_path)    
 }
+#             list(field_filter=c('beverage'), rank_filter=c('top 40 mcap')))
+#             list(field_filter=c('leisure'), rank_filter=c('top 40 mcap')))
+             list(field_filter=c('superdev', 'cosmetics+apparel'), rank_filter=c('top 30 mcap')))
+
+# filter_list = list(c('beverage'), c('leisure'), c('superdev', 'cosmetics+apparel')); top_mcap=10
+latex_segment_compare = function(filter_list, top_mcap){
+    res = foreach(f = filter_list)%dopar%{  # f = filter_list[[3]]
+        u = load_uni(c('equity', 'equity_metrics', 'h', 'libors'),
+                     list(field_filter=f, rank_filter=c(paste('top', top_mcap, 'mcap'))))
+        r = build_index_simpler(u, 'month', screen_mixed_top, screen_params=list(perf_weight=0, top_n=top_mcap, price_window=250), '2012-12-29')
+        r1 = foreach(x=r,.combine=rbind)%do%x$h
+        dt_start=as.Date('2012-12-29'); dt_end=as.Date('9999-03-01');
+        r_limited = r1[index(r1)>=dt_start & index(r1)<=dt_end]
+        list(segment=gsub('\\+', ' +', paste(f, collapse='/ ')),
+             sd252 = fracperc(sqrt(252)*sd(tail(r1, 252)), 1),
+             perfTot = fracperc(exp(sum(r_limited))-1, 0),
+             perfTot252 = fracperc(exp(sum(tail(r1, 252)))-1, 0),
+             perf = 100*(index_perf(r_limited)-1),
+             basket = paste(gsub(' Equity', '', r[[length(r)]]$basket$main$names), collapse=', '))
+    }
+    my_table <- paste(paste(foreach(x=res, .combine=c)%do%gsub('%', "\\\\%", paste(x$segment, x$sd252, x$perfTot252, x$perfTot, x$basket,
+                                                                                   sep=' & ')), collapse=' \\\\[0.4em]\n'), ' \\\\[0.6em]\n')
+
+    my_chart = foreach(x=res,.combine=cbind)%do%to.monthly(x$perf, indexAt='endof')[, 'x$perf.Open']
+    colnames(my_chart) = foreach(x=res, .combine=c)%do%x$segment
+    my_chart = melt(as.data.table(my_chart), id='index', variable.name='Index', value.name='Price')
+    colnames(my_chart)[1] = 'Date'
+    chart_path = '/home/aslepnev/webhub/PDFs/novo_chart.png'
+    png(chart_path, height=400)
+
+    plot_func = function(x){
+        ggplot(x) + #geom_line(aes(x=Date, y=Price, group=Index, color=Index), size=1) +
+            ggtitle('Parameterized Index performance') + # theme_economist_white() +
+            theme_hc() +
+            scale_colour_hc() +
+            theme(legend.text=element_text(size=12, family='Palatino'), text=element_text(size=15, family='Palatino')) +
+            labs(color='') +
+            xlab('Time') +
+            ylab('Performance, %') +
+            stat_smooth(aes(x=Date, y=Price, group=Index, color=Index), formula=y~splines::ns(x,35), method='gam', se=FALSE, size=2)
+    }
+
+    print(plot_func(my_chart))
+    dev.off()
+    
+    knit('/home/aslepnev/git/ej/novo_latex3.tex', '/home/aslepnev/webhub/PDFs/segment_perf.tex')
+    setwd('/home/aslepnev/webhub/PDFs')
+    system('pdflatex segment_perf.tex')
+
+    pdf_path = paste0('/home/aslepnev/webhub/PDFs/segment_perf.pdf')
+
+    library(mailR)
+    send_files_to_email(c(pdf_path), 'Segments', 'aslepnev@novo-x.info')
+
+    return(pdf_path)    
+}

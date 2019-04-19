@@ -18,8 +18,11 @@
 %	PACKAGES AND OTHER DOCUMENT CONFIGURATIONS
 %----------------------------------------------------------------------------------------
 
-\documentclass[landscape,a4paper,fontscale=1.2,margin=3em]{baposter} % Adjust the font scale/size here
+\documentclass[portrait, a4paper, fontscale=1.5, margin=2em]{baposter} % Adjust the font scale/size here
 
+\usepackage{array}
+\newcolumntype{L}{>{\centering\arraybackslash}m{6cm}}
+\newcolumntype{M}{>{\centering\arraybackslash}m{12cm}}
 \usepackage{graphicx} % Required for including images
 \graphicspath{{figures/}} % Directory in which figures are stored
 
@@ -48,7 +51,7 @@
 
 \begin{poster}
 {
-columns=2,
+columns=1,
 headerborder=none, % Adds a border around the header of content boxes
 colspacing=3em, % Column spacing
 bgColorOne=white, % Background color for the gradient on the left side of the poster
@@ -71,44 +74,31 @@ linewidth=0pt % Width of the border lines around content boxes
 %	TITLE SECTION 
 %----------------------------------------------------------------------------------------
 %
-{\includegraphics[height=3em]{logo_novo_x.png}} % First university/lab logo on the left
-{\bf\textsc{SLCGIT10\hspace{0.5em}Index}\vspace{0.6em}} % Poster title
-{\textsc{ Index Score Card \hspace{0.3em}-\hspace{0.3em} Excess-return index}} % Author names and institution
-{\includegraphics[height=3em]{logo_novo_x.png}} % Second university/lab logo on the right
+{\includegraphics[height=2em]{logo_novo_x.png}} % First university/lab logo on the left
+{\bf\textsc{Segment performance}\vspace{0.6em}} % Poster title
+{\textsc{ Market Cap rated \hspace{0.3em}-\hspace{0.3em} Top \Sexpr{top_mcap} companies}} % Author names and institution
+{\includegraphics[height=2em]{logo_novo_x.png}} % Second university/lab logo on the right
 
-\headerbox{Objectives}{name=a1,column=0}{
-\vspace{2em}
-\begin{center}
-Index performance metrics are given in the table below:\\[1.3em]
-\begin{tabular}{c | c | c | c | c}
-\toprule
-Term & Return & \vtop{\hbox{\strut Volatility}\hbox{\strut Target}} & VC type & \vtop{\hbox{\strut 1Y Realized}\hbox{\strut Volatility}}\\
-\midrule
-\Sexpr{my_table}
-\bottomrule
-\end{tabular}
-\end{center}
-}
-
-\headerbox{Introduction}{name=a2,column=1,bottomaligned=a1}{
+\headerbox{Introduction}{name=a1, column=0}{
 \vspace{2em}
 \begin{center}
 \includegraphics[width=0.8\linewidth]{novo_chart.png}
 \end{center}
 }
 
-\headerbox{Introduction}{name=a4,column=1,below=a2}{\vspace{0.6em}
-  \textbf{Current Index basket}: \\ \Sexpr{my_list}
-  \\ \\ \textbf{Excess Rate}: \Sexpr{exrate_txt}
-  \\ \textbf{Transaction Fee}: \Sexpr{add_rate_txt}
-  \\ \textbf{Max Exposure}: \Sexpr{max_weight_txt}
+\headerbox{Objectives}{name=a2, column=0, below=a1}{
+\vspace{2em}
+\begin{center}
+Segment performance metrics:\\[1.3em]
+\begin{tabular}{L | c | c | c | M}
+\toprule
+Segment & 1Y Sigma & 1Y Return & Total Return & Current Basket\\
+\midrule
+\Sexpr{my_table}
+\bottomrule
+\end{tabular}
+\end{center}
 }
-
-\headerbox{Introduction}{name=a3,column=0,aligned=a4}{\vspace{0.6em}
-  \textbf{\Sexpr{my_index_name}} - long only asset allocation index. \\ \\ \textbf{Index strategy}: \Sexpr{my_index_desc}
-}
-
-
 
 
 %----------------------------------------------------------------------------------------

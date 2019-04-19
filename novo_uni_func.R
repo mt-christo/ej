@@ -88,6 +88,7 @@ uni_skip_countries_tickers = function(uni_in, countries_skip_list, tickers_skip_
 # filter_tags = list(field_filter=c('us', 'discret'), skip_filter=c('no_card'), rank_filter=c('top 30 mcap'))
 # filter_tags = c()
 # TAG_FILTERS[[8]] = list(name='global', target='etf', filter=list(list(field='geo_focus2', value=c('Global'))))
+# uni_options = c('equity', 'equity_metrics', 'h', 'libors'); filter_tags = list(field_filter=f, rank_filter=c(paste('top', top_mcap, 'mcap')))
 load_uni = function(uni_options, filter_tags){
     res = foreach(n = uni_options)%do%get(load(paste0('/home/aslepnev/webhub/uber_uni_', n, '.RData')))
     names(res) = uni_options

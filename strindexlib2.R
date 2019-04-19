@@ -796,3 +796,5 @@ r1 = foreach(x=r,.combine=rbind)%do%x$h
 dt_start=as.Date('2012-12-29'); dt_end=as.Date('9999-03-01'); 
 rvc = volcontrol_excess(r1, list(window=20, type='max 10', excess_type='libor plus', add_rate=1, excess=3, level=0.15, max_weight=2.5, basis=360), libors)
 print(sqrt(252)*sd(tail(rvc, 252))); print(tail(exp(cumsum(rvc[index(rvc)>=dt_start & index(rvc)<=dt_end])), 1))
+
+latex_segment_compare(list(c('beverage'), c('leisure'), c('superdev', 'cosmetics+apparel')), 5)
