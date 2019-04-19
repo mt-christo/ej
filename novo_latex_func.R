@@ -75,15 +75,15 @@ latex_pm_card = function(r_in, r1_in, terms_in, vc_targets, vc_types, fixed_vc_p
 
     return(pdf_path)    
 }
-#             list(field_filter=c('beverage'), rank_filter=c('top 40 mcap')))
-#             list(field_filter=c('leisure'), rank_filter=c('top 40 mcap')))
-             list(field_filter=c('superdev', 'cosmetics+apparel'), rank_filter=c('top 30 mcap')))
 
 # filter_list = list(c('beverage'), c('leisure'), c('superdev', 'cosmetics+apparel')); top_mcap=10
+# filter_list = list(c('health'), c('tech'), c('finance'), c('staples'), c('discret'), c('industrial')); top_mcap=10
 latex_segment_compare = function(filter_list, top_mcap){
     res = foreach(f = filter_list)%dopar%{  # f = filter_list[[3]]
+        print(f)
         u = load_uni(c('equity', 'equity_metrics', 'h', 'libors'),
                      list(field_filter=f, rank_filter=c(paste('top', top_mcap, 'mcap'))))
+        if(nrow(u$equity) == 0) stop('Zero companies - should-t be!')
         r = build_index_simpler(u, 'month', screen_mixed_top, screen_params=list(perf_weight=0, top_n=top_mcap, price_window=250), '2012-12-29')
         r1 = foreach(x=r,.combine=rbind)%do%x$h
         dt_start=as.Date('2012-12-29'); dt_end=as.Date('9999-03-01');
@@ -91,10 +91,12 @@ latex_segment_compare = function(filter_list, top_mcap){
         list(segment=gsub('\\+', ' +', paste(f, collapse='/ ')),
              sd252 = fracperc(sqrt(252)*sd(tail(r1, 252)), 1),
              perfTot = fracperc(exp(sum(r_limited))-1, 0),
+             perfTotNumber = exp(sum(r_limited)),
              perfTot252 = fracperc(exp(sum(tail(r1, 252)))-1, 0),
              perf = 100*(index_perf(r_limited)-1),
              basket = paste(gsub(' Equity', '', r[[length(r)]]$basket$main$names), collapse=', '))
     }
+    res = res[order(foreach(x=res,.combine=c)%do%x$perfTotNumber, decreasing=TRUE)]
     my_table <- paste(paste(foreach(x=res, .combine=c)%do%gsub('%', "\\\\%", paste(x$segment, x$sd252, x$perfTot252, x$perfTot, x$basket,
                                                                                    sep=' & ')), collapse=' \\\\[0.4em]\n'), ' \\\\[0.6em]\n')
 
@@ -110,7 +112,7 @@ latex_segment_compare = function(filter_list, top_mcap){
             ggtitle('Parameterized Index performance') + # theme_economist_white() +
             theme_hc() +
             scale_colour_hc() +
-            theme(legend.text=element_text(size=12, family='Palatino'), text=element_text(size=15, family='Palatino')) +
+            theme(legend.text=element_text(size=12, family='Palatino'), text=element_text(size=11, family='Palatino')) +
             labs(color='') +
             xlab('Time') +
             ylab('Performance, %') +

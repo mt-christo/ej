@@ -769,6 +769,18 @@ write.csv(a, file='/home/aslepnev/webhub/it10_backtest.csv', row.names=index(a))
 
 
 -- sectoral
+TAG_FILTERS = c(TAG_FILTERS, list(list(name='tech', target='equity', filter=list(list(field='sector', value=c('Information Technology'))))))
+TAG_FILTERS = c(TAG_FILTERS, list(list(name='energy', target='equity', filter=list(list(field='sector', value=c('Energy'))))))
+TAG_FILTERS = c(TAG_FILTERS, list(list(name='finance', target='equity', filter=list(list(field='sector', value=c('Financials'))))))
+TAG_FILTERS = c(TAG_FILTERS, list(list(name='telecom', target='equity', filter=list(list(field='sector', value=c('Communication Services'))))))
+TAG_FILTERS = c(TAG_FILTERS, list(list(name='staples', target='equity', filter=list(list(field='sector', value=c('Consumer Staples'))))))
+TAG_FILTERS = c(TAG_FILTERS, list(list(name='discret', target='equity', filter=list(list(field='sector', value=c('Consumer Discretionary'))))))
+TAG_FILTERS = c(TAG_FILTERS, list(list(name='industrial', target='equity', filter=list(list(field='sector', value=c('Industrials'))))))
+TAG_FILTERS = c(TAG_FILTERS, list(list(name='materials', target='equity', filter=list(list(field='sector', value=c('Materials'))))))
+TAG_FILTERS = c(TAG_FILTERS, list(list(name='health', target='equity', filter=list(list(field='sector', value=c('Health Care'))))))
+TAG_FILTERS = c(TAG_FILTERS, list(list(name='estate', target='equity', filter=list(list(field='sector', value=c('Real Estate'))))))
+TAG_FILTERS = c(TAG_FILTERS, list(list(name='utility', target='equity', filter=list(list(field='sector', value=c('Utilities'))))))
+
 TAG_FILTERS = c(TAG_FILTERS, list(list(name='retail-stap', target='equity', filter=list(list(field='sector', value=c('Consumer Staples')), list(field='industry_group', value=c('Retail'))))))
 TAG_FILTERS = c(TAG_FILTERS, list(list(name='agriculture', target='equity', filter=list(list(field='sector', value=c('Consumer Staples')), list(field='industry_group', value=c('Agriculture'))))))
 TAG_FILTERS = c(TAG_FILTERS, list(list(name='cosmetics', target='equity', filter=list(list(field='sector', value=c('Consumer Staples')), list(field='industry_group', value=c('Cosmetics/Personal Care'))))))
@@ -797,4 +809,5 @@ dt_start=as.Date('2012-12-29'); dt_end=as.Date('9999-03-01');
 rvc = volcontrol_excess(r1, list(window=20, type='max 10', excess_type='libor plus', add_rate=1, excess=3, level=0.15, max_weight=2.5, basis=360), libors)
 print(sqrt(252)*sd(tail(rvc, 252))); print(tail(exp(cumsum(rvc[index(rvc)>=dt_start & index(rvc)<=dt_end])), 1))
 
+latex_segment_compare(list(c('tech'), c('energy'), c('finance'), c('telecom'), c('staples'), c('discret'), c('industrial'), c('materials'), c('health'), c('estate'), c('utility')), 10)
 latex_segment_compare(list(c('beverage'), c('leisure'), c('superdev', 'cosmetics+apparel')), 5)
