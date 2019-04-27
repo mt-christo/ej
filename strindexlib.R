@@ -3,7 +3,7 @@ library(mnormt)
 library(mvtnorm)
 library(corpcor)
 library(nloptr)
-
+library(RColorBrewer)
 library(gridExtra)
 library(ggplot2)
 library(lubridate)
@@ -21,6 +21,8 @@ library(reshape2)
 library(ggplot2)
 library(ggthemes)
 library(mgcv)
+
+setDTthreads(1)
 registerDoMC(cores=15)
 
 R_STATE_DATA_MASK = '/home/aslepnev/webhub/strtelestate_current_name.csv'

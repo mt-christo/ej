@@ -25,7 +25,9 @@ index_vt_pridex_segment = function(d_etf, d_stock, n_etfs, n_stock, vt, wmin, wm
     return(list(basket=c(b_etf$basket, b_stock$basket), weights=wcom, perf=basket_perf(hcom, wcom), vol250=basket_vol(tail(hcom, 250), wcom), vol120=basket_vol(tail(hcom, 120), wcom)))
 }
 
-# d_etf=pre_screen(de, etf_segment(de$u, 'Asia', 10), smart=TRUE); d_stock=uni_skip_countries(pre_screen(ds, stock_segment(ds$u, 'Asia', 10), smart=TRUE), c('KR')); n_etfs=2; n_stock=4; vt=0.30; wmin=0.1; wmax=0.3
+#p1 = index_vt_pridex_segment_similar(pre_screen(de, etf_segment(de$u, 'Asia', 20), smart=TRUE),
+#                                     pre_screen(ds, stock_segment(ds$u, 'Asia', 20), smart=TRUE), 3, 1, 0.30, 0.15, 0.3)
+# d_etf=pre_screen(de, etf_segment(de$u, 'Asia', 20), smart=TRUE); d_stock=dsds; n_etfs=1; n_stock=4; vt=0.30; wmin=0.1; wmax=0.3
 # d_etf=pre_screen(de, etf_segment(de$u, etf_focus, n_etfs), smart=TRUE); d_stock=pre_screen(ds, stock_segment(ds$u, stock_focus, n_stocks), smart=TRUE); n_etfs=wo_params$etf_count; n_stock=wo_params$stock_count; vt=wo_params$vt; wmin=wo_params$minw; wmax=wo_params$maxw
 index_vt_pridex_segment_similar = function(d_etf, d_stock, n_etfs, n_stock, vt, wmin, wmax){
     d_stock1 = d_stock
@@ -35,21 +37,21 @@ index_vt_pridex_segment_similar = function(d_etf, d_stock, n_etfs, n_stock, vt, 
     d_all$h = cbind(d_etf$h, d_stock1$h)
     colnames(d_all$h) = c(colnames(d_etf$h), colnames(d_stock1$h))
     
-    b_etf = baskets_vol_range(d_etf, n_etfs, volparams=list(wnd=250, min=vt-0.3, max=vt+0.2))  # All baskets within Volatility range witn Volatility and Lowest Market cap info
+    b_etf = baskets_vol_range(d_etf, n_etfs, volparams=list(wnd=250, min=vt-0.1, max=vt+0.2))  # All baskets within Volatility range witn Volatility and Lowest Market cap info
     b_stock = baskets_vol_range(d_stock1, n_stock, volparams=list(wnd=250, min=vt-0.2, max=vt+0.2))  # All baskets within Volatility range witn Volatility and Lowest Market cap info
 
     stock_best_baskets = b_stock$baskets[order(abs(vt - b_stock$sds))[1:min(length(b_stock$sds), 100)], ]  # 20 baskets with vol closest to target
-    etf_best_baskets = b_etf$baskets[order(abs(vt - b_etf$sds))[1:min(length(b_etf$sds), 100)], ]  # 20 baskets with vol closest to target
+    etf_best_baskets = if(is.null(dim(b_etf$baskets))) b_etf$baskets[order(abs(vt - b_etf$sds))[1:min(length(b_etf$sds), 100)]] else b_etf$baskets[order(abs(vt - b_etf$sds))[1:min(length(b_etf$sds), 100)], ]  # 20 baskets with vol closest to target
     
     d_allh = d_all$h[1:max(which(rowSums(is.na(d_all$h))==0)), ]
     d_allh_tail = tail(d_allh, 120)
     w_all = array(1/(n_stock+n_etfs), n_stock+n_etfs)
-    max_count = min(nrow(stock_best_baskets), nrow(etf_best_baskets))
-    sds = foreach(i=1:max_count, .combine=c)%do%basket_vol(d_allh_tail[, c(stock_best_baskets[i,], etf_best_baskets[i,])], w_all)
+    max_count = min(nrow(stock_best_baskets), if(is.null(dim(b_etf$baskets))) length(etf_best_baskets) else nrow(etf_best_baskets))
+    sds = foreach(i=1:max_count, .combine=c)%do%basket_vol(d_allh_tail[, c(stock_best_baskets[i,], if(is.null(dim(b_etf$baskets))) etf_best_baskets[i] else etf_best_baskets[i,])], w_all)
 #    perfs = foreach(i=1:max_count, .combine=c)%do%as.numeric(tail(basket_perf(d_allh[, c(stock_best_baskets[i,], etf_best_baskets[i,])], w_all), 1))
     
     best_i = which.min(abs(vt - sds))
-    best_basket = c(stock_best_baskets[best_i,], etf_best_baskets[best_i,])
+    best_basket = c(stock_best_baskets[best_i,], if(is.null(dim(b_etf$baskets))) etf_best_baskets[best_i] else etf_best_baskets[best_i,])
     hcom = d_allh[, best_basket]
     wcom = optim_sigma(tail(hcom, 500), list(target=vt, wmin=wmin, wmax=wmax))
     print(paste('Volatility:', basket_vol(tail(hcom, 120), wcom), 'Performance:', tail(basket_perf(hcom, wcom), 1)))

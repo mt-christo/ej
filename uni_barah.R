@@ -369,5 +369,7 @@ em1 = foreach(f = list.files('/home/aslepnev/webhub/mcaps', full.names=TRUE), .c
 }
 save(em1, file='/home/aslepnev/webhub/uber_uni_equity_metrics.RData')
 
+e=get(load('/home/aslepnev/webhub/uber_uni_equity.RData'))
+
 
 

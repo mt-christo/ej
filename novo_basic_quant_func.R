@@ -24,11 +24,15 @@ constituent_vols = function(h_in) return( foreach(i=1:ncol(h_in),.combine=c)%do%
 
 basket_perf = function(h_in, w_in) return( exp(cumsum(basket_ret(h_in[rowSums(is.na(h_in))==0, ], w_in))) )
 
-fracperc = function(x, n) return( paste0(as.character(round(x*100, n)), '%') )
+fracperc = function(x, n, do_perc=TRUE) return( paste0(as.character(round(x*100, n)), if(do_perc) '%' else '') )
 
 index_perf = function(x){
     res = rbind(xts(0, order.by=index(x)[1]-1), x)
     res = exp(cumsum(res))
     return(res)
+}
+
+index_vol = function(x, days_base=252){
+    return(sqrt(days_base)*sd(x))
 }
 

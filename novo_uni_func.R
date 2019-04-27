@@ -18,34 +18,53 @@ TAG_FILTERS = c(TAG_FILTERS, list(list(name='staples', target='etf', filter=list
 TAG_FILTERS = c(TAG_FILTERS, list(list(name='discret', target='etf', filter=list(list(field='ind_focus', value=c('Consumer Discretionary'))))))
 TAG_FILTERS = c(TAG_FILTERS, list(list(name='industrial', target='etf', filter=list(list(field='ind_focus', value=c('Industrials'))))))
 
-TAG_FILTERS = c(TAG_FILTERS, list(list(name='us', target='equity', filter=list(list(field='country_name', value=c('UNITED STATES'))))))
-TAG_FILTERS = c(TAG_FILTERS, list(list(name='developedwest', target='equity', filter=list(list(field='country_name', value=c('UNITED STATES', 'FRANCE', 'BRITAIN', 'NETHERLANDS', 'GERMANY', 'SWITZERLAND', 'ITALY'))))))
-TAG_FILTERS = c(TAG_FILTERS, list(list(name='tech', target='equity', filter=list(list(field='sector', value=c('Information Technology'))))))
-TAG_FILTERS = c(TAG_FILTERS, list(list(name='energy', target='equity', filter=list(list(field='sector', value=c('Energy'))))))
-TAG_FILTERS = c(TAG_FILTERS, list(list(name='finance', target='equity', filter=list(list(field='sector', value=c('Financials'))))))
-TAG_FILTERS = c(TAG_FILTERS, list(list(name='telecom', target='equity', filter=list(list(field='sector', value=c('Communication Services'))))))
-TAG_FILTERS = c(TAG_FILTERS, list(list(name='staples', target='equity', filter=list(list(field='sector', value=c('Consumer Staples'))))))
-TAG_FILTERS = c(TAG_FILTERS, list(list(name='discret', target='equity', filter=list(list(field='sector', value=c('Consumer Discretionary'))))))
-TAG_FILTERS = c(TAG_FILTERS, list(list(name='industrial', target='equity', filter=list(list(field='sector', value=c('Industrials'))))))
-TAG_FILTERS = c(TAG_FILTERS, list(list(name='materials', target='equity', filter=list(list(field='sector', value=c('Materials'))))))
-TAG_FILTERS = c(TAG_FILTERS, list(list(name='health', target='equity', filter=list(list(field='sector', value=c('Health Care'))))))
-TAG_FILTERS = c(TAG_FILTERS, list(list(name='estate', target='equity', filter=list(list(field='sector', value=c('Real Estate'))))))
-TAG_FILTERS = c(TAG_FILTERS, list(list(name='utility', target='equity', filter=list(list(field='sector', value=c('Utilities'))))))
-TAG_FILTERS = c(TAG_FILTERS, list(list(name='no_card', target='equity', filter=list(list(field='ticker', value=c('V US Equity', 'MA US Equity'))))))
+#TAG_FILTERS = c(TAG_FILTERS, list(list(name='us', target='equity', filter=list(list(field='country_name', value=c('UNITED STATES'))))))
+#TAG_FILTERS = c(TAG_FILTERS, list(list(name='developedwest', target='equity', filter=list(list(field='country_name', value=c('UNITED STATES', 'FRANCE', 'BRITAIN', 'NETHERLANDS', 'GERMANY', 'SWITZERLAND', 'ITALY'))))))
+#TAG_FILTERS = c(TAG_FILTERS, list(list(name='tech', target='equity', filter=list(list(field='sector', value=c('Information Technology'))))))
+#TAG_FILTERS = c(TAG_FILTERS, list(list(name='energy', target='equity', filter=list(list(field='sector', value=c('Energy'))))))
+#TAG_FILTERS = c(TAG_FILTERS, list(list(name='finance', target='equity', filter=list(list(field='sector', value=c('Financials'))))))
+#TAG_FILTERS = c(TAG_FILTERS, list(list(name='telecom', target='equity', filter=list(list(field='sector', value=c('Communication Services'))))))
+#TAG_FILTERS = c(TAG_FILTERS, list(list(name='staples', target='equity', filter=list(list(field='sector', value=c('Consumer Staples'))))))
+#TAG_FILTERS = c(TAG_FILTERS, list(list(name='discret', target='equity', filter=list(list(field='sector', value=c('Consumer Discretionary'))))))
+#TAG_FILTERS = c(TAG_FILTERS, list(list(name='industrial', target='equity', filter=list(list(field='sector', value=c('Industrials'))))))
+#TAG_FILTERS = c(TAG_FILTERS, list(list(name='materials', target='equity', filter=list(list(field='sector', value=c('Materials'))))))
+#TAG_FILTERS = c(TAG_FILTERS, list(list(name='health', target='equity', filter=list(list(field='sector', value=c('Health Care'))))))
+#TAG_FILTERS = c(TAG_FILTERS, list(list(name='estate', target='equity', filter=list(list(field='sector', value=c('Real Estate'))))))
+#TAG_FILTERS = c(TAG_FILTERS, list(list(name='utility', target='equity', filter=list(list(field='sector', value=c('Utilities'))))))
+#TAG_FILTERS = c(TAG_FILTERS, list(list(name='no_card', target='equity', filter=list(list(field='ticker', value=c('V US Equity', 'MA US Equity'))))))
 
-TAG_FILTERS = c(TAG_FILTERS, list(list(name='retail-stap', target='equity', filter=list(list(field='sector', value=c('Consumer Staples')), list(field='industry_group', value=c('Retail'))))))
-TAG_FILTERS = c(TAG_FILTERS, list(list(name='agriculture', target='equity', filter=list(list(field='sector', value=c('Consumer Staples')), list(field='industry_group', value=c('Agriculture'))))))
-TAG_FILTERS = c(TAG_FILTERS, list(list(name='cosmetics', target='equity', filter=list(list(field='sector', value=c('Consumer Staples')), list(field='industry_group', value=c('Cosmetics/Personal Care'))))))
-TAG_FILTERS = c(TAG_FILTERS, list(list(name='beverage', target='equity', filter=list(list(field='sector', value=c('Consumer Staples')), list(field='industry_group', value=c('Beverages'))))))
-TAG_FILTERS = c(TAG_FILTERS, list(list(name='food', target='equity', filter=list(list(field='sector', value=c('Consumer Staples')), list(field='industry_group', value=c('Food'))))))
-TAG_FILTERS = c(TAG_FILTERS, list(list(name='household', target='equity', filter=list(list(field='sector', value=c('Consumer Staples')), list(field='industry_group', value=c('Household Products/Wares'))))))
+#TAG_FILTERS = c(TAG_FILTERS, list(list(name='retail-stap', target='equity', filter=list(list(field='sector', value=c('Consumer Staples')), list(field='industry_group', value=c('Retail'))))))
+#TAG_FILTERS = c(TAG_FILTERS, list(list(name='agriculture', target='equity', filter=list(list(field='sector', value=c('Consumer Staples')), list(field='industry_group', value=c('Agriculture'))))))
+#TAG_FILTERS = c(TAG_FILTERS, list(list(name='cosmetics', target='equity', filter=list(list(field='sector', value=c('Consumer Staples')), list(field='industry_group', value=c('Cosmetics/Personal Care'))))))
+#TAG_FILTERS = c(TAG_FILTERS, list(list(name='beverage', target='equity', filter=list(list(field='sector', value=c('Consumer Staples')), list(field='industry_group', value=c('Beverages'))))))
+#TAG_FILTERS = c(TAG_FILTERS, list(list(name='food', target='equity', filter=list(list(field='sector', value=c('Consumer Staples')), list(field='industry_group', value=c('Food'))))))
+#TAG_FILTERS = c(TAG_FILTERS, list(list(name='household', target='equity', filter=list(list(field='sector', value=c('Consumer Staples')), list(field='industry_group', value=c('Household Products/Wares'))))))
 
-TAG_FILTERS = c(TAG_FILTERS, list(list(name='internet-discr', target='equity', filter=list(list(field='sector', value=c('Consumer Discretionary')), list(field='industry_group', value=c('Internet'))))))
-TAG_FILTERS = c(TAG_FILTERS, list(list(name='retail-discr', target='equity', filter=list(list(field='sector', value=c('Consumer Discretionary')), list(field='industry_group', value=c('Retail'))))))
-TAG_FILTERS = c(TAG_FILTERS, list(list(name='apparel', target='equity', filter=list(list(field='sector', value=c('Consumer Discretionary')), list(field='industry_group', value=c('Apparel'))))))
-TAG_FILTERS = c(TAG_FILTERS, list(list(name='lodging', target='equity', filter=list(list(field='sector', value=c('Consumer Discretionary')), list(field='industry_group', value=c('Lodging'))))))
-TAG_FILTERS = c(TAG_FILTERS, list(list(name='auto', target='equity', filter=list(list(field='sector', value=c('Consumer Discretionary')), list(field='industry_group', value=c('Auto Manufacturers'))))))
-TAG_FILTERS = c(TAG_FILTERS, list(list(name='leisure', target='equity', filter=list(list(field='sector', value=c('Consumer Discretionary')), list(field='industry_group', value=c('Leisure Time'))))))
+#TAG_FILTERS = c(TAG_FILTERS, list(list(name='internet-discr', target='equity', filter=list(list(field='sector', value=c('Consumer Discretionary')), list(field='industry_group', value=c('Internet'))))))
+#TAG_FILTERS = c(TAG_FILTERS, list(list(name='retail-discr', target='equity', filter=list(list(field='sector', value=c('Consumer Discretionary')), list(field='industry_group', value=c('Retail'))))))
+#TAG_FILTERS = c(TAG_FILTERS, list(list(name='apparel', target='equity', filter=list(list(field='sector', value=c('Consumer Discretionary')), list(field='industry_group', value=c('Apparel'))))))
+#TAG_FILTERS = c(TAG_FILTERS, list(list(name='lodging', target='equity', filter=list(list(field='sector', value=c('Consumer Discretionary')), list(field='industry_group', value=c('Lodging'))))))
+#TAG_FILTERS = c(TAG_FILTERS, list(list(name='auto', target='equity', filter=list(list(field='sector', value=c('Consumer Discretionary')), list(field='industry_group', value=c('Auto Manufacturers'))))))
+#TAG_FILTERS = c(TAG_FILTERS, list(list(name='leisure', target='equity', filter=list(list(field='sector', value=c('Consumer Discretionary')), list(field='industry_group', value=c('Leisure Time'))))))
+
+all_tag_filters_industry_group = function(){
+    u = get(load('/home/aslepnev/webhub/uber_uni_equity.RData'))
+
+    t = u[sector!='#N/A N/A', unique(sector)]
+    res1 = foreach(i=t)%do%  # i=t[1]
+        list(name = i,
+             target = 'equity',
+             filter = list(list(field='sector', value=i)))
+    
+    t = u[sector!='#N/A N/A' & industry_group!='#N/A N/A', .N, by=c('sector', 'industry_group')]
+    res2 = foreach(i=1:nrow(t))%do%  # i=1
+        list(name = paste0(t[i, sector], '/ ', t[i, industry_group]),
+             target = 'equity',
+             filter = list(list(field='sector', value=c(t[i, sector])), list(field='industry_group', value=c(t[i, industry_group]))))
+    return(c(res1, res2))
+}
+
+TAG_FILTERS = c(TAG_FILTERS, all_tag_filters_industry_group())
 
 tag_id = 0
 TAG_FILTERS = rbindlist(foreach(t = TAG_FILTERS)%do%{
@@ -53,7 +72,6 @@ TAG_FILTERS = rbindlist(foreach(t = TAG_FILTERS)%do%{
     rbindlist(foreach(f = t$filter)%do%rbindlist(foreach(v = f$value)%do%data.table(id=c(tag_id), name=c(t$name), target=c(t$target), field=c(f$field), value=c(v)), fill=TRUE, use.names=TRUE),
               fill=TRUE, use.names=TRUE)
 }, fill=TRUE, use.names=TRUE)
-
 
 #    res = if(segname=='Asia') u_in[geo_focus%in%geo_focus_asia | geo_focus2%in%, ] else
 #      if(segname=='West') u_in[geo_focus%in%geo_focus_west | geo_focus2%in%, ] else
@@ -209,55 +227,55 @@ load_uni = function(uni_options, filter_tags){
 #}
 
 # u_in=de$u; segname='United States'; topn=40
-#etf_segment = function(u_in, segname, topn=1000000){
-#    geo_focus_asia = c('Japan', 'Asian Pacific Region', 'China', 'Asian Pacific Region ex Japan', 'Greater China', 'South Korea', 'Taiwan', 'Hong Kong', 'Greater China,Hong Kong', 'India', 'Indonesia', 'Singapore', 'Malaysia', 'Thailand')
-#    geo_focus_west = c('United States', 'California', 'European Region', 'New York', 'Pennsylvania', 'Minnesota', 'Canada', 'New Jersey', 'Ohio', 'Eurozone', 'Virginia', 'Massachusetts', 'Oregon', 'Missouri', 'North American Region', 'Michigan', 'Germany', 'Maryland', 'United Kingdom', 'Australia', 'European Region,Australia', 'Global,United States', 'Spain', 'Kentucky', 'Arizona', 'Switzerland', 'North Carolina', 'Hawaii', 'Colorado', 'France', 'Singapore')
-#    geo_focus_deveuro = c('Eurozone', 'Germany', 'United Kingdom', 'Spain', 'Switzerland', 'France')
-#    geo_focus_global = c('International', 'Global')
-#    
-#    res = if(segname=='Asia') u_in[geo_focus%in%geo_focus_asia | geo_focus2%in%c('Emerging Asia', 'Asia'), ] else
-#      if(segname=='West') u_in[geo_focus%in%geo_focus_west | geo_focus2%in%c('North America', 'Developed Europe'), ] else
-#      if(segname=='Developed Europe') u_in[(geo_focus=='European Region' & geo_focus2=='Developed Market') | geo_focus%in%geo_focus_deveuro, ] else
-#      if(segname=='Global') u_in[geo_focus%in%geo_focus_global | geo_focus2=='Global', ] else
-#      if(segname%in%u_in$ind_focus) u_in[ind_focus==segname, ]else
-#      if(segname%in%u_in$geo_focus) u_in[geo_focus==segname, ]
-#
-#    return(res[order(mcap, decreasing=TRUE), ][1:min(nrow(res), topn), ])
-#}
+etf_segment = function(u_in, segname, topn=1000000){
+    geo_focus_asia = c('Japan', 'Asian Pacific Region', 'China', 'Asian Pacific Region ex Japan', 'Greater China', 'South Korea', 'Taiwan', 'Hong Kong', 'Greater China,Hong Kong', 'India', 'Indonesia', 'Singapore', 'Malaysia', 'Thailand')
+    geo_focus_west = c('United States', 'California', 'European Region', 'New York', 'Pennsylvania', 'Minnesota', 'Canada', 'New Jersey', 'Ohio', 'Eurozone', 'Virginia', 'Massachusetts', 'Oregon', 'Missouri', 'North American Region', 'Michigan', 'Germany', 'Maryland', 'United Kingdom', 'Australia', 'European Region,Australia', 'Global,United States', 'Spain', 'Kentucky', 'Arizona', 'Switzerland', 'North Carolina', 'Hawaii', 'Colorado', 'France', 'Singapore')
+    geo_focus_deveuro = c('Eurozone', 'Germany', 'United Kingdom', 'Spain', 'Switzerland', 'France')
+    geo_focus_global = c('International', 'Global')
+    
+    res = if(segname=='Asia') u_in[geo_focus%in%geo_focus_asia | geo_focus2%in%c('Emerging Asia', 'Asia'), ] else
+      if(segname=='West') u_in[geo_focus%in%geo_focus_west | geo_focus2%in%c('North America', 'Developed Europe'), ] else
+      if(segname=='Developed Europe') u_in[(geo_focus=='European Region' & geo_focus2=='Developed Market') | geo_focus%in%geo_focus_deveuro, ] else
+      if(segname=='Global') u_in[geo_focus%in%geo_focus_global | geo_focus2=='Global', ] else
+      if(segname%in%u_in$ind_focus) u_in[ind_focus==segname, ]else
+      if(segname%in%u_in$geo_focus) u_in[geo_focus==segname, ]
 
-## u_in=ds$u; segname='UNITED STATES'; topn=40
-#stock_segment = function(u_in, segname, topn=1000000){
-#    country_asia = c("CHINA", "INDIA", "SINGAPORE", "INDONESIA", "PHILIPPINES", "THAILAND", "BERMUDA", "HONG KONG", "BANGLADESH", "MALAYSIA", "VIETNAM", "KOREA", "JAPAN", "TAIWAN")
-#    country_west = c("UNITED STATES", "SWITZERLAND", "FRANCE", "GERMANY", "IRELAND", "AUSTRALIA", "CANADA", "BRITAIN", "NORWAY", "NETHERLANDS", "SPAIN", "SWEDEN", "LUXEMBOURG", "ITALY", "ISRAEL", "AUSTRIA", "BELGIUM", "DENMARK", "POLAND", "NEW ZEALAND")
-#    country_deveuro = c("SWITZERLAND", "FRANCE", "GERMANY", "IRELAND", "BRITAIN", "NORWAY", "NETHERLANDS", "SPAIN", "SWEDEN", "LUXEMBOURG", "ITALY", "AUSTRIA", "BELGIUM", "DENMARK")
-#    
-#    res = if(segname=='Asia') u_in[country_name%in%country_asia, ] else
-#      if(segname=='West') u_in[country_name%in%country_west, ] else
-#      if(segname=='Developed Europe') u_in[country_name%in%country_deveuro, ] else
-#      if(segname%in%u_in$sector) u_in[sector==segname, ] else
-#      if(segname%in%u_in$country_name) u_in[country_name==segname, ]
-#
-#    return(res[order(mcap, decreasing=TRUE), ][1:min(nrow(res), topn), ])
-#}
+    return(res[order(mcap, decreasing=TRUE), ][1:min(nrow(res), topn), ])
+}
+
+# u_in=ds$u; segname='UNITED STATES'; topn=40
+stock_segment = function(u_in, segname, topn=1000000){
+    country_asia = c("CHINA", "INDIA", "SINGAPORE", "INDONESIA", "PHILIPPINES", "THAILAND", "BERMUDA", "HONG KONG", "BANGLADESH", "MALAYSIA", "VIETNAM", "KOREA", "JAPAN", "TAIWAN")
+    country_west = c("UNITED STATES", "SWITZERLAND", "FRANCE", "GERMANY", "IRELAND", "AUSTRALIA", "CANADA", "BRITAIN", "NORWAY", "NETHERLANDS", "SPAIN", "SWEDEN", "LUXEMBOURG", "ITALY", "ISRAEL", "AUSTRIA", "BELGIUM", "DENMARK", "POLAND", "NEW ZEALAND")
+    country_deveuro = c("SWITZERLAND", "FRANCE", "GERMANY", "IRELAND", "BRITAIN", "NORWAY", "NETHERLANDS", "SPAIN", "SWEDEN", "LUXEMBOURG", "ITALY", "AUSTRIA", "BELGIUM", "DENMARK")
+    
+    res = if(segname=='Asia') u_in[country_name%in%country_asia, ] else
+      if(segname=='West') u_in[country_name%in%country_west, ] else
+      if(segname=='Developed Europe') u_in[country_name%in%country_deveuro, ] else
+      if(segname%in%u_in$sector) u_in[sector==segname, ] else
+      if(segname%in%u_in$country_name) u_in[country_name==segname, ]
+
+    return(res[order(mcap, decreasing=TRUE), ][1:min(nrow(res), topn), ])
+}
 
 # u = D$u[,.SD[1,], by=focus]
 # D=D_STOCKS; u = d_stocks
 # D_in=ds; u=stock_segment(ds_in$u, segstock, n_stock); smart=TRUE
 # D_in=list(h=tss); u=uu; smart=TRUE
-#pre_screen = function(D_in, u, smart = FALSE){
-#    u1 = u[ticker%in%colnames(D_in$h), ]
-#    h1 = D_in$h[, u1$ticker]
-#    if(smart){
-#        h1 = h_to_log(h1)
-##        rng = as.numeric(t(foreach(i=1:ncol(h1),.combine=cbind)%do%sum(abs(range(apply.yearly(h1[,i], sum))) < 0.6)))
-##        res = list(u=u1[rng==2, ], h=h1[, rng==2])
-#        res = list(u=u1, h=h1)
-#        
-#        return(res)
-#    }
-#    
-#    return(list(u=u1, h=h1))
-#}
+pre_screen = function(D_in, u, smart = FALSE){
+    u1 = u[ticker%in%colnames(D_in$h), ]
+    h1 = D_in$h[, u1$ticker]
+    if(smart){
+        h1 = h_to_log(h1)
+#        rng = as.numeric(t(foreach(i=1:ncol(h1),.combine=cbind)%do%sum(abs(range(apply.yearly(h1[,i], sum))) < 0.6)))
+#        res = list(u=u1[rng==2, ], h=h1[, rng==2])
+        res = list(u=u1, h=h1)
+        
+        return(res)
+    }
+    
+    return(list(u=u1, h=h1))
+}
 
 rebals_func = function(period) return(if(period=='year') apply.yearly else if(period=='quarter') apply.quarterly else if(period=='month') apply.monthly else stop("Unknown period"))
 

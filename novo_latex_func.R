@@ -77,28 +77,44 @@ latex_pm_card = function(r_in, r1_in, terms_in, vc_targets, vc_types, fixed_vc_p
 }
 
 # filter_list = list(c('beverage'), c('leisure'), c('superdev', 'cosmetics+apparel')); top_mcap=10
-# filter_list = list(c('health'), c('tech'), c('finance'), c('staples'), c('discret'), c('industrial')); top_mcap=10
-latex_segment_compare = function(filter_list, top_mcap){
-    res = foreach(f = filter_list)%dopar%{  # f = filter_list[[3]]
+# filter_list = list(c('Health Care'), c('tech'), c('finance'), c('staples'), c('discret'), c('industrial')); top_mcap=10
+# filter_list = list(c('Enrg-Trnsprttn')); top_mcap=5
+latex_segment_compare_prep = function(filter_list, top_mcap){
+    start_date = as.Date('2012-12-29')
+    res = foreach(f = filter_list)%dopar%{  # f = filter_list[[1]]
         print(f)
         u = load_uni(c('equity', 'equity_metrics', 'h', 'libors'),
                      list(field_filter=f, rank_filter=c(paste('top', top_mcap, 'mcap'))))
-        if(nrow(u$equity) == 0) stop('Zero companies - should-t be!')
+        if(nrow(u$equity) < top_mcap) stop('Zero companies - should-t be!')
         r = build_index_simpler(u, 'month', screen_mixed_top, screen_params=list(perf_weight=0, top_n=top_mcap, price_window=250), '2012-12-29')
         r1 = foreach(x=r,.combine=rbind)%do%x$h
-        dt_start=as.Date('2012-12-29'); dt_end=as.Date('9999-03-01');
+        sds = apply.yearly(r1, FUN=index_vol)
+        
+        dt_start = start_date
+        dt_end = as.Date('9999-03-01')        
         r_limited = r1[index(r1)>=dt_start & index(r1)<=dt_end]
         list(segment=gsub('\\+', ' +', paste(f, collapse='/ ')),
-             sd252 = fracperc(sqrt(252)*sd(tail(r1, 252)), 1),
+             sd252 = fracperc(index_vol(tail(r1, 252)), 1),
+             sd_all = paste0(fracperc(mean(sds), 1, FALSE), '\\mypm ', fracperc(sd(sds), 0)),
              perfTot = fracperc(exp(sum(r_limited))-1, 0),
              perfTotNumber = exp(sum(r_limited)),
              perfTot252 = fracperc(exp(sum(tail(r1, 252)))-1, 0),
              perf = 100*(index_perf(r_limited)-1),
              basket = paste(gsub(' Equity', '', r[[length(r)]]$basket$main$names), collapse=', '))
     }
+    
+    return(res)
+}
+
+# prep_list=prep_data[seq(i*20+1, min(length(tags_list), (i+1)*20))]; top_mcap=5; file_postfix=0
+# prep_list=prep_data[seq(i*per_page+1, min(length(prep_data), (i+1)*per_page))]; file_postfix=i
+latex_segment_compare_path = function(prep_list, top_mcap, file_postfix){
+    start_date = as.Date('2012-12-29')
+    res = prep_list
+    
     res = res[order(foreach(x=res,.combine=c)%do%x$perfTotNumber, decreasing=TRUE)]
-    my_table <- paste(paste(foreach(x=res, .combine=c)%do%gsub('%', "\\\\%", paste(x$segment, x$sd252, x$perfTot252, x$perfTot, x$basket,
-                                                                                   sep=' & ')), collapse=' \\\\[0.4em]\n'), ' \\\\[0.6em]\n')
+    my_table <- paste(paste(foreach(x=res, .combine=c)%do%gsub('%', "\\\\%", paste(gsub('&', '/', x$segment), x$sd_all, x$perfTot252, x$perfTot, x$basket,
+                                                                                   sep=' & ')), collapse=' \\\\[0.4em]\\hline\n'), ' \\\\[0.6em]\n')
 
     my_chart = foreach(x=res,.combine=cbind)%do%to.monthly(x$perf, indexAt='endof')[, 'x$perf.Open']
     colnames(my_chart) = foreach(x=res, .combine=c)%do%x$segment
@@ -107,12 +123,19 @@ latex_segment_compare = function(filter_list, top_mcap){
     chart_path = '/home/aslepnev/webhub/PDFs/novo_chart.png'
     png(chart_path, height=400)
 
+    if(FALSE){
+        source('/home/aslepnev/git/ej/novo_latex_func.R')
+        send_files_to_email(c(foreach(i=c(0),.combine=c)%do%latex_segment_compare_path(prep_data[seq(i*per_page+1, min(length(prep_data), (i+1)*per_page))], top_mcap, i)),
+                            'Segment performances', 'aslepnev@novo-x.info')
+    }
+
     plot_func = function(x){
         ggplot(x) + #geom_line(aes(x=Date, y=Price, group=Index, color=Index), size=1) +
             ggtitle('Parameterized Index performance') + # theme_economist_white() +
             theme_hc() +
-            scale_colour_hc() +
-            theme(legend.text=element_text(size=12, family='Palatino'), text=element_text(size=11, family='Palatino')) +
+            scale_colour_hc(guide = guide_legend(ncol=2)) + 
+            theme(legend.text=element_text(size=8, family='Palatino'), text=element_text(size=11, family='Palatino')) +
+            # guides(fill=colorRampPalette(brewer.pal(9, "Set1"))(length(res))) +   # 
             labs(color='') +
             xlab('Time') +
             ylab('Performance, %') +
@@ -126,10 +149,11 @@ latex_segment_compare = function(filter_list, top_mcap){
     setwd('/home/aslepnev/webhub/PDFs')
     system('pdflatex segment_perf.tex')
 
-    pdf_path = paste0('/home/aslepnev/webhub/PDFs/segment_perf.pdf')
+    new_path = paste0('/home/aslepnev/webhub/PDFs/segment_perf_', file_postfix, '.pdf')
+    system(paste0('cp segment_perf.pdf ', new_path))
+    
+#    library(mailR)
+#    send_files_to_email(c(pdf_path), 'Segments', 'aslepnev@novo-x.info')
 
-    library(mailR)
-    send_files_to_email(c(pdf_path), 'Segments', 'aslepnev@novo-x.info')
-
-    return(pdf_path)    
+    return(new_path)
 }
