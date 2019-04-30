@@ -1,4 +1,5 @@
-    D_STOCKS = get(load('/home/aslepnev/webhub/zacks_data.RData'))
+if(FALSE){
+D_STOCKS = get(load('/home/aslepnev/webhub/zacks_data.RData'))
     ##### D_STOCKS$h = D_STOCKS$h[-3013]; save(D_STOCKS, file='/home/aslepnev/webhub/zacks_data.RData')
     d_stocks = head(D_STOCKS$u, 500)  # 500 biggest companies
     
@@ -716,6 +717,7 @@ libors = get(load('/home/aslepnev/git/ej/it_top10_uni.RData'))$libor
 h = fread('/home/aslepnev/webhub/smidai_etf_hist1.csv')[, Date := as.Date(Date)]
 b = fread('/home/aslepnev/webhub/smidai_hist_baskets.csv')
 f = fread('/home/aslepnev/webhub/smidai_hist_funds.csv')
+f[ticker=='US0003M' & basket_id<7, weight:=0.6]
 
 for(n in colnames(h)[-1]) {  # n=colnames(h)[10]
     h[[n]][h[, n, with=FALSE]=='#N/A N/A'] = NA
@@ -732,12 +734,31 @@ r = build_index_simple(h, get_rebals_h(h, 'month'), smidai_style_rebal, screen_p
 r1 = foreach(x=r,.combine=rbind)%do%x$h
 
 end_date='2019-02-04'
-rvc = volcontrol_excess(r1, list(window=20, type='max 5', excess_type = 'libor plus', add_rate=1, excess=3, level=0.08, max_weight=2.5, basis=365), libors);
-fwrite(100*index_perf(rvc),file='/home/aslepnev/webhub/smidai2_bt_20190424.csv')
-fwrite(100*index_perf(r1),file='/home/aslepnev/webhub/smidai2_bt_original_20190424.csv')
-fwrite(w, file='/home/aslepnev/webhub/smidai2_bt_weights_20190424.csv')
-rvc = rvc[index(rvc)>='2014-02-04' & index(rvc)<=end_date]; print(sqrt(252)*sd(tail(rvc, 252))); print(tail(exp(cumsum(rvc)), 1))
-rvc = volcontrol_excess(r1, list(window=20, type='max 6', excess_type = 'libor plus', add_rate=1, excess=3, level=0.08, max_weight=2.5, basis=365), libors); rvc = rvc[index(rvc)>='2016-02-04' & index(rvc)<=end_date]; print(sqrt(252)*sd(tail(rvc, 252))); print(tail(exp(cumsum(rvc)), 1))
+#rvc = volcontrol_excess(r1, list(window=20, type='max 5', excess_type = 'libor plus', add_rate=1, excess=3, level=0.08, max_weight=2.5, basis=365), libors);
+#fwrite(100*index_perf(rvc),file='/home/aslepnev/webhub/smidai2_bt_20190424.csv')
+#fwrite(100*index_perf(r1),file='/home/aslepnev/webhub/smidai2_bt_original_20190424.csv')
+#fwrite(w, file='/home/aslepnev/webhub/smidai2_bt_weights_20190424.csv')
+#rvc = rvc[index(rvc)>='2014-02-04' & index(rvc)<=end_date]; print(sqrt(252)*sd(tail(rvc, 252))); print(tail(exp(cumsum(rvc)), 1))
+rvc = volcontrol_excess(r1, list(window=20, type='max 6', excess_type = 'libor plus', add_rate=1, excess=3, level=0.08, max_weight=2.5, basis=365), libors); rvc = rvc[index(rvc)>='2016-02-04' & index(rvc)<=end_date]; print(sqrt(365)*sd(tail(rvc, 252))); print(tail(exp(cumsum(rvc)), 1))
+
+
+
+
+-- FASHION fixed
+
+itx_bench = load_uni(c('equity', 'h'), list(fixed_list=c('ITX SM Equity')))$h
+u = load_uni(c('equity', 'equity_metrics', 'h', 'libors'), list(fixed_list=c('4911 JP Equity', 'EL US Equity', 'PG US Equity', 'TSCO LN Equity', 'PEP US Equity', 'BN FP Equity', 'NESN SW Equity', 'WMT US Equity')))
+
+h = u$h
+b = data.table(id=1, weight=1, name='ALL')
+f = data.table(ticker=u$equity$ticker)[, ':='(basket_id=1, name=ticker, weight=0.5)][, id:=1:nrow(u$equity)]
+r = build_index_simple(h, get_rebals_h(h, 'month'), smidai_style_rebal, screen_params=list(funds=f, baskets=b, window=252, voltarget=0.075), start_date='2014-01-01')
+r1 = foreach(x=r,.combine=rbind)%do%x$h
+sum(r1[index(r1)>='2018-01-01' & index(r1)<='2020-01-01'])
+sum(itx_bench[index(itx_bench)>='2018-01-01' & index(itx_bench)<='2020-01-01'])
+
+end_date='2019-02-04'
+rvc = volcontrol_excess(r1, list(window=20, type='max 6', excess_type = 'libor plus', add_rate=1, excess=3, level=0.08, max_weight=2.5, basis=365), libors); rvc = rvc[index(rvc)>='2016-02-04' & index(rvc)<=end_date]; print(sqrt(365)*sd(tail(rvc, 252))); print(tail(exp(cumsum(rvc)), 1))
 
 
 
@@ -779,7 +800,7 @@ a = u$p[,u$equity_metrics[dt=="2017-02-01",][order(mcap,decreasing=TRUE),ticker]
 write.csv(a, file='/home/aslepnev/webhub/it10_backtest.csv', row.names=index(a))
 
 
--- sectoral
+-- sectoral top N mcap
 
 u = load_uni(c('equity', 'equity_metrics', 'h', 'libors', 'p'),
 #             list(field_filter=c('agriculture'), rank_filter=c('top 40 mcap')))
@@ -818,3 +839,60 @@ per_page = 11
 source('/home/aslepnev/git/ej/novo_latex_func.R')
 send_files_to_email(c(foreach(i=0:(length(prep_data)%/%per_page),.combine=c)%do%latex_segment_compare_path(prep_data[seq(i*per_page+1, min(length(prep_data), (i+1)*per_page))], top_mcap, i)),
                     'Segment performances', 'aslepnev@novo-x.info')
+
+
+
+
+
+
+
+
+
+
+
+-- sectoral WO
+
+u = load_uni(c('equity', 'h', 'libors'),
+#             list(field_filter=c('agriculture'), rank_filter=c('top 40 mcap')))
+#             list(field_filter=c('beverage'), rank_filter=c('top 40 mcap')))
+#             list(field_filter=c('leisure'), rank_filter=c('top 40 mcap')))
+             list(field_filter=c('west', 'tech')))
+#             list(field_filter=c('agriculture+cosmetics'), rank_filter=c('top 40 mcap')))
+#r = build_index_simpler(u, 'month', screen_mixed_top, screen_params=list(perf_weight=1, top_n=20, price_window=250), '2012-12-29')  
+r = build_index_simpler(u, 'month', smidai_mixed_rebal, screen_params=list(perf_weight=2, top_n=10, price_window=250, voltarget=0.15), '2012-12-31')  
+#r = build_index_simpler(u, 'month', screen_mixed_top, screen_params=list(perf_weight=0.5, top_n=10, price_window=40), '2012-12-31')
+r1 = foreach(x=r,.combine=rbind)%do%x$h
+dt_start=as.Date('2012-12-29'); dt_end=as.Date('9999-03-01'); 
+rvc = volcontrol_excess(r1, list(window=20, type='max 10', excess_type='libor plus', add_rate=1, excess=3, level=0.15, max_weight=2.5, basis=360), libors)
+print(sqrt(252)*sd(tail(rvc, 252))); print(tail(exp(cumsum(rvc[index(rvc)>=dt_start & index(rvc)<=dt_end])), 1))
+
+source('/home/aslepnev/git/ej/strindexlib.R')
+
+latex_segment_compare(list(c('tech'), c('energy'), c('finance'), c('telecom'), c('staples'), c('discret'), c('industrial'), c('materials'), c('health'), c('estate'), c('utility')), 10)
+latex_segment_compare(list(c('tech'), c('energy'), c('finance'), c('telecom'), c('staples'), c('discret'), c('industrial'), c('materials'), c('health'), c('estate'), c('utility')), 5)
+latex_segment_compare(list(c('us', 'tech+telecom'), c('us', 'finance+industrial'), c('us', 'staples+discret'), c('us', 'materials+utilities'), c('us', 'health+staples')), 5)
+latex_segment_compare(list(c('beverage'), c('leisure'), c('cosmetics'), c('apparel')), 5)
+latex_segment_compare(list(c('us', 'beverage+leisure'), c('us', 'leisure+apparel'), c('us', 'cosmetics+apparel+leisure')), 10)
+
+tags_list = foreach(x=TAG_FILTERS[target=='equity', unique(name)])%do%c(x)
+top_mcap = 5
+prep_data = foreach(i=0:42,.combine=c)%do%tryCatch({ latex_segment_compare_prep(tags_list[seq(i*5+1, min(length(tags_list), (i+1)*5))], top_mcap) }, error=function(e){ list() })
+prep_data = prep_data[order(foreach(x=prep_data,.combine=c)%do%x$perfTotNumber, decreasing=TRUE)]
+save(prep_data, file='/home/aslepnev/webhub/segment_curves_5cnt.RData')
+top_mcap = 6
+prep_data = foreach(i=0:42,.combine=c)%do%tryCatch({ latex_segment_compare_prep(tags_list[seq(i*5+1, min(length(tags_list), (i+1)*5))], top_mcap) }, error=function(e){ list() })
+prep_data = prep_data[order(foreach(x=prep_data,.combine=c)%do%x$perfTotNumber, decreasing=TRUE)]
+save(prep_data, file='/home/aslepnev/webhub/segment_curves_6cnt.RData')
+
+library(mailR)
+per_page = 11
+source('/home/aslepnev/git/ej/novo_latex_func.R')
+send_files_to_email(c(foreach(i=0:(length(prep_data)%/%per_page),.combine=c)%do%latex_segment_compare_path(prep_data[seq(i*per_page+1, min(length(prep_data), (i+1)*per_page))], top_mcap, i)),
+                    'Segment performances', 'aslepnev@novo-x.info')
+
+
+
+
+
+
+}

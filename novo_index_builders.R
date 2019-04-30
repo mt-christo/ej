@@ -72,7 +72,7 @@ build_index_simpler = function(u_in, rebal_freq, screen_func, screen_params, sta
 
 # h_in = shmae; rebal_dates=get_rebals_h(h_in, 'quarter'); screen_func=screen_partial_momentum; screen_params=list(window=40, w=0.1); start_date='2016-06-30'
 # h_in = shmae; rebal_dates=get_rebals_h(h_in, 'month'); screen_func=screen_partial_momentum; screen_params=list(window=20, w=0.0); start_date='2016-06-30'
-# h_in = h; rebal_dates=get_rebals_h(h_in, 'month'); screen_func=smidai_style_rebal; screen_params=list(funds=f, baskets=b, window=20, voltarget=0.075); start_date='2006-12-29'
+# h_in = h; rebal_dates=get_rebals_h(h_in, 'month'); screen_func=smidai_style_rebal; screen_params=list(funds=f, baskets=b, window=20, voltarget=0.075); start_date='2007-12-29'
 build_index_simple = function(h_in, rebal_dates, screen_func, screen_params, start_date){
     rebal_idx = match(rebal_dates[rebal_dates>=start_date], index(h_in))
     calc_pieces = foreach(i=1:(length(rebal_idx) - 1))%do%

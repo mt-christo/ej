@@ -6,7 +6,7 @@ spread_wnd_mas = function(){
 #    comdty = GET$comdty
 #    spread_months = GET$spread_months
     spread_id = GET$spread_id
-    hist_depth = GET$depth
+    hist_depth = as.numeric(GET$depth)
     amnt = if('amount'%in%names(GET)) GET$amount else 1
     
     dt_start_bunch = GET$dt_start_bunch
@@ -51,7 +51,7 @@ spread_wnd_results = function(){
 #    comdty = GET$comdty
 #    spread_months = GET$spread_months
     spread_id = GET$spread_id
-    hist_depth = GET$depth
+    hist_depth = as.numeric(GET$depth)
     
     results_start_luft = as.numeric(GET$results_start_luft)
     results_end_luft = as.numeric(GET$results_end_luft)

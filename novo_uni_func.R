@@ -109,6 +109,7 @@ uni_skip_countries_tickers = function(uni_in, countries_skip_list, tickers_skip_
 # filter_tags = list(field_filter=c('europe'), rank_filter=c('top 10 mcap'))
 # filter_tags = list(field_filter=c('asia'), rank_filter=c('top 10 mcap'))
 # filter_tags = list(field_filter=c('us', 'tech'), skip_filter=c('no_card'), rank_filter=c('top 30 mcap'))
+# filter_tags = list(field_filter=c('west', 'tech'), skip_filter=c('no_card'), rank_filter=c('top 30 mcap'))
 # filter_tags = list(field_filter=c('us', 'staples+discret'), skip_filter=c('no_card'), rank_filter=c('top 30 mcap'))
 # filter_tags = list(field_filter=c('us', 'discret'), skip_filter=c('no_card'), rank_filter=c('top 30 mcap'))
 # filter_tags = c()
@@ -135,6 +136,9 @@ load_uni = function(uni_options, filter_tags){
             
     tickers = foreach(n = asset_classes, .combine=c)%do%{ if(n%in%names(res)) unique(res[[n]]$ticker) else c() }  # n = asset_classes[2]
 
+    if('fixed_list'%in%names(filter_tags))
+        tickers = tickers[tickers%in%filter_tags$fixed_list]
+    
     if('field_filter'%in%names(filter_tags) && length(filter_tags$field_filter)>0)
         tickers = tickers[foreach(n = filter_tags$field_filter, .combine='&')%do%{  # n = filter_tags$field_filter[1]
             tickers %in% (foreach(m = strsplit(n, '\\+')[[1]], .combine=c)%do%  # m = strsplit(n, '\\+')[[1]][2] 
@@ -166,6 +170,9 @@ load_uni = function(uni_options, filter_tags){
                 for(ftag in filter_tags$rank_filter)  # ftag = filter_tags$rank_filter[1]
 #                    if(startsWith(ftag, 'top ') && endsWith(ftag, ' mcap')){
                     if(startsWith(ftag, 'top ') && as.logical(max(endsWith(ftag, colnames(res[[n_metrics]]))))){
+                        m = as.numeric(gsub('top', '', gsub('mcap', '', ftag)))
+                        res[[n_metrics]] = res[[n_metrics]][order(mcap), ][, tail(.SD, 1), by=c('dt', 'name')][, tail(.SD, m), by='dt']
+                    } else if(startsWith(ftag, 'top ') && as.logical(max(endsWith(ftag, colnames(res[[n_metrics]]))))){
                         m = as.numeric(gsub('top', '', gsub('mcap', '', ftag)))
                         res[[n_metrics]] = res[[n_metrics]][order(mcap), ][, tail(.SD, 1), by=c('dt', 'name')][, tail(.SD, m), by='dt']
                     }

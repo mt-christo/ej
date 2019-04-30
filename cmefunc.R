@@ -21,6 +21,7 @@ spread_ival_tpdd = function(data, dt_start, dt_end){
 
 # dt_start=GET$dt_start_results; wnd= wnd_results
 # dt_start=GET$dt_start_bunch; wnd= wnd_bunch
+# dt_start=dt_start_bunch; wnd=wnd_bunch
 get_spread_hist <- function(spread_id, dt_start, wnd, hist_depth){
     s = Spreads2[id==spread_id & (expiry - date)<=hist_depth & (expiry - date)>=0, ]
 

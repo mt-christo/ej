@@ -19,7 +19,7 @@ library(tseries)
 library(xtable)
 library(reshape2)
 library(ggplot2)
-library(ggthemes)
+#library(ggthemes)
 library(mgcv)
 
 setDTthreads(1)
