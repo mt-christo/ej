@@ -746,19 +746,33 @@ rvc = volcontrol_excess(r1, list(window=20, type='max 6', excess_type = 'libor p
 
 -- FASHION fixed
 
-itx_bench = load_uni(c('equity', 'h'), list(fixed_list=c('ITX SM Equity')))$h
 u = load_uni(c('equity', 'equity_metrics', 'h', 'libors'), list(fixed_list=c('4911 JP Equity', 'EL US Equity', 'PG US Equity', 'TSCO LN Equity', 'PEP US Equity', 'BN FP Equity', 'NESN SW Equity', 'WMT US Equity')))
 
 h = u$h
 b = data.table(id=1, weight=1, name='ALL')
 f = data.table(ticker=u$equity$ticker)[, ':='(basket_id=1, name=ticker, weight=0.5)][, id:=1:nrow(u$equity)]
-r = build_index_simple(h, get_rebals_h(h, 'month'), smidai_style_rebal, screen_params=list(funds=f, baskets=b, window=252, voltarget=0.075), start_date='2014-01-01')
-r1 = foreach(x=r,.combine=rbind)%do%x$h
-sum(r1[index(r1)>='2018-01-01' & index(r1)<='2020-01-01'])
-sum(itx_bench[index(itx_bench)>='2018-01-01' & index(itx_bench)<='2020-01-01'])
 
-end_date='2019-02-04'
-rvc = volcontrol_excess(r1, list(window=20, type='max 6', excess_type = 'libor plus', add_rate=1, excess=3, level=0.08, max_weight=2.5, basis=365), libors); rvc = rvc[index(rvc)>='2016-02-04' & index(rvc)<=end_date]; print(sqrt(365)*sd(tail(rvc, 252))); print(tail(exp(cumsum(rvc)), 1))
+chart_data = list()
+for(wnd in c(121))
+    for(vt in c(0.1)){  # wnd=252; vt=0.1
+        r_smidai = foreach(x=build_index_simple(h, get_rebals_h(h, 'month'), smidai_style_rebal, screen_params=list(funds=f, baskets=b, window=wnd, voltarget=vt), start_date='2014-01-01'),.combine=rbind)%do%x$h
+        rvc_smidai = volcontrol_excess(r_smidai, list(window=20, type='max 6', excess_type = 'libor plus', add_rate=0.5, excess=2, level=0.18, max_weight=2.5, basis=365), libors)
+        chart_data = c(chart_data, list(list(segment=paste('risk/return opt rebal,', wnd, vt*100, '18% vt/2 excess/0.5fee/2.5exp/365'), rt=rvc_smidai)))
+    }
+
+for(wnd in c(40, 60))
+    for(perfw in c(1, 2)){
+        r_mt = foreach(x=build_index_simpler(u, 'month', smidai_mixed_rebal, screen_params=list(perf_weight=perfw, top_n=6, price_window=wnd, voltarget=0.1), '2013-12-31'),.combine=rbind)%do%x$h
+        rvc_mt = volcontrol_excess(r_mt, list(window=20, type='max 6', excess_type = 'libor plus', add_rate=0.5, excess=2, level=0.18, max_weight=2.5, basis=365), libors)
+        chart_data = c(chart_data, list(list(segment=paste('topN', wnd, perfw, '8/3/1/2.5/365'), rt=rvc_mt)))
+    }
+
+
+xly = load_uni(c('etf', 'h'), list(fixed_list=c('XLY     US Equity')))$h
+chart_data = c(chart_data, list(list(segment='XLY', rt=load_uni(c('etf', 'h'), list(fixed_list=c('XLY     US Equity')))$h)))
+
+save_data_as_chart(multi_plot_1, rt_to_chart_data(chart_data), 'novo_chart.png', 400)
+
 
 
 

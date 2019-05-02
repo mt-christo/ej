@@ -116,34 +116,12 @@ latex_segment_compare_path = function(prep_list, top_mcap, file_postfix){
     my_table <- paste(paste(foreach(x=res, .combine=c)%do%gsub('%', "\\\\%", paste(gsub('&', '/', x$segment), x$sd_all, x$perfTot252, x$perfTot, x$basket,
                                                                                    sep=' & ')), collapse=' \\\\[0.4em]\\hline\n'), ' \\\\[0.6em]\n')
 
-    my_chart = foreach(x=res,.combine=cbind)%do%to.monthly(x$perf, indexAt='endof')[, 'x$perf.Open']
-    colnames(my_chart) = foreach(x=res, .combine=c)%do%x$segment
-    my_chart = melt(as.data.table(my_chart), id='index', variable.name='Index', value.name='Price')
-    colnames(my_chart)[1] = 'Date'
-    chart_path = '/home/aslepnev/webhub/PDFs/novo_chart.png'
-    png(chart_path, height=400)
-
+    chart_path = save_data_as_chart(multi_plot_1, perf_to_chart_data(res), 'novo_chart.png', 400)
     if(FALSE){
         source('/home/aslepnev/git/ej/novo_latex_func.R')
         send_files_to_email(c(foreach(i=c(0),.combine=c)%do%latex_segment_compare_path(prep_data[seq(i*per_page+1, min(length(prep_data), (i+1)*per_page))], top_mcap, i)),
                             'Segment performances', 'aslepnev@novo-x.info')
     }
-
-    plot_func = function(x){
-        ggplot(x) + #geom_line(aes(x=Date, y=Price, group=Index, color=Index), size=1) +
-            ggtitle('Parameterized Index performance') + # theme_economist_white() +
-            theme_hc() +
-            scale_colour_hc(guide = guide_legend(ncol=2)) + 
-            theme(legend.text=element_text(size=8, family='Palatino'), text=element_text(size=11, family='Palatino')) +
-            # guides(fill=colorRampPalette(brewer.pal(9, "Set1"))(length(res))) +   # 
-            labs(color='') +
-            xlab('Time') +
-            ylab('Performance, %') +
-            stat_smooth(aes(x=Date, y=Price, group=Index, color=Index), formula=y~splines::ns(x,35), method='gam', se=FALSE, size=2)
-    }
-
-    print(plot_func(my_chart))
-    dev.off()
     
     knit('/home/aslepnev/git/ej/novo_latex3.tex', '/home/aslepnev/webhub/PDFs/segment_perf.tex')
     setwd('/home/aslepnev/webhub/PDFs')

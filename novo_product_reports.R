@@ -77,9 +77,48 @@ save_data_as_csv = function(tab, filename){
     return(filepath)
 }
 
-save_data_as_chart = function(my_chart, chart_title, filename){
-    filepath = paste0('/home/aslepnev/webhub/', filename)
-    png(filepath); print(plot(my_chart, main=chart_title)); dev.off()
+# rt_list=chart_data
+rt_to_chart_data = function(rt_list){
+    dt_1 = max(foreach(x=rt_list,.combine=c)%do%min(index(x$rt)))
+    dt_2 = min(foreach(x=rt_list,.combine=c)%do%max(index(x$rt)))
+
+    for(i in 1:length(rt_list))
+        rt_list[[i]]$perf = index_perf(rt_list[[i]]$rt[index(rt_list[[i]]$rt)>=dt_1 & index(rt_list[[i]]$rt)<=dt_2])
+    return(perf_to_chart_data(rt_list))
+}
+
+# accepts list of lists(segment=..., perf=...)
+perf_to_chart_data = function(perf_list){
+    res = foreach(x=perf_list,.combine=cbind)%do%(100*(to.monthly(x$perf, indexAt='endof')[, 'x$perf.Open']-1))
+    colnames(res) = foreach(x=perf_list, .combine=c)%do%x$segment
+    res = melt(as.data.table(res), id='index', variable.name='Index', value.name='Price')
+    colnames(res)[1] = 'Date'    
+    return(res)
+}
+
+# accepts data applicable for ggplot input
+multi_plot_1 = function(x){
+    ggplot(x) + #geom_line(aes(x=Date, y=Price, group=Index, color=Index), size=1) +
+    ggtitle(paste('Index performance', x[, min(Date)], 'to', x[, max(Date)])) + # theme_economist_white() +
+    theme_hc() +
+#    scale_colour_hc(guide = guide_legend(ncol=2)) +
+    scale_color_tableau('Tableau 20', guide = guide_legend(ncol=2)) + 
+    theme(legend.text=element_text(size=8, family='Palatino'), text=element_text(size=11, family='Palatino')) +
+                                        # guides(fill=colorRampPalette(brewer.pal(9, "Set1"))(length(res))) +   # 
+    labs(color='') +
+    xlab('Time') +
+    ylab('Performance, %') +
+    stat_smooth(aes(x=Date, y=Price, group=Index, color=Index), formula=y~splines::ns(x,35), method='gam', se=FALSE, size=2)
+}
+
+# plot_f=multi_plot_1; chart_data=perf_to_chart_data(res); filename='novo_chart.png'; chart_height=400
+save_data_as_chart = function(plot_f, chart_data, filename, chart_height){
+    filepath = paste0('/home/aslepnev/webhub/PDFs/', filename)
+    
+    png(filepath, height=chart_height)    
+    print(plot_f(chart_data))
+    dev.off()
+
     return(filepath)
 }
 
