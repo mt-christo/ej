@@ -52,15 +52,18 @@ spread_wnd_results = function(){
 #    spread_months = GET$spread_months
     spread_id = GET$spread_id
     hist_depth = as.numeric(GET$depth)
+    amnt = if('amount'%in%names(GET)) as.numeric(GET$amount) else 1
     
     results_start_luft = as.numeric(GET$results_start_luft)
     results_end_luft = as.numeric(GET$results_end_luft)
     dt_start_results = bizoff(as.Date(GET$dt_start_results), -results_start_luft, 'mycal')
     dt_end_results = bizoff(as.Date(GET$dt_end_results), results_end_luft, 'mycal')
     years = as.numeric(strsplit(GET$years, '-')[[1]])
-
     wnd_results = dt_end_results - dt_start_results
+    
     h_results = get_spread_hist(spread_id, dt_start_results, wnd_results, hist_depth)
+    h_results$hist[, spread:=spread*amnt]
+    
     results = get_spread_results(h_results, dt_start_results, wnd_results, results_start_luft, results_end_luft)[year%in%years, ]
     
     web_datatable(list('results'=results))

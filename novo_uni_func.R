@@ -18,9 +18,9 @@ TAG_FILTERS = c(TAG_FILTERS, list(list(name='staples', target='etf', filter=list
 TAG_FILTERS = c(TAG_FILTERS, list(list(name='discret', target='etf', filter=list(list(field='ind_focus', value=c('Consumer Discretionary'))))))
 TAG_FILTERS = c(TAG_FILTERS, list(list(name='industrial', target='etf', filter=list(list(field='ind_focus', value=c('Industrials'))))))
 
-#TAG_FILTERS = c(TAG_FILTERS, list(list(name='us', target='equity', filter=list(list(field='country_name', value=c('UNITED STATES'))))))
+TAG_FILTERS = c(TAG_FILTERS, list(list(name='us', target='equity', filter=list(list(field='country_name', value=c('UNITED STATES'))))))
 #TAG_FILTERS = c(TAG_FILTERS, list(list(name='developedwest', target='equity', filter=list(list(field='country_name', value=c('UNITED STATES', 'FRANCE', 'BRITAIN', 'NETHERLANDS', 'GERMANY', 'SWITZERLAND', 'ITALY'))))))
-#TAG_FILTERS = c(TAG_FILTERS, list(list(name='tech', target='equity', filter=list(list(field='sector', value=c('Information Technology'))))))
+TAG_FILTERS = c(TAG_FILTERS, list(list(name='tech', target='equity', filter=list(list(field='sector', value=c('Information Technology'))))))
 #TAG_FILTERS = c(TAG_FILTERS, list(list(name='energy', target='equity', filter=list(list(field='sector', value=c('Energy'))))))
 #TAG_FILTERS = c(TAG_FILTERS, list(list(name='finance', target='equity', filter=list(list(field='sector', value=c('Financials'))))))
 #TAG_FILTERS = c(TAG_FILTERS, list(list(name='telecom', target='equity', filter=list(list(field='sector', value=c('Communication Services'))))))
@@ -31,7 +31,7 @@ TAG_FILTERS = c(TAG_FILTERS, list(list(name='industrial', target='etf', filter=l
 #TAG_FILTERS = c(TAG_FILTERS, list(list(name='health', target='equity', filter=list(list(field='sector', value=c('Health Care'))))))
 #TAG_FILTERS = c(TAG_FILTERS, list(list(name='estate', target='equity', filter=list(list(field='sector', value=c('Real Estate'))))))
 #TAG_FILTERS = c(TAG_FILTERS, list(list(name='utility', target='equity', filter=list(list(field='sector', value=c('Utilities'))))))
-#TAG_FILTERS = c(TAG_FILTERS, list(list(name='no_card', target='equity', filter=list(list(field='ticker', value=c('V US Equity', 'MA US Equity'))))))
+TAG_FILTERS = c(TAG_FILTERS, list(list(name='no_card', target='equity', filter=list(list(field='ticker', value=c('V US Equity', 'MA US Equity'))))))
 
 #TAG_FILTERS = c(TAG_FILTERS, list(list(name='retail-stap', target='equity', filter=list(list(field='sector', value=c('Consumer Staples')), list(field='industry_group', value=c('Retail'))))))
 #TAG_FILTERS = c(TAG_FILTERS, list(list(name='agriculture', target='equity', filter=list(list(field='sector', value=c('Consumer Staples')), list(field='industry_group', value=c('Agriculture'))))))
@@ -104,6 +104,7 @@ uni_skip_countries_tickers = function(uni_in, countries_skip_list, tickers_skip_
 # uni_options = c('equity', 'etf', 'p', 'h', 'libors', 'currency', 'sigma 250', 'sigma 125')
 # uni_options = c('equity', 'etf', 'h', 'libors')
 # uni_options = c('etf', 'h', 'libors')
+# uni_options = c('equity', 'equity_metrics', 'h_ugly', 'libors')
 # uni_options = c('equity', 'equity_metrics', 'h', 'libors')
 # filter_tags = list(field_filter=c('asia+europe', 'tech+health'), rank_filter=c('top 10 mcap'))
 # filter_tags = list(field_filter=c('europe'), rank_filter=c('top 10 mcap'))
@@ -111,6 +112,7 @@ uni_skip_countries_tickers = function(uni_in, countries_skip_list, tickers_skip_
 # filter_tags = list(field_filter=c('us', 'tech'), skip_filter=c('no_card'), rank_filter=c('top 30 mcap'))
 # filter_tags = list(field_filter=c('west', 'tech'), skip_filter=c('no_card'), rank_filter=c('top 30 mcap'))
 # filter_tags = list(field_filter=c('us', 'staples+discret'), skip_filter=c('no_card'), rank_filter=c('top 30 mcap'))
+# filter_tags = list(field_filter=c('us', 'discret'), skip_filter=c('no_card'), rank_filter=c('top 30 mcap'))
 # filter_tags = list(field_filter=c('us', 'discret'), skip_filter=c('no_card'), rank_filter=c('top 30 mcap'))
 # filter_tags = c()
 # TAG_FILTERS[[8]] = list(name='global', target='etf', filter=list(list(field='geo_focus2', value=c('Global'))))
@@ -120,7 +122,7 @@ load_uni = function(uni_options, filter_tags){
     names(res) = uni_options
 
     asset_classes = c('etf', 'equity')
-    ts_datas = c('p', 'h')
+    ts_datas = c('p', 'h', 'p_ugly', 'h_ugly')
     
     for(m in ts_datas)  # n = 'h'
         if(m%in%names(res))
@@ -181,7 +183,7 @@ load_uni = function(uni_options, filter_tags){
             }
         }
 
-    for(n in ts_datas)  # n = 'h'
+    for(n in ts_datas)  # n = 'h';   n = 'h_ugly'
         if(n%in%names(res)){
             res[[n]] = res[[n]][, foreach(m = asset_classes, .combine=c)%do%{ if(m%in%names(res)) res[[m]]$ticker else c() }]
             res[[n]] = res[[n]][!wday(index(res[[n]]))%in%c(7,1)]            

@@ -64,7 +64,7 @@ get_spread_results <- function(h, dt_start, wnd, results_start_luft, results_end
 }
 
 # comdty='Feeder Cattle'; spread_months='U-V-X'; dt_start='2014-03-09'; dt_end='2014-07-09'; dt_center=dt_start; wnd=as.Date(dt_end)-as.Date(dt_start)
-# wnd=as.Date(dt_end)-as.Date(dt_start)
+# h=h_bunch; dt_start=dt_start_bunch; wnd=wnd_bunch
 get_spread_ma_wnd <- function(h, dt_start, wnd){
     s = h$hist[, ':='(ma5=rollapply(spread, 5, FUN=mean, fill=NA, align='right')
                      ,ma10=rollapply(spread, 10, FUN=mean, fill=NA, align='right')

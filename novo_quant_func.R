@@ -4,7 +4,7 @@
 volcontrol = function(x, vc_params){
     if(length(vc_params$window) == 1){
         print('Single window volcontrol')
-    w = sqrt(vc_params$basis)*rollapplyr(x, as.numeric(vc_params$window), FUN=sd)
+    w = sqrt(vc_params$vc_basis)*rollapplyr(x, as.numeric(vc_params$window), FUN=sd)
     if(vc_params$type == 'max 10')
         w = rollapplyr(w, 10, FUN=function(y){ max(y) }) else
     if(vc_params$type == 'max 5')
@@ -15,8 +15,8 @@ volcontrol = function(x, vc_params){
         w = rollapplyr(w, 10, FUN=function(y){ mean(y) })
     } else {
         print('Double window volcontrol')
-        w1 = sqrt(vc_params$basis)*rollapplyr(x, as.numeric(vc_params$window[1]), FUN=sd)
-        w2 = sqrt(vc_params$basis)*rollapplyr(x, as.numeric(vc_params$window[2]), FUN=sd)
+        w1 = sqrt(vc_params$vc_basis)*rollapplyr(x, as.numeric(vc_params$window[1]), FUN=sd)
+        w2 = sqrt(vc_params$vc_basis)*rollapplyr(x, as.numeric(vc_params$window[2]), FUN=sd)
         w = ifelse(w1>w2, w1, w2)
     }
 
@@ -35,16 +35,17 @@ volcontrol = function(x, vc_params){
 # vc_params=list(window=20, type='none', excess_type = 'rate-related excess', excess=0, level=0.11, max_weight=1.25)
 # vc_params=list(window=20, type='none', excess_type = 'libor plus', add_rate=1.5, excess=3.5, level=0.12, max_weight=1.75)
 # x=r1; vc_params=list(window=20, type='max 5', excess_type = 'libor plus', add_rate=1, excess=3, level=0.08, max_weight=2.5, basis=365)
+# x=r1; vc_params=list(window=20, type='none', excess_type = 'libor plus', add_rate=1.0, excess=3.5, level=0.14, max_weight=1.75, rate_basis=360, vc_basis=252)
 volcontrol_excess = function(x, vc_params, libors){
     l3m = na.locf(na.locf(merge.xts(x, libors)[, 2]))
     l3m = l3m[index(l3m)%in%index(x)]
     l3m = if(vc_params$excess_type == 'libor plus') { l3m + vc_params$add_rate } else if (vc_params$excess_type == 'rate-related excess') { l3m*(1 + as.numeric(vc_params$excess)) } else l3m
 
     l3m_days = c(1, as.numeric(diff(index(l3m))))
-    l3m = l3m*0.01*l3m_days/vc_params$basis
+    l3m = l3m*0.01*l3m_days/vc_params$rate_basis
     rfr = l3m
 
-    excess = if (vc_params$excess_type != 'rate-related excess') { print('Simple excess'); as.numeric(vc_params$excess)*0.01/252 } else 0.0
+    excess = if (vc_params$excess_type != 'rate-related excess') { print('Simple excess'); as.numeric(vc_params$excess)*0.01*l3m_days/vc_params$rate_basis } else 0.0
     res = -excess + volcontrol(x - rfr, vc_params)  # fwrite(l3m, file='/home/aslepnev/webhub/rfr.csv')
     return(res)
 }

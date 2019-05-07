@@ -278,7 +278,7 @@ save(D, file='/home/aslepnev/git/ej/it_top10_uni.RData')
 
 
 source('/home/aslepnev/git/ej/strindexlib.R')
-h = fread('/home/aslepnev/webhub/uber_hist1.csv')
+h = fread('/home/aslepnev/webhub/MAY-hist.csv', header=TRUE)
 ticker_cols = seq(1,ncol(h)-1,by=2)
 price_cols = seq(2,ncol(h),by=2)
 ts = foreach(i=1:length(price_cols))%do%{
@@ -296,7 +296,22 @@ tss = foreach(i=0:(length(ts)%/%200), .combine='merge.xts')%dopar%{
 }
 col_idx = as.numeric(foreach(x=colnames(tss), .combine=c)%do%strsplit(x,'_')[[1]][2])
 colnames(tss) = colnames(h)[ticker_cols[col_idx]]
+
+tss_append = tss
+#tss = get(load('/home/aslepnev/webhub/uber_hist.RData'))
 save(tss, file='/home/aslepnev/webhub/uber_hist.RData')  # Original currencies!!
+
+colnames(tss)[1:10]
+colnames(tss_append)[1:10]
+tss = tss[!index(tss)%in%index(tss_append), colnames(tss)%in%colnames(tss_append)][, colnames(tss_append)]
+tss_append = tss_append[, colnames(tss_append)%in%colnames(tss)][, colnames(tss)]
+tss_ugly = rbind(tss, tss_append)
+save(tss_ugly, file='/home/aslepnev/webhub/uber_hist_ugly.RData')  # Original currencies!!
+
+
+
+
+
 
 u = foreach(y = 2009:2018, .combine=rbind)%do%{
     u = fread(paste0('/home/aslepnev/webhub/grish_uni_2011_', y, '.csv'))
@@ -355,6 +370,24 @@ save(tsslog, file='/home/aslepnev/webhub/uber_uni_h.RData')
 
 
 
+
+
+
+
+
+
+tss = get(load('/home/aslepnev/webhub/uber_hist_ugly.RData'))  # Original currencies!!
+e1 = get(load('/home/aslepnev/webhub/uber_uni_equity.RData'))
+tss = tss[, colnames(tss)%in%e1$ticker]
+currs = paste0('USD', toupper(e1$currency), ' Curncy')
+curr_idx = which(currs%in%colnames(tss))
+curr_match = match(e1$ticker[curr_idx], colnames(tss))
+tss[, curr_match] = tss[, curr_match] / tss[, match(currs[curr_idx], colnames(tss))]
+tss = tss[, !grepl(' Curncy', colnames(tss)), with=FALSE]
+save(tss, file='/home/aslepnev/webhub/uber_uni_p_ugly.RData')
+
+tsslog = h_to_log(tss)
+save(tsslog, file='/home/aslepnev/webhub/uber_uni_h_ugly.RData')
 
 
 

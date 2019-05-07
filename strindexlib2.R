@@ -780,17 +780,22 @@ save_data_as_chart(multi_plot_1, rt_to_chart_data(chart_data), 'novo_chart.png',
 -- IT10
 source('/home/aslepnev/git/ej/strindexlib.R')
 
-u = load_uni(c('equity', 'equity_metrics', 'h', 'libors', 'p'),
+u = load_uni(c('equity', 'equity_metrics', 'h_ugly', 'libors'),
              list(field_filter=c('us', 'tech'), skip_filter=c('no_card'), rank_filter=c('top 30 mcap')))
+libors = u$libors
+u[['h']] = u[['h_ugly']]
+#u = load_uni(c('equity', 'equity_metrics', 'h', 'libors', 'p'),
+#             list(field_filter=c('us', 'tech'), skip_filter=c('no_card'), rank_filter=c('top 30 mcap')))
 r = build_index_simpler(u, 'month', screen_mixed_top, screen_params=list(perf_weight=0.5, top_n=10, price_window=135), '2012-12-29')  
-#r = build_index_simpler(u, 'month', smidai_mixed_rebal, screen_params=list(perf_weight=0.5, top_n=10, price_window=125, voltarget=0.05), '2012-12-31')  
-#r = build_index_simpler(u, 'month', screen_mixed_top, screen_params=list(perf_weight=0.5, top_n=10, price_window=40), '2012-12-31')
 r1 = foreach(x=r,.combine=rbind)%do%x$h
 
 
 # libors=u$libors; r_in=r; r1_in=r1; terms_in=c(3, 5); vc_targets=c(0.12, 0.14); vc_types=c('max 10', 'simple');
 #rvc = r1; print(sqrt(252)*sd(tail(rvc, 252))); print(tail(exp(cumsum(rvc)), 1))
-#rvc = volcontrol_excess(r1, list(window=20, type='none', excess_type = 'simple excess', excess=3.5, level=0.14, max_weight=1.75), u$libors); print(sqrt(252)*sd(tail(rvc, 252))); print(tail(exp(cumsum(rvc)), 1))
+rvc = volcontrol_excess(r1, list(window=20, type='none', excess_type = 'libor plus', add_rate=1.0, excess=3.5, level=0.14, max_weight=1.75, rate_basis=360, vc_basis=252), u$libors); print(sqrt(252)*sd(tail(rvc, 252))); print(tail(exp(cumsum(rvc)), 1))
+exp(cumsum(rvc))
+write.csv(1000*exp(cumsum(rvc)), file='/home/aslepnev/webhub/it10.csv', row.names=index(rvc))
+
 dt_start=as.Date('2012-12-29'); dt_end=as.Date('9999-03-01'); 
 rvc = volcontrol_excess(r1, list(window=20, type='none', excess_type='libor plus', add_rate=0.5, excess=2, level=0.05, max_weight=2, basis=360), libors)
 print(sqrt(252)*sd(tail(rvc, 252))); print(tail(exp(cumsum(rvc[index(rvc)>=dt_start & index(rvc)<=dt_end])), 1))
