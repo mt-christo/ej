@@ -45,7 +45,8 @@ volcontrol_excess = function(x, vc_params, libors){
     l3m = l3m*0.01*l3m_days/vc_params$rate_basis
     rfr = l3m
 
-    excess = if (vc_params$excess_type != 'rate-related excess') { print('Simple excess'); as.numeric(vc_params$excess)*0.01*l3m_days/vc_params$rate_basis } else 0.0
+    #excess = if (vc_params$excess_type != 'rate-related excess') { print('Simple excess'); as.numeric(vc_params$excess)*0.01*l3m_days/vc_params$rate_basis } else 0.0
+    excess = if (vc_params$excess_type != 'rate-related excess') { print('Simple excess'); as.numeric(vc_params$excess)*0.01/252 } else 0.0
     res = -excess + volcontrol(x - rfr, vc_params)  # fwrite(l3m, file='/home/aslepnev/webhub/rfr.csv')
     return(res)
 }

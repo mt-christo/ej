@@ -22,6 +22,7 @@ spread_ival_tpdd = function(data, dt_start, dt_end){
 # dt_start=GET$dt_start_results; wnd= wnd_results
 # dt_start=GET$dt_start_bunch; wnd= wnd_bunch
 # dt_start=dt_start_bunch; wnd=wnd_bunch
+# dt_start=dt_start_results; wnd=wnd_results
 get_spread_hist <- function(spread_id, dt_start, wnd, hist_depth){
     s = Spreads2[id==spread_id & (expiry - date)<=hist_depth & (expiry - date)>=0, ]
 
@@ -31,6 +32,24 @@ get_spread_hist <- function(spread_id, dt_start, wnd, hist_depth){
     s = s[, zero_date:=as.Date(ISOdate(1901+year(date)-year(expiry), month(date), day(date)))][!is.na(zero_date), ]
     s = s[CJ(zero_date = unique(s$zero_date), year=unique(s$year)), on=.(zero_date, year)]
     s = s[order(zero_date), ][, spread := na.locf(spread, na.rm=FALSE), by=year]
+    
+    return(list(hist=s, zero_year=zero_year, zero_start=zero_start))
+}
+
+# dt_start=GET$dt_start_results; wnd= wnd_results
+# dt_start=GET$dt_start_bunch; wnd= wnd_bunch
+# dt_start=dt_start_bunch; wnd=wnd_bunch
+# dt_start=dt_start_results; dt_end=dt_end_results; wnd=wnd_results
+get_spread_hist_endDate <- function(spread_id, dt_start, dt_end, hist_depth){
+    s = Spreads2[id==spread_id & (expiry - date)<=hist_depth & (expiry - date)>=0, ]
+
+    zero_year = 1901 + year(dt_end) - year(s[expiry > dt_end, min(expiry)])
+    zero_end = as.Date(ISOdate(zero_year, month(dt_end), day(dt_end)))
+    zero_start = as.Date(ISOdate(zero_year + year(dt_start) - year(dt_end), month(dt_start), day(dt_start)))
+    
+    s = s[, zero_date:=as.Date(ISOdate(1901 + year(date) - year(expiry), month(date), day(date)))]
+    s = s[CJ(zero_date = unique(s$zero_date), year=unique(s$year)), on=.(zero_date, year)]
+    s = s[order(zero_date), ][, spread := na.locf(spread, na.rm=FALSE), by=year][!is.na(zero_date), ]
     
     return(list(hist=s, zero_year=zero_year, zero_start=zero_start))
 }

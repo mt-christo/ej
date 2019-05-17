@@ -375,12 +375,13 @@ save(tsslog, file='/home/aslepnev/webhub/uber_uni_h.RData')
 
 
 
-
-tss = get(load('/home/aslepnev/webhub/uber_hist_ugly.RData'))  # Original currencies!!
+library(xts)
+library(data.table)
+tss_orig = get(load('/home/aslepnev/webhub/uber_hist_ugly.RData'))  # Original currencies!!
 e1 = get(load('/home/aslepnev/webhub/uber_uni_equity.RData'))
-tss = tss[, colnames(tss)%in%e1$ticker]
+tss_orig = tss_orig[, colnames(tss_orig)%in%e1$ticker]
 currs = paste0('USD', toupper(e1$currency), ' Curncy')
-curr_idx = which(currs%in%colnames(tss))
+curr_idx = which(currs%in%colnames(tss_orig))
 curr_match = match(e1$ticker[curr_idx], colnames(tss))
 tss[, curr_match] = tss[, curr_match] / tss[, match(currs[curr_idx], colnames(tss))]
 tss = tss[, !grepl(' Curncy', colnames(tss)), with=FALSE]

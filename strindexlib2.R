@@ -744,6 +744,16 @@ rvc = volcontrol_excess(r1, list(window=20, type='max 6', excess_type = 'libor p
 
 
 
+
+-- SALCA100 fixed
+
+u = load_uni('data-20190506', c('equity', 'equity_metrics', 'h_ugly', 'libors'), list(fixed_list=c('9984 JP Equity', '6758 JP Equity', '6861 JP Equity', '7267 JP Equity')))
+
+
+
+
+
+
 -- FASHION fixed
 
 u = load_uni(c('equity', 'equity_metrics', 'h', 'libors'), list(fixed_list=c('4911 JP Equity', 'EL US Equity', 'PG US Equity', 'TSCO LN Equity', 'PEP US Equity', 'BN FP Equity', 'NESN SW Equity', 'WMT US Equity')))
@@ -795,6 +805,10 @@ r1 = foreach(x=r,.combine=rbind)%do%x$h
 rvc = volcontrol_excess(r1, list(window=20, type='none', excess_type = 'libor plus', add_rate=1.0, excess=3.5, level=0.14, max_weight=1.75, rate_basis=360, vc_basis=252), u$libors); print(sqrt(252)*sd(tail(rvc, 252))); print(tail(exp(cumsum(rvc)), 1))
 exp(cumsum(rvc))
 write.csv(1000*exp(cumsum(rvc)), file='/home/aslepnev/webhub/it10.csv', row.names=index(rvc))
+
+rvc = volcontrol_excess(r1, list(window=20, type='none', excess_type = 'libor plus', add_rate=1.0, excess=3.5, level=0.14, max_weight=1.5, rate_basis=360, vc_basis=252), u$libors); print(sqrt(252)*sd(tail(rvc, 252))); print(tail(exp(cumsum(rvc)), 1))
+exp(cumsum(rvc))
+write.csv(1000*exp(cumsum(rvc)), file='/home/aslepnev/webhub/it_max_150.csv', row.names=index(rvc))
 
 dt_start=as.Date('2012-12-29'); dt_end=as.Date('9999-03-01'); 
 rvc = volcontrol_excess(r1, list(window=20, type='none', excess_type='libor plus', add_rate=0.5, excess=2, level=0.05, max_weight=2, basis=360), libors)

@@ -13,7 +13,7 @@ homedir = 'aslepnev' #; homedir = 'anton'
 setwd(paste0('/home/', homedir, '/webhub/ContractsCSV'))
 #setwd('/home/aslepnev/git/ej/ContractsCSV')
 comms = fread('../Commodities.csv')
-comms1 = comms[Code%in%c('FC','LC','LH','C','S','SM','ZL','LB','DL','CL','RB','HO','NG','ZV','ZC','KE','MW','KC'),][, head(.SD, 1), by='Name']
+comms1 = comms[Code%in%c('FC','LC','LH','C','S','SM','ZL','LB','DL','CL','RB','HO','NG','ZV','ZC','KE','MW','KC', 'OJ', 'SB', 'CC', 'DL', 'ZO', 'ZW', 'PL', 'GC', 'SI'),][, head(.SD, 1), by='Name']
 mon = data.table('num'=1:12, 'month'=c('F','G','H','J','K','M','N','Q','U','V','X','Z'))
 
 if(FALSE){
@@ -75,7 +75,7 @@ calc_spreads = function(nplets, weights){
     return(res)
 }
 
-# b = as.data.frame(gs_read(gs_key('1s05m2xyRVXprFHyRVqY9qbEKl6OqXssymVsmvWnrpIk'), 'Spreads', range='A1:G2000', col_names=TRUE))
+# b = as.data.frame(gs_read(gs_key('1s05m2xyRVXprFHyRVqY9qbEKl6OqXssymVsmvWnrpIk'), 'Spreads', range='A1:G3000', col_names=TRUE))
 calc_spreads2 = function(data1, b){
     s = comms[b, on=.(Code=Ticker)][, .(id=SpreadID, commodity=Name, lag=YearLag, month=Month, weight=Weight)]
     d2 = mon[data1, on='month'][, expiry:=as.Date(ISOdate(year,num,15))]
@@ -155,10 +155,13 @@ if(FALSE){
     y2 = spread_sacha_set0(comms1, data0, list(c(1,-1), c(1,-2,1), c(1,-3,3,-1), c(1,-1,-1,1)), c('Calendar', 'Butterflies (3 leg)', 'Butterflies (4 leg)', 'Condor'), 2015, list('Lean Hog'='K'), list('Henry Hub Natural Gas'=c('2018', 'Z')))
     fwrite(y2, file='../contracts_template.csv')
     
-    gs_auth(token = '/home/aslepnev/git/ej/gdoc_doc.R')
-    s = gs_key('1s05m2xyRVXprFHyRVqY9qbEKl6OqXssymVsmvWnrpIk')
-    n = as.data.frame(gs_read(s, 'Spreads', range='A1:G2000', col_names=TRUE))
-    a = build_nplets(unique(comms$Name), data0, 1:2, 1985, list('Lean Hog'='K'), list('Henry Hub Natural Gas'=c('2018', 'Z')))
+#    gs_auth(token = '/home/aslepnev/git/ej/gdoc_doc.R')
+#    s = gs_key('1s05m2xyRVXprFHyRVqY9qbEKl6OqXssymVsmvWnrpIk')
+#    n = as.data.frame(gs_read(s, 'Spreads', range='A1:G2000', col_names=TRUE))
+#    a = build_nplets(unique(comms$Name), data0, 1:2, 1985, list('Lean Hog'='K'), list('Henry Hub Natural Gas'=c('2018', 'Z')))
+
+
+    s2 = calc_spreads2(data1, as.data.frame(gs_read(gs_key('1s05m2xyRVXprFHyRVqY9qbEKl6OqXssymVsmvWnrpIk'), 'Spreads', range='A1:G3000', col_names=TRUE)))
     save(s2, file=paste0('/home/', homedir, '/webhub/spreads_hist2.RData'))
 }
 

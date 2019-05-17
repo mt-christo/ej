@@ -61,7 +61,8 @@ spread_wnd_results = function(){
     years = as.numeric(strsplit(GET$years, '-')[[1]])
     wnd_results = dt_end_results - dt_start_results
     
-    h_results = get_spread_hist(spread_id, dt_start_results, wnd_results, hist_depth)
+#    h_results = get_spread_hist(spread_id, dt_start_results, wnd_results, hist_depth)
+    h_results = get_spread_hist_endDate(spread_id, dt_start_results, dt_end_results, hist_depth)
     h_results$hist[, spread:=spread*amnt]
     
     results = get_spread_results(h_results, dt_start_results, wnd_results, results_start_luft, results_end_luft)[year%in%years, ]
