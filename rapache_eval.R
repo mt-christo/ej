@@ -1,3 +1,4 @@
+library(inline)
 library(xts)
 library(foreach)
 library(RCurl)
@@ -16,8 +17,9 @@ library(xtable)
 create.calendar(name='mycal', weekdays=c('saturday', 'sunday'))
 bizoff = bizdays::offset
 
-source('/home/aslepnev/git/ej/strindexlib.R')
-source('/home/aslepnev/git/ej/webfunc.R')
+source('/home/aslepnev/git/ej/strindexlib.R')  # Index-related libs
+source('/home/aslepnev/git/ej/webfunc.R')  # General web-related funcs
+source('/home/aslepnev/git/ej/stropt.R')  # WO and other exotic related funcs
 #source('/home/aslepnev/git/ej/strfunc.R')
 
 source('/home/aslepnev/git/ej/cme_preload.R')

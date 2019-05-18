@@ -1,3 +1,3 @@
-#NOVO_UNI <<- get(load('/home/aslepnev/webhub/zacks_data.RData'))
-#NOVO_UNI2 <<- get(load('/home/aslepnev/webhub/grish_iter0.RData'))
+# NOVO_UNI <<- load_uni('data-20190506', c('equity', 'equity_metrics', 'h_usd', 'libors'), list())
+
 

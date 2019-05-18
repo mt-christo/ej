@@ -20,7 +20,7 @@ basket_ret = function(h_in, w_in) return( xts(log(((exp(h_in)-1)%*%w_in) + 1), o
 
 basket_vol = function(h_in, w_in) return( sd(basket_ret(h_in[rowSums(is.na(h_in))==0, ], w_in))*sqrt(252) )
 
-constituent_vols = function(h_in) return( foreach(i=1:ncol(h_in),.combine=c)%do%(sd(h_in[, i])*sqrt(252)) )
+constituent_vols = function(h_in, vol_basis) return( foreach(i=1:ncol(h_in),.combine=c)%do%(sd(h_in[, i])*sqrt(vol_basis)) )
 
 basket_perf = function(h_in, w_in) return( exp(cumsum(basket_ret(h_in[rowSums(is.na(h_in))==0, ], w_in))) )
 

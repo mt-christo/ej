@@ -39,8 +39,56 @@ price_wo_gdoc = function(){
 }
 
 optimize_wo_excel = function(){
-    p = params_via_file(POST$params, 'optimize_wo_excel')
-    # POST = params_via_file(NA, 'optimize_wo_excel')
+    params = params_via_file(POST$params, 'optimize_wo_excel')
+    # params = params_via_file(NA, 'optimize_wo_excel')
 
+    NOVO_UNI = load_uni('data-20190506', c('equity', 'equity_metrics', 'h_usd', 'libors'), list())
+
+    h = NOVO_UNI$h_usd    
+    u = NOVO_UNI$equity
+    RFR = 0.01*as.numeric(tail(NOVO_UNI$libors, 1))
+    setkey(params, name)
     
+    SIZE = params['SIZE', as.numeric(value)]
+    BARRIERS = params['STRIKE', as.numeric(value)]
+    TTM = length(BARRIERS)
+    TAIL = 120
+    COUPON = 1
+    UNI = u[ticker%in%params['UNI', value], ]
+    
+    h = h[, UNI$ticker]
+    h = h[, !is.na(tail(h, TAIL)[1,])]  # TAIL-ago returns exist
+    UNI = UNI[ticker%in%colnames(h), ][, ':='(ivol=NA, div=NA)]  # only TAIL-ago existing tickers are left in UNI
+    
+    h = tail(h[rowSums(is.na(h)) == 0, ], TAIL)  # last TAIL returns are taken
+    SIGMAS = ifelse(is.na(UNI$ivol), constituent_vols(h, 252), UNI$ivol)
+    DIVS = ifelse(is.na(UNI$div), 0, UNI$div)
+    COR_MAT_ALL = cor(h)
+    
+    cmb = combn(1:nrow(UNI), SIZE)
+    idx = 1:ncol(cmb)
+    sectors = UNI[, sector]
+    idx2 = c()
+    for(i in idx) if(sum(is.na(sectors[cmb[,i]]))==0 && length(unique(sectors[cmb[,i]]))>=4) idx2[length(idx2)+1] = i
+    
+    #for(bi in 1:nrow(BARRIERS)){
+    #    barriers_in = as.numeric(BARRIERS[bi, ])
+    cheapest_baskets = function(barriers_in){
+        res = foreach(i = idx2)%dopar%{
+            if(i%%100==0) print(i)
+            list(basket=cmb[,i], price=wo_calculate_an(TTM, barriers_in, SIGMAS[cmb[,i]], COR_MAT_ALL[cmb[,i], cmb[,i]], RFR, DIVS[cmb[,i]], COUPON))
+        }
+        
+        prc = array(0, length(res))
+        for(i in 1:length(res)) if(!is.null(res[[i]])) prc[i] = res[[i]]$price
+        res = res[order(prc)[1:100]]
+        return(res)
+    }
+    
+    baskets = cheapest_baskets(BARRIERS)
+    res = as.data.table(foreach(b=baskets,.combine=rbind)%do%c(UNI[b$basket, ticker], round(b$price, 3)))[1:100,]
+
+    wait_pids()
+#    cat(paste(t(res),collapse=';'))
+    cat(web_simple_table(res))
 }

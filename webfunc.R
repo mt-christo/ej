@@ -2,13 +2,14 @@ params_from_params = function(params){
     
 }
 
+# get_var=POST$params; filename='optimize_wo_excel'
 params_via_file = function(get_var, filename){
     filepath = paste0('/home/aslepnev/webhub/rapache_params/', filename, '.txt')
     if(!is.na(get_var)){
-        writeLines(gsub('NEWLINE','\n',get_var), file(filepath))
-        res = read.csv(file=filepath, header=FALSE, sep=',', stringsAsFactors=FALSE)
+        cat(gsub('NEWLINE','\n',gsub('\"', '', get_var)), file=filepath)
+        res = fread(file=filepath, sep=',', stringsAsFactors=FALSE)
         return(res)
-    } else return(read.csv(filepath))
+    } else return(fread(filepath))
 }
 
 web_datatable = function(data_list){
@@ -19,3 +20,9 @@ web_datatable = function(data_list){
         )
     }
 }
+
+web_simple_table = function(tab){
+    return(paste(foreach(i=1:nrow(tab))%do%paste(tab[i,], collapse=';'), collapse='@'))
+}
+
+wait_pids <- cfunction(body='int wstat; while (waitpid(-1, &wstat, WNOHANG) > 0) {};', includes='#include <sys/wait.h>', convention='.C')
