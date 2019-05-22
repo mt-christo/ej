@@ -20,7 +20,7 @@ library(xtable)
 library(reshape2)
 library(ggplot2)
 #library(ggthemes)
-library(mgcv)
+#library(mgcv)
 
 setDTthreads(1)
 registerDoMC(cores=15)

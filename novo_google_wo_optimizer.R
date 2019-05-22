@@ -39,7 +39,12 @@ price_wo_gdoc = function(){
 }
 
 optimize_wo_excel = function(){
-    params = params_via_file(POST$params, 'optimize_wo_excel')
+    write(paste('Request', Sys.time()), file="/home/aslepnev/webhub/testhttp.txt", append=TRUE)
+    write(paste('GET:'), file="/home/aslepnev/webhub/testhttp.txt", append=TRUE)
+    write(paste(GET), file="/home/aslepnev/webhub/testhttp.txt", append=TRUE)
+    write(paste('POST:'), file="/home/aslepnev/webhub/testhttp.txt", append=TRUE)
+    write(paste(POST), file="/home/aslepnev/webhub/testhttp.txt", append=TRUE)
+    params = params_via_file(GET$params, 'optimize_wo_excel')
     # params = params_via_file(NA, 'optimize_wo_excel')
 
     NOVO_UNI = load_uni('data-20190506', c('equity', 'equity_metrics', 'h_usd', 'libors'), list())
@@ -68,11 +73,13 @@ optimize_wo_excel = function(){
     cmb = combn(1:nrow(UNI), SIZE)
     idx = 1:ncol(cmb)
     sectors = UNI[, sector]
+    max_sectors = length(UNI[, unique(sector)])
     idx2 = c()
-    for(i in idx) if(sum(is.na(sectors[cmb[,i]]))==0 && length(unique(sectors[cmb[,i]]))>=4) idx2[length(idx2)+1] = i
+    for(i in idx) if(sum(is.na(sectors[cmb[,i]]))==0 && length(unique(sectors[cmb[,i]])) >= min(SIZE-1, max_sectors)) idx2[length(idx2)+1] = i
     
     #for(bi in 1:nrow(BARRIERS)){
     #    barriers_in = as.numeric(BARRIERS[bi, ])
+    #    barriers_in = BARRIERS
     cheapest_baskets = function(barriers_in){
         res = foreach(i = idx2)%dopar%{
             if(i%%100==0) print(i)
@@ -81,14 +88,17 @@ optimize_wo_excel = function(){
         
         prc = array(0, length(res))
         for(i in 1:length(res)) if(!is.null(res[[i]])) prc[i] = res[[i]]$price
-        res = res[order(prc)[1:100]]
+        res = res[order(prc)]
         return(res)
     }
     
     baskets = cheapest_baskets(BARRIERS)
-    res = as.data.table(foreach(b=baskets,.combine=rbind)%do%c(UNI[b$basket, ticker], round(b$price, 3)))[1:100,]
+    res = as.data.table(foreach(b=baskets,.combine=rbind)%do%c(UNI[b$basket, ticker], round(b$price, 3)))[1:min(100, length(baskets)),]
 
     wait_pids()
+    rm(h)
+    rm(u)
+    rm(NOVO_UNI)
 #    cat(paste(t(res),collapse=';'))
     cat(web_simple_table(res))
 }

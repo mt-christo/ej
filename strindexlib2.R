@@ -756,32 +756,62 @@ u = load_uni('data-20190506', c('equity', 'equity_metrics', 'h_ugly', 'libors'),
 
 -- FASHION fixed
 
-u = load_uni(c('equity', 'equity_metrics', 'h', 'libors'), list(fixed_list=c('4911 JP Equity', 'EL US Equity', 'PG US Equity', 'TSCO LN Equity', 'PEP US Equity', 'BN FP Equity', 'NESN SW Equity', 'WMT US Equity')))
+u = load_uni('data-20190506', c('equity', 'equity_metrics', 'h_usd', 'fxx', 'libors'), list(fixed_list=c('4911 JP Equity', 'EL US Equity', 'PG US Equity', 'TSCO LN Equity', 'PEP US Equity', 'BN FP Equity', 'NESN SW Equity', 'WMT US Equity')))
 
-h = u$h
+h = u$h_usd[index(u$h_usd)>='2013-01-01']
+
+#h$libor = u$libors[index(h)]
+#h$libor = na.locf(na.locf(h$libor), fromLast=TRUE)
+#h$libor = h_to_log(cumprod(1+h$libor*0.01/252))
+
 b = data.table(id=1, weight=1, name='ALL')
-f = data.table(ticker=u$equity$ticker)[, ':='(basket_id=1, name=ticker, weight=0.5)][, id:=1:nrow(u$equity)]
+f = data.table(ticker=colnames(h))[, ':='(basket_id=1, name=ticker, weight=0.3)][, id:=1:ncol(h)]
 
 chart_data = list()
-for(wnd in c(121))
-    for(vt in c(0.1)){  # wnd=252; vt=0.1
-        r_smidai = foreach(x=build_index_simple(h, get_rebals_h(h, 'month'), smidai_style_rebal, screen_params=list(funds=f, baskets=b, window=wnd, voltarget=vt), start_date='2014-01-01'),.combine=rbind)%do%x$h
-        rvc_smidai = volcontrol_excess(r_smidai, list(window=20, type='max 6', excess_type = 'libor plus', add_rate=0.5, excess=2, level=0.18, max_weight=2.5, basis=365), libors)
-        chart_data = c(chart_data, list(list(segment=paste('risk/return opt rebal,', wnd, vt*100, '18% vt/2 excess/0.5fee/2.5exp/365'), rt=rvc_smidai)))
-    }
+wnd = 120; vc_vt = 0.14
+r = build_index_simple(h, get_rebals_h(h, 'month'), smidai_style_rebal, screen_params=list(funds=f, baskets=b, window=wnd, voltarget=0.08), start_date='2013-12-31')
+r_smidai = foreach(x=r,.combine=rbind)%do%x$h
+rvc_smidai = volcontrol_excess(r_smidai, list(window=c(20, 60), type='none', excess_type = 'libor plus', add_rate=1, excess=3.5, level=vc_vt, max_weight=2, rate_basis=360, vc_basis=365), u$libors)
+chart_data = c(chart_data, list(list(segment=paste('risk/return opt rebal,', wnd, vc_vt*100, ' vt/3.5 excess/1 fee/1.75 exp/252'), rt=rvc_smidai)))
+tail(index_perf(rvc_smidai), 1)
 
-for(wnd in c(40, 60))
-    for(perfw in c(1, 2)){
-        r_mt = foreach(x=build_index_simpler(u, 'month', smidai_mixed_rebal, screen_params=list(perf_weight=perfw, top_n=6, price_window=wnd, voltarget=0.1), '2013-12-31'),.combine=rbind)%do%x$h
-        rvc_mt = volcontrol_excess(r_mt, list(window=20, type='max 6', excess_type = 'libor plus', add_rate=0.5, excess=2, level=0.18, max_weight=2.5, basis=365), libors)
-        chart_data = c(chart_data, list(list(segment=paste('topN', wnd, perfw, '8/3/1/2.5/365'), rt=rvc_mt)))
-    }
+bask = foreach(x=r,.combine=rbind)%do%{ y = x$basket$main$weights; names(y)=x$basket$main$names; y$dt=x$dt; as.data.table(y)[, c('dt', x$basket$main$names), with=FALSE] }
+fwrite(bask, file='/home/aslepnev/webhub/basket8_weights.csv')
+
+#r_mt = foreach(x=build_index_simpler(u, 'month', screen_mixed_top, screen_params=list(perf_weight=3, top_n=8, price_window=wnd, voltarget=0.075), '2013-12-31'),.combine=rbind)%do%x$h
+#rvc_mt = volcontrol_excess(r_mt, list(window=20, type='none', excess_type = 'libor plus', add_rate=1, excess=3.5, level=vc_vt, max_weight=2, rate_basis=360, vc_basis=252), libors)
+#chart_data = c(chart_data, list(list(segment=paste('topN', wnd, 2, '8/3/1/2.5/365'), rt=rvc_mt)))
 
 
-xly = load_uni(c('etf', 'h'), list(fixed_list=c('XLY     US Equity')))$h
-chart_data = c(chart_data, list(list(segment='XLY', rt=load_uni(c('etf', 'h'), list(fixed_list=c('XLY     US Equity')))$h)))
+xly = load_uni('data-20190506', c('etf', 'h_usd'), list(fixed_list=c('XLY     US Equity')))$h_usd
+chart_data = c(chart_data, list(list(segment='XLY', rt=xly)))
 
+library(ggthemes)
 save_data_as_chart(multi_plot_1, rt_to_chart_data(chart_data), 'novo_chart.png', 400)
+a = index_perf(rvc_smidai); write.csv(a, file='/home/aslepnev/webhub/basket8_backtest.csv', row.names=index(a))
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

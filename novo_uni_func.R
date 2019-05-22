@@ -110,12 +110,13 @@ uni_skip_countries_tickers = function(uni_in, countries_skip_list, tickers_skip_
 # filter_tags = c()
 # TAG_FILTERS[[8]] = list(name='global', target='etf', filter=list(list(field='geo_focus2', value=c('Global'))))
 # uni_options = c('equity', 'equity_metrics', 'h', 'libors'); filter_tags = list(field_filter=f, rank_filter=c(paste('top', top_mcap, 'mcap')))
+# data_folder='data-20190506'; uni_options = c('etf', 'h_usd'); filter_tags = list()
 load_uni = function(data_folder, uni_options, filter_tags){
     res = foreach(n = uni_options)%do%get(load(paste0('/home/aslepnev/webhub/', data_folder, '/uber_uni_', n, '.RData')))
     names(res) = uni_options
 
     asset_classes = c('etf', 'equity')
-    ts_datas = c('p', 'h', 'p_ugly', 'h_ugly')
+    ts_datas = c('p', 'h', 'p_ugly', 'h_ugly', 'p_usd', 'h_usd')
     
     for(m in ts_datas)  # n = 'h'
         if(m%in%names(res))
@@ -129,7 +130,7 @@ load_uni = function(data_folder, uni_options, filter_tags){
             }
             
             
-    tickers = foreach(n = asset_classes, .combine=c)%do%{ if(n%in%names(res)) unique(res[[n]]$ticker) else c() }  # n = asset_classes[2]
+    tickers = foreach(n = asset_classes, .combine=c)%do%{ if(n%in%names(res)) unique(res[[n]]$ticker) else c() }  # n = asset_classes[1]
 
     if('fixed_list'%in%names(filter_tags))
         tickers = tickers[tickers%in%filter_tags$fixed_list]
@@ -342,7 +343,11 @@ uni_adapt = function(u_in){
 # data_folder='data-20190506'
 uber_hist_to_p_h = function(data_folder){
     tss = get(load(paste0('/home/aslepnev/webhub/', data_folder, '/uber_hist.RData')))  # Original currencies!!
-    e1 = get(load(paste0('/home/aslepnev/webhub/', data_folder, '/uber_uni_equity.RData')))
+
+    e1 = get(load(paste0('/home/aslepnev/webhub/', data_folder, '/uber_uni_equity.RData')))[, .(ticker, currency)]
+    etf1 = get(load(paste0('/home/aslepnev/webhub/', data_folder, '/uber_uni_etf.RData')))[!ticker%in%e1$ticker, .(ticker, currency)]
+    e1 = rbind(e1, etf1)
+
     e1 = e1[ticker%in%colnames(tss), ]
     currs = paste0('USD', toupper(e1$currency), ' Curncy')
     curr_idx = which(currs%in%colnames(tss))
