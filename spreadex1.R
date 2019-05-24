@@ -9,8 +9,8 @@ spread_wnd_mas = function(){
     hist_depth = as.numeric(GET$depth)
     amnt = if('amount'%in%names(GET)) GET$amount else 1
     
-    dt_start_bunch = GET$dt_start_bunch
-    dt_end_bunch = GET$dt_end_bunch
+    dt_start_bunch = as.Date(GET$dt_start_bunch) - years(5)
+    dt_end_bunch = as.Date(GET$dt_end_bunch) - years(5)
     years = as.numeric(strsplit(GET$years, '-')[[1]])
     
     # min_spread=4; max_spread=4.5; ival_dt1='1900-01-01'; ival_dt2='1901-12-31'; results_start_luft=4; results_end_luft=4
@@ -20,7 +20,7 @@ spread_wnd_mas = function(){
     ival_dt2 = to_zero_date(GET$ival_dt2, GET$ival_dt2)
     
     wnd_bunch = as.Date(GET$dt_end_bunch) - as.Date(GET$dt_start_bunch)
-    h_bunch = get_spread_hist(spread_id, dt_start_bunch, wnd_bunch, hist_depth)
+    h_bunch = get_spread_hist_endDate(spread_id, dt_start_bunch, dt_end_bunch, hist_depth)
     ma = get_spread_ma_wnd(h_bunch, dt_start_bunch, wnd_bunch)[year%in%years, ]
 
     years_thresh = ma[!is.na(spread), ][(spread>=min_spread & spread<=max_spread) & (zero_date>=ival_dt1 & zero_date<=ival_dt2), unique(year)]

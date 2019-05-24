@@ -40,6 +40,7 @@ get_spread_hist <- function(spread_id, dt_start, wnd, hist_depth){
 # dt_start=GET$dt_start_bunch; wnd= wnd_bunch
 # dt_start=dt_start_bunch; wnd=wnd_bunch
 # dt_start=dt_start_results; dt_end=dt_end_results; wnd=wnd_results
+# dt_start=dt_start_bunch; dt_end=dt_end_bunch
 get_spread_hist_endDate <- function(spread_id, dt_start, dt_end, hist_depth){
     s = Spreads2[id==spread_id & (expiry - date)<=hist_depth & (expiry - date)>=0, ]
 
