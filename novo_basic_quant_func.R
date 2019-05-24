@@ -18,6 +18,9 @@ norm_weights = function(x) {
 
 basket_ret = function(h_in, w_in) return( xts(log(((exp(h_in)-1)%*%w_in) + 1), order.by=index(h_in)) )
 
+# h_in=h; w_in=w;
+basket_ret_rebal = function(h_in, w_in) return( xts(diff(c(0, log(((exp(cumsum(h_in))-1)%*%w_in) + 1))), order.by=index(h_in)) )
+
 basket_vol = function(h_in, w_in) return( sd(basket_ret(h_in[rowSums(is.na(h_in))==0, ], w_in))*sqrt(252) )
 
 constituent_vols = function(h_in, vol_basis) return( foreach(i=1:ncol(h_in),.combine=c)%do%(sd(h_in[, i])*sqrt(vol_basis)) )
@@ -36,3 +39,4 @@ index_vol = function(x, days_base=252){
     return(sqrt(days_base)*sd(x))
 }
 
+basic_index_report = function(x, vol_basis) return( list(vol=sqrt(vol_basis)*sd(x), perf=tail(index_perf(x), 1)) )

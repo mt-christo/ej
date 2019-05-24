@@ -758,43 +758,58 @@ u = load_uni('data-20190506', c('equity', 'equity_metrics', 'h_ugly', 'libors'),
 source('/home/aslepnev/git/ej/strindexlib.R')
 u = load_uni('data-20190506', c('equity', 'equity_metrics', 'h_usd', 'fxx', 'libors'), list(fixed_list=c('4911 JP Equity', 'EL US Equity', 'PG US Equity', 'TSCO LN Equity', 'PEP US Equity', 'BN FP Equity', 'NESN SW Equity', 'WMT US Equity')))
 
-#h = u$h_usd[index(u$h_usd)>='2013-01-01']
-
+fashion_fixed = function(u, vc_params){
+    h = u$h_usd[index(u$h_usd)>='2011-01-01']
 #h$libor = u$libors[index(h)]
 #h$libor = na.locf(na.locf(h$libor), fromLast=TRUE)
 #h$libor = h_to_log(cumprod(1+h$libor*0.01/252))
+    b = data.table(id=1, weight=1, name='ALL')
+    f = data.table(ticker=colnames(h))[, ':='(basket_id=1, name=ticker, weight=0.30)][, id:=1:ncol(h)]
+    
+    screen_params = list(funds=f, baskets=b, window=89, voltarget=0.08)
+#    vc_params = list(window=20, src='self', type='none', excess_type = 'libor plus', add_rate=1, excess=3.5, level=0.14, max_weight=2, rate_basis=360, vc_basis=252)
+    
+    r = build_index_simple(h, get_rebals_h(h, 'month'), smidai_style_rebal, screen_params, start_date='2013-12-31', vc_params)
+    r_smidai = foreach(x=r,.combine=rbind)%do%x$h
+    vc_params$sd = foreach(x=r,.combine=rbind)%do%x$r_sd
+    rvc_smidai = volcontrol_excess(r_smidai, vc_params, u$libors)
 
-b = data.table(id=1, weight=1, name='ALL')
-f = data.table(ticker=colnames(h))[, ':='(basket_id=1, name=ticker, weight=0.30)][, id:=1:ncol(h)]
+    return(rvc_smidai)
+}
 
-chart_data = list()
-wnd = 89; vc_vt = 0.14
-r = build_index_simple(h, get_rebals_h(h, 'month'), smidai_style_rebal, screen_params=list(funds=f, baskets=b, window=wnd, voltarget=0.08), start_date='2013-12-31')
-r_smidai = foreach(x=r,.combine=rbind)%do%x$h
-#rvc_smidai = volcontrol_excess(r_smidai, list(window=c(20, 60), type='none', excess_type = 'libor plus', add_rate=1, excess=3.5, level=vc_vt, max_weight=2, rate_basis=360, vc_basis=365), u$libors)
-rvc_smidai = volcontrol_excess(r_smidai, list(window=20, type='none', excess_type = 'libor plus', add_rate=1, excess=3.5, level=vc_vt, max_weight=2, rate_basis=360, vc_basis=252), u$libors)
-chart_data = c(chart_data, list(list(segment=paste('risk/return opt rebal,', wnd, vc_vt*100, ' vt/3.5 excess/1 fee/1.75 exp/252'), rt=rvc_smidai)))
+a1 = fashion_fixed(u, list(window=20, src='self', type='none', excess_type = 'libor plus', add_rate=1, excess=3.5, level=0.14, max_weight=2, rate_basis=360, vc_basis=252))
+a2 = fashion_fixed(u, list(window=c(20, 60), src='self', type='none', excess_type = 'libor plus', add_rate=1, excess=3.5, level=0.14, max_weight=2, rate_basis=360, vc_basis=252))
+a3 = fashion_fixed(u, list(window=20, src='self', type='none', excess_type = 'libor plus', add_rate=1, excess=3.5, level=0.12, max_weight=2, rate_basis=360, vc_basis=252))
+
+print(unlist(basic_index_report(a1, 252)))
+print(unlist(basic_index_report(a2, 252)))
+print(unlist(basic_index_report(a3, 252)))
+
+
+
+vc_params = list(window=20, src='self', type='none', excess_type = 'libor plus', add_rate=1, excess=3.5, level=0.14, max_weight=2, rate_basis=360, vc_basis=252)
+
+
 tail(index_perf(rvc_smidai), 1)
 
 bask = foreach(x=r,.combine=rbind)%do%{ y = x$basket$main$weights; names(y)=x$basket$main$names; y$dt=x$dt; as.data.table(y)[, c('dt', x$basket$main$names), with=FALSE] }
 fwrite(bask, file='/home/aslepnev/webhub/basket8_weights.csv')
-
-#r_mt = foreach(x=build_index_simpler(u, 'month', screen_mixed_top, screen_params=list(perf_weight=3, top_n=8, price_window=wnd, voltarget=0.075), '2013-12-31'),.combine=rbind)%do%x$h
-#rvc_mt = volcontrol_excess(r_mt, list(window=20, type='none', excess_type = 'libor plus', add_rate=1, excess=3.5, level=vc_vt, max_weight=2, rate_basis=360, vc_basis=252), libors)
-#chart_data = c(chart_data, list(list(segment=paste('topN', wnd, 2, '8/3/1/2.5/365'), rt=rvc_mt)))
-
-
-xly = load_uni('data-20190506', c('etf', 'h_usd'), list(fixed_list=c('XLY     US Equity')))$h_usd
-chart_data = c(chart_data, list(list(segment='XLY', rt=xly)))
-
-library(ggthemes)
-save_data_as_chart(multi_plot_1, rt_to_chart_data(chart_data), 'novo_chart.png', 400)
-a = index_perf(rvc_smidai); write.csv(a, file='/home/aslepnev/webhub/basket8_backtest.csv', row.names=index(a))
+a = index_perf(rvc_smidai); write.csv(a, file='/home/aslepnev/webhub/basket8_backtest_precalc.csv', row.names=index(a))
+a = index_perf(rvc_smidai); write.csv(a, file='/home/aslepnev/webhub/basket8_backtest_simple.csv', row.names=index(a))
 
 
 
 
 
+#chart_data = list()
+##r_mt = foreach(x=build_index_simpler(u, 'month', screen_mixed_top, screen_params=list(perf_weight=3, top_n=8, price_window=wnd, voltarget=0.075), '2013-12-31'),.combine=rbind)%do%x$h
+##rvc_mt = volcontrol_excess(r_mt, list(window=20, type='none', excess_type = 'libor plus', add_rate=1, excess=3.5, level=vc_vt, max_weight=2, rate_basis=360, vc_basis=252), libors)
+##chart_data = c(chart_data, list(list(segment=paste('topN', wnd, 2, '8/3/1/2.5/365'), rt=rvc_mt)))
+#chart_data = c(chart_data, list(list(segment=paste('risk/return opt rebal,', wnd, vc_vt*100, ' vt/3.5 excess/1 fee/1.75 exp/252'), rt=rvc_smidai)))
+#xly = load_uni('data-20190506', c('etf', 'h_usd'), list(fixed_list=c('XLY     US Equity')))$h_usd
+#chart_data = c(chart_data, list(list(segment='XLY', rt=xly)))
+#library(ggthemes)
+#save_data_as_chart(multi_plot_1, rt_to_chart_data(chart_data), 'novo_chart.png', 400)
 
 
 

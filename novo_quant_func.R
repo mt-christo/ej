@@ -4,15 +4,21 @@
 volcontrol = function(x, vc_params){
     if(length(vc_params$window) == 1){
         print('Single window volcontrol')
-    w = sqrt(vc_params$vc_basis)*rollapplyr(x, as.numeric(vc_params$window), FUN=sd)
-    if(vc_params$type == 'max 10')
-        w = rollapplyr(w, 10, FUN=function(y){ max(y) }) else
-    if(vc_params$type == 'max 5')
-        w = rollapplyr(w, 5, FUN=function(y){ max(y) }) else
-    if(vc_params$type == 'max 6')
-        w = rollapplyr(w, 6, FUN=function(y){ max(y) }) else
-    if(vc_params$type == 'avg 10')
-        w = rollapplyr(w, 10, FUN=function(y){ mean(y) })
+
+        # w1 = sqrt(vc_params$vc_basis)*rollapplyr(x, as.numeric(vc_params$window), FUN=sd)
+        # w2 = sqrt(vc_params$vc_basis)*vc_params$sd
+        w = sqrt(vc_params$vc_basis)*if(vc_params$src == 'self')
+                                         rollapplyr(x, as.numeric(vc_params$window), FUN=sd) else if(vc_params$src == 'precalc') vc_params$sd
+        
+        if(vc_params$type == 'max 10'){
+            w = rollapplyr(w, 10, FUN=function(y){ max(y) })
+        } else if(vc_params$type == 'max 5'){
+            w = rollapplyr(w, 5, FUN=function(y){ max(y) })
+        } else if(vc_params$type == 'max 6'){
+            w = rollapplyr(w, 6, FUN=function(y){ max(y) })
+        } else if(vc_params$type == 'avg 10'){
+            w = rollapplyr(w, 10, FUN=function(y){ mean(y) })
+        }
     } else {
         print('Double window volcontrol')
         w1 = sqrt(vc_params$vc_basis)*rollapplyr(x, as.numeric(vc_params$window[1]), FUN=sd)
@@ -27,6 +33,7 @@ volcontrol = function(x, vc_params){
     w[,1] = lag(ifelse(w > max_weight, max_weight, w), 1)
     w[1, 1] = 0
     res = log((exp(x) - 1)*w + 1)
+    # res1 = log((exp(x) - 1)*w + 1)
     return(res)
 }
 
@@ -36,6 +43,7 @@ volcontrol = function(x, vc_params){
 # vc_params=list(window=20, type='none', excess_type = 'libor plus', add_rate=1.5, excess=3.5, level=0.12, max_weight=1.75)
 # x=r1; vc_params=list(window=20, type='max 5', excess_type = 'libor plus', add_rate=1, excess=3, level=0.08, max_weight=2.5, basis=365)
 # x=r1; vc_params=list(window=20, type='none', excess_type = 'libor plus', add_rate=1.0, excess=3.5, level=0.14, max_weight=1.75, rate_basis=360, vc_basis=252)
+# x=r_smidai; libors=u$libors
 volcontrol_excess = function(x, vc_params, libors){
     l3m = na.locf(na.locf(merge.xts(x, libors)[, 2]))
     l3m = l3m[index(l3m)%in%index(x)]

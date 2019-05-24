@@ -1,4 +1,10 @@
 to_zero_date <- function(date, reldate){
+
+#    zero_year = 1901 + year(dt_end) - year(s[expiry > dt_end, min(expiry)])
+#    zero_end = as.Date(ISOdate(zero_year, month(dt_end), day(dt_end)))
+#    zero_start = as.Date(ISOdate(zero_year + year(dt_start) - year(dt_end), month(dt_start), day(dt_start)))
+
+
     relres = as.Date(reldate)
     res = as.Date(date)
     year(res) = year(res) - year(relres) + 1900

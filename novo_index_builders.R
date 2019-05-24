@@ -73,7 +73,8 @@ build_index_simpler = function(u_in, rebal_freq, screen_func, screen_params, sta
 # h_in = shmae; rebal_dates=get_rebals_h(h_in, 'quarter'); screen_func=screen_partial_momentum; screen_params=list(window=40, w=0.1); start_date='2016-06-30'
 # h_in = shmae; rebal_dates=get_rebals_h(h_in, 'month'); screen_func=screen_partial_momentum; screen_params=list(window=20, w=0.0); start_date='2016-06-30'
 # h_in = h; rebal_dates=get_rebals_h(h_in, 'month'); screen_func=smidai_style_rebal; screen_params=list(funds=f, baskets=b, window=wnd, voltarget=0.08); start_date='2013-12-31'
-build_index_simple = function(h_in, rebal_dates, screen_func, screen_params, start_date){
+# h_in = h; rebal_dates=get_rebals_h(h_in, 'month'); start_date='2013-12-31'
+build_index_simple = function(h_in, rebal_dates, screen_func, screen_params, start_date, vc_params){
     rebal_idx = match(rebal_dates[rebal_dates>=start_date], index(h_in))
     calc_pieces = foreach(i=1:(length(rebal_idx) - 1))%do%
         list(dt = index(h_in)[rebal_idx[i]],
@@ -86,8 +87,16 @@ build_index_simple = function(h_in, rebal_dates, screen_func, screen_params, sta
         basket = screen_func(x$h, screen_params)
         h = foreach(i=names(basket),.combine=cbind)%do%x$h_next[, basket[[i]]$names]
         w = foreach(i=names(basket),.combine=c)%do%basket[[i]]$weights
-        r = basket_ret(h, w) 
-        list(h=r, basket=basket, dt=x$dt)
+#        r = basket_ret_rebal(h, w)
+        r = basket_ret(h, w)
+
+        # Per Romain's request - calculating volatility of actual basket proforma
+        h_both = rbind(x$h, x$h_next)
+        r_sd = rollapplyr(basket_ret_rebal(h_both, w), as.numeric(vc_params$window), FUN=sd)
+        r_sd = rollapplyr(basket_ret(h_both, w), as.numeric(vc_params$window), FUN=sd)
+        r_sd = r_sd[!is.na(r_sd)][index(h)]
+        
+        list(h=r, r_sd=r_sd, basket=basket, dt=x$dt)
     }
     
     return(h_res)
