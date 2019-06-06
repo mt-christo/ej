@@ -8,7 +8,7 @@ volcontrol = function(x, vc_params){
         # w1 = sqrt(vc_params$vc_basis)*rollapplyr(x, as.numeric(vc_params$window), FUN=sd)
         # w2 = sqrt(vc_params$vc_basis)*vc_params$sd
         w = sqrt(vc_params$vc_basis)*if(vc_params$src == 'self')
-                                         rollapplyr(x, as.numeric(vc_params$window), FUN=sd) else if(vc_params$src == 'precalc') vc_params$sd
+                                         rollapplyr(x, as.numeric(vc_params$window), FUN=sd) else if(vc_params$src == 'precalc') vc_params$sd[[1]]
         
         if(vc_params$type == 'max 10'){
             w = rollapplyr(w, 10, FUN=function(y){ max(y) })
@@ -21,19 +21,22 @@ volcontrol = function(x, vc_params){
         }
     } else {
         print('Double window volcontrol')
-        w1 = sqrt(vc_params$vc_basis)*rollapplyr(x, as.numeric(vc_params$window[1]), FUN=sd)
-        w2 = sqrt(vc_params$vc_basis)*rollapplyr(x, as.numeric(vc_params$window[2]), FUN=sd)
+        w1 = sqrt(vc_params$vc_basis)*if(vc_params$src == 'self')
+                                         rollapplyr(x, as.numeric(vc_params$window[1]), FUN=sd) else if(vc_params$src == 'precalc') vc_params$sd[[1]]
+        w2 = sqrt(vc_params$vc_basis)*if(vc_params$src == 'self')
+                                         rollapplyr(x, as.numeric(vc_params$window[2]), FUN=sd) else if(vc_params$src == 'precalc') vc_params$sd[[2]]
         w = ifelse(w1>w2, w1, w2)
     }
 
     params_level = as.numeric(vc_params$level)
     max_weight = as.numeric(vc_params$max_weight)
     
-    w[,1] = ifelse(is.na(w), 1, params_level/w)
+    w[,1] = params_level/w
     w[,1] = lag(ifelse(w > max_weight, max_weight, w), 1)
-    w[1, 1] = 0
-    res = log((exp(x) - 1)*w + 1)
-    # res1 = log((exp(x) - 1)*w + 1)
+    x = x[!is.na(w)]
+    w = w[!is.na(w)]
+    res = cbind(x, log((exp(x) - 1)*w + 1), w)
+    colnames(res) = c('core_rt', 'rt', 'exposure')
     return(res)
 }
 
@@ -55,7 +58,8 @@ volcontrol_excess = function(x, vc_params, libors){
 
     #excess = if (vc_params$excess_type != 'rate-related excess') { print('Simple excess'); as.numeric(vc_params$excess)*0.01*l3m_days/vc_params$rate_basis } else 0.0
     excess = if (vc_params$excess_type != 'rate-related excess') { print('Simple excess'); as.numeric(vc_params$excess)*0.01/252 } else 0.0
-    res = -excess + volcontrol(x - rfr, vc_params)  # fwrite(l3m, file='/home/aslepnev/webhub/rfr.csv')
+    res = volcontrol(x - rfr, vc_params)
+    res$rt = -excess + res$rt
     return(res)
 }
 

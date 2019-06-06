@@ -23,6 +23,7 @@ TAG_FILTERS = c(TAG_FILTERS, list(list(name='industrial', target='etf', filter=l
 TAG_FILTERS = c(TAG_FILTERS, list(list(name='us', target='equity', filter=list(list(field='country_name', value=c('UNITED STATES'))))))
 #TAG_FILTERS = c(TAG_FILTERS, list(list(name='developedwest', target='equity', filter=list(list(field='country_name', value=c('UNITED STATES', 'FRANCE', 'BRITAIN', 'NETHERLANDS', 'GERMANY', 'SWITZERLAND', 'ITALY'))))))
 TAG_FILTERS = c(TAG_FILTERS, list(list(name='tech', target='equity', filter=list(list(field='sector', value=c('Information Technology'))))))
+TAG_FILTERS = c(TAG_FILTERS, list(list(name='commtech', target='equity', filter=list(list(field='sector', value=c('Information Technology', 'Communication Services'))))))
 #TAG_FILTERS = c(TAG_FILTERS, list(list(name='energy', target='equity', filter=list(list(field='sector', value=c('Energy'))))))
 #TAG_FILTERS = c(TAG_FILTERS, list(list(name='finance', target='equity', filter=list(list(field='sector', value=c('Financials'))))))
 #TAG_FILTERS = c(TAG_FILTERS, list(list(name='telecom', target='equity', filter=list(list(field='sector', value=c('Communication Services'))))))
@@ -186,6 +187,13 @@ load_uni = function(data_folder, uni_options, filter_tags){
         }
 
     return(res)
+}
+
+filter_uni = function(u, u_equity){
+    u$equity = u_equity
+    u$equity_metrics = u$equity_metrics[ticker%in%u$equity$ticker, ]
+    u$h_usd = u$h_usd[, colnames(u$h_usd)%in%u$equity$ticker]
+    return(u)
 }
 
 

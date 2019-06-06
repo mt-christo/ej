@@ -29,8 +29,8 @@ basket_perf = function(h_in, w_in) return( exp(cumsum(basket_ret(h_in[rowSums(is
 
 fracperc = function(x, n, do_perc=TRUE) return( paste0(as.character(round(x*100, n)), if(do_perc) '%' else '') )
 
-index_perf = function(x){
-    res = rbind(xts(0, order.by=index(x)[1]-1), x)
+index_perf = function(x, append_start=TRUE){
+    res = if(append_start) rbind(xts(0, order.by=index(x)[1]-1), x) else x
     res = exp(cumsum(res))
     return(res)
 }

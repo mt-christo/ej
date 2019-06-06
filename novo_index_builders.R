@@ -45,7 +45,7 @@ build_index = function(D_in, rebal_dates, screen_func, screen_params, start_date
     return(h_res)
 }
 
-# u_in=u; rebal_freq='month'; screen_func=screen_mixed_top; screen_params=list(perf_weight=0.5, top_n=10, price_window=20); start_date='2012-12-31'
+# u_in=u; rebal_freq='month'; screen_func=screen_mixed_top; screen_params=list(perf_weight=5.5, top_n=20, price_window=125); start_date='2012-11-29'
 build_index_simpler = function(u_in, rebal_freq, screen_func, screen_params, start_date){
     h_in = u_in$h
     rebal_dates = get_rebals_h(h_in[index(h_in) >= start_date], rebal_freq)
@@ -73,7 +73,7 @@ build_index_simpler = function(u_in, rebal_freq, screen_func, screen_params, sta
 # h_in = shmae; rebal_dates=get_rebals_h(h_in, 'quarter'); screen_func=screen_partial_momentum; screen_params=list(window=40, w=0.1); start_date='2016-06-30'
 # h_in = shmae; rebal_dates=get_rebals_h(h_in, 'month'); screen_func=screen_partial_momentum; screen_params=list(window=20, w=0.0); start_date='2016-06-30'
 # h_in = h; rebal_dates=get_rebals_h(h_in, 'month'); screen_func=smidai_style_rebal; screen_params=list(funds=f, baskets=b, window=wnd, voltarget=0.08); start_date='2013-12-31'
-# h_in = h; rebal_dates=get_rebals_h(h_in, 'month'); start_date='2013-12-31'
+# h_in = h; rebal_dates=get_rebals_h(h_in, 'month'); screen_func=smidai_style_rebal; start_date='2013-12-31'
 build_index_simple = function(h_in, rebal_dates, screen_func, screen_params, start_date, vc_params){
     rebal_idx = match(rebal_dates[rebal_dates>=start_date], index(h_in))
     calc_pieces = foreach(i=1:(length(rebal_idx) - 1))%do%
@@ -87,14 +87,15 @@ build_index_simple = function(h_in, rebal_dates, screen_func, screen_params, sta
         basket = screen_func(x$h, screen_params)
         h = foreach(i=names(basket),.combine=cbind)%do%x$h_next[, basket[[i]]$names]
         w = foreach(i=names(basket),.combine=c)%do%basket[[i]]$weights
-#        r = basket_ret_rebal(h, w)
-        r = basket_ret(h, w)
+        r = basket_ret_rebal(h, w)
+#        r = basket_ret(h, w)
 
         # Per Romain's request - calculating volatility of actual basket proforma
         h_both = rbind(x$h, x$h_next)
-        r_sd = rollapplyr(basket_ret_rebal(h_both, w), as.numeric(vc_params$window), FUN=sd)
-        r_sd = rollapplyr(basket_ret(h_both, w), as.numeric(vc_params$window), FUN=sd)
-        r_sd = r_sd[!is.na(r_sd)][index(h)]
+        r_sd = foreach(tmp_wnd = vc_params$window)%do%{  # tmp_wnd = vc_params$window[1]
+            sd1 = rollapplyr(basket_ret_rebal(h_both, w), as.numeric(tmp_wnd), FUN=sd)
+            sd1[!is.na(sd1)][index(h)]
+        }
         
         list(h=r, r_sd=r_sd, basket=basket, dt=x$dt)
     }

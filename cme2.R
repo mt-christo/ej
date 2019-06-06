@@ -28,8 +28,10 @@ if(FALSE){
         d$year = as.numeric(ftoks[3])
         d
     })
-    data0$Date=as.Date(data0$Date)
+    data0[, Date := as.Date(Date)]
     save(data0, file='../cme_contracts_data.RData')
+
+    data1 = data0[order(Date), ][, tail(.SD, 750), by=.(commodity, month, year)][year>=2000, ]
 }
 
 #data0 = get(load('../cme_contracts_data.RData'))
@@ -77,14 +79,14 @@ calc_spreads = function(nplets, weights){
 
 # b = as.data.frame(gs_read(gs_key('1s05m2xyRVXprFHyRVqY9qbEKl6OqXssymVsmvWnrpIk'), 'Spreads', range='A1:G3000', col_names=TRUE))
 calc_spreads2 = function(data1, b){
-    s = comms[b, on=.(Code=Ticker)][, .(id=SpreadID, commodity=Name, lag=YearLag, month=Month, weight=Weight)]
+    s = comms[b, on=.(Code=Ticker)][, .(id=SpreadID, commodity=Name, year_lag=YearLag, month=Month, weight=Weight)]
     d2 = mon[data1, on='month'][, expiry:=as.Date(ISOdate(year,num,15))]
     s_cnt = s[, .N, by=id]
     
-    s0 = d2[s[lag==0, ], on=.(commodity, month), allow.cartesian=TRUE][, .(date=Date, id, year, expiry, spread=weight*Close)]
+    s0 = d2[s[year_lag==0, ], on=.(commodity, month), allow.cartesian=TRUE][, .(date=Date, id, year, expiry, spread=weight*Close)]
     s0 = s0[, .(expiry=min(expiry), spread=sum(spread), cnt=.N), by=.(id, date, year)]
     
-    s1 = d2[s[lag>0, ], on=.(commodity, month), allow.cartesian=TRUE][, .(date=Date, id, year, expiry, spread=weight*Close)]
+    s1 = d2[s[year_lag>0, ], on=.(commodity, month), allow.cartesian=TRUE][, .(date=Date, id, year=year-year_lag, expiry, spread=weight*Close)]  # "year-lag" because the lagged record has to match with previous record
     s1 = s1[, .(spread2=sum(spread), cnt2=.N), by=.(id, date, year)]  # We ignore expiry column, because lag>0 means that s0's expiry occurs earlier
     s1 = s0[s1, on=c('date', 'id', 'year'), nomatch=0][, .(date, id, year, expiry, spread=spread+spread2, cnt=cnt+cnt2)]
     s2 = rbind(s0[!id %in% s1$id, ], s1)

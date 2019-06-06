@@ -105,7 +105,8 @@ get_spread_ma_wnd <- function(h, dt_start, wnd){
                 ,ma10chg7 = rollapply(ma10, 7, FUN=chgfun, fill=NA, align='right')
                 ), by=year]
     #s = s[, spread_ctd := spread - .SD[zero_date==h$zero_center, spread], by=year]
-    res = s[zero_date>=h$zero_start & zero_date<=h$zero_start+wnd, ][, !colnames(s)%in%c('commodity','date','months','expiry'), with=FALSE]
+#    res = s[zero_date>=h$zero_start & zero_date<=h$zero_start+wnd, ][, !colnames(s)%in%c('commodity','date','months','expiry'), with=FALSE]
+    res = s[zero_date>=h$zero_start, ][, !colnames(s)%in%c('commodity','date','months','expiry'), with=FALSE]
     
     return(res)
 }

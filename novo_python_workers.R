@@ -23,13 +23,15 @@ calc_env_split = function(env){
 }
 
 # filename = '/home/aslepnev/webhub/strtelestate_current.csv'
-index_report_to_python = function(filename){
+bot_report_to_python = function(filename){
     params = calc_env_split(calc_env_from_csv(filename))
-    if(params$uni_params$type == 'straight')
-        irep = process_index_straight_request(params)
-    else if(params$uni_params$type == 'stocks and etfs')
-        irep = process_index_stocks_etfs_request(params)
+    if(params$type == 'index' && params$uni_params$type == 'straight')
+        botrep = process_index_straight_request(params)
+    else if(params$type == 'index' && params$uni_params$type == 'stocks and etfs')
+        botrep = process_index_stocks_etfs_request(params)
+    else if(params$type == 'wo')
+        botrep = process_wo_request(params)
     
-    for(i in names(irep))
-        fwrite(as.data.table(irep[[i]]), file=gsub('current_name', paste0('current_', i), R_STATE_DATA_MASK))
+    for(i in names(botrep))
+        fwrite(as.data.table(botrep[[i]]), file=gsub('current_name', paste0('current_', i), R_STATE_DATA_MASK))
 }

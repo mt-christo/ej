@@ -78,3 +78,17 @@ send_files_to_email(c(save_data_as_csv(idx$baskets, 'top10it_baskets.csv'),
 write.csv(exp(cumsum(rvc)), file='/home/aslepnev/webhub/it10.csv', row.names=index(rvc))
 a = u$p[,u$equity_metrics[dt=="2017-02-01",][order(mcap,decreasing=TRUE),ticker],with=FALSE]
 write.csv(a, file='/home/aslepnev/webhub/it10_backtest.csv', row.names=index(a))
+
+
+-- new
+source('/home/aslepnev/git/ej/strindexlib.R')
+u = load_uni('data-20190506', c('equity', 'equity_metrics', 'h_usd', 'libors'), list(field_filter=c('us', 'commtech'), skip_filter=c('no_card'), rank_filter=c('top 80 mcap')))
+r = build_index_simpler(u, 'month', screen_mixed_top, list(freq='month', perf_weight=1.5, top_n=10, price_window=120), '2012-11-29')  
+bask = foreach(x=r,.combine=rbind)%do%t(x$basket$main$names)
+r_merged = foreach(x=r,.combine=rbind)%do%x$h
+r_vc = volcontrol_excess(r_merged, list(window=20, src='self', type='none', excess_type = 'libor plus', add_rate=1, excess=3.5, level=0.14, max_weight=1.5, rate_basis=360, vc_basis=252), u$libors)$rt
+basic_index_report(r_vc[index(r_vc)<='2019-03-31', ], 252)
+
+a = index_perf(r_vc$rt[index(r_vc$rt)>='2013-01-01' & index(r_vc$rt)<='2019-03-31', ]); head(a); tail(a)
+write.csv(1000*a, file='/home/aslepnev/webhub/it_max_150.csv', row.names=index(a))
+write.csv(tail(bask, 1), file='/home/aslepnev/webhub/it_max_150_basket.csv')

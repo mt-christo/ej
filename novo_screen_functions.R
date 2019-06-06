@@ -173,6 +173,8 @@ screen_pridex_voltarget_stocksetfs = function(lh_in, u_in, params){
 
 # u_in=x$u[['main']]; dt_in=x$dt; lh_in=x$lh[['main']]
 # metrics_in=u$equity_metrics; dt_in=as.Date('2016-05-15'); h_in=u[['h']]; screen_params=list(perf_weight=0.5, top_n=10, price_window=20)
+# metrics_in=u_in[['equity_metrics']]; h_in=x$h; dt_in=x$dt; screen_params=list(perf_weight=5.5, top_n=20, price_window=125); 
+# metrics_in=u_in[['equity_metrics']]; h_in=x$h; dt_in=x$dt; screen_params=list(perf_weight=0.5, top_n=20, price_window=125); 
 screen_mixed_top = function(metrics_in, h_in, dt_in, screen_params){
     dt1 = metrics_in[dt <= dt_in, max(dt)]
     dt2 = metrics_in[dt >= dt_in, min(dt)]

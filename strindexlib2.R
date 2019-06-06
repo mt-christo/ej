@@ -745,19 +745,13 @@ rvc = volcontrol_excess(r1, list(window=20, type='max 6', excess_type = 'libor p
 
 
 
--- SALCA100 fixed
-
-u = load_uni('data-20190506', c('equity', 'equity_metrics', 'h_ugly', 'libors'), list(fixed_list=c('9984 JP Equity', '6758 JP Equity', '6861 JP Equity', '7267 JP Equity')))
-
-
-
-
 
 
 -- FASHION fixed
 source('/home/aslepnev/git/ej/strindexlib.R')
 u = load_uni('data-20190506', c('equity', 'equity_metrics', 'h_usd', 'fxx', 'libors'), list(fixed_list=c('4911 JP Equity', 'EL US Equity', 'PG US Equity', 'TSCO LN Equity', 'PEP US Equity', 'BN FP Equity', 'NESN SW Equity', 'WMT US Equity')))
 
+# vc_params = list(window=c(20, 60), src='precalc', type='none', excess_type = 'libor plus', add_rate=1, excess=3.5, level=0.14, max_weight=2, rate_basis=360, vc_basis=252)
 fashion_fixed = function(u, vc_params){
     h = u$h_usd[index(u$h_usd)>='2011-01-01']
 #h$libor = u$libors[index(h)]
@@ -771,7 +765,7 @@ fashion_fixed = function(u, vc_params){
     
     r = build_index_simple(h, get_rebals_h(h, 'month'), smidai_style_rebal, screen_params, start_date='2013-12-31', vc_params)
     r_smidai = foreach(x=r,.combine=rbind)%do%x$h
-    vc_params$sd = foreach(x=r,.combine=rbind)%do%x$r_sd
+    vc_params$sd = foreach(i = 1:length(vc_params$window))%do%{ foreach(x=r,.combine=rbind)%do%{ x$r_sd[[i]] } }
     rvc_smidai = volcontrol_excess(r_smidai, vc_params, u$libors)
 
     return(rvc_smidai)
@@ -785,6 +779,17 @@ print(unlist(basic_index_report(a1, 252)))
 print(unlist(basic_index_report(a2, 252)))
 print(unlist(basic_index_report(a3, 252)))
 
+a4 = fashion_fixed(u, list(window=c(20, 60), src='precalc', type='none', excess_type = 'libor plus', add_rate=1, excess=3.5, level=0.14, max_weight=2, rate_basis=360, vc_basis=252))
+a5 = fashion_fixed(u, list(window=c(20, 60), src='self', type='none', excess_type = 'libor plus', add_rate=1, excess=3.5, level=0.14, max_weight=2, rate_basis=360, vc_basis=252))
+print(unlist(basic_index_report(a4$rt, 252)))
+print(unlist(basic_index_report(a5$rt, 252)))
+
+out_res = rbind(xts(t(array(0, ncol(a4))), order.by=index(a4)[1]-1), a4)
+colnames(out_res) = c('core_index', 'index', 'exposure')
+out_res$core_index = index_perf(out_res$core_index, FALSE)
+out_res$index = index_perf(out_res$index, FALSE)
+out_res$exposure = lag(out_res$exposure, -1)
+write.csv(out_res, file='/home/aslepnev/webhub/basket8_backtest.csv', row.names=index(out_res))
 
 
 vc_params = list(window=20, src='self', type='none', excess_type = 'libor plus', add_rate=1, excess=3.5, level=0.14, max_weight=2, rate_basis=360, vc_basis=252)
@@ -824,6 +829,32 @@ a = index_perf(rvc_smidai); write.csv(a, file='/home/aslepnev/webhub/basket8_bac
 
 
 
+
+
+
+
+
+-- plays
+
+# u = load_uni('data-20190506', c('equity', 'equity_metrics', 'h_ugly', 'libors'), list(fixed_list=c('9984 JP Equity', '6758 JP Equity', '6861 JP Equity', '7267 JP Equity'))) # SALCA100
+
+u = load_uni('data-20190506', c('equity', 'equity_metrics', 'h_usd', 'libors'), list())
+
+u = load_uni('data-20190506', c('equity', 'equity_metrics', 'h_usd', 'libors'),
+             list(fixed_list=u$equity[sector=='Information Technology' | ticker=='AMZN US Equity', ticker], skip_filter=c('no_card'), rank_filter=c('top 30 mcap')))
+
+
+u = load_uni('data-20190506', c('equity', 'equity_metrics', 'h_usd', 'libors'), list(field_filter=c('us', 'tech'), skip_filter=c('no_card'), rank_filter=c('top 50 mcap')))
+u = load_uni('data-20190506', c('equity', 'equity_metrics', 'h_usd', 'libors'), list(field_filter=c('us', 'commtech'), skip_filter=c('no_card'), rank_filter=c('top 80 mcap')))
+
+# TODO refactor - this is calculation of for perf/vol combinations
+a = (foreach(ind=unique(u$equity$gics_industry), .combine=rbind)%do%{  # ind=u$equity$gics_industry[2]
+    x = tail(u$h_usd[, u$equity[gics_industry==ind, ticker]], 252*5)
+    b = u$equity_metrics[u$equity[gics_industry==ind, ], on='ticker'][dt=='2019-01-01', mcap]
+    x = x[, order(b, decreasing=TRUE)[1:min(5, length(b))]]    
+    y = basic_index_report(basket_ret(x, array(1/ncol(x), ncol(x))), 252)
+    data.table(sector=ind, count=ncol(x), perf=as.numeric(y$perf), sigma=y$vol, sharpe=as.numeric(y$perf)/y$vol)
+})[order(sharpe), ]
 
 
 
@@ -877,6 +908,87 @@ send_files_to_email(c(save_data_as_csv(idx$baskets, 'top10it_baskets.csv'),
 write.csv(exp(cumsum(rvc)), file='/home/aslepnev/webhub/it10.csv', row.names=index(rvc))
 a = u$p[,u$equity_metrics[dt=="2017-02-01",][order(mcap,decreasing=TRUE),ticker],with=FALSE]
 write.csv(a, file='/home/aslepnev/webhub/it10_backtest.csv', row.names=index(a))
+
+
+
+
+
+
+source('/home/aslepnev/git/ej/strindexlib.R')
+#u = load_uni('data-20190506', c('equity', 'equity_metrics', 'h_usd', 'fxx', 'libors'), list(field_filter=c('us', 'tech'), skip_filter=c('no_card'), rank_filter=c('top 50 mcap')))
+u = load_uni('data-20190506', c('equity', 'equity_metrics', 'h_usd', 'fxx', 'libors'), list(field_filter=c('us', 'commtech'), skip_filter=c('no_card'), rank_filter=c('top 50 mcap')))
+
+# vc_params = list(window=20, src='self', type='none', excess_type = 'libor plus', add_rate=1, excess=3.5, level=0.14, max_weight=1.5, rate_basis=360, vc_basis=252); screen_params=list(perf_weight=5.5, top_n=20, price_window=125)
+itshka = function(u, vc_params, screen_params){
+    r = build_index_simpler(u, screen_params$freq, screen_mixed_top, screen_params, '2012-11-29')  
+
+    r_merged = foreach(x=r,.combine=rbind)%do%x$h
+    r_vc = volcontrol_excess(r_merged, vc_params, u$libors)
+
+    return(r_vc)
+}
+
+a1 = itshka(u, list(window=20, src='self', type='none', excess_type = 'libor plus', add_rate=1, excess=3.5, level=0.14, max_weight=1.5, rate_basis=360, vc_basis=252)
+          , list(freq='month', perf_weight=2, top_n=10, price_window=116))$rt
+print(unlist(basic_index_report(a1[index(a1)<='2019-03-31', ], 252)))
+
+
+
+
+source('/home/aslepnev/git/ej/strindexlib.R')
+u = load_uni('data-20190506', c('equity', 'equity_metrics', 'h_usd', 'libors'), list(field_filter=c('us', 'commtech'), skip_filter=c('no_card'), rank_filter=c('top 80 mcap')))
+r = build_index_simpler(u, 'month', screen_mixed_top, list(freq='month', perf_weight=1.5, top_n=10, price_window=120), '2012-11-29')  
+bask = foreach(x=r,.combine=rbind)%do%t(x$basket$main$names)
+r_merged = foreach(x=r,.combine=rbind)%do%x$h
+r_vc = volcontrol_excess(r_merged, list(window=20, src='self', type='none', excess_type = 'libor plus', add_rate=1, excess=3.5, level=0.14, max_weight=1.5, rate_basis=360, vc_basis=252), u$libors)$rt
+basic_index_report(r_vc[index(r_vc)<='2019-03-31', ], 252)
+
+a = index_perf(r_vc$rt[index(r_vc$rt)>='2013-01-01' & index(r_vc$rt)<='2019-03-31', ]); head(a); tail(a)
+write.csv(1000*a, file='/home/aslepnev/webhub/it_max_150.csv', row.names=index(a))
+write.csv(tail(bask, 1), file='/home/aslepnev/webhub/it_max_150_basket.csv')
+
+
+
+
+r = build_index_simpler(u, 'month', screen_mixed_top, screen_params=list(perf_weight=0.5, top_n=10, price_window=135), '2012-12-29')  
+r1 = foreach(x=r,.combine=rbind)%do%x$h
+
+
+# libors=u$libors; r_in=r; r1_in=r1; terms_in=c(3, 5); vc_targets=c(0.12, 0.14); vc_types=c('max 10', 'simple');
+#rvc = r1; print(sqrt(252)*sd(tail(rvc, 252))); print(tail(exp(cumsum(rvc)), 1))
+rvc = volcontrol_excess(r1, list(window=20, type='none', excess_type = 'libor plus', add_rate=1.0, excess=3.5, level=0.14, max_weight=1.75, rate_basis=360, vc_basis=252), u$libors); print(sqrt(252)*sd(tail(rvc, 252))); print(tail(exp(cumsum(rvc)), 1))
+exp(cumsum(rvc))
+write.csv(1000*exp(cumsum(rvc)), file='/home/aslepnev/webhub/it10.csv', row.names=index(rvc))
+
+rvc = volcontrol_excess(r1, list(window=20, type='none', excess_type = 'libor plus', add_rate=1.0, excess=3.5, level=0.14, max_weight=1.5, rate_basis=360, vc_basis=252), u$libors); print(sqrt(252)*sd(tail(rvc, 252))); print(tail(exp(cumsum(rvc)), 1))
+
+
+
+dt_start=as.Date('2012-12-29'); dt_end=as.Date('9999-03-01'); 
+rvc = volcontrol_excess(r1, list(window=20, type='none', excess_type='libor plus', add_rate=0.5, excess=2, level=0.05, max_weight=2, basis=360), libors)
+print(sqrt(252)*sd(tail(rvc, 252))); print(tail(exp(cumsum(rvc[index(rvc)>=dt_start & index(rvc)<=dt_end])), 1))
+
+
+idx = index_report(build_index_simpler(load_uni(c('equity', 'equity_metrics', 'h', 'libors', 'p'),
+                                                list(field_filter=c('us', 'tech'), skip_filter=c('no_card'), rank_filter=c('top 30 mcap'))),
+                                       'month', screen_mixed_top, screen_params=list(perf_weight=0.5, top_n=10, price_window=125), '2012-12-31'),
+                   list(vc_params=list(window=20, type='simple', excess_type = 'libor plus', add_rate=1, excess=3.5, level=0.14, max_weight=1.75)),
+                   u$libors)
+
+send_files_to_email(c(save_data_as_csv(idx$baskets, 'top10it_baskets.csv'),
+                      save_data_as_csv(idx$perf, 'top10it_perf.csv'),
+                      save_data_as_chart(idx$perf, 'Top 10 IT companies, monthly', 'top10it.png'),
+                      latex_pm_card(idx$orig_data, foreach(x=idx$orig_data,.combine=rbind)%do%x$h, c(3,5),
+                                    vc_targets=c(0.12, 0.14), vc_types=c('max 10', 'simple'), list(exrate=3.5, add_rate=1, max_weight=1.75), u$libors, 'it10')),
+                    'Top 10 IT index', 'aslepnev@novo-x.info')
+
+write.csv(exp(cumsum(rvc)), file='/home/aslepnev/webhub/it10.csv', row.names=index(rvc))
+a = u$p[,u$equity_metrics[dt=="2017-02-01",][order(mcap,decreasing=TRUE),ticker],with=FALSE]
+write.csv(a, file='/home/aslepnev/webhub/it10_backtest.csv', row.names=index(a))
+
+
+
+
 
 
 -- sectoral top N mcap
