@@ -792,15 +792,15 @@ out_res$exposure = lag(out_res$exposure, -1)
 write.csv(out_res, file='/home/aslepnev/webhub/basket8_backtest.csv', row.names=index(out_res))
 
 
-vc_params = list(window=20, src='self', type='none', excess_type = 'libor plus', add_rate=1, excess=3.5, level=0.14, max_weight=2, rate_basis=360, vc_basis=252)
-
-
-tail(index_perf(rvc_smidai), 1)
-
-bask = foreach(x=r,.combine=rbind)%do%{ y = x$basket$main$weights; names(y)=x$basket$main$names; y$dt=x$dt; as.data.table(y)[, c('dt', x$basket$main$names), with=FALSE] }
-fwrite(bask, file='/home/aslepnev/webhub/basket8_weights.csv')
-a = index_perf(rvc_smidai); write.csv(a, file='/home/aslepnev/webhub/basket8_backtest_precalc.csv', row.names=index(a))
-a = index_perf(rvc_smidai); write.csv(a, file='/home/aslepnev/webhub/basket8_backtest_simple.csv', row.names=index(a))
+# --  newer version 2019-06-10
+a4 = fashion_fixed(u, list(window=c(20, 60), src='precalc', type='none', excess_type = 'libor plus', add_rate=1, excess=4, level=0.115, max_weight=2, rate_basis=360, vc_basis=252))
+print(unlist(basic_index_report(a4$rt, 252)))
+out_res = rbind(xts(t(array(0, ncol(a4))), order.by=index(a4)[1]-1), a4)
+colnames(out_res) = c('core_index', 'index', 'exposure')
+out_res$core_index = index_perf(out_res$core_index, FALSE)
+out_res$index = index_perf(out_res$index, FALSE)
+out_res$exposure = lag(out_res$exposure, -1)
+write.csv(out_res, file='/home/aslepnev/webhub/basket8_backtest.csv', row.names=index(out_res))
 
 
 
@@ -835,6 +835,7 @@ a = index_perf(rvc_smidai); write.csv(a, file='/home/aslepnev/webhub/basket8_bac
 
 
 -- plays
+source('/home/aslepnev/git/ej/strindexlib.R')
 
 # u = load_uni('data-20190506', c('equity', 'equity_metrics', 'h_ugly', 'libors'), list(fixed_list=c('9984 JP Equity', '6758 JP Equity', '6861 JP Equity', '7267 JP Equity'))) # SALCA100
 
@@ -1087,3 +1088,14 @@ send_files_to_email(c(foreach(i=0:(length(prep_data)%/%per_page),.combine=c)%do%
 
 
 }
+
+
+
+
+
+-- factor models
+
+source('/home/aslepnev/git/ej/strindexlib.R')
+u = load_uni('data-20190506', c('equity', 'equity_metrics', 'h_usd', 'libors'), list())
+
+

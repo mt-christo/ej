@@ -63,7 +63,16 @@ volcontrol_excess = function(x, vc_params, libors){
     return(res)
 }
 
+# x = m$div; outlier_pct=0.02
+robust_norm_parameters = function(x, outlier_pct=0.02){
+    x_lim = as.numeric(quantile(x, c(outlier_pct, 1-outlier_pct), na.rm=TRUE))
+    x1 = x[!is.na(x)]
+    x1 = x1[x1>x_lim[1] & x1<x_lim[2]]
+    return(list(mean=mean(x1), sd=sd(x1)))
+}
 
-
+robust_normalize = function(x, params){
+    return((x - params$mean)/params$sd)
+}
 
 

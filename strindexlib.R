@@ -39,7 +39,9 @@ source('/home/aslepnev/git/ej/novo_basic_quant_func.R')
 source('/home/aslepnev/git/ej/novo_quant_func.R')
 source('/home/aslepnev/git/ej/novo_advanced_quant_func.R')
 
+source('/home/aslepnev/git/ej/novo_static_prep.R')
 source('/home/aslepnev/git/ej/novo_uni_func.R')
+
 source('/home/aslepnev/git/ej/novo_output_lib.R')
 source('/home/aslepnev/git/ej/novo_product_reports.R')
 source('/home/aslepnev/git/ej/novo_index_builders.R')

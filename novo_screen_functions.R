@@ -171,6 +171,18 @@ screen_pridex_voltarget_stocksetfs = function(lh_in, u_in, params){
                 etfs = list(names=e$names, weights=res$par[-(1:ncol(prep$r_uni))])))
 }
 
+# screen_params contains info on factor model and basket size limit; metrics_in contains all factor exposures for every model (based on columns: dt, model)
+# metrics_in=u$equity_metrics; dt_in='2013-06-15'; screen_params=list(model=BASIC_MODEL, est_type='top 10 mcap')
+screen_factor_exposures = function(metrics_in, h_in, dt_in, screen_params){
+    m = metrics_in[dt==metrics_in[dt<=dt_in, max(dt)], ]
+    f = screen_params$model
+    if(screen_params$est_type == 'top 10 mcap'){
+        est_params = lapply(m[order(m$mcap, decreasing=TRUE)[1:10], f, with=FALSE], robust_norm_parameters)
+        for(n in f) m[, eval(n):=robust_normalize(get(n), est_params[[n]])] 
+    }
+    
+}
+
 # u_in=x$u[['main']]; dt_in=x$dt; lh_in=x$lh[['main']]
 # metrics_in=u$equity_metrics; dt_in=as.Date('2016-05-15'); h_in=u[['h']]; screen_params=list(perf_weight=0.5, top_n=10, price_window=20)
 # metrics_in=u_in[['equity_metrics']]; h_in=x$h; dt_in=x$dt; screen_params=list(perf_weight=5.5, top_n=20, price_window=125); 
