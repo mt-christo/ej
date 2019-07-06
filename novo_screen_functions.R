@@ -231,7 +231,8 @@ smidai_style_rebal = function(h_in, screen_params){
     res_sigma = sqrt(wsigma %*% comat %*% wsigma)
 
     wlimit2 = function(x) return( c(1-sum(x), res_sigma - sqrt(x %*% comat %*% x), -1+sum(x), -res_sigma + sqrt(x %*% comat %*% x)) )
-    gradus = function(x) return( -sum(basket_ret(y, x))+sqrt(x %*% comat %*% x) )
+    gradus = function(x) return( -sum(basket_ret(y, x))+sqrt(x %*% comat %*% x) )  # this is reproducing the basket8
+#    gradus = function(x) return( -sum(basket_ret(y, x)) )
     res = cobyla(x0=wsigma, fn=gradus, lower=wmin, upper=wmax, hin=wlimit2, control=COB_CTL)
     w = res$par/sum(res$par)
     

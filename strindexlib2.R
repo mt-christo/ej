@@ -857,8 +857,24 @@ a = (foreach(ind=unique(u$equity$gics_industry), .combine=rbind)%do%{  # ind=u$e
     data.table(sector=ind, count=ncol(x), perf=as.numeric(y$perf), sigma=y$vol, sharpe=as.numeric(y$perf)/y$vol)
 })[order(sharpe), ]
 
+fashion_fixed = function(u, vc_params){
+    h = u$h_usd[index(u$h_usd)>='2011-01-01']
+    b = data.table(id=1, weight=1, name='ALL')
+    f = data.table(ticker=colnames(h))[, ':='(basket_id=1, name=ticker, weight=0.30)][, id:=1:ncol(h)]
+    
+    screen_params = list(funds=f, baskets=b, window=110, voltarget=0.08)
+    r = build_index_simple(h, get_rebals_h(h, 'month'), smidai_style_rebal, screen_params, start_date='2013-12-31', vc_params)
+    r_smidai = foreach(x=r,.combine=rbind)%do%x$h
+    vc_params$sd = foreach(i = 1:length(vc_params$window))%do%{ foreach(x=r,.combine=rbind)%do%{ x$r_sd[[i]] } }
+    rvc_smidai = volcontrol_excess(r_smidai, vc_params, u$libors)
 
+    return(rvc_smidai)
+}
 
+a4 = fashion_fixed(u, list(window=c(20, 60), src='precalc', type='none', excess_type = 'libor plus', add_rate=1, excess=4, level=0.115, max_weight=2, rate_basis=360, vc_basis=252))
+print(unlist(basic_index_report(a4$rt, 252)))
+
+a
 
 
 
