@@ -11,7 +11,8 @@ d = SpreadsData
 i = 4055
 y = 2007
 b = SpreadsCommodities[SpreadsList, on=.(Code=Ticker)][, .(id=SpreadID, commodity=Name, year_lag=YearLag, month=Month, weight=Weight)][id==i, ]
-d1 = d[b, on=.(commodity, month)][s[year==y & id==i, ], on=.(year=year, Date=date)]
+d1 = d[b, on=.(commodity, month)][s[year==y & id==i, ], on=.(year=year, Date=date)][, ':='(year=NULL, Date=as.Date(Date))]
 
-x = dcast(d1, year + Date ~ month, value.var='OI')
-x_ma = 
+x = as.xts(data.table(dcast(d1, Date ~ month, value.var='OI')))
+x_ma = rollapplyr(x, 5, FUN=mean, fill=NA)
+x_lag = lag(x, 1)
