@@ -72,3 +72,18 @@ spread_wnd_results = function(){
     web_datatable(list('results'=results))
 }
 
+spread_oi_analysis = function(){
+    save(GET, file='/home/aslepnev/webhub/last_GET_spread_oi_analysis.RData')
+    # GET = get(load('/home/aslepnev/webhub/last_GET_spread_oi_analysis.RData'))
+#    comdty = GET$comdty
+#    spread_months = GET$spread_months
+    spread_id = GET$spread_id
+    hist_depth = as.numeric(GET$depth)
+    yrs = as.numeric(strsplit(GET$years, '-')[[1]])
+
+    x = get_oi_analysis(4052, 200)[year%in%yrs, ]
+    res = foreach(m=x[, unique(month)])%do%x[month==m, ]
+    names(res) = x[, unique(month)]
+
+    web_datatable(res)
+}

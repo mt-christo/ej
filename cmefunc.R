@@ -111,4 +111,14 @@ get_spread_ma_wnd <- function(h, dt_start, wnd){
     return(res)
 }
 
-#comdty='Feeder Cattle'; spread_months='U-V-X'; dt_start='2015-12-09'; dt_end='2016-01-04'; dt_center='2015-12-09'
+# spread_id=4052; hist_depth=200
+get_oi_analysis <- function(spread_id, hist_depth){
+    s = Spreads2[id==spread_id & (expiry - date)<=hist_depth & (expiry - date)>=0, ]
+    d = SpreadsData
+    b = SpreadsCommodities[SpreadsList, on=.(Code=Ticker)][, .(id=SpreadID, commodity=Name, year_lag=YearLag, month=Month, weight=Weight)][id==i, ]
+    
+    d1 = d[b, on=.(commodity, month)][s, on=.(year=year, Date=date)][, .(year, commodity, month, date=Date, OI)]
+    x = d1[order(date), ][, ':='(MA = rollapplyr(OI, 5, FUN=mean, fill=NA), PREV = c(NA, OI[-.N])), by=.(month, year)]
+    x[, ':='(vsMA = OI-MA, relMA = OI/MA-1, vsPREV=OI-PREV, relPREV=OI/PREV-1)]
+    return(x)
+}
