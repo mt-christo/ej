@@ -81,9 +81,9 @@ spread_oi_analysis = function(){
     hist_depth = as.numeric(GET$depth)
     yrs = as.numeric(strsplit(GET$years, '-')[[1]])
 
-    x = get_oi_analysis(4052, 200)[year%in%yrs, ]
-    res = foreach(m=x[, unique(month)])%do%x[month==m, ]
-    names(res) = x[, unique(month)]
+    res = get_oi_analysis(4052, 200, yrs, 5)
+    res$all = foreach(m = res$all[, unique(month)])%do%res$all[month==m, .(month, year, date, OI, MA, vsMA, relMA, vsPREV, relPREV)]
+    res$median = foreach(m = res$median[, unique(month)])%do%res$median[month==m, .(month, date, OI, MA, vsMA, relMA, vsPREV, relPREV)]
 
     web_datatable(res)
 }
