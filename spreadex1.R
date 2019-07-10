@@ -81,7 +81,7 @@ spread_oi_analysis = function(){
     hist_depth = as.numeric(GET$depth)
     yrs = as.numeric(strsplit(GET$years, '-')[[1]])
 
-    res = get_oi_analysis(4052, 200, yrs, 5)
+    res = get_oi_analysis(spread_id, hist_depth, yrs, 5)
     res$all = res$all[, .(month, year, date, OI, MA, vsMA, relMA, vsPREV, relPREV)]
     res$median = res$median[, .(month, date, OI, MA, vsMA, relMA, vsPREV, relPREV)]
 

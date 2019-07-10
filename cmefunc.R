@@ -117,9 +117,12 @@ get_oi_analysis <- function(spread_id, hist_depth, yrs, ma_wnd){
     s = Spreads2[id==spread_id, ]
     s = s[year%in%yrs, ][(expiry - date)<=hist_depth & (expiry - date)>=0, ]
     d = SpreadsData
-    b = SpreadsCommodities[SpreadsList, on=.(Code=Ticker)][, .(id=SpreadID, commodity=Name, year_lag=YearLag, month=Month, weight=Weight)][id==spread_id, ]
+    b = SpreadsCommodities[SpreadsList[SpreadID==spread_id, ], on=.(Code=Ticker)][, .(commodity=Name, year_lag=YearLag, month=Month, weight=Weight)]
     
-    d1 = d[b, on=.(commodity, month)][s, on=.(year=year, Date=date)][, .(year, commodity, month, date=Date-years(year(Date))+years(1901), OI=as.double(OI))]
+    d1 = d[b, on=.(commodity, month)][s, on=.(year=year, Date=date)][, date:=Date]
+    d1 = d1[, zero_date:=as.Date(ISOdate(1901+year(date)-year(expiry), month(date), day(date)))][!is.na(zero_date), ]
+    d1 = d1[CJ(zero_date = unique(d1$zero_date), year=unique(d1$year)), on=.(zero_date, year)]
+    d1 = d1[order(zero_date), ][, OI := na.locf(OI, na.rm=FALSE), by=.(year, month)][!is.na(OI), ][, .(year, commodity, month, date=zero_date, OI)]
     x = d1[order(date), ][d1[, .N, by=.(month, year)][N>ma_wnd, ], on=.(month, year)]
     x[, ':='(MA = rollapplyr(OI, ma_wnd, FUN=mean, fill=NA)
            , PREV = c(NA, OI[-.N])), by=.(month, year)][, ':='(vsMA = OI-MA
@@ -127,7 +130,6 @@ get_oi_analysis <- function(spread_id, hist_depth, yrs, ma_wnd){
                                                              , vsPREV = OI-PREV
                                                              , relPREV = OI/PREV-1)]
 
-    head(x)
     x_med = x[, .(OI = median(OI, na.rm=TRUE)
                 , MA = median(MA, na.rm=TRUE)
                 , vsMA = median(vsMA, na.rm=TRUE)
