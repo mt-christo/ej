@@ -1,4 +1,5 @@
-library(inline)
+if(FALSE){
+    library(inline)
 library(xts)
 library(foreach)
 library(RCurl)
@@ -29,3 +30,4 @@ source('/home/aslepnev/git/ej/novo_uni_func.R')
 source('/home/aslepnev/git/ej/novo_quant_func.R')
 source('/home/aslepnev/git/ej/novo_data_preload.R')
 source('/home/aslepnev/git/ej/novo_google_func.R')
+}
